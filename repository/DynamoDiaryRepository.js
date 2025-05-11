@@ -1,3 +1,5 @@
+// Dynamo DBとのデータのやり取りを担当するクラス
+
 // モジュール読み込み
 const AWS = require('aws-sdk');
 

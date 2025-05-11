@@ -10,7 +10,7 @@ class OpenAIFeedbackGenerator {
         });
     }
 
-    getPrompt (diaryJson) {
+    getPrompt () {
         return ""
             + "* あなたは業務日報のフィードバックを行うAIアシスタントです。" 
             + "* フィードバックは以下のフォーマットで書いてください。 \n"
