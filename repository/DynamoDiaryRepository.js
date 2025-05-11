@@ -6,21 +6,40 @@ class DynamoDiaryRepository {
         this.dynamodb = new AWS.DynamoDB.DocumentClient();
     }
 
-    async getDiaryByGetParams (getParams) {
-        const result = await this.dynamodb.get(getParams).promise();
+    async getDiaryByPartitionKey (partitionKey) {
+        const result = await this.dynamodb.get({
+            TableName: process.env.DYNAMO_TABLE_NAME,
+            Key: {
+                partition_key: partitionKey
+            }
+        }).promise();
         return result;
     }
 
-    async putDiary (putParams) {
-        console.log('put実行:' + JSON.stringify(putParams));
-
-        const result = await this.dynamodb.put(putParams).promise();
+    async putDiary (diaryModel) {
+        const result = await this.dynamodb.put({
+            TableName: process.env.DYNAMO_TABLE_NAME,
+            Item: {
+                partition_key: diaryModel.partitionKey,
+                date: diaryModel.date,
+                user_id: diaryModel.userId,
+                event_ts: diaryModel.eventTs,
+                content: {
+                    workingTime: diaryModel.content.workingTime,
+                    work: diaryModel.content.work,
+                    evaluation: diaryModel.content.evaluation,
+                    plan: diaryModel.content.plan,
+                    other: diaryModel.content.other,
+                },
+                slack_url: diaryModel.slackUrl,
+                edited_ts: diaryModel.editedTs
+            },
+        }).promise();
         return result;
     }
     
     async getDiaryByThreadTs(thread_ts) {
-        // DB検索条件を設定
-        const params = {
+        const result = await this.dynamodb.query({
             TableName: process.env.DYNAMO_TABLE_NAME,
             IndexName: 'event_ts-index', // 作成したGSI名
             KeyConditionExpression: '#indexKey = :indexValue', // 条件を指定
@@ -28,10 +47,9 @@ class DynamoDiaryRepository {
                 "#indexKey"  : 'event_ts' // GSIパーティションキー名を設定
               },
               ExpressionAttributeValues: {
-                ':indexValue': thread_ts
+                ':indexValue': thread_ts // 検索する値
               }
-        };
-        const result = await this.dynamodb.query(params).promise();
+        }).promise();
 
         if (result.Count == 1) {
             return result.Items[0];

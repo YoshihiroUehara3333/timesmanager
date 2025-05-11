@@ -3,6 +3,7 @@ class DiaryModel {
     constructor(event){
         this._userId = event.user;
         this._channel = event.channel;
+        this._slackUrl = '';
 
         if (event.edited) {
             this._editedTs = event.edited.ts;
@@ -17,14 +18,6 @@ class DiaryModel {
         this._content = this.parseContent(event.text);
 
         this._partitionKey = this._userId + this._channel + this._date;
-
-        // GETパラメータ
-        this._getParams = {
-            TableName: process.env.DYNAMO_TABLE_NAME,
-            Key: {
-                partition_key: this._partitionKey
-            }
-        };
     };
 
     // event内のtextからcontentデータを抽出する
@@ -66,6 +59,14 @@ class DiaryModel {
 
     set userId(userId) {
         this._userId = userId;
+    };
+
+    get slackUrl() {
+        return this._slackUrl;
+    };
+
+    set slackUrl(slackUrl) {
+        this._slackUrl = slackUrl;
     };
 
     get partitionKey() {
@@ -114,14 +115,6 @@ class DiaryModel {
 
     set content(content){
         this._content = content;
-    };
-
-    get getParams(){
-        return this._getParams;
-    };
-
-    set getParams(getParams){
-        this._getParams = getParams;
     };
 }
 
