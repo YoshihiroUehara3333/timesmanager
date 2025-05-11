@@ -6,14 +6,16 @@ const { DynamoDiaryRepository } = require('./repository/DynamoDiaryRepository');
 const { AppMentionController } = require('./controller/AppMentionController');
 const { DiaryService } = require('./service/DiaryService');
 const { OpenAIFeedbackGenerator } = require('./service/OpenAIFeedbackGenerator');
+const { SlackService } = require('./service/SlackService');
 const { SlackPresenter } = require('./presenter/SlackPresenter');
 
 // DI
 const diaryRepository = new DynamoDiaryRepository();
 const feedbackGenerator = new OpenAIFeedbackGenerator();
 const diaryService = new DiaryService(diaryRepository, feedbackGenerator);
+const slackService = new SlackService();
 const presenter = new SlackPresenter();
-const appMentionController = new AppMentionController(diaryService, presenter);
+const appMentionController = new AppMentionController(diaryService, slackService, presenter);
 
 // アプリ初期化
 const awsLambdaReceiver = new AwsLambdaReceiver({
