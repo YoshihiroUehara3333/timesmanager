@@ -23,8 +23,9 @@ class AppMentionController {
         // スレッド内返信の場合はAIにフィードバックを作ってもらう
         if(event.thread_ts){
             const thread_ts = event.thread_ts;
+            
             logger.info("diaryService.replyFeedbackを実行");
-            msg = await this.diaryService.replyFeedback(thread_ts, channel);
+            msg = await this.diaryService.generateFeedback(thread_ts, channel);
             logger.info("diaryService.replyFeedbackが終了；" + JSON.stringify(msg));
 
             try {
@@ -38,11 +39,7 @@ class AppMentionController {
 
         // イベント情報から日誌情報を生成する
         const diaryModel = new DiaryModel(event);
-        
-        // 本文に日付情報が書かれていない場合、処理を終了
-        if (diaryModel.date === '') {
-            return;
-        }
+        if (diaryModel.date === '') return; // 日付未記入の場合
 
         // 日記新規投稿時
         if (!event.edited) {
@@ -55,8 +52,8 @@ class AppMentionController {
             logger.info("diaryService.updateDiaryを実行");
             msg = await this.diaryService.updateDiary(diaryModel, channel);
             logger.info("diaryService.updateDiaryが終了:" + JSON.stringify(msg));
-
         }
+
         // 投稿者にDMで通知
         try {
             await this.presenter.sendDirectMessage(client, msg, userId);

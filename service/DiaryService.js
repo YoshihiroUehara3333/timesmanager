@@ -2,7 +2,6 @@
 const AWS = require('aws-sdk');
 
 const { SlackURLConstants } = require('../constants/SlackURLConstants');
-const { DiaryModel } = require('../model/DiaryModel');
 const networkUtils = require('../utility/networkUtils');
 
 class DiaryService {
@@ -15,7 +14,7 @@ class DiaryService {
     /*
     **   thread_tsを基にフィードバックを生成する
     */
-    async replyFeedback(thread_ts, channel){
+    async generateFeedback(thread_ts, channel){
         // DBから業務日誌情報を取得
         var diary;
         try {
