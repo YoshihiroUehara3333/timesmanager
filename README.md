@@ -1,5 +1,5 @@
 # timesmanager
-times投稿を管理したい
+times日報管理用
 
 ## 機能
 - timesチャンネル内でbotにメンションを付けて投稿された日報をDBに保存する
