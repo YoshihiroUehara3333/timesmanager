@@ -25,7 +25,7 @@ class DynamoDiaryRepository {
             IndexName: 'event_ts-index', // 作成したGSI名
             KeyConditionExpression: '#indexKey = :indexValue', // 条件を指定
             ExpressionAttributeNames : {
-                "#indexKey"  : 'event_ts' // GSIの作成時に指定したキー名を設定
+                "#indexKey"  : 'event_ts' // GSIパーティションキー名を設定
               },
               ExpressionAttributeValues: {
                 ':indexValue': thread_ts

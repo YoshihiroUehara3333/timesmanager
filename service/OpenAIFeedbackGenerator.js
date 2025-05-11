@@ -14,7 +14,7 @@ class OpenAIFeedbackGenerator {
         return ""
             + "* 以下は社員が書いた業務日報です。\n"
             + "* 内容を読み、簡潔で建設的なフィードバックを生成してください。\n"
-            + "- 明日に向けて行動するべき課題を提示してください。\n"
+            + "- 明日に向けて行動するべき課題を具体的に提示してください。\n"
             + DiaryUtils.formatDiaryFromJson(diaryJson);
     }
 
@@ -22,16 +22,20 @@ class OpenAIFeedbackGenerator {
         console.log("generateFeedback", JSON.stringify(diaryJson));
         const prompt = this.buildPrompt(diaryJson);
 
-        console.log("prompt", prompt);
+        console.log("prompt:", prompt);
         try {
             const response = await this.openAI.chat.completions.create({
                 model: "gpt-3.5-turbo", // または "gpt-4"
                 messages: [
-                    { role: "system", content: "あなたは業務日報のフィードバックを行うAIアシスタントです。" },
-                    { role: "user", content: prompt }
+                    { 
+                        role: "system", 
+                        content: "あなたは業務日報のフィードバックを行うAIアシスタントです。" 
+                    },
+                    { 
+                        role: "user", 
+                        content: prompt }
                 ],
-                max_tokens: 3000,
-                temperature: 0.7,
+                temperature: 0.5,
             });
             console.log(JSON.stringify(response));
 
