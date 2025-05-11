@@ -1,8 +1,4 @@
 // モジュール読み込み
-const AWS = require('aws-sdk');
-
-const { SlackURLConstants } = require('../constants/SlackURLConstants');
-const networkUtils = require('../utility/networkUtils');
 
 class DiaryService {
     constructor(diaryRepository, feedbackGenerator) {
