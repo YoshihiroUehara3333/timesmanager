@@ -15,28 +15,16 @@ class DynamoDiaryRepository {
                 partition_key: partitionKey
             }
         }).promise();
+        
         return result;
     }
 
     async putDiary (diaryModel) {
         const result = await this.dynamodb.put({
             TableName: process.env.DYNAMO_TABLE_NAME,
-            Item: {
-                partition_key: diaryModel.partitionKey,
-                date: diaryModel.date,
-                user_id: diaryModel.userId,
-                event_ts: diaryModel.eventTs,
-                content: {
-                    workingTime: diaryModel.content.workingTime,
-                    work: diaryModel.content.work,
-                    evaluation: diaryModel.content.evaluation,
-                    plan: diaryModel.content.plan,
-                    other: diaryModel.content.other,
-                },
-                slack_url: diaryModel.slackUrl,
-                edited_ts: diaryModel.editedTs
-            },
+            Item: diaryModel.toItem()
         }).promise();
+
         return result;
     }
     
