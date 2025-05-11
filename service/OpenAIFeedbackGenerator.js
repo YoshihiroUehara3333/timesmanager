@@ -1,0 +1,47 @@
+// モジュール読み込み
+const { OpenAI } = require("openai");
+const { DiaryUtils } = require("../utility/DiaryUtils.js");
+
+class OpenAIFeedbackGenerator {
+    constructor() {
+        this.openAI = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+            timeout: 180000 // ms指定
+        });
+    }
+
+    async generateFeedback(diaryJson) {
+        console.log("generateFeedback", JSON.stringify(diaryJson));
+        const prompt = buildPrompt(diaryJson);
+
+        console.log("prompt", prompt);
+        try {
+            const response = await this.openAI.chat.completions.create({
+                model: "gpt-3.5-turbo", // または "gpt-4"
+                messages: [
+                    { role: "system", content: "あなたは業務日報のフィードバックを行うAIアシスタントです。" },
+                    { role: "user", content: prompt }
+                ],
+                max_tokens: 3000,
+                temperature: 0.7,
+            });
+            console.log(JSON.stringify(response));
+
+            const feedback = response.choices[0].message.content.trim();
+            return `フィードバック:\n ${feedback}`
+        } catch (error) {
+            console.error("OpenAI APIエラー:", error);
+            return  "フィードバックの生成に失敗しました。"
+        }
+    }
+
+    static buildPrompt (diaryJson) {
+        return ""
+            + "* 以下は社員が書いた業務日報です。\n"
+            + "* 内容を読み、簡潔で建設的なフィードバックを生成してください。\n"
+            + "- "
+            + DiaryUtils.formatDiaryFromJson(diaryJson);
+    }
+}
+
+exports.OpenAIFeedbackGenerator = OpenAIFeedbackGenerator;
