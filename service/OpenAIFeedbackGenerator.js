@@ -1,6 +1,7 @@
 // モジュール読み込み
 const { OpenAI } = require("openai");
 const { DiaryUtils } = require("../utility/DiaryUtils.js");
+const { Prompts } = require("./prompts/Prompts");
 
 class OpenAIFeedbackGenerator {
     constructor() {
@@ -10,25 +11,14 @@ class OpenAIFeedbackGenerator {
         });
     }
 
-    getPrompt () {
-        return ""
-            + "* あなたは業務日報のフィードバックを行うAIアシスタントです。" 
-            + "* フィードバックは以下のフォーマットで書いてください。 \n"
-            + "  + 良い点\n"
-            + "  + 改善点\n"
-            + "  + 総括\n"
-            + "* 業務日報の内容を細かく読み、その内容について定性、定量的に評価し、建設的なフィードバックを生成してください。\n"
-            + "  - 評価は若干厳しめにお願いします。\n"
-    }
-
     async generateFeedback(diaryJson) {
         console.log("generateFeedback", JSON.stringify(diaryJson));
-        const prompt = this.getPrompt();
+        const prompt = Prompts.feedbackPrompt;
 
         console.log("prompt:", prompt);
         try {
             const response = await this.openAI.chat.completions.create({
-                model: "gpt-3.5-turbo", // 仕様モデル
+                model: "gpt-3.5-turbo", // 使用モデル
                 messages: [
                     { 
                         role: "system", 
