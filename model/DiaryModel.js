@@ -61,6 +61,14 @@ class DiaryModel {
         this._userId = userId;
     };
 
+    get channel() {
+        return this._channel;
+    };
+
+    set channel(channel) {
+        this._channel = channel;
+    };
+
     get slackUrl() {
         return this._slackUrl;
     };
