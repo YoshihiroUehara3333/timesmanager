@@ -13,7 +13,7 @@ class DiaryService {
 
 
     /*
-    **   フィードバックを生成する
+    **   thread_tsを基にフィードバックを生成する
     */
     async replyFeedback(thread_ts, channel){
         // DBから業務日誌情報を取得
@@ -76,7 +76,7 @@ class DiaryService {
                     slack_url: slackUrl
                 },
             });
-            
+
             return `日記(${date})のDB登録に成功しました。`;
 
         } catch (error) {

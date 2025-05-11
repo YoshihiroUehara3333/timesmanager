@@ -10,9 +10,17 @@ class OpenAIFeedbackGenerator {
         });
     }
 
+    buildPrompt (diaryJson) {
+        return ""
+            + "* 以下は社員が書いた業務日報です。\n"
+            + "* 内容を読み、簡潔で建設的なフィードバックを生成してください。\n"
+            + "- 明日に向けて行動するべき課題を提示してください。\n"
+            + DiaryUtils.formatDiaryFromJson(diaryJson);
+    }
+
     async generateFeedback(diaryJson) {
         console.log("generateFeedback", JSON.stringify(diaryJson));
-        const prompt = buildPrompt(diaryJson);
+        const prompt = this.buildPrompt(diaryJson);
 
         console.log("prompt", prompt);
         try {
@@ -33,14 +41,6 @@ class OpenAIFeedbackGenerator {
             console.error("OpenAI APIエラー:", error);
             return  "フィードバックの生成に失敗しました。"
         }
-    }
-
-    static buildPrompt (diaryJson) {
-        return ""
-            + "* 以下は社員が書いた業務日報です。\n"
-            + "* 内容を読み、簡潔で建設的なフィードバックを生成してください。\n"
-            + "- "
-            + DiaryUtils.formatDiaryFromJson(diaryJson);
     }
 }
 
