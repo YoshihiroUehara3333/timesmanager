@@ -1,5 +1,4 @@
 // モジュール読み込み
-require('date-utils');
 const { App, AwsLambdaReceiver } = require('@slack/bolt');
 const { subtype } = require('@slack/bolt');
 const { DynamoDiaryRepository } = require('./repository/DynamoDiaryRepository');
@@ -15,9 +14,9 @@ const diaryRepository = new DynamoDiaryRepository();
 const feedbackGenerator = new OpenAIFeedbackGenerator();
 const diaryService = new DiaryService(diaryRepository, feedbackGenerator);
 const slackService = new SlackService();
-const presenter = new SlackPresenter();
-const appMentionController = new AppMentionController(diaryService, slackService, presenter);
-const appCommandController = new AppCommandController();
+const slackPresenter = new SlackPresenter();
+const appMentionController = new AppMentionController(diaryService, slackService, slackPresenter);
+const appCommandController = new AppCommandController(slackPresenter);
 
 // アプリ初期化
 const awsLambdaReceiver = new AwsLambdaReceiver({
@@ -40,9 +39,9 @@ app.event('app_mention', async ({ ack, event, context, logger, client }) => {
     await appMentionController.handleAppMention(event, context, logger, client);
 });
 
-// /makethread検知
-app.command('/makethread', async ({ ack, event, context, logger, client }) => {
+// スラッシュコマンド検知
+app.command(/.*/, async ({ ack, command, context, logger, client }) => {
     await ack();
     logger.info('context出力' + JSON.stringify(context));
-    await appCommandController.handleAppCommand(event, context, logger, client);
+    await appCommandController.handleAppCommand(command, context, logger, client);
 });
