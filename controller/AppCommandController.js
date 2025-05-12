@@ -9,4 +9,4 @@ class AppCommandController {
     };
 };
 
-xports.AppCommandController = AppCommandController;
+exports.AppCommandController = AppCommandController;
