@@ -4,6 +4,7 @@ const { subtype } = require('@slack/bolt');
 const { DynamoDiaryRepository } = require('./repository/DynamoDiaryRepository');
 const { AppMentionController } = require('./controller/AppMentionController');
 const { AppCommandController } = require('./controller/AppCommandController');
+const { AppMessageController, AppMessageController } = require('./controller/AppMessageController');
 const { DiaryService } = require('./service/DiaryService');
 const { OpenAIFeedbackGenerator } = require('./service/OpenAIFeedbackGenerator');
 const { SlackService } = require('./service/SlackService');
@@ -17,6 +18,7 @@ const slackService = new SlackService();
 const slackPresenter = new SlackPresenter();
 const appMentionController = new AppMentionController(diaryService, slackService, slackPresenter);
 const appCommandController = new AppCommandController(slackPresenter);
+const appMessageController = new AppMessageController();
 
 // アプリ初期化
 const awsLambdaReceiver = new AwsLambdaReceiver({
@@ -44,4 +46,10 @@ app.command(/.*/, async ({ ack, command, context, logger, client }) => {
     await ack();
     logger.info('context出力' + JSON.stringify(context));
     await appCommandController.handleAppCommand(command, context, logger, client);
+});
+
+app.messaage(async ({ ack, message, context, logger, client }) => {
+    await ack();
+    logger.info('context出力' + JSON.stringify(context));
+    await appMessageController.handleAppCommand(command, context, logger, client);
 });
