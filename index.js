@@ -4,7 +4,7 @@ const { App, AwsLambdaReceiver } = require('@slack/bolt');
 const { subtype } = require('@slack/bolt');
 const { DynamoDiaryRepository } = require('./repository/DynamoDiaryRepository');
 const { AppMentionController } = require('./controller/AppMentionController');
-const { AppMentionController } = require('./controller/AppCommandController');
+const { AppCommandController } = require('./controller/AppCommandController');
 const { DiaryService } = require('./service/DiaryService');
 const { OpenAIFeedbackGenerator } = require('./service/OpenAIFeedbackGenerator');
 const { SlackService } = require('./service/SlackService');
@@ -34,14 +34,14 @@ exports.handler = async (event, context, callback) => {
 }
 
 // メンション検知
-app.event('app_mention', async ({ event, context, logger, client }) => {
+app.event('app_mention', async ({ ack, event, context, logger, client }) => {
     await ack();
     logger.info('context出力' + JSON.stringify(context));
     await appMentionController.handleAppMention(event, context, logger, client);
 });
 
-// スラッシュコマンド検知
-app.command(async (event, context, logger, client) => {
+// /makethread検知
+app.command('/makethread', async ({ ack, event, context, logger, client }) => {
     await ack();
     logger.info('context出力' + JSON.stringify(context));
     await appCommandController.handleAppCommand(event, context, logger, client);
