@@ -1,5 +1,5 @@
 // モジュール読み込み
-const networkUtils = require('../utility/NetworkUtils');
+const { networkUtils } = require('../utility/NetworkUtils.js');
 const { SlackURLConstants } = require('../constants/SlackURLConstants');
 
 class SlackService{
