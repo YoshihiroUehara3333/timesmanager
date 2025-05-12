@@ -18,23 +18,21 @@ class AppMentionController {
 
         // スレッド内返信の場合
         if(event.thread_ts){
-            await this.handleThreadMention(event, context, logger, client);
+            await this.handleThreadMention(event, logger, client);
 
         // スレッド以外の場合
         } else {
-            await this.handlePostMention(event, context, logger, client);
+            await this.handlePostMention(event, logger, client);
         }
         return;
     }
 
-    async handleThreadMention (event, context, logger, client) {
-        var msg;
-
+    async handleThreadMention (event, logger, client) {
         // AIにフィードバックを作ってもらう
         const thread_ts = event.thread_ts;
             
         logger.info("diaryService.replyFeedbackを実行");
-        msg = await this.diaryService.generateFeedback(thread_ts);
+        const msg = await this.diaryService.generateFeedback(thread_ts);
         logger.info("diaryService.replyFeedbackが終了；" + JSON.stringify(msg));
 
         // チャンネル情報を取得
@@ -48,7 +46,7 @@ class AppMentionController {
         }
     };
 
-    async handlePostMention (event, context, logger, client) {
+    async handlePostMention (event, logger, client) {
         var msg;
 
         // イベント情報から日誌情報を生成する

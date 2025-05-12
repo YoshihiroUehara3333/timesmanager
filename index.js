@@ -1,3 +1,12 @@
+// アプリ初期化
+const awsLambdaReceiver = new AwsLambdaReceiver({
+    signingSecret: process.env.SLACK_SIGNING_SECRET,
+});
+const app = new App({
+    token: process.env.SLACK_BOT_USER_ACCESS_TOKEN,
+    receiver: awsLambdaReceiver,
+});
+
 // モジュール読み込み
 const { App, AwsLambdaReceiver } = require('@slack/bolt');
 const { DynamoDiaryRepository } = require('./repository/DynamoDiaryRepository');
@@ -19,15 +28,6 @@ const appMentionController = new AppMentionController(diaryService, slackService
 const appCommandController = new AppCommandController(slackPresenter);
 const appMessageController = new AppMessageController();
 
-// アプリ初期化
-const awsLambdaReceiver = new AwsLambdaReceiver({
-    signingSecret: process.env.SLACK_SIGNING_SECRET,
-});
-const app = new App({
-    token: process.env.SLACK_BOT_USER_ACCESS_TOKEN,
-    receiver: awsLambdaReceiver,
-});
-
 // メンション検知
 app.event('app_mention', async ({ ack, event, context, logger, client }) => {
     await ack();
@@ -48,7 +48,8 @@ app.message(async ({ message, context, logger, client }) => {
     await appMessageController.handleAppMessage(message, context, logger, client);
 });
 
-exports.handler = async (event, context, callback) => {
-    const handler = awsLambdaReceiver.toHandler();
+// ハンドラー生成
+const handler = awsLambdaReceiver.toHandler();
+exports.handler = async (event, context, callback) => {    
     return await handler(event, context, callback);
-}
+};
