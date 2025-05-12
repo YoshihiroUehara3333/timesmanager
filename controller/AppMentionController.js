@@ -37,7 +37,6 @@ class AppMentionController {
 
         // チャンネル情報を取得
         const channel = event.channel;
-        const userId = event.user;
         try {
             await this.slackPresenter.sendThreadMessage(client, msg, channel, thread_ts);
             logger.info("フィードバックを返信しました");

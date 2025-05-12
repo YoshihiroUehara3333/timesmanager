@@ -1,12 +1,3 @@
-// アプリ初期化
-const awsLambdaReceiver = new AwsLambdaReceiver({
-    signingSecret: process.env.SLACK_SIGNING_SECRET,
-});
-const app = new App({
-    token: process.env.SLACK_BOT_USER_ACCESS_TOKEN,
-    receiver: awsLambdaReceiver,
-});
-
 // モジュール読み込み
 const { App, AwsLambdaReceiver } = require('@slack/bolt');
 const { DynamoDiaryRepository } = require('./repository/DynamoDiaryRepository');
@@ -27,6 +18,15 @@ const slackPresenter = new SlackPresenter();
 const appMentionController = new AppMentionController(diaryService, slackService, slackPresenter);
 const appCommandController = new AppCommandController(slackPresenter);
 const appMessageController = new AppMessageController();
+
+// アプリ初期化
+const awsLambdaReceiver = new AwsLambdaReceiver({
+    signingSecret: process.env.SLACK_SIGNING_SECRET,
+});
+const app = new App({
+    token: process.env.SLACK_BOT_USER_ACCESS_TOKEN,
+    receiver: awsLambdaReceiver,
+});
 
 // メンション検知
 app.event('app_mention', async ({ ack, event, context, logger, client }) => {
