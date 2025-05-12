@@ -44,4 +44,5 @@ app.event('app_mention', async ({ event, context, logger, client }) => {
 app.command(async (event, context, logger, client) => {
     await ack();
     logger.info('context出力' + JSON.stringify(context));
+    await appCommandController.handleAppCommand(event, context, logger, client);
 });
