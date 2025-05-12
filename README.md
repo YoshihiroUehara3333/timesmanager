@@ -1,5 +1,5 @@
 # timesmanager
-times日報管理用
+times日報管理用<br>
 AWS Lamda + Node.js + DynamoDB
 
 ## 機能
