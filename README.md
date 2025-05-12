@@ -8,7 +8,7 @@ AWS Lamda + Node.js + DynamoDB
 - 投稿のスレッド内でbotにメンション時、chatGPTによるフィードバックを生成しスレッドに返信する
 
 ##スラッシュコマンド
-* /makethread *<br>
+*/makethread*<br>
 
 #### 日報投稿フォーマット
 ````
