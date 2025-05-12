@@ -16,7 +16,7 @@ class AppCommandController {
 
         switch (commandName) {
             case '/makethread':
-                return this.handleMakethread(command, context, logger, client);
+                return await this.handleMakethread(command, context, logger, client);
             default:
                 break;
         }
