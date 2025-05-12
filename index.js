@@ -48,8 +48,7 @@ app.command(/.*/, async ({ ack, command, context, logger, client }) => {
     await appCommandController.handleAppCommand(command, context, logger, client);
 });
 
-app.message(async ({ ack, message, context, logger, client }) => {
-    await ack();
+app.message(async ({ message, context, logger, client }) => {
     logger.info('context出力' + JSON.stringify(context));
-    await appMessageController.handleAppCommand(command, context, logger, client);
+    await appMessageController.handleAppCommand(message, context, logger, client);
 });
