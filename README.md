@@ -1,5 +1,6 @@
 # timesmanager
 times日報管理用
+AWS Lamda + Node.js + DynamoDB
 
 ## 機能
 - チャンネル内でbotにメンションを付けて投稿された日報をDBに保存する
