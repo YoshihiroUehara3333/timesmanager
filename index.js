@@ -1,6 +1,5 @@
 // モジュール読み込み
 const { App, AwsLambdaReceiver } = require('@slack/bolt');
-const { subtype } = require('@slack/bolt');
 const { DynamoDiaryRepository } = require('./repository/DynamoDiaryRepository');
 const { AppMentionController } = require('./controller/AppMentionController');
 const { AppCommandController } = require('./controller/AppCommandController');
@@ -29,26 +28,27 @@ const app = new App({
     receiver: awsLambdaReceiver,
 });
 
-exports.handler = async (event, context, callback) => {
-    const handler = awsLambdaReceiver.toHandler();
-    return await handler(event, context, callback);
-}
-
 // メンション検知
 app.event('app_mention', async ({ ack, event, context, logger, client }) => {
     await ack();
-    logger.info('context出力' + JSON.stringify(context));
+    console.log('app_mention');
     await appMentionController.handleAppMention(event, context, logger, client);
 });
 
 // スラッシュコマンド検知
 app.command(/.*/, async ({ ack, command, context, logger, client }) => {
     await ack();
-    logger.info('context出力' + JSON.stringify(context));
+    console.log('app.command');
     await appCommandController.handleAppCommand(command, context, logger, client);
 });
 
+// メッセージ検知
 app.message(async ({ message, context, logger, client }) => {
-    logger.info('context出力' + JSON.stringify(context));
-    await appMessageController.handleAppCommand(message, context, logger, client);
+    console.log('app.message');
+    await appMessageController.handleAppMessage(message, context, logger, client);
 });
+
+exports.handler = async (event, context, callback) => {
+    const handler = awsLambdaReceiver.toHandler();
+    return await handler(event, context, callback);
+}

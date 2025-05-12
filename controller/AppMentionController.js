@@ -15,34 +15,46 @@ class AppMentionController {
     async handleAppMention (event , context, logger, client) {    
         if (context.retryNum) return; // リトライ以降のリクエストは弾く
         logger.info('受信イベント出力；' + JSON.stringify((event)));
+
+        // スレッド内返信の場合
+        if(event.thread_ts){
+            await this.handleThreadMention(event, context, logger, client);
+
+        // スレッド以外の場合
+        } else {
+            await this.handlePostMention(event, context, logger, client);
+        }
+        return;
+    }
+
+    async handleThreadMention (event, context, logger, client) {
         var msg;
+
+        // AIにフィードバックを作ってもらう
+        const thread_ts = event.thread_ts;
+            
+        logger.info("diaryService.replyFeedbackを実行");
+        msg = await this.diaryService.generateFeedback(thread_ts);
+        logger.info("diaryService.replyFeedbackが終了；" + JSON.stringify(msg));
 
         // チャンネル情報を取得
         const channel = event.channel;
         const userId = event.user;
+        try {
+            await this.slackPresenter.sendThreadMessage(client, msg, channel, thread_ts);
+            logger.info("フィードバックを返信しました");
+        } catch (error) {
+            logger.error("フィードバックの返信に失敗:", error);
+        }
+    };
 
-        // スレッド内返信の場合はAIにフィードバックを作ってもらう
-        if(event.thread_ts){
-            const thread_ts = event.thread_ts;
-            
-            logger.info("diaryService.replyFeedbackを実行");
-            msg = await this.diaryService.generateFeedback(thread_ts);
-            logger.info("diaryService.replyFeedbackが終了；" + JSON.stringify(msg));
-
-            try {
-                await this.slackPresenter.sendThreadMessage(client, msg, channel, thread_ts);
-                logger.info("フィードバックを返信しました");
-            } catch (error) {
-                logger.error("フィードバックの返信に失敗:", error);
-            }
-            return;
-        };
+    async handlePostMention (event, context, logger, client) {
+        var msg;
 
         // イベント情報から日誌情報を生成する
         const diaryModel = new DiaryModel(event);
-        if (diaryModel.date === '') {
-            return '日付が未入力です。'; // 日付未記入の場合
-        }
+        if (diaryModel.date === '') return;
+
         // 投稿のUrl取得
         diaryModel.slackUrl = await this.slackService.getPermalink(diaryModel);
 
@@ -59,14 +71,14 @@ class AppMentionController {
             logger.info("diaryService.updateDiaryが終了:" + JSON.stringify(msg));
         }
 
-        // 投稿者にDMで通知
+        // チャンネル情報を取得
+        const userId = event.user;
         try {
             await this.slackPresenter.sendDirectMessage(client, msg, userId);
             logger.info("DM送信成功");
         } catch (error) {
             console.error("DM送信時エラー:", error);
         }
-        return;
     }
 };
 
