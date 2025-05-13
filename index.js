@@ -1,7 +1,6 @@
 // モジュール読み込み
 const { App, AwsLambdaReceiver } = require('@slack/bolt');
 const { DynamoDiaryRepository } = require('./repository/DynamoDiaryRepository');
-const { AppMentionController } = require('./controller/AppMentionController');
 const { AppCommandController } = require('./controller/AppCommandController');
 const { AppMessageController } = require('./controller/AppMessageController');
 const { DiaryService } = require('./service/DiaryService');
@@ -15,7 +14,6 @@ const feedbackGenerator = new OpenAIFeedbackGenerator();
 const diaryService = new DiaryService(diaryRepository, feedbackGenerator);
 const slackService = new SlackService();
 const slackPresenter = new SlackPresenter();
-const appMentionController = new AppMentionController(diaryService, slackService, slackPresenter);
 const appCommandController = new AppCommandController(slackPresenter);
 const appMessageController = new AppMessageController(diaryService, slackPresenter);
 
@@ -29,17 +27,6 @@ const app = new App({
 });
 
 const handler = awsLambdaReceiver.toHandler();
-
-// メンション検知
-app.event('app_mention', async ({ event, context, logger, client }) => {
-    if(context.retryNum) return; // リトライ以降のリクエストは弾く
-    console.log(`
-        app_mention
-        context: ${JSON.stringify(context)}
-        event: ${JSON.stringify(event)}
-    `);
-    await appMentionController.handleAppMention(event, logger, client);
-});
 
 // スラッシュコマンド検知
 app.command(/.*/, async ({ command, context, logger, client }) => {
