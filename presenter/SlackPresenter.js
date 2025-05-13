@@ -1,6 +1,8 @@
 // Slackへのメッセージ送信を行うクラス
 //
 //
+// chat.postMessage
+// https://api.slack.com/methods/chat.postMessage
 
 class SlackPresenter {
     constructor () {
@@ -10,7 +12,8 @@ class SlackPresenter {
     async sendDirectMessage (client, msg, userId) {
         await client.chat.postMessage({
             channel: userId,
-            text: msg
+            text: msg,
+            mrkdwn: true
         });
     }
 
@@ -18,7 +21,8 @@ class SlackPresenter {
     async sendMessage (client, msg, channel) {
         await client.chat.postMessage({
             channel: channel,
-            text: msg
+            text: msg,
+            mrkdwn: true
         });
     }
 
@@ -27,7 +31,8 @@ class SlackPresenter {
         await client.chat.postMessage({
             channel: channel,
             text: msg,
-            thread_ts: threadTs
+            thread_ts: threadTs,
+            mrkdwn: true
         });
     }
 }

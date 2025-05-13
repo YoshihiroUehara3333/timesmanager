@@ -1,10 +1,12 @@
 // Httpリクエストを送信する。
 exports.sendHttpRequest = async(url, method, headers, bodyData) => {
-    console.log('sendHttpRequest');
-    console.log('url:' + url);
-    console.log('method:' + method);
-    console.log('headers:' + JSON.stringify(headers));
-    console.log('body:' + bodyData);
+    console.log(`
+        sendHttpRequest
+        url: ${url}
+        method: ${method}
+        headers: ${JSON.stringify(headers)}
+        bodyData: ${bodyData}
+    `);
     const https = require('https');
     const options = {
         method: method,
@@ -13,8 +15,10 @@ exports.sendHttpRequest = async(url, method, headers, bodyData) => {
     
     return new Promise((resolve, reject) => {
         let req = https.request(url, options, (res) => {
-            console.log('responseStatusCode:' + res.statusCode);
-            console.log('responseHeaders:' + JSON.stringify(res.headers));
+            console.log(`
+                responseStatusCode: ${res.statusCode}
+                responseHeaders: ${JSON.stringify(res.headers)}
+            `);
             res.setEncoding('utf8');
             let body = '';
             res.on('data', (chunk) => {
