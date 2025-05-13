@@ -43,9 +43,11 @@ class AppMessageController {
             }
 
         } else if (text.match(`<@${SlackConstants.ID.botUserId}>`)) {
+            // ボットメンション時 疑似スラッシュコマンド
+
             const channel = message.channel;
             const threadTs = message.thread_ts;
-            // ボットメンション時
+            
             // /AIフィードバック
             if (text.match(/\/AIフィードバック/)) {
                 try {

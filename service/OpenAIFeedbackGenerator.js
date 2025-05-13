@@ -18,7 +18,9 @@ class OpenAIFeedbackGenerator {
         console.log("prompt:", prompt);
         try {
             const response = await this.openAI.chat.completions.create({
-                model: "gpt-3.5-turbo", // 使用モデル
+                // OpenAIのモデル一覧
+                // https://platform.openai.com/docs/models
+                model: process.env.GPT_MODEL, 
                 messages: [
                     { 
                         role: "system", 
@@ -34,10 +36,10 @@ class OpenAIFeedbackGenerator {
             console.log(JSON.stringify(response));
 
             const feedback = response.choices[0].message.content.trim();
-            return `フィードバック:\n ${feedback}`
+            return `使用モデル: ${process.env.GPT_MODEL}\nフィードバック:\n ${feedback}`;
         } catch (error) {
             console.error("OpenAI APIエラー:", error);
-            return  "フィードバックの生成に失敗しました。"
+            return  "フィードバックの生成に失敗しました。";
         }
     }
 }
