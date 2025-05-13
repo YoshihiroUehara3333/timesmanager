@@ -1,9 +1,25 @@
 
 class DiaryModel {
-    constructor(event){
+    constructor() {
+        this._userId = '';
+        this._channel = '';
+        this._eventTs = '';
+        this._content = {
+            workingTime: '',
+            work: '',
+            evaluation: '',
+            plan: '',
+            other: ''
+        };
+        this._date = '';
+        this._clientMsgId = '';
+        this._editedTs = '';
+        this._slackUrl = '';
+    }
+    
+    static parseEvent(event) {
         this._userId = event.user;
         this._channel = event.channel;
-        this._slackUrl = '';
 
         if (event.edited) {
             this._editedTs = event.edited.ts;
@@ -16,53 +32,25 @@ class DiaryModel {
         }
         this._date = this.parseDate(event.text);
         this._content = this.parseContent(event.text);
-
-        this._partitionKey = this._userId + this._channel + this._date;
-    };
-
-    // event内のtextからcontentデータを抽出する
-    parseContent (text) {
-        const content = {
-            workingTime: '',
-            work: '',
-            evaluation: '',
-            plan: '',
-            other: ''
-        };
-
-        const workingTimeMatch = text.match(/\*【時間】\*([^\n]+)/);
-        const workMatch = text.match(/\*【業務内容】\*([\s\S]*?)\*【自己評価】\*/);
-        const evaluationMatch = text.match(/\*【自己評価】\*([\s\S]*?)\*【翌日の計画】\*/);
-        const planMatch = text.match(/\*【翌日の計画】\*([\s\S]*?)\*【その他】\*/);
-        const otherMatch = text.match(/\*【その他】\*([\s\S]*)/);
-
-        if (workingTimeMatch) content.workingTime = workingTimeMatch[1].trim();
-        if (workMatch) content.work = workMatch[1].trim();
-        if (evaluationMatch) content.evaluation = evaluationMatch[1].trim();
-        if (planMatch) content.plan = planMatch[1].trim();
-        if (otherMatch) content.other = otherMatch[1].trim();
-
-        return content;
-    };
-
-    // textから日付を抽出する
-    parseDate (text) {
-        const dateMatch = text.match(/\*【日付】\*([^\n]+)/);
-        if (dateMatch) {
-            return dateMatch[1].trim();
-        }
     };
 
     toItem () {
         return {
-            partition_key: this._partitionKey,
-                date: this._date,
-                user_id: this._userId,
-                event_ts: this._eventTs,
-                content: { ...this._content },
-                slack_url: this._slackUrl,
-                edited_ts: this._editedTs
+            partition_key: this.partitionKey,
+            date: this._date,
+            user_id: this._userId,
+            event_ts: this._eventTs,
+            content: { ...this._content },
+            slack_url: this._slackUrl,
+            edited_ts: this._editedTs,
+            client_msg_id: this._clientMsgId,
+            thread_ts: this._threadTs,
+            channel: this._channel
         }
+    };
+
+    get partitionKey() {
+        return this._userId + this._channel + this._date;;
     };
 
     get userId() {
@@ -87,14 +75,6 @@ class DiaryModel {
 
     set slackUrl(slackUrl) {
         this._slackUrl = slackUrl;
-    };
-
-    get partitionKey() {
-        return this._partitionKey;
-    };
-
-    set partitionKey(partitionKey) {
-        this._partitionKey = partitionKey;
     };
 
     get eventTs() {
@@ -136,6 +116,15 @@ class DiaryModel {
     set content(content){
         this._content = content;
     };
+
+    get clientMsgId () {
+        return this._clientMsgId;
+    };
+
+    set clientMsgId (clientMsgId) {
+        this._clientMsgId = clientMsgId;
+    };
 }
 
 exports.DiaryModel = DiaryModel;
+

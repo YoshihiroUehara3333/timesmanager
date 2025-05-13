@@ -25,9 +25,7 @@ class AppCommandController {
     async handleMakethread (command, context, logger, client) {
         const channel = command.channel_id;
         var date = new Date().toFormat("YYYY-MM-DD");
-
         const msg = `*【壁】${date}*`;
-
         this.slackPresenter.sendMessage(client, msg, channel);
     };
 };

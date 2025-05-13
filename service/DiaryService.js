@@ -1,4 +1,6 @@
 // モジュール読み込み
+const { DiaryUtils } = require('../utility/DiaryUtils');
+const { DiaryModel } = require('../model/DiaryModel');
 
 class DiaryService {
     constructor(diaryRepository, feedbackGenerator) {
@@ -29,8 +31,26 @@ class DiaryService {
     /*
     **   日記新規登録処理
     */
-    async newDiaryEntry (diaryModel) {
-        const date = diaryModel.date;
+    async newDiaryEntry (message, client) {
+        const text = message.text;
+        const date = DiaryUtils.parseDate(text);
+        const content = DiaryUtils.parseContent(text);
+
+        // 投稿URLを取得
+        var result = await client.chat.getPermalink({
+            channel: message.channel,
+            message_ts: message.ts
+        });
+
+        // diaryModelを作成
+        const diaryModel = new DiaryModel();
+        diaryModel.userId = message.user;
+        diaryModel.channel = message.channel;
+        diaryModel.date = date;
+        diaryModel.eventTs = message.ts;
+        diaryModel.content = content;
+        diaryModel.slackUrl = result.permalink;
+        diaryModel.clientMsgId = message.client_msg_id;
 
         // DB新規重複チェック
         try {
@@ -57,21 +77,31 @@ class DiaryService {
     /*
     **   日記編集処理
     */
-    async updateDiary (diaryModel) {
-        const editedTs = diaryModel.editedTs;
-        const date = diaryModel.date;
+    async updateDiary (message, client) {
+        const text = message.message.text;
+        const date = DiaryUtils.parseDate(text);
+        const content = DiaryUtils.parseContent(text);
+
+        // diaryModelを作成
+        const diaryModel = new DiaryModel();
+        diaryModel.userId = message.message.user;
+        diaryModel.channel = message.channel;
+        diaryModel.date = date;
+        diaryModel.eventTs = message.message.ts;
+        diaryModel.content = content;
+        diaryModel.clientMsgId = message.message.client_msg_id;
+        diaryModel.editedTs = message.message.edited.ts;
 
         // DB更新重複チェック
         try {
+            console.log(diaryModel.partitionKey);
             const result = await this.diaryRepository.getDiaryByPartitionKey(diaryModel.partitionKey);
-            if (result.Item.edited_ts != null && result.Item.edited_ts === editedTs) {
+            console.log(JSON.stringify(result));
+            if (result.Item.edited_ts && result.Item.edited_ts === diaryModel.editedTs) {
                 return `更新が重複しています。`;
             }
-
             // 更新元レコードからデータを取得する
             diaryModel.slackUrl = result.Item.slack_url;
-            diaryModel.eventTs = result.Item.event_ts;
-
         } catch (error) {
             console.error("DB更新重複チェック時エラー:", error);
             return `DBアクセスエラー(${error})`;

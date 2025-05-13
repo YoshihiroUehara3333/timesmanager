@@ -17,7 +17,7 @@ const slackService = new SlackService();
 const slackPresenter = new SlackPresenter();
 const appMentionController = new AppMentionController(diaryService, slackService, slackPresenter);
 const appCommandController = new AppCommandController(slackPresenter);
-const appMessageController = new AppMessageController();
+const appMessageController = new AppMessageController(diaryService, slackPresenter);
 
 // アプリ初期化
 const awsLambdaReceiver = new AwsLambdaReceiver({
@@ -28,28 +28,42 @@ const app = new App({
     receiver: awsLambdaReceiver,
 });
 
+const handler = awsLambdaReceiver.toHandler();
+
 // メンション検知
-app.event('app_mention', async ({ ack, event, context, logger, client }) => {
-    await ack();
-    console.log('app_mention');
-    await appMentionController.handleAppMention(event, context, logger, client);
+app.event('app_mention', async ({ event, context, logger, client }) => {
+    if(context.retryNum) return; // リトライ以降のリクエストは弾く
+    console.log(`
+        app_mention
+        context: ${JSON.stringify(context)}
+        event: ${JSON.stringify(event)}
+    `);
+    await appMentionController.handleAppMention(event, logger, client);
 });
 
 // スラッシュコマンド検知
-app.command(/.*/, async ({ ack, command, context, logger, client }) => {
-    await ack();
-    console.log('app.command');
-    await appCommandController.handleAppCommand(command, context, logger, client);
+app.command(/.*/, async ({ command, context, logger, client }) => {
+    if(context.retryNum) return; // リトライ以降のリクエストは弾く
+    console.log(`
+        app.command
+        context: ${JSON.stringify(context)}
+        command: ${JSON.stringify(command)}
+    `);
+    await appCommandController.handleAppCommand(command, logger, client);
 });
 
 // メッセージ検知
 app.message(async ({ message, context, logger, client }) => {
-    console.log('app.message');
-    await appMessageController.handleAppMessage(message, context, logger, client);
+    if(context.retryNum) return; // リトライ以降のリクエストは弾く
+    console.log(`
+        app.message
+        context: ${JSON.stringify(context)}
+        message: ${JSON.stringify(message)}
+    `);
+    await appMessageController.handleAppMessage(message, logger, client);
 });
 
 // ハンドラー生成
-const handler = awsLambdaReceiver.toHandler();
 exports.handler = async (event, context, callback) => {    
     return await handler(event, context, callback);
 };
