@@ -127,4 +127,3 @@ class DiaryModel {
 }
 
 exports.DiaryModel = DiaryModel;
-

@@ -11,11 +11,12 @@ class DiaryService {
     /*
     **   thread_tsを基にフィードバックを生成する
     */
-    async generateFeedback(thread_ts){
-        // DBから業務日誌情報を取得
+    async generateFeedback(message, client){
         var diaryModel;
+
+        // DBから業務日誌情報を取得
         try {
-            diaryModel = await this.diaryRepository.getDiaryByThreadTs(thread_ts);
+            diaryModel = await this.diaryRepository.getDiaryByThreadTs(message.thread_ts);
             if (!diaryModel) {
                 return "DBから日報を取得できませんでした。";
             }

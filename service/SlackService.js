@@ -3,7 +3,9 @@ const networkUtils = require('../utility/NetworkUtils.js');
 const { SlackConstants } = require('../constants/SlackConstants');
 
 class SlackService{
-    constructor(){};
+    constructor(){
+
+    };
 
     // Slack投稿のURL取得
     async getPermalink (diaryModel) {
