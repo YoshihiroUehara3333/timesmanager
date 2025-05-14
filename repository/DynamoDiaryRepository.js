@@ -1,28 +1,34 @@
-// Dynamo DBとのデータのやり取りを担当するクラス
+// Dynamo DBとの日記データのやり取りを担当するクラス
 
 // モジュール読み込み
 const AWS = require('aws-sdk');
+const { DBConstants } = require('../constants/DBConstants');
 
 class DynamoDiaryRepository {
     constructor () {
         this.dynamodb = new AWS.DynamoDB.DocumentClient();
     }
 
-    async getDiaryByPartitionKey (partitionKey) {
+    async getDiaryByPartitionKey (diaryModel) {
+        const key = {
+            partition_key: DBConstants.POST_CATEGORY.DIARY + diaryModel.partitionKeyBase,
+        };
+
         const result = await this.dynamodb.get({
             TableName: process.env.DYNAMO_TABLE_NAME,
-            Key: {
-                partition_key: partitionKey
-            }
+            Key: key,
         }).promise();
         
         return result;
     }
 
     async putDiary (diaryModel) {
+        const item = diaryModel.toItem();
+        item.partition_key = DBConstants.POST_CATEGORY.DIARY + diaryModel.partitionKeyBase;
+
         const result = await this.dynamodb.put({
             TableName: process.env.DYNAMO_TABLE_NAME,
-            Item: diaryModel.toItem()
+            Item: item,
         }).promise();
 
         return result;
