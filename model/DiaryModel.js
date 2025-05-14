@@ -1,3 +1,7 @@
+// 日記のデータ構造定義クラス
+
+// モジュール読み込み
+
 
 class DiaryModel {
     constructor() {
@@ -16,27 +20,9 @@ class DiaryModel {
         this._editedTs = '';
         this._slackUrl = '';
     }
-    
-    static parseEvent(event) {
-        this._userId = event.user;
-        this._channel = event.channel;
-
-        if (event.edited) {
-            this._editedTs = event.edited.ts;
-        } else if (event.event_ts) {
-            this._eventTs = event.event_ts;
-        } 
-        
-        if (event.thread_ts) {
-            this._threadTs = event.thread_ts;
-        }
-        this._date = this.parseDate(event.text);
-        this._content = this.parseContent(event.text);
-    };
 
     toItem () {
         return {
-            partition_key: this.partitionKey,
             date: this._date,
             user_id: this._userId,
             event_ts: this._eventTs,
@@ -49,7 +35,7 @@ class DiaryModel {
         }
     };
 
-    get partitionKey() {
+    get partitionKeyBase() {
         return this._userId + this._channel + this._date;;
     };
 

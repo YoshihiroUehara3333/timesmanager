@@ -25,7 +25,6 @@ class DiaryService {
             return `DBアクセスエラー(${error})`;
         };
         
-        console.log(JSON.stringify(diaryModel));
         return this.feedbackGenerator.generateFeedback(diaryModel);
     };
 
@@ -55,7 +54,7 @@ class DiaryService {
 
         // DB新規重複チェック
         try {
-            const result = await this.diaryRepository.getDiaryByPartitionKey(diaryModel.partitionKey);
+            const result = await this.diaryRepository.getDiaryByPartitionKey(diaryModel);
             if (result.Item) {
                 return `日付が重複しています。(${date})`;
             }
@@ -96,7 +95,7 @@ class DiaryService {
         // DB更新重複チェック
         try {
             console.log(diaryModel.partitionKey);
-            const result = await this.diaryRepository.getDiaryByPartitionKey(diaryModel.partitionKey);
+            const result = await this.diaryRepository.getDiaryByPartitionKey(diaryModel);
             console.log(JSON.stringify(result));
             if (result.Item.edited_ts && result.Item.edited_ts === diaryModel.editedTs) {
                 return `更新が重複しています。`;

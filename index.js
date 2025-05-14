@@ -1,21 +1,28 @@
 // モジュール読み込み
 const { App, AwsLambdaReceiver } = require('@slack/bolt');
 const { DynamoDiaryRepository } = require('./repository/DynamoDiaryRepository');
+const { DynamoTwitterRepository } = require('./repository/DynamoTwitterRepository');
 const { AppCommandController } = require('./controller/AppCommandController');
 const { AppMessageController } = require('./controller/AppMessageController');
 const { DiaryService } = require('./service/DiaryService');
+const { TwitterService } = require('./service/TwitterService');
 const { OpenAIFeedbackGenerator } = require('./service/OpenAIFeedbackGenerator');
 const { SlackService } = require('./service/SlackService');
 const { SlackPresenter } = require('./presenter/SlackPresenter');
 
 // DI
 const diaryRepository = new DynamoDiaryRepository();
+const twitterRepository = new DynamoTwitterRepository();
+
 const feedbackGenerator = new OpenAIFeedbackGenerator();
 const diaryService = new DiaryService(diaryRepository, feedbackGenerator);
 const slackService = new SlackService();
+const twitterService = new TwitterService(twitterRepository);
+
 const slackPresenter = new SlackPresenter();
 const appCommandController = new AppCommandController(slackPresenter);
-const appMessageController = new AppMessageController(diaryService, slackPresenter);
+const appMessageController = new AppMessageController(diaryService, twitterService, slackPresenter);
+
 
 // アプリ初期化
 const awsLambdaReceiver = new AwsLambdaReceiver({
@@ -32,9 +39,9 @@ const handler = awsLambdaReceiver.toHandler();
 app.command(/.*/, async ({ command, context, logger, client }) => {
     if(context.retryNum) return; // リトライ以降のリクエストは弾く
     console.log(`
-        app.command
-        context: ${JSON.stringify(context)}
-        command: ${JSON.stringify(command)}
+    app.command \n
+    context: ${JSON.stringify(context)} \n
+    command: ${JSON.stringify(command)} \n
     `);
     await appCommandController.handleAppCommand(command, logger, client);
 });
@@ -43,9 +50,9 @@ app.command(/.*/, async ({ command, context, logger, client }) => {
 app.message(async ({ message, context, logger, client }) => {
     if(context.retryNum) return; // リトライ以降のリクエストは弾く
     console.log(`
-        app.message
-        context: ${JSON.stringify(context)}
-        message: ${JSON.stringify(message)}
+    app.message \n
+    context: ${JSON.stringify(context)} \n
+    message: ${JSON.stringify(message)} \n
     `);
     await appMessageController.handleAppMessage(message, logger, client);
 });
