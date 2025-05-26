@@ -43,16 +43,15 @@ AIによるフィードバックを生成し、スレッド内に返信する。
 ````
 /timesmanager
 ├── app/
-│   ├── index.js ← Lambdaのエントリポイント
-│   ├── service/       
-│   │   ├── dynamoService.js        ← DynamoDBからのデータ取得
+│   ├── index.js      ← Lambdaのエントリポイント
+│   ├── constants/ 
+│   ├── controller/
+│   ├── modals/
+│   ├── model/
+│   ├── presenter/
+│   ├── repository/
 │   ├── service/
-│   ├── service/
-│   ├── service/
-│   ├── service/
-│   └──
-├── 
-├── 
-├── 
+│   └── utility/
+├── .github
 └── READNE.md
 ````
