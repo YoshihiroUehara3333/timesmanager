@@ -28,7 +28,7 @@ class AppCommandController {
         const { channel_id, user_id } = command;
 
         const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-        const msg = `<@${user_id}>/n*【壁】*${date}`;
+        const msg = `<@${user_id}>\n*【壁】*${date}`;
 
         // 壁投稿（メインメッセージ）
         const result = await client.chat.postMessage({
