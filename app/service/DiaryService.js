@@ -37,20 +37,13 @@ class DiaryService {
         const content = DiaryUtils.parseContent(text);
 
         // 投稿URLを取得
-        var result = await client.chat.getPermalink({
+        let result = await client.chat.getPermalink({
             channel: message.channel,
             message_ts: message.ts
         });
 
         // diaryModelを作成
-        const diaryModel = new DiaryModel();
-        diaryModel.userId = message.user;
-        diaryModel.channel = message.channel;
-        diaryModel.date = date;
-        diaryModel.eventTs = message.ts;
-        diaryModel.content = content;
-        diaryModel.slackUrl = result.permalink;
-        diaryModel.clientMsgId = message.client_msg_id;
+        const diaryModel = this.createDiaryModel (message, date, content, result.permalink)
 
         // DB新規重複チェック
         try {
@@ -81,16 +74,7 @@ class DiaryService {
         const text = message.message.text;
         const date = DiaryUtils.parseDate(text);
         const content = DiaryUtils.parseContent(text);
-
-        // diaryModelを作成
-        const diaryModel = new DiaryModel();
-        diaryModel.userId = message.message.user;
-        diaryModel.channel = message.channel;
-        diaryModel.date = date;
-        diaryModel.eventTs = message.message.ts;
-        diaryModel.content = content;
-        diaryModel.clientMsgId = message.message.client_msg_id;
-        diaryModel.editedTs = message.message.edited.ts;
+        const diaryModel = this.createDiaryModel(message.message, date, content, null);
 
         // DB更新重複チェック
         try {
@@ -117,6 +101,19 @@ class DiaryService {
             return `日記(${date})のDB更新に失敗しました。`;
         }
     };
+
+    // DiaryModel生成
+    createDiaryModel (message, date, content, permalink) {
+        const diaryModel = new DiaryModel();
+        diaryModel.userId = message.user;
+        diaryModel.channel = message.channel;
+        diaryModel.date = date;
+        diaryModel.eventTs = message.ts;
+        diaryModel.content = content;
+        diaryModel.slackUrl = permalink;
+        diaryModel.clientMsgId = message.client_msg_id;
+        return diaryModel;
+    }
 }
 
 exports.DiaryService = DiaryService;

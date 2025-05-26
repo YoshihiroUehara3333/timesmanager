@@ -2,7 +2,7 @@
 
 //モジュール読み込み
 require('date-utils');
-const { threadModal } = require('../modals/threadModal');
+const { ThreadModal } = require('../modals/ThreadModal');
 
 class AppCommandController {
     constructor(slackPresenter){
@@ -25,21 +25,19 @@ class AppCommandController {
 
     // /makethread実行時
     async handleMakethread (command, logger, client) {
-        const channel = command.channel_id;
-        const userId = command.user_id;
+        const { channel_id, user_id } = command;
 
-        console.log(channel);
         const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-        const msg = `【壁】${date}`;
+        const msg = `<@${user_id}>/n*【壁】*${date}`;
 
         // 壁投稿（メインメッセージ）
         const result = await client.chat.postMessage({
-            channel: command.channel_id,
+            channel: channel_id,
             text: msg
         });
 
         // blocks設定
-        const view = threadModal(command.channel_id, result.ts, date);
+        const view = ThreadModal(command.channel_id, result.ts, date);
 
         // モーダルを開く
         await client.views.open({

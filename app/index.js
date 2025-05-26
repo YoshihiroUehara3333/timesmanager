@@ -60,13 +60,14 @@ app.message(async ({ message, context, logger, client }) => {
     await appMessageController.handleAppMessage(message, logger, client);
 });
 
-app.view('makethread_modal', async ({ body, view, client }) => {
+// モーダル押下時
+app.view(async ({ body, view, client }) => {
     console.log(`
     app.view \n
     body: ${JSON.stringify(body)} \n
     view: ${JSON.stringify(view)} \n
     `);
-    await appViewController.handleMakeThreadModal(body, view, client);
+    await appViewController.handleModalCallback(body, view, client);
 });
 
 // ハンドラー生成

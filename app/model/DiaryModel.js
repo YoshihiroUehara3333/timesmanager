@@ -1,8 +1,6 @@
 // 日記のデータ構造定義クラス
 
 // モジュール読み込み
-
-
 class DiaryModel {
     constructor() {
         this._userId = '';
