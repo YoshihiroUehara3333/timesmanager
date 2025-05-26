@@ -23,6 +23,7 @@ class AppCommandController {
         }
     };
 
+    // /makethread実行時
     async handleMakethread (command, logger, client) {
         const channel = command.channel_id;
         const userId = command.user_id;

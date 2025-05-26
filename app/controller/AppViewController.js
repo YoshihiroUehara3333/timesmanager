@@ -1,6 +1,7 @@
 class AppViewController {
     constructor () {};
 
+    // /makethreadモーダル送信時の処理
     async handleMakeThreadModal(body, view, client) {
         const userId = body.user.id;
         const metadata = JSON.parse(view.private_metadata);
