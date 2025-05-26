@@ -48,7 +48,9 @@ AIによるフィードバックを生成し、スレッド内に返信する。
 │   ├── openaiService.js        ← OpenAIとの通信
 │   └── slackService.js         ← Slack投稿処理
 ├── utils/
-│   └── dateUtils.js            ← 週次の日時範囲取得など
-├── models/
+│   └── 
+├── 
+├── 
+├── 
 └──
 ````
