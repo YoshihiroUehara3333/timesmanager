@@ -42,15 +42,17 @@ AIによるフィードバックを生成し、スレッド内に返信する。
 ## ディレクトリ構成
 ````
 /timesmanager
-├── index.js                  ← Lambdaのエントリポイント
-├── service/
-│   ├── dynamoService.js        ← DynamoDBからのデータ取得
-│   ├── openaiService.js        ← OpenAIとの通信
-│   └── slackService.js         ← Slack投稿処理
-├── utils/
-│   └── 
+├── app/
+│   ├── index.js ← Lambdaのエントリポイント
+│   ├── service/       
+│   │   ├── dynamoService.js        ← DynamoDBからのデータ取得
+│   ├── service/
+│   ├── service/
+│   ├── service/
+│   ├── service/
+│   └──
 ├── 
 ├── 
 ├── 
-└──
+└── READNE.md
 ````
