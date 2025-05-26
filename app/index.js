@@ -8,7 +8,6 @@ const { AppViewController } = require('./controller/AppViewController');
 const { DiaryService } = require('./service/DiaryService');
 const { TwitterService } = require('./service/TwitterService');
 const { OpenAIFeedbackGenerator } = require('./service/OpenAIFeedbackGenerator');
-const { SlackService } = require('./service/SlackService');
 const { SlackPresenter } = require('./presenter/SlackPresenter');
 
 // DI
@@ -17,7 +16,6 @@ const twitterRepository = new DynamoTwitterRepository();
 
 const feedbackGenerator = new OpenAIFeedbackGenerator();
 const diaryService = new DiaryService(diaryRepository, feedbackGenerator);
-const slackService = new SlackService();
 const twitterService = new TwitterService(twitterRepository);
 
 const slackPresenter = new SlackPresenter();
