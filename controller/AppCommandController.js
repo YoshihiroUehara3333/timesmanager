@@ -12,6 +12,7 @@ class AppCommandController {
         logger.info('受信コマンド出力；' + JSON.stringify((command)));
 
         const commandName = command.command;
+        console.log(commandName);
 
         switch (commandName) {
             case '/makethread':
@@ -23,8 +24,11 @@ class AppCommandController {
 
     async handleMakethread (command, logger, client) {
         const channel = command.channel_id;
+        const userId = command.user_id;
+
+        console.log(channel);
         var date = new Date().toFormat("YYYY-MM-DD");
-        const msg = `*【壁】${date}*`;
+        const msg = `<@${userId}>\n*【壁】${date}*`;
         this.slackPresenter.sendMessage(client, msg, channel);
     };
 };

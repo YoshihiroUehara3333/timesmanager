@@ -16,6 +16,7 @@ class OpenAIFeedbackGenerator {
         const prompt = Prompts.feedbackPrompt;
 
         console.log("prompt:", prompt);
+        console.log(`model:${process.env.GPT_MODEL}`);
         try {
             const response = await this.openAI.chat.completions.create({
                 // OpenAIのモデル一覧
