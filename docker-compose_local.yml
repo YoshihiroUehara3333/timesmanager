@@ -1,10 +1,13 @@
-version: '3'
+version: '3.8'
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    volumes:
-      - .:/app
     env_file:
       - .env.dev
+    volumes:
+      - .:/app
+    command: ["node", "app/index_local.js"]
