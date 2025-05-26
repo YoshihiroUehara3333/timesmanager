@@ -61,22 +61,28 @@ app.message(async ({ message, context, logger, client }) => {
 });
 
 app.view('makethread_modal', async ({ body, view, client }) => {
-  const userId = body.user.id;
-  const metadata = JSON.parse(view.private_metadata);
-  const { channel_id, thread_ts, date } = metadata;
+    console.log(`
+        app.view \n
+        body: ${JSON.stringify(body)} \n
+        view: ${JSON.stringify(view)} \n
+        `);
 
-  const title = view.state.values.title_block.title_input.value;
-  const content = view.state.values.content_block.content_input.value;
+    const userId = body.user.id;
+    const metadata = JSON.parse(view.private_metadata);
+    const { channel_id, thread_ts, date } = metadata;
 
-  // スレッドへの返信
-  await client.chat.postMessage({
-    channel: channel_id,
-    thread_ts: thread_ts,
-    text: `📝 <@${userId}> さんの作業予定\n*タイトル:* ${title}\n*内容:* ${content}`
-  });
+    const title = view.state.values.title_block.title_input.value;
+    const content = view.state.values.content_block.content_input.value;
 
-  // 必要であればDBに保存（例: DynamoDB）
-  // await dynamo.put({ ... });
+    // スレッドへの返信
+    await client.chat.postMessage({
+        channel: channel_id,
+        thread_ts: thread_ts,
+        text: `📝 <@${userId}> さんの作業予定\n*タイトル:* ${title}\n*内容:* ${content}`
+    });
+
+    // 必要であればDBに保存（例: DynamoDB）
+    // await dynamo.put({ ... });
 });
 
 // ハンドラー生成
