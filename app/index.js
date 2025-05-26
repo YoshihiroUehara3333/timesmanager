@@ -37,13 +37,17 @@ const app = new App({
 const handler = awsLambdaReceiver.toHandler();
 
 // スラッシュコマンド検知
-app.command(/.*/, async ({ command, context, logger, client }) => {
-    if(context.retryNum) return; // リトライ以降のリクエストは弾く
+app.command(/.*/, async ({ ack, command, context, logger, client }) => {
+    if(context.retryNum) {
+        await ack();
+        return; // リトライ以降のリクエストは弾く
+    }
     console.log(`
     app.command \n
     context: ${JSON.stringify(context)} \n
     command: ${JSON.stringify(command)} \n
     `);
+    await ack();
     await appCommandController.handleAppCommand(command, logger, client);
 });
 
@@ -59,7 +63,7 @@ app.message(async ({ message, context, logger, client }) => {
 });
 
 // モーダル押下時
-app.view(async ({ body, view, client }) => {
+app.view(async ({ ack, body, view, client }) => {
     console.log(`
     app.view \n
     body: ${JSON.stringify(body)} \n
