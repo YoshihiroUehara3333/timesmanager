@@ -25,6 +25,18 @@ const appCommandController = new AppCommandController(slackPresenter);
 const appMessageController = new AppMessageController(diaryService, twitterService, slackPresenter);
 const appViewController = new AppViewController();
 
+const parseBody = async (req) => {
+    const chunks = [];
+    for await (const chunk of req) {
+        chunks.push(chunk);
+    }
+    const bodyString = Buffer.concat(chunks).toString();
+    try {
+        return JSON.parse(bodyString);
+    } catch {
+        return null;
+    }
+};
 
 // アプリ初期化
 const awsLambdaReceiver = new AwsLambdaReceiver({
@@ -34,6 +46,22 @@ const awsLambdaReceiver = new AwsLambdaReceiver({
 const app = new App({
     token: process.env.SLACK_BOT_USER_ACCESS_TOKEN,
     receiver: awsLambdaReceiver,
+    customRoutes: [
+        {
+            path: '/slack/events', // Slackが送ってくるURLと一致させる
+            method: ['POST'],
+            handler: async (req, res) => {
+                const body = await parseBody(req);
+                if (body && body.challenge) {
+                res.writeHead(200, { 'Content-Type': 'text/plain' });
+                res.end(body.challenge);
+                } else {
+                res.writeHead(404);
+                res.end();
+                }
+            }
+        }
+    ]
 });
 
 const handler = awsLambdaReceiver.toHandler();
@@ -65,7 +93,7 @@ app.view('makethread_modal', async ({ body, view, client }) => {
         app.view \n
         body: ${JSON.stringify(body)} \n
         view: ${JSON.stringify(view)} \n
-        `);
+    `);
 
     const userId = body.user.id;
     const metadata = JSON.parse(view.private_metadata);
