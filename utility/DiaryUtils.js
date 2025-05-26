@@ -1,3 +1,6 @@
+const { RegexConst } = require('../constants/RegexConst');
+
+
 class DiaryUtils {
     // JSONデータから日記フォーマットに変換してreturnする
     static formatDiaryFromJson(diaryJson) {
@@ -24,11 +27,11 @@ class DiaryUtils {
             other: ''
         };
 
-        const workingTimeMatch = text.match(/\*【時間】\*([^\n]+)/);
-        const workMatch = text.match(/\*【業務内容】\*([\s\S]*?)\*【自己評価】\*/);
-        const evaluationMatch = text.match(/\*【自己評価】\*([\s\S]*?)\*【翌日の計画】\*/);
-        const planMatch = text.match(/\*【翌日の計画】\*([\s\S]*?)\*【その他】\*/);
-        const otherMatch = text.match(/\*【その他】\*([\s\S]*)/);
+        const workingTimeMatch = text.match(RegexConst.WORKINGTIME);
+        const workMatch = text.match(RegexConst.WORK);
+        const evaluationMatch = text.match(RegexConst.EVALUATION);
+        const planMatch = text.match(RegexConst.PLAN);
+        const otherMatch = text.match(RegexConst.OTHER);
 
         if (workingTimeMatch) content.workingTime = workingTimeMatch[1].trim();
         if (workMatch) content.work = workMatch[1].trim();
@@ -42,7 +45,7 @@ class DiaryUtils {
     // Slack側から送信されたtextから日付を抽出してreturnする
     // 未入力の場合は空文字をreturn
     static parseDate (text) {
-        const dateMatch = text.match(/\*【日記】\*([^\n]+)/);
+        const dateMatch = text.match(RegexConst.DATE);
         if (dateMatch) {
             return dateMatch[1].trim();
         } else {
