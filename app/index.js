@@ -9,6 +9,7 @@ const { DiaryService } = require('./service/DiaryService');
 const { TwitterService } = require('./service/TwitterService');
 const { OpenAIFeedbackGenerator } = require('./service/OpenAIFeedbackGenerator');
 const { SlackPresenter } = require('./presenter/SlackPresenter');
+const { ModalConst } = require('../constants/ModalConst');
 
 // DI
 const diaryRepository = new DynamoDiaryRepository();
@@ -63,7 +64,7 @@ app.message(async ({ message, context, logger, client }) => {
 });
 
 // モーダル押下時
-app.view(async ({ ack, body, view, client }) => {
+app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, client }) => {
     console.log(`
     app.view \n
     body: ${JSON.stringify(body)} \n
