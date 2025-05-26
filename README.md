@@ -38,7 +38,8 @@ AIによるフィードバックを生成し、スレッド内に返信する。
 ## スラッシュコマンド
 */makethread*<br>
 <br>
-
+<br>
+## ディレクトリ構成
 ````
 /timesmanager
 ├── index.js                  ← Lambdaのエントリポイント
