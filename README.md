@@ -44,7 +44,11 @@ AIによるフィードバックを生成し、スレッド内に返信する。
 /timesmanager
 ├── app/
 │   ├── index.js      ← Lambdaのエントリポイント
-│   ├── constants/ 
+│   ├── constants/
+│   │   ├── DBConstants.js
+│   │   ├── ModalConst.js
+│   │   ├── RegexConst.js
+│   │   └── SlackConstants.js
 │   ├── controller/
 │   ├── modals/
 │   ├── model/
