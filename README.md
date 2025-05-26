@@ -44,14 +44,27 @@ AIによるフィードバックを生成し、スレッド内に返信する。
 /timesmanager
 ├── app/
 │   ├── index.js      ← Lambdaのエントリポイント
-│   ├── constants/ 
+│   ├── constants/
+│   │   ├── DBConstants.js
+│   │   ├── ModalConst.js
+│   │   ├── RegexConst.js
+│   │   └── SlackConstants.js
 │   ├── controller/
+│   │   ├── .js
 │   ├── modals/
+│   │   ├── .js
 │   ├── model/
+│   │   ├── .js
 │   ├── presenter/
+│   │   ├── .js
 │   ├── repository/
+│   │   ├── .js
 │   ├── service/
+│   │   ├── .js
 │   └── utility/
+│       ├── .js
 ├── .github
-└── READNE.md
+├── Dockerfile
+├── docker-compose_local.yml
+└── README.md
 ````
