@@ -4,7 +4,7 @@ class AppViewController {
     constructor () {};
 
     async handleModalCallback(body, view, client) {
-        const callbackId = JSON.parse(view.callback_id);
+        const callbackId = view.callback_id;
         
         switch (callbackId) {
             case ModalConst.CALLBACK_ID.MAKETHREAD:
