@@ -2,7 +2,7 @@
 
 // モジュール読み込み
 const AWS = require('aws-sdk');
-const { DBConstants } = require('../constants/DBConstants');
+const { DBConst } = require('../constants/DBConstants');
 
 class DynamoDiaryRepository {
     constructor () {
@@ -11,7 +11,7 @@ class DynamoDiaryRepository {
 
     async getDiaryByPartitionKey (diaryModel) {
         const key = {
-            partition_key: DBConstants.POST_CATEGORY.DIARY + diaryModel.partitionKeyBase,
+            partition_key: DBConst.POST_CATEGORY.DIARY + diaryModel.partitionKeyBase,
         };
 
         const result = await this.dynamodb.get({
@@ -24,7 +24,7 @@ class DynamoDiaryRepository {
 
     async putDiary (diaryModel) {
         const item = diaryModel.toItem();
-        item.partition_key = DBConstants.POST_CATEGORY.DIARY + diaryModel.partitionKeyBase;
+        item.partition_key = DBConst.POST_CATEGORY.DIARY + diaryModel.partitionKeyBase;
 
         const result = await this.dynamodb.put({
             TableName: process.env.DYNAMO_TABLE_NAME,
@@ -37,10 +37,10 @@ class DynamoDiaryRepository {
     async getDiaryByThreadTs(thread_ts) {
         const result = await this.dynamodb.query({
             TableName: process.env.DYNAMO_TABLE_NAME,
-            IndexName: 'event_ts-index', // 作成したGSI名
+            IndexName: DBConst.GSI_NAME.EVENT_TS, // 作成したGSI名
             KeyConditionExpression: '#indexKey = :indexValue', // 条件を指定
             ExpressionAttributeNames : {
-                "#indexKey"  : 'event_ts' // GSIパーティションキー名を設定
+                "#indexKey"  : DBConst.GSI_PARTITION.EVENT_TS // GSIパーティションキー名を設定
               },
               ExpressionAttributeValues: {
                 ':indexValue': thread_ts // 検索する値
