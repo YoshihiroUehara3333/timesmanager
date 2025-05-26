@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@slack/bolt": "^4.2.1",
+    "aws-sdk": "^2.1692.0",
+    "date-utils": "^1.2.21",
+    "openai": "^4.97.0"
+  }
+}
