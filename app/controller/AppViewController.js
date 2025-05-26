@@ -1,5 +1,18 @@
+const { ModalConst } = require('../constants/ModalConst');
+
 class AppViewController {
     constructor () {};
+
+    async handleModalCallback(body, view, client) {
+        const callbackId = JSON.parse(view.callback_id);
+        
+        switch (callbackId) {
+            case ModalConst.CALLBACK_ID.MAKETHREAD:
+                return await this.handleMakethread(command, logger, client);
+        }
+
+        await this.handleMakeThreadModal(body, view, client);
+    }
 
     // /makethreadモーダル送信時の処理
     async handleMakeThreadModal(body, view, client) {

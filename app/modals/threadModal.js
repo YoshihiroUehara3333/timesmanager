@@ -1,6 +1,8 @@
-exports.threadModal = (channel_id, thread_ts, date) => ({
+const { ModalConst } = require('../constants/ModalConst');
+
+exports.ThreadModal = (channel_id, thread_ts, date) => ({
     type: 'modal',
-    callback_id: 'makethread_modal',
+    callback_id: ModalConst.CALLBACK_ID.MAKETHREAD,
     private_metadata: JSON.stringify({
         channel_id: channel_id,
         thread_ts: thread_ts,
