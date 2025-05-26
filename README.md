@@ -25,3 +25,32 @@ times投稿を管理したい
 【その他】
 その他の内容
 ````
+
+<br>
+
+## 疑似スラッシュコマンド
+botメンション+下記の疑似スラッシュコマンドをポストすると使える機能<br><br>
+*/AIフィードバック*<br>
+投稿した日報に対してスレッド返信で使用する。<br>
+AIによるフィードバックを生成し、スレッド内に返信する。<br>
+<br>
+
+## スラッシュコマンド
+*/makethread*<br>
+<br>
+<br>
+## ディレクトリ構成
+````
+/timesmanager
+├── index.js                  ← Lambdaのエントリポイント
+├── service/
+│   ├── dynamoService.js        ← DynamoDBからのデータ取得
+│   ├── openaiService.js        ← OpenAIとの通信
+│   └── slackService.js         ← Slack投稿処理
+├── utils/
+│   └── 
+├── 
+├── 
+├── 
+└──
+````
