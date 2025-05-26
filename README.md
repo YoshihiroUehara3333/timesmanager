@@ -64,6 +64,8 @@ AIによるフィードバックを生成し、スレッド内に返信する。
 │   └── utility/
 │       ├── .js
 ├── .github
+├── package.json
+├── package-lock.json
 ├── Dockerfile
 ├── docker-compose_local.yml
 └── README.md
