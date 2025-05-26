@@ -39,7 +39,7 @@ AIによるフィードバックを生成し、スレッド内に返信する。
 */makethread*<br>
 <br>
 
-
+````
 /timesmanager
 ├── index.js                  ← Lambdaのエントリポイント
 ├── service/
@@ -48,5 +48,6 @@ AIによるフィードバックを生成し、スレッド内に返信する。
 │   └── slackService.js         ← Slack投稿処理
 ├── utils/
 │   └── dateUtils.js            ← 週次の日時範囲取得など
-├── package.json
-└── .env                        ← APIキー類
+├── models/
+└──
+````
