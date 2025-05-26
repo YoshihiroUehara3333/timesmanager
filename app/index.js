@@ -29,6 +29,7 @@ const appViewController = new AppViewController();
 // アプリ初期化
 const awsLambdaReceiver = new AwsLambdaReceiver({
     signingSecret: process.env.SLACK_SIGNING_SECRET,
+    processBeforeResponse: true,
 });
 const app = new App({
     token: process.env.SLACK_BOT_USER_ACCESS_TOKEN,
@@ -57,6 +58,25 @@ app.message(async ({ message, context, logger, client }) => {
     message: ${JSON.stringify(message)} \n
     `);
     await appMessageController.handleAppMessage(message, logger, client);
+});
+
+app.view('makethread_modal', async ({ body, view, client }) => {
+  const userId = body.user.id;
+  const metadata = JSON.parse(view.private_metadata);
+  const { channel_id, thread_ts, date } = metadata;
+
+  const title = view.state.values.title_block.title_input.value;
+  const content = view.state.values.content_block.content_input.value;
+
+  // スレッドへの返信
+  await client.chat.postMessage({
+    channel: channel_id,
+    thread_ts: thread_ts,
+    text: `📝 <@${userId}> さんの作業予定\n*タイトル:* ${title}\n*内容:* ${content}`
+  });
+
+  // 必要であればDBに保存（例: DynamoDB）
+  // await dynamo.put({ ... });
 });
 
 // ハンドラー生成

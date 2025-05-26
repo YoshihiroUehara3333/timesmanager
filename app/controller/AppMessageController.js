@@ -2,6 +2,7 @@
 
 // モジュール読み込み
 const { SlackConstants } = require('../constants/SlackConstants');
+const { RegexConst } = require('../constants/RegexConst');
 
 class AppMessageController {
     constructor (diaryService, twitterService, slackPresenter) {
@@ -57,7 +58,7 @@ class AppMessageController {
         const text = message.message.text;
         const userId = message.message.user;
 
-        if (text.match(/\*【日記】\*([^\n]+)/)) {
+        if (text.match(RegexConst.DATE)) {
             // 日記編集時
             try {
                 logger.info("diaryService.updateDiaryを実行");
@@ -116,7 +117,7 @@ class AppMessageController {
         const userId = message.user;
         const text = message.text;
         // 正規表現で日記と壁を検知する
-        if (text.match(/\*【日記】\*([^\n]+)/)) {
+        if (text.match(RegexConst.DATE)) {
             // 日記新規投稿時
             try {
                 logger.info("diaryService.newDiaryEntryを実行");
