@@ -28,7 +28,6 @@ class AppMessageController {
     // 上記判定を行い、別関数に処理を移譲する。
     async handleNewMessage (message, logger, client) {
         logger.info("handleNewMessageが実行されました");
-        let msg = 'handleNewMessage初期値';
 
         // messageからtext取得
         const text = message.text;
