@@ -10,7 +10,7 @@ class SlackPresenter {
 
     // DMを送信する
     async sendDirectMessage (client, msg, userId) {
-        await client.chat.postMessage({
+        return await client.chat.postMessage({
             channel: userId,
             text: msg,
             mrkdwn: true
@@ -19,7 +19,7 @@ class SlackPresenter {
 
     // 対象チャンネルにポストする
     async sendMessage (client, msg, channel) {
-        await client.chat.postMessage({
+        return await client.chat.postMessage({
             channel: channel,
             text: msg,
             mrkdwn: true
@@ -28,7 +28,7 @@ class SlackPresenter {
 
     // スレッド内に返信する
     async sendThreadMessage (client, msg, channel, threadTs) {
-        await client.chat.postMessage({
+        return await client.chat.postMessage({
             channel: channel,
             text: msg,
             thread_ts: threadTs,
