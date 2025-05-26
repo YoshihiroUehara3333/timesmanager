@@ -4,6 +4,7 @@ const { DynamoDiaryRepository } = require('./repository/DynamoDiaryRepository');
 const { DynamoTwitterRepository } = require('./repository/DynamoTwitterRepository');
 const { AppCommandController } = require('./controller/AppCommandController');
 const { AppMessageController } = require('./controller/AppMessageController');
+const { AppViewController } = require('./controller/AppViewController');
 const { DiaryService } = require('./service/DiaryService');
 const { TwitterService } = require('./service/TwitterService');
 const { OpenAIFeedbackGenerator } = require('./service/OpenAIFeedbackGenerator');
@@ -22,6 +23,7 @@ const twitterService = new TwitterService(twitterRepository);
 const slackPresenter = new SlackPresenter();
 const appCommandController = new AppCommandController(slackPresenter);
 const appMessageController = new AppMessageController(diaryService, twitterService, slackPresenter);
+const appViewController = new AppViewController();
 
 
 // アプリ初期化
