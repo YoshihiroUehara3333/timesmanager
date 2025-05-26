@@ -1,8 +1,8 @@
-exports.threadModal = {
+exports.threadModal = (channel_id, thread_ts, date) => ({
     type: 'modal',
     callback_id: 'makethread_modal',
     private_metadata: JSON.stringify({
-        channel_id: command.channel_id,
+        channel_id: channel_id,
         thread_ts: thread_ts,
         date: date
     }),
@@ -30,4 +30,4 @@ exports.threadModal = {
             }
         }
     ]
-}
+})
