@@ -81,7 +81,7 @@ class AppMessageController {
 
         const text = message.text;
         // /AIフィードバック
-        if (text.match(/\/AIフィードバック/)) {
+        if (text.match(RegexConst.COMMANDS.AI_FEEDBACK)) {
             const channel = message.channel;
             const threadTs = message.ts;
             try {
@@ -130,7 +130,7 @@ class AppMessageController {
                 console.error("DM送信時エラー:", error);
             }
 
-        } else if (text.match(/\*【壁】\*([^\n]+)/)) {
+        } else if (text.match(RegexConst.THREAD)) {
             // 壁投稿時
             try {
                 logger.info("twitterService.newThreadEntryを実行");

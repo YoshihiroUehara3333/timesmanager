@@ -5,4 +5,7 @@ exports.RegexConst = {
     EVALUATION: /\*【自己評価】\*([\s\S]*?)\*【翌日の計画】\*/,
     PLAN: /\*【翌日の計画】\*([\s\S]*?)\*【その他】\*/,
     OTHER: /\*【その他】\*([\s\S]*)/,
+    COMMANDS: {
+        AI_FEEDBACK: /\/AIフィードバック/,
+    }
 };
