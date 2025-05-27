@@ -38,17 +38,18 @@ class DiaryService {
         });
 
         // diaryModelを作成
-        const diaryModel = this.createDiaryModel(message, date, content, permalink)
+        const diaryModel = this.createDiaryModel(message, date, content, permalink);
 
         // DB新規重複チェック
         try {
             const result = await this.diaryRepository.getDiaryByPartitionKey(diaryModel);
             if (result.Item) return `日付が重複しています。(${date})`;
 
-            let data = await this.diaryRepository.putDiary(diaryModel);
-            if (data.$metadata.httpStatusCode == 200) {
-                return  `日記(${date})のDB登録に成功しました。`;
+            let response = await this.diaryRepository.putDiary(diaryModel);
+            if (response.$metadata.httpStatusCode == 200) {
+                return `日記(${date})のDB登録に成功しました。`;
             }
+
         } catch (error) {
             throw new Error(`日記(${date})のDB登録に失敗しました。`);
         }
@@ -68,15 +69,9 @@ class DiaryService {
             const result = await this.diaryRepository.getDiaryByPartitionKey(diaryModel);
             if (result.Item?.edited_ts === diaryModel.editedTs) return `この日報はすでに最新の内容です。`;
             diaryModel.slackUrl = result.Item.slack_url;
-        } catch (error) {
-            throw new Error(`DB更新重複チェック時エラー(${error})`);
-        }
 
-        // DB保存実行
-        let result = await this.diaryRepository.putDiary(diaryModel);
-        if (result.$metadata.httpStatusCode == 200) {
-            return  `日記(${date})のDB更新に成功しました。`;
-        } else {
+            return await this.diaryRepository.putDiary(diaryModel);
+        } catch (error) {
             throw new Error(`日記(${date})のDB更新に失敗しました。`);
         }
     };

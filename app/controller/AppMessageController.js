@@ -9,18 +9,20 @@ class AppMessageController {
         this.diaryService = diaryService;
         this.threadService = threadService;
         this.slackPresenter = slackPresenter;
+
+        // subtype によって処理を切り替える戦略パターン風マップ
+        this.messageHandlers = {
+            'message_changed': this.handleEditedMessage.bind(this),
+            'default': this.handleNewMessage.bind(this),
+        };
     };
 
     // subtypeによってmessageの構造が異なる為まずsubtypeで処理を分ける
     async handleAppMessage (message, logger, client) {
         logger.info("handleAppMessageが実行されました");
 
-        const isEdited = message.subtype === 'message_changed';
-        if (isEdited) {
-            await this.handleEditedMessage(message, logger, client);
-        } else {
-            await this.handleNewMessage(message, logger, client);
-        }
+        const handler = this.messageHandlers[message.subtype] || this.messageHandlers['default'];
+        return handler(message, logger, client);
     };
 
     // 新規投稿時はこの関数で処理する
@@ -36,7 +38,6 @@ class AppMessageController {
         // スレッド判別
         const isInThread = !!thread_ts;
         if(isInThread) {
-            logger.info("スレッド内のメッセージです。");
             if (text.match(`<@${SlackConst.ID.botUserId}>`)) {
                 // スレッド内ボットメンションは現状疑似スラッシュコマンドのみ
                 await this.handleNewThreadMentionMessage(message, logger, client);
@@ -45,7 +46,7 @@ class AppMessageController {
                 await this.handleNewThreadMessage(message, logger, client);
             }
         } else {
-            //スレッド外のメッセージです。");
+            //スレッド外のメッセージ");
             await this.handleNewTopLevelMessage(message, logger, client);
         }
     };
@@ -59,11 +60,16 @@ class AppMessageController {
             // 日記編集時
             try {
                 logger.info("diaryService.updateDiaryを実行");
-                const msg = await this.diaryService.updateDiary(message, client);
-                logger.info("diaryService.updateDiaryが終了:" + JSON.stringify(msg));
+                const response = await this.diaryService.updateDiary(message, client);
 
-                await this.slackPresenter.sendDirectMessage(client, msg, user);
-                logger.info("DM送信成功");
+                const msg = '';
+                if (response.$metadata.httpStatusCode == 200) {
+                    msg = `日記(${date})のDB登録に成功しました。`;
+                    await this.slackPresenter.sendDirectMessage(client, msg, user);
+                } else {
+                    throw new Error(`日記(${date})のDB登録に失敗しました。`);
+                }
+
             } catch (error) {
                 await this.slackPresenter.sendDirectMessage(client, error.toString(), user);
             }
