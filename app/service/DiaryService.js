@@ -19,7 +19,6 @@ class DiaryService {
             return this.feedbackGenerator.generateFeedback(diary);
 
         } catch (error) {
-            console.error("エラー:", error);
             throw new Error("フィードバック生成中にエラーが発生しました。");
         }
     };
@@ -51,7 +50,6 @@ class DiaryService {
                 return  `日記(${date})のDB登録に成功しました。`;
             }
         } catch (error) {
-            console.error("DB新規重複チェック時エラー:", error);
             throw new Error(`日記(${date})のDB登録に失敗しました。`);
         }
     }
@@ -68,12 +66,9 @@ class DiaryService {
         // DB更新重複チェック
         try {
             const result = await this.diaryRepository.getDiaryByPartitionKey(diaryModel);
-            if (result.Item?.edited_ts === diaryModel.editedTs) {
-                return `この日報はすでに最新の内容です。`;
-            }
+            if (result.Item?.edited_ts === diaryModel.editedTs) return `この日報はすでに最新の内容です。`;
             diaryModel.slackUrl = result.Item.slack_url;
         } catch (error) {
-            console.error("DB更新重複チェック時エラー:", error);
             throw new Error(`DB更新重複チェック時エラー(${error})`);
         }
 

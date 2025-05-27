@@ -45,7 +45,7 @@ class AppMessageController {
                 await this.handleNewThreadMessage(message, logger, client);
             }
         } else {
-            logger.debug("スレッド外のメッセージです。");
+            //スレッド外のメッセージです。");
             await this.handleNewTopLevelMessage(message, logger, client);
         }
     };
@@ -54,9 +54,7 @@ class AppMessageController {
     async handleEditedMessage (message, logger, client) {
         logger.info("handleEditedMessageが実行されました");
 
-        const text = message.message.text;
-        const userId = message.message.user;
-
+        const { text, user } = message.message;
         if (text.match(RegexConst.DATE)) {
             // 日記編集時
             try {
@@ -64,10 +62,10 @@ class AppMessageController {
                 const msg = await this.diaryService.updateDiary(message, client);
                 logger.info("diaryService.updateDiaryが終了:" + JSON.stringify(msg));
 
-                await this.slackPresenter.sendDirectMessage(client, msg, userId);
+                await this.slackPresenter.sendDirectMessage(client, msg, user);
                 logger.info("DM送信成功");
             } catch (error) {
-                console.error("DM送信時エラー:", error);
+                await this.slackPresenter.sendDirectMessage(client, error.toString(), user);
             }
         }
     };
@@ -88,7 +86,7 @@ class AppMessageController {
                 await this.slackPresenter.sendThreadMessage (client, msg, channel, ts);
                 logger.info("フィードバック送信成功");
             } catch (error) {
-                console.error("フィードバック送信時エラー:", error);
+                await this.slackPresenter.sendThreadMessage (client, error.toString(), channel, ts);
             }
         }
     }
@@ -119,7 +117,7 @@ class AppMessageController {
                 await this.slackPresenter.sendDirectMessage(client, msg, user);
                 logger.info("DM送信成功");
             } catch (error) {
-                console.error("DM送信時エラー:", error);
+                await this.slackPresenter.sendDirectMessage(client, error.toString(), user);
             }
         }
     }

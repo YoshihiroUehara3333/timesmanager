@@ -34,7 +34,7 @@ class DiaryModel {
     };
 
     get partitionKeyBase() {
-        return this._userId + this._channel + this._date;;
+        return this._userId + this._channel + this._date;
     };
 
     get userId() {
