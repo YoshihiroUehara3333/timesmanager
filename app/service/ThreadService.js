@@ -18,6 +18,7 @@ class ThreadService {
             text: text,
             mrkdwn: true,
         });
+        console.log(JSON.stringify(result));
         
         // スレッドの投稿URLを取得
         let { permalink } = await client.chat.getPermalink({
