@@ -1,12 +1,13 @@
 // /makethread実行時のモーダル定義
 const { ModalConst } = require('../constants/ModalConst');
 
-exports.ThreadModal = (channel_id, thread_ts) => ({
+exports.ThreadModal = (channel_id, thread_ts, date) => ({
     type: 'modal',
     callback_id: ModalConst.CALLBACK_ID.MAKETHREAD,
     private_metadata: JSON.stringify({
         channel_id: channel_id,
         thread_ts: thread_ts,
+        date: date,
     }),
     title: { type: 'plain_text', text: '作業予定を入力' },
     submit: { type: 'plain_text', text: '送信' },

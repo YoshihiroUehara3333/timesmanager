@@ -20,7 +20,7 @@ class ThreadService {
 
         console.log(JSON.stringify(result));
 
-        return ThreadModal(channel_id, result.ts);
+        return ThreadModal(channel_id, result.ts, date);
     };
 
 
