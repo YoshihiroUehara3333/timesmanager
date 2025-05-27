@@ -22,7 +22,7 @@ class ThreadService {
             channel: result.channel,
             message_ts: result.ts
         });
-        threadModel = this.createThreadModel (result.message, date, permalink);
+        const threadModel = this.createThreadModel (result.message, date, permalink);
         return await this.threadRepository.putNewThread(threadModel);
     };
 
