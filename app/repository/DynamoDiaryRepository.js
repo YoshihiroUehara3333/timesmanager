@@ -11,7 +11,7 @@ class DynamoDiaryRepository {
 
     async getDiaryByPartitionKey (diaryModel) {
         const key = {
-            partition_key: DBConst.POST_CATEGORY.DIARY + diaryModel.partitionKeyBase,
+            partition_key: `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`,
         };
 
         const result = await this.dynamodb.get({
@@ -24,7 +24,7 @@ class DynamoDiaryRepository {
 
     async putDiary (diaryModel) {
         const item = diaryModel.toItem();
-        item.partition_key = DBConst.POST_CATEGORY.DIARY + diaryModel.partitionKeyBase;
+        item.partition_key = `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`;
 
         const result = await this.dynamodb.put({
             TableName: process.env.DYNAMO_TABLE_NAME,
