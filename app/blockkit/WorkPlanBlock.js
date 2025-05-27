@@ -1,5 +1,5 @@
 // 作業予定入力時のBlockKit定義
-exports.WorkPlanBlock = (user_id, work_plan, seleted_time) => ([
+exports.WorkPlanBlock = (user_id, work_plan, selected_time) => ([
 		{
 			type: "section",
 			text: {
