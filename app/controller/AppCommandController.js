@@ -3,7 +3,7 @@ const { SlackConst } = require('../constants/SlackConst');
 
 //モジュール読み込み
 require('date-utils');
-const { ThreadModal } = require('../modals/ThreadModal');
+
 
 class AppCommandController {
     constructor(threadService){
@@ -27,12 +27,12 @@ class AppCommandController {
     // /makethread実行時
     async handleMakethread (command, logger, client) {
         const { user_id, channel_id } = command;
-        const result = this.threadService.newThreadEntry(user_id, channel_id);
+        const view = this.threadService.newThreadEntry(user_id, channel_id, client);
 
         // モーダルを開く
         await client.views.open({
             trigger_id: command.trigger_id,
-            view: ThreadModal(command.channel_id, result.ts, date),
+            view: view, 
         });
     }
 };
