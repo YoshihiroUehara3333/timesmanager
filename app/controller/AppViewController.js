@@ -1,8 +1,11 @@
 const { ModalConst } = require('../constants/ModalConst');
 
 class AppViewController {
-    constructor () {};
+    constructor (threadService) {
+        this.threadService = threadService;
+    };
 
+    // dispatch
     async handleModalCallback(body, view, client) {
         const callbackId = view.callback_id;
         
@@ -24,7 +27,7 @@ class AppViewController {
         const content = view.state.values.content_block.content_input.value;
 
         // スレッドへの返信
-        await client.chat.postMessage({
+        const result = await client.chat.postMessage({
             channel: channel_id,
             thread_ts: thread_ts,
             text: `📝 <@${userId}> さんの作業予定\n*タイトル:* ${title}\n*内容:* ${content}`

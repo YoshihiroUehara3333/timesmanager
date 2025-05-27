@@ -14,8 +14,8 @@ class AppMessageController {
     // subtypeによってmessageの構造が異なる為まずsubtypeで処理を分ける
     async handleAppMessage (message, logger, client) {
         logger.info("handleAppMessageが実行されました");
-        const isEdited = message.subtype === 'message_changed';
 
+        const isEdited = message.subtype === 'message_changed';
         if (isEdited) {
             await this.handleEditedMessage(message, logger, client);
         } else {
@@ -31,11 +31,11 @@ class AppMessageController {
         logger.info("handleNewMessageが実行されました");
 
         // messageからtext取得
-        const text = message.text;
+        const { text, thread_ts } = message;
 
         // スレッド判別
-        const isThreadReply = !!message.thread_ts;
-        if(isThreadReply) {
+        const isInThread = !!thread_ts;
+        if(isInThread) {
             logger.info("スレッド内のメッセージです。");
             if (text.match(`<@${SlackConst.ID.botUserId}>`)) {
                 // スレッド内ボットメンションは現状疑似スラッシュコマンドのみ
@@ -101,7 +101,7 @@ class AppMessageController {
         logger.info("handleNewThreadMessageが実行されました");
         let msg = 'handleMentionedMessage初期値';
 
-        // 壁スレッドの中身だった場合TwitterServiceを使ってDBにtextを保存する
+        // 壁スレッドの中身だった場合ThreadServiceを使ってDBにtextを保存する
         // 未実装
         return;
     }
