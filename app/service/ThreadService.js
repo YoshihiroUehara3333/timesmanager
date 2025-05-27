@@ -7,10 +7,8 @@ class ThreadService {
     };
 
     // 新規のスレッド文面を作成しDBに登録する
-    async newThreadEntry (user_id, channel_id, client) {
-        const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    async newThreadEntry (user_id, channel_id, date, client) {
         const text = `<@${user_id}> \n*【壁】${date}*`;
-
         const result = await client.chat.postMessage({
             channel: channel_id,
             text: text,
@@ -31,7 +29,7 @@ class ThreadService {
     async newThreadReply (message, logger, client) {
         const text = message.text;
 
-        this.threadRepository.put;
+        await this.threadRepository.putNewReply(threadModel);
     }
 
     // ThreadModel生成
