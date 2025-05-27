@@ -1,10 +1,10 @@
 // 作業予定入力時のBlockKit定義
-exports.WorkPlanBlock = (user_id, content) => ([
+exports.WorkPlanBlock = (user_id, work_plan) => ([
 		{
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: `<@${user_id}>\n📝作業計画\n${content}`,
+				text: `<@${user_id}>\n📝作業計画\n${work_plan}`,
 			}
 		},
 		{
