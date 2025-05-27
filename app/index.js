@@ -80,6 +80,10 @@ app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, logger, cl
     await appViewController.handleModalCallback(body, view, logger, client);
 });
 
+app.action(async ({ack, body}) => {
+    await ack();
+});
+
 // ハンドラー生成
 exports.handler = async (event, context, callback) => {    
     return await handler(event, context, callback);
