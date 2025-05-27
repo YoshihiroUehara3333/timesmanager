@@ -32,6 +32,7 @@ class AppViewController {
         const json = {
             channel: channel_id,
             thread_ts: thread_ts,
+            text: "作業計画",
             mrkdwn: true,
             blocks: WorkPlanBlock(user_id, work_plan),
         };

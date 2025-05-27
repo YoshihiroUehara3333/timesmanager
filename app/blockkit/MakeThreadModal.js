@@ -35,21 +35,22 @@ exports.MakeThreadModal = (channel_id, thread_ts, date) => ({
             }
         },
         {
-			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: "終了予定時刻"
-			},
-			accessory: {
+			type: "input",
+			element: {
 				type: "timepicker",
-				initial_time: "09:30",
+				initial_time: "10:00",
 				placeholder: {
 					type: "plain_text",
 					text: "Select time",
 					emoji: true
 				},
 				action_id: "timepicker"
+			},
+			label: {
+				type: "mrkdwn",
+				text: "*完了予定*",
+				emoji: true
 			}
-		},
+		}
     ]
 });

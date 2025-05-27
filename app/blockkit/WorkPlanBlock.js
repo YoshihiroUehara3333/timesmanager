@@ -12,7 +12,7 @@ exports.WorkPlanBlock = (user_id, work_plan) => ([
 			fields: [
 				{
 					type: "mrkdwn",
-					text: "*Type:*\nComputer (laptop)"
+					text: `*作業内容*\n${work_plan}`
 				},
 				{
 					type: "mrkdwn",
