@@ -12,19 +12,16 @@ class DiaryService {
     **   thread_tsを基にフィードバックを生成する
     */
     async generateFeedback(message){
-        var diaryModel;
-
         // DBから業務日誌情報を取得
         try {
-            diaryModel = await this.diaryRepository.getDiaryByThreadTs(message.thread_ts);
-            if (!diaryModel) {
-                return "DBから日報を取得できませんでした。";
-            }
+            const diary = await this.diaryRepository.getDiaryByThreadTs(message.thread_ts);
+            if (!diary) return "DBから日報を取得できませんでした。";
+            return this.feedbackGenerator.generateFeedback(diaryModel);
+
         } catch (error) {
-            console.error("DB取得時エラー:", error);
-            return `DBアクセスエラー(${error})`;
+            console.error("エラー:", error);
+            throw new Error("フィードバック生成中にエラーが発生しました。");
         };
-        return this.feedbackGenerator.generateFeedback(diaryModel);
     };
 
     /*

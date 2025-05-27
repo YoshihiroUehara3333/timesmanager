@@ -35,7 +35,7 @@ class AppCommandController {
                 view: view, 
             }); 
         } catch (error) {
-            return ``;
+            throw new Error();
         }
     }
 };

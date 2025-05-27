@@ -1,5 +1,6 @@
 // 【壁】関連のデータ加工を行うクラス
 const { ThreadModel } = require('../model/ThreadModel');
+const { ReplyModel } = require('../model/ReplyModel');
 const { MakeThreadModal } = require('../modals/MakeThreadModal');
 
 class ThreadService {
@@ -24,7 +25,6 @@ class ThreadService {
         const threadModel = this.createThreadModel (result, date, permalink);
         const data = await this.threadRepository.putNewThread(threadModel);
 
-        console.log(JSON.stringify(data));
         if (data.$metadata.httpStatusCode === 200) {
             return MakeThreadModal(channel_id, result.ts, date);
         } else {
@@ -37,7 +37,7 @@ class ThreadService {
     async newThreadReply (message, logger, client) {
         const text = message.text;
 
-        await this.threadRepository.putNewReply(threadModel);
+        await this.threadRepository.putNewReply(replyModel);
     }
 
     // ThreadModel生成
