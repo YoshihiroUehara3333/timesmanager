@@ -27,7 +27,7 @@ class AppViewController {
         const { channel_id, thread_ts } = JSON.parse(view.private_metadata);
 
         const work_plan = view.state.values.content_block.work_plan.value || '';
-        const seleted_time = `00:00`;
+        const selected_time = view.state.values.RVSjM.timepicker.selected_time;
 
         // スレッドへの返信
         const json = {
@@ -35,7 +35,7 @@ class AppViewController {
             thread_ts: thread_ts,
             text: "作業計画",
             mrkdwn: true,
-            blocks: WorkPlanBlock(user_id, work_plan, seleted_time),
+            blocks: WorkPlanBlock(user_id, work_plan, selected_time),
         };
         console.log(JSON.stringify(json));
 
