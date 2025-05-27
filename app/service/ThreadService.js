@@ -21,10 +21,10 @@ class ThreadService {
             message_ts: result.ts
         });
         const threadModel = this.createThreadModel (result, date, permalink);
-        const { $metadata } = await this.threadRepository.putNewThread(threadModel);
+        const data = await this.threadRepository.putNewThread(threadModel);
 
-        console.log(JSON.stringify($metadata));
-        if ($metadata.httpStatusCode === 200) {
+        console.log(JSON.stringify(data));
+        if (data.$metadata.httpStatusCode === 200) {
             return MakeThreadModal(channel_id, result.ts, date);
         } else {
             throw new Error();
