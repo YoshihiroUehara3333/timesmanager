@@ -11,6 +11,7 @@ class OpenAIFeedbackGenerator {
         });
     }
 
+    // AIによる日報のフィードバックを生成
     async generateFeedback(diaryJson) {
         console.log("generateFeedback", JSON.stringify(diaryJson));
 
@@ -39,7 +40,7 @@ class OpenAIFeedbackGenerator {
             return `使用モデル: ${process.env.GPT_MODEL}\nフィードバック:\n ${feedback}`;
         } catch (error) {
             console.error("OpenAI APIエラー:", error);
-            return  "フィードバックの生成に失敗しました。";
+            return  `フィードバックの生成に失敗しました。`;
         }
     }
 }

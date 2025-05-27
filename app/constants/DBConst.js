@@ -3,8 +3,8 @@
 exports.DBConst = {
     POST_CATEGORY: {
         DIARY: "00",
-        TWITTER: "10",
-        TWEET: "11",
+        THREAD: "10",
+        REPLY: "11",
         URL: "12",
     },
     GSI_NAME: {

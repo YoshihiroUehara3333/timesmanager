@@ -37,13 +37,13 @@ class DiaryService {
         const content = DiaryUtils.parseContent(text);
 
         // 投稿URLを取得
-        let result = await client.chat.getPermalink({
+        let { permalink } = await client.chat.getPermalink({
             channel: message.channel,
             message_ts: message.ts
         });
 
         // diaryModelを作成
-        const diaryModel = this.createDiaryModel (message, date, content, result.permalink)
+        const diaryModel = this.createDiaryModel(message, date, content, permalink)
 
         // DB新規重複チェック
         try {

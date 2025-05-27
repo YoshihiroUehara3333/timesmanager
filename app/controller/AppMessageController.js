@@ -77,17 +77,15 @@ class AppMessageController {
     async handleNewThreadMentionMessage (message, logger, client) {
         logger.info("handleNewThreadMentionMessageが実行されました");
 
-        const text = message.text;
+        const {text, channel, ts} = message;
         // /AIフィードバック
         if (text.match(RegexConst.COMMANDS.AI_FEEDBACK)) {
-            const channel = message.channel;
-            const threadTs = message.ts;
             try {
                 logger.info("diaryService.aiFeedbackを実行");
                 const msg = await this.diaryService.generateFeedback(message, client);
                 logger.info("diaryService.aiFeedbackが終了:" + JSON.stringify(msg));
 
-                await this.slackPresenter.sendThreadMessage (client, msg, channel, threadTs);
+                await this.slackPresenter.sendThreadMessage (client, msg, channel, ts);
                 logger.info("フィードバック送信成功");
             } catch (error) {
                 console.error("フィードバック送信時エラー:", error);
@@ -99,11 +97,9 @@ class AppMessageController {
     // ・
     async handleNewThreadMessage (message, logger, client) {
         logger.info("handleNewThreadMessageが実行されました");
-        let msg = 'handleMentionedMessage初期値';
 
         // 壁スレッドの中身だった場合ThreadServiceを使ってDBにtextを保存する
-        // 未実装
-        return;
+        return this.threadService.newThreadReply(message, logger, client);
     }
 
     // スレッド外部かつ、新規ポスト時
@@ -111,8 +107,7 @@ class AppMessageController {
         logger.info("handleTopLevelNewMessageが実行されました");
 
         // messageから各情報取得
-        const userId = message.user;
-        const text = message.text;
+        const {user, text} = message;
         // 正規表現で日記と壁を検知する
         if (text.match(RegexConst.DATE)) {
             // 日記新規投稿時
@@ -121,7 +116,7 @@ class AppMessageController {
                 const msg = await this.diaryService.newDiaryEntry(message, client);
                 logger.info("diaryService.newDiaryEntryが終了:" + JSON.stringify(msg));
 
-                await this.slackPresenter.sendDirectMessage(client, msg, userId);
+                await this.slackPresenter.sendDirectMessage(client, msg, user);
                 logger.info("DM送信成功");
             } catch (error) {
                 console.error("DM送信時エラー:", error);

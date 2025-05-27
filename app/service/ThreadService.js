@@ -1,6 +1,7 @@
 // 【壁】関連のデータ加工を行うクラス
 const { ThreadModal } = require('../modals/ThreadModal');
 
+
 class ThreadService {
     constructor (threadRepository) {
         this.threadRepository = threadRepository;
@@ -18,6 +19,12 @@ class ThreadService {
 
         return ThreadModal(channel_id, result.ts, date);
     };
+
+
+    // スレッド内のリプライをDBに保存する
+    async newThreadReply () {
+
+    }
 }
 
 exports.ThreadService = ThreadService;

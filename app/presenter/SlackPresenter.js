@@ -1,4 +1,4 @@
-// Slackへのメッセージ送信を行うクラス
+// ControllerからSlackへのメッセージ送信を行うクラス
 //
 //
 // chat.postMessage
