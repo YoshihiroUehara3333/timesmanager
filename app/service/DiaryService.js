@@ -57,14 +57,7 @@ class DiaryService {
         }
 
         // DB保存実行
-        try {
-            await this.diaryRepository.putDiary(diaryModel);
-            return `日記(${date})のDB登録に成功しました。`;
-
-        } catch (error) {
-            console.error("DynamoDB登録時エラー:", error);
-            return `日記(${date})のDB登録に失敗しました。`;
-        }
+        return await this.diaryRepository.putDiary(diaryModel);
     }
 
     /*

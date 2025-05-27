@@ -28,12 +28,16 @@ class DynamoDiaryRepository {
         const item = diaryModel.toItem();
         item.partition_key = `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`;
 
-        const result = await this.dynamodb.send(new PutCommand({
-            TableName: process.env.DYNAMO_TABLE_NAME,
-            Item: item,
-        }));
+        try {
+            const result = await this.dynamodb.send(new PutCommand({
+                TableName: process.env.DYNAMO_TABLE_NAME,
+                Item: item,
+            }));
 
-        return result;
+            console.log(JSON.stringify(result));
+        } catch (error) {
+            console.error("DynamoDB登録時エラー:", error);
+        }
     }
     
     async getDiaryByThreadTs(thread_ts) {

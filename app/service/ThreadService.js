@@ -22,8 +22,8 @@ class ThreadService {
 
 
     // スレッド内のリプライをDBに保存する
-    async newThreadReply () {
-
+    async newThreadReply (message, logger, client) {
+        const text = message.text;
     }
 }
 

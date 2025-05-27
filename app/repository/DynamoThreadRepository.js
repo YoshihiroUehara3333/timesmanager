@@ -8,23 +8,29 @@ const { DBConst } = require('../constants/DBConst');
 class DynamoThreadRepository {
   constructor() {
     const client = new DynamoDBClient({});
-    this.dynamodb = DynamoDBDocumentClient.from(client);
+    this.dynamoDb = DynamoDBDocumentClient.from(client);
   };
 
   // データの登録
-  async putItem(params) {
-    return await this.dynamoDB.send(new PutCommand(params));
-  }
+  async putThreadReply(replyModel) {
+    const item = replyModel.toItem();
+    item.partition_key = `${DBConst.POST_CATEGORY.REPLY}-${replyModel.partitionKeyBase}`;
+
+    return await this.dynamoDb.send(new PutCommand({
+      TableName: process.env.DYNAMO_TABLE_NAME,
+      Item: item,
+    }));
+  };
 
   // データの取得
   async getItem(params) {
-    const result = await this.dynamoDB.send(new GetCommand(params));
+    const result = await this.dynamoDb.send(new GetCommand(params));
     return result.Item;
   }
 
   // データの削除
   async deleteItem(params) {
-    return await this.dynamoDB.send(new DeleteCommand(params));
+    return await this.dynamoDb.send(new DeleteCommand(params));
   }
 }
 
