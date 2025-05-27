@@ -20,7 +20,7 @@ class ThreadService {
 
         console.log(JSON.stringify(result));
 
-        return ThreadModal(channel_id, result.ts, date);
+        return ThreadModal(channel_id, result.ts);
     };
 
 
@@ -28,7 +28,7 @@ class ThreadService {
     async newThreadReply (message, logger, client) {
         const text = message.text;
 
-        this.threadRepository.put
+        this.threadRepository.put;
     }
 }
 
