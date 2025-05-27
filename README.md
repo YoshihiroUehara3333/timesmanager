@@ -54,13 +54,15 @@ AIによるフィードバックを生成し、スレッド内に返信する。
 │   │   ├── AppMessageController.js
 │   │   └── AppViewController.js
 │   ├── modals/
-│   │   ├── .js
+│   │   └── ThreadModal.js
 │   ├── model/
-│   │   ├── .js
+│   │   ├── DiaryModel.js
+│   │   └── ThreadModel.js
 │   ├── presenter/
-│   │   ├── .js
+│   │   └── SlackPresenter.js
 │   ├── repository/
-│   │   ├── .js
+│   │   ├── DynamoDiaryRepository.js
+│   │   └── DynamoThreadRepository.js
 │   ├── service/
 │   │   ├── .js
 │   │   └──
@@ -68,11 +70,11 @@ AIによるフィードバックを生成し、スレッド内に返信する。
 │       └── DiaryUtils.js
 ├── .github
 │   └── workflows
-│       ├── deploy_main.yml
-│       └── deploy_develop.yml
+│       ├── deploy_main.yml            // mainブランチのGithub Actions定義
+│       └── deploy_develop.yml         // developブランチのGithub Actions定義
 ├── package.json
 ├── package-lock.json
-├── .env
+├── .env         
 ├── Dockerfile
 ├── docker-compose_local.yml
 └── README.md
