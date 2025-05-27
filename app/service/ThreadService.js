@@ -44,9 +44,9 @@ class ThreadService {
     createThreadModel (result, date, permalink) {
         const threadModel = new ThreadModel();
         threadModel.date = date;
-        threadModel.userId = message.user;
-        threadModel.channel = message.channel;
-        threadModel.threadTs = message.ts;
+        threadModel.userId = result.user;
+        threadModel.channel = result.channel;
+        threadModel.threadTs = result.ts;
         threadModel.slackUrl = permalink;
         return threadModel;
     }
