@@ -16,9 +16,13 @@ class ThreadService {
             text: text,
             mrkdwn: true,
         });
-        console.log(`result:${JSON.stringify(result)}`);
-
-        this.threadRepository.putNewThread();
+        
+        // 投稿URLを取得
+        let { permalink } = await client.chat.getPermalink({
+            channel: result.channel,
+            message_ts: result.ts
+        });
+        this.threadRepository.putNewThread(result.message, date, permalink);
 
         return MakeThreadModal(channel_id, result.ts, date);
     };
@@ -29,6 +33,17 @@ class ThreadService {
         const text = message.text;
 
         this.threadRepository.put;
+    }
+
+    // ThreadModel生成
+    createThreadModel (message, date, permalink) {
+        const threadModel = new ThreadModel();
+        threadModel.date = date;
+        threadModel.userId = message.user;
+        threadModel.channel = message.channel;
+        threadModel.threadTs = message.ts;
+        threadModel.slackUrl = permalink;
+        return threadModel;
     }
 }
 
