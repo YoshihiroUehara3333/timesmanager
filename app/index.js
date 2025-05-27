@@ -80,7 +80,23 @@ app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, logger, cl
     await appViewController.handleModalCallback(body, view, logger, client);
 });
 
-app.action(async ({ack, body}) => {
+app.action('finishbutton', async ({ack, body}) => {
+
+    console.log(`
+    app.action \n
+    body:${JSON.stringify(body)} \n
+    `.trim());
+
+    await ack();
+});
+
+app.action('cancelbutton', async ({ack, body}) => {
+
+    console.log(`
+    app.action \n
+    body:${JSON.stringify(body)} \n
+    `.trim());
+
     await ack();
 });
 
