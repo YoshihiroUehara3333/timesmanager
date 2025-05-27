@@ -29,6 +29,7 @@ class DynamoDiaryRepository {
     async putDiary (diaryModel) {
         const item = diaryModel.toItem();
         item.partition_key = `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`;
+        
         try {
             return await this.dynamodb.send(new PutCommand({
                 TableName: process.env.DYNAMO_TABLE_NAME,

@@ -76,13 +76,13 @@ class DiaryService {
         // DB更新重複チェック
         try {
             const result = await this.diaryRepository.getDiaryByPartitionKey(diaryModel);
-            if (result.Item.edited_ts === diaryModel.editedTs) {
+            if (result.Item?.edited_ts === diaryModel.editedTs) {
                 return `この日報はすでに最新の内容です。`;
             }
             diaryModel.slackUrl = result.Item.slack_url;
         } catch (error) {
             console.error("DB更新重複チェック時エラー:", error);
-            return `DB更新重複チェック時エラー(${error})`;
+            throw new Error(`DB更新重複チェック時エラー(${error})`);
         }
 
         // DB保存実行
@@ -90,7 +90,7 @@ class DiaryService {
         if (result.$metadata.httpStatusCode == 200) {
             return  `日記(${date})のDB更新に成功しました。`;
         } else {
-            return `日記(${date})のDB更新に失敗しました。`;
+            throw new Error(`日記(${date})のDB更新に失敗しました。`);
         }
     };
 
