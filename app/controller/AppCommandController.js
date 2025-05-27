@@ -27,7 +27,7 @@ class AppCommandController {
     // /makethread実行時
     async handleMakethread (command, logger, client) {
         const { user_id, channel_id } = command;
-        const view = this.threadService.newThreadEntry(user_id, channel_id, client);
+        const view = await this.threadService.newThreadEntry(user_id, channel_id, client);
 
         console.log(view);
         // モーダルを開く
