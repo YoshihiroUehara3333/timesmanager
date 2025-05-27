@@ -1,5 +1,5 @@
 // 作業予定入力時のBlockKit定義
-exports.WorkPlanBlock = (channel_id, thread_ts, date) => ({
+exports.WorkPlanBlock = () => ({
 	blocks: [
 		{
 			type: "section",

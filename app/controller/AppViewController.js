@@ -1,4 +1,5 @@
 const { ModalConst } = require('../constants/ModalConst');
+const { WorkPlanBlock } = require('../blockkit/WorkPlanBlock');
 
 class AppViewController {
     constructor (threadService, slackPresenter) {
@@ -28,7 +29,13 @@ class AppViewController {
         // スレッドへの返信
         const msg = `<@${userId}>\n📝作業計画\n${content}`;
         const result = 
-            await this.slackPresenter.sendThreadMessage(client, msg, channel_id, thread_ts);
+            await client.chat.postMessage({
+                channel: channel_id,
+                text: msg,
+                thread_ts: thread_ts,
+                mrkdwn: true,
+                blocks: WorkPlanBlock(),
+            });
 
         // 必要であればDBに保存（例: DynamoDB）
         // await dynamo.put({ ... });
