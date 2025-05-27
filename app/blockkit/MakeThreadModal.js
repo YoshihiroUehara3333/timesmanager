@@ -47,8 +47,8 @@ exports.MakeThreadModal = (channel_id, thread_ts, date) => ({
 				action_id: "timepicker"
 			},
 			label: {
-				type: "mrkdwn",
-				text: "*完了予定*",
+				type: "plain_text",
+				text: "完了予定",
 				emoji: true
 			}
 		}
