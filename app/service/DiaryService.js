@@ -16,7 +16,7 @@ class DiaryService {
         try {
             const diary = await this.diaryRepository.getDiaryByThreadTs(message.thread_ts);
             if (!diary) return "DBから日報を取得できませんでした。";
-            return this.feedbackGenerator.generateFeedback(diaryModel);
+            return this.feedbackGenerator.generateFeedback(diary);
 
         } catch (error) {
             console.error("エラー:", error);
