@@ -5,6 +5,7 @@ const { DynamoThreadRepository } = require('./repository/DynamoThreadRepository'
 const { AppCommandController } = require('./controller/AppCommandController');
 const { AppMessageController } = require('./controller/AppMessageController');
 const { AppViewController } = require('./controller/AppViewController');
+const { AppActionController } = require('./controller/AppActionController');
 const { DiaryService } = require('./service/DiaryService');
 const { ThreadService } = require('./service/ThreadService');
 const { OpenAIFeedbackGenerator } = require('./service/OpenAIFeedbackGenerator');
@@ -23,6 +24,7 @@ const slackPresenter = new SlackPresenter();
 const appCommandController = new AppCommandController(threadService);
 const appMessageController = new AppMessageController(diaryService, threadService, slackPresenter);
 const appViewController = new AppViewController(threadService, slackPresenter);
+const appActionController = new AppActionController();
 
 
 // アプリ初期化
@@ -45,9 +47,7 @@ app.command(/.*/, async ({ ack, command, context, logger, client }) => {
     }
 
     console.log(`
-    app.command\n
-    context:${JSON.stringify(context)}\n
-    command:${JSON.stringify(command)}\n
+    app.command\ncontext:${JSON.stringify(context)}\ncommand:${JSON.stringify(command)}\n
     `.trim());
     
     await ack();
@@ -56,28 +56,42 @@ app.command(/.*/, async ({ ack, command, context, logger, client }) => {
 
 // メッセージ検知
 app.message(async ({ message, context, logger, client }) => {
-    if(context.retryNum) return; // リトライ以降のリクエストは弾く
+    if(context.retryNum) {
+        await ack();
+        return; // リトライ以降のリクエストは弾く
+    }
     
     console.log(`
-    app.message \n
-    context: ${JSON.stringify(context)} \n
-    message: ${JSON.stringify(message)} \n
+    app.message\ncontext:${JSON.stringify(context)}\nmessage:${JSON.stringify(message)}\n
     `.trim());
 
     await appMessageController.handleAppMessage(message, logger, client);
 });
 
 // モーダル押下時
-app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, client }) => {
+app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, logger, client }) => {
     await ack();
 
     console.log(`
-    app.view \n
-    body: ${JSON.stringify(body)} \n
-    view: ${JSON.stringify(view)} \n
+    app.view \n body:${JSON.stringify(body)} \n view:${JSON.stringify(view)} \n`.trim());
+
+    await appViewController.handleModalCallback(body, view, logger, client);
+});
+
+app.action(ModalConst.ACTION_ID.WORKPLAN.FINISH, async ({ack, body}) => {
+    console.log(`
+    app.action \n body:${JSON.stringify(body)} \n
     `.trim());
 
-    await appViewController.handleModalCallback(body, view, client);
+    await ack();
+});
+
+app.action(ModalConst.ACTION_ID.WORKPLAN.CANCEL, async ({ack, body}) => {
+    console.log(`
+    app.action \n body:${JSON.stringify(body)} \n
+    `.trim());
+
+    await ack();
 });
 
 // ハンドラー生成

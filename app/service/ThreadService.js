@@ -1,7 +1,9 @@
-// 【壁】関連のデータ加工を行うクラス
+// 【壁】関連のデータ加工と永続化移譲を行うクラス
+
+// モジュール読み込み
 const { ThreadModel } = require('../model/ThreadModel');
 const { ReplyModel } = require('../model/ReplyModel');
-const { MakeThreadModal } = require('../modals/MakeThreadModal');
+const { MakeThreadModal } = require('../blockkit/MakeThreadModal');
 
 class ThreadService {
     constructor (threadRepository) {
@@ -28,7 +30,7 @@ class ThreadService {
         if (data.$metadata.httpStatusCode === 200) {
             return MakeThreadModal(channel_id, result.ts, date);
         } else {
-            throw new Error();
+            throw new Error("DB登録時エラー");
         }
     };
 
@@ -40,15 +42,27 @@ class ThreadService {
         await this.threadRepository.putNewReply(replyModel);
     }
 
+
     // ThreadModel生成
     createThreadModel (result, date, permalink) {
         const threadModel = new ThreadModel();
         threadModel.date = date;
-        threadModel.userId = result.user;
+        threadModel.userId = result.message.user;
         threadModel.channel = result.channel;
         threadModel.threadTs = result.ts;
         threadModel.slackUrl = permalink;
         return threadModel;
+    }
+
+    // ReplyModel生成
+    createReplyModel (result, date, permalink) {
+        const replyModel = new ReplyModel();
+        replyModel.date = date;
+        replyModel.userId = result.user;
+        replyModel.channel = result.channel;
+        replyModel.threadTs = result.ts;
+        replyModel.slackUrl = permalink;
+        return replyModel;
     }
 }
 

@@ -18,6 +18,8 @@ class AppCommandController {
         switch (commandName) {
             case SlackConst.COMMAND.makeThread:
                 return await this.handleMakethread(command, logger, client);
+            case SlackConst.COMMAND.warmUp:
+                return; // 何もしない
             default:
                 break;
         }
@@ -26,16 +28,20 @@ class AppCommandController {
     // /makethread実行時
     async handleMakethread (command, logger, client) {
         const { user_id, channel_id } = command;
-        const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        const date = new Date().toFormat("YYYY-MM-DD"); // YYYY-MM-DD
 
         try {
             let view = await this.threadService.newThreadEntry(user_id, channel_id, date, client);
             await client.views.open({
                 trigger_id: command.trigger_id,
-                view: view, 
-            }); 
+                view: view,
+            });
         } catch (error) {
-            throw new Error();
+            logger.info(error);
+            await client.chat.postMessage({
+                channel: user_id,
+                text: `エラー内容:${error}`,
+            });
         }
     }
 };
