@@ -16,6 +16,7 @@ class DynamoThreadRepository {
     const item = threadModel.toItem();
     item.partition_key = `${DBConst.POST_CATEGORY.THREAD}-${threadModel.partitionKeyBase}`;
 
+    console.log(JSON.stringify(item));
     try {
       return await this.dynamoDb.send(new PutCommand({
         TableName: process.env.DYNAMO_TABLE_NAME,

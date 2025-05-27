@@ -27,7 +27,7 @@ class ThreadService {
         if ($metadata.httpStatusCode === 200) {
             return MakeThreadModal(channel_id, result.ts, date);
         } else {
-            throw error;
+            throw new Error();
         }
     };
 
