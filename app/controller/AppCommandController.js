@@ -11,7 +11,7 @@ class AppCommandController {
     };
 
     async handleAppCommand (command, logger, client) {
-        logger.info('受信コマンド出力；' + JSON.stringify((command)));
+        logger.info('受信コマンド出力:' + JSON.stringify((command)));
 
         const commandName = command.command;
         console.log(`command:${commandName}`);
@@ -27,13 +27,23 @@ class AppCommandController {
     // /makethread実行時
     async handleMakethread (command, logger, client) {
         const { user_id, channel_id } = command;
-        const view = await this.threadService.newThreadEntry(user_id, channel_id, client);
+        const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 
-        // モーダルを開く
-        await client.views.open({
-            trigger_id: command.trigger_id,
-            view: view, 
-        });
+        let result = await this.threadService.newThreadEntry(user_id, channel_id, date, client);
+        console.log(JSON.stringify(result));
+
+        // DB保存実行
+        if (result.$metadata.httpStatusCode == 200) {
+            // モーダルを開く
+            const view =  MakeThreadModal(channel_id, result.ts, date);
+            await client.views.open({
+                trigger_id: command.trigger_id,
+                view: view, 
+            });
+        } else {
+            return `スレッド情報DB登録時エラー`;
+        }
+        
     }
 };
 

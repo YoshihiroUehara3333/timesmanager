@@ -17,14 +17,13 @@ class ThreadService {
             mrkdwn: true,
         });
         
-        // 投稿URLを取得
+        // スレッドの投稿URLを取得
         let { permalink } = await client.chat.getPermalink({
             channel: result.channel,
             message_ts: result.ts
         });
-        this.threadRepository.putNewThread(result.message, date, permalink);
-
-        return MakeThreadModal(channel_id, result.ts, date);
+        threadModel = this.createThreadModel (result.message, date, permalink);
+        return await this.threadRepository.putNewThread(threadModel);
     };
 
 
