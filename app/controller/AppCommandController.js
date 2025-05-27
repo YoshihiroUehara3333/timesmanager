@@ -1,4 +1,5 @@
 // app.command受け取り時
+const { SlackConst } = require('../constants/SlackConst');
 
 //モジュール読み込み
 require('date-utils');
@@ -13,10 +14,10 @@ class AppCommandController {
         logger.info('受信コマンド出力；' + JSON.stringify((command)));
 
         const commandName = command.command;
-        console.log(commandName);
+        console.log(`command:${commandName}`);
 
         switch (commandName) {
-            case '/makethread':
+            case SlackConst.COMMAND.makeThread:
                 return await this.handleMakethread(command, logger, client);
             default:
                 break;

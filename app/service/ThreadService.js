@@ -1,8 +1,8 @@
 // 【壁】関連のデータ加工を行うクラス
 
-class TwitterService {
-    constructor (twitterRepository) {
-        this.twitterRepository = twitterRepository;
+class ThreadService {
+    constructor (threadRepository) {
+        this.threadRepository = threadRepository;
     };
 
     // 新規の【壁】のポスト情報をDBに保存する
@@ -25,4 +25,4 @@ class TwitterService {
     };
 }
 
-exports.TwitterService = TwitterService;
+exports.ThreadService = ThreadService;

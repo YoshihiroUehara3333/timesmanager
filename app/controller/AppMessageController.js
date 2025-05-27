@@ -1,13 +1,13 @@
 // app.message受け取り時
 
 // モジュール読み込み
-const { SlackConstants } = require('../constants/SlackConstants');
+const { SlackConst } = require('../constants/SlackConst');
 const { RegexConst } = require('../constants/RegexConst');
 
 class AppMessageController {
-    constructor (diaryService, twitterService, slackPresenter) {
+    constructor (diaryService, threadService, slackPresenter) {
         this.diaryService = diaryService;
-        this.twitterService = twitterService;
+        this.threadService = threadService;
         this.slackPresenter = slackPresenter;
     };
 
@@ -37,7 +37,7 @@ class AppMessageController {
         const isThreadReply = !!message.thread_ts;
         if(isThreadReply) {
             logger.info("スレッド内のメッセージです。");
-            if (text.match(`<@${SlackConstants.ID.botUserId}>`)) {
+            if (text.match(`<@${SlackConst.ID.botUserId}>`)) {
                 // スレッド内ボットメンションは現状疑似スラッシュコマンドのみ
                 await this.handleNewThreadMentionMessage(message, logger, client);
             } else {
@@ -53,7 +53,6 @@ class AppMessageController {
     // 編集投稿時はこの関数で処理する
     async handleEditedMessage (message, logger, client) {
         logger.info("handleEditedMessageが実行されました");
-        let msg = 'handleEditedMessage初期値';
 
         const text = message.message.text;
         const userId = message.message.user;
@@ -62,7 +61,7 @@ class AppMessageController {
             // 日記編集時
             try {
                 logger.info("diaryService.updateDiaryを実行");
-                msg = await this.diaryService.updateDiary(message, client);
+                const msg = await this.diaryService.updateDiary(message, client);
                 logger.info("diaryService.updateDiaryが終了:" + JSON.stringify(msg));
 
                 await this.slackPresenter.sendDirectMessage(client, msg, userId);
@@ -77,7 +76,6 @@ class AppMessageController {
     // 現状疑似スラッシュコマンドのみ
     async handleNewThreadMentionMessage (message, logger, client) {
         logger.info("handleNewThreadMentionMessageが実行されました");
-        let msg = 'handleNewThreadMentionMessage初期値';
 
         const text = message.text;
         // /AIフィードバック
@@ -86,7 +84,7 @@ class AppMessageController {
             const threadTs = message.ts;
             try {
                 logger.info("diaryService.aiFeedbackを実行");
-                msg = await this.diaryService.generateFeedback(message, client);
+                const msg = await this.diaryService.generateFeedback(message, client);
                 logger.info("diaryService.aiFeedbackが終了:" + JSON.stringify(msg));
 
                 await this.slackPresenter.sendThreadMessage (client, msg, channel, threadTs);
@@ -111,7 +109,6 @@ class AppMessageController {
     // スレッド外部かつ、新規ポスト時
     async handleNewTopLevelMessage (message, logger, client) {
         logger.info("handleTopLevelNewMessageが実行されました");
-        let msg = 'handleTopLevelMessage初期値';
 
         // messageから各情報取得
         const userId = message.user;
@@ -121,24 +118,11 @@ class AppMessageController {
             // 日記新規投稿時
             try {
                 logger.info("diaryService.newDiaryEntryを実行");
-                msg = await this.diaryService.newDiaryEntry(message, client);
+                const msg = await this.diaryService.newDiaryEntry(message, client);
                 logger.info("diaryService.newDiaryEntryが終了:" + JSON.stringify(msg));
 
                 await this.slackPresenter.sendDirectMessage(client, msg, userId);
                 logger.info("DM送信成功");
-            } catch (error) {
-                console.error("DM送信時エラー:", error);
-            }
-
-        } else if (text.match(RegexConst.THREAD)) {
-            // 壁投稿時
-            try {
-                logger.info("twitterService.newThreadEntryを実行");
-                msg = await this.twitterService.newThreadEntry(message, client);
-                logger.info("twitterService.newThreadEntryが終了:" + JSON.stringify(msg));
-
-                await this.slackPresenter.sendDirectMessage(client, msg, userId);
-                logger.info("Twitter情報DB保存成功");
             } catch (error) {
                 console.error("DM送信時エラー:", error);
             }
