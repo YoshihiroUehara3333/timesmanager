@@ -31,7 +31,8 @@ exports.WorkPlanBlock = (user_id, work_plan, selected_time) => ([
 						text: "完了"
 					},
 					style: "primary",
-					value: "done"
+					value: "finish",
+					action_id: "finishbutton"
 				},
 				{
 					type: "button",
@@ -41,7 +42,8 @@ exports.WorkPlanBlock = (user_id, work_plan, selected_time) => ([
 						text: "やめた"
 					},
 					style: "danger",
-					value: "cancel"
+					value: "cancel",
+					action_id: "cancelbutton",
 				}
 			]
 		}
