@@ -6,6 +6,7 @@ exports.SlackConst = {
         getPermalink: "https://slack.com/api/chat.getPermalink",
     },
     COMMAND: {
-        makeThread: "/makethread"
+        makeThread: "/makethread",
+        warmUp: "/warmup",
     },
 };

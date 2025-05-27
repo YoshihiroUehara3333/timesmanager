@@ -18,6 +18,8 @@ class AppCommandController {
         switch (commandName) {
             case SlackConst.COMMAND.makeThread:
                 return await this.handleMakethread(command, logger, client);
+            case SlackConst.COMMAND.warmUp:
+                return; // 何もしない
             default:
                 break;
         }

@@ -68,7 +68,7 @@ app.message(async ({ message, context, logger, client }) => {
 });
 
 // モーダル押下時
-app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, client }) => {
+app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, logger, client }) => {
     await ack();
 
     console.log(`
@@ -77,7 +77,7 @@ app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, client }) 
     view:${JSON.stringify(view)} \n
     `.trim());
 
-    await appViewController.handleModalCallback(body, view, client);
+    await appViewController.handleModalCallback(body, view, logger, client);
 });
 
 // ハンドラー生成
