@@ -64,7 +64,8 @@ app.message(async ({ message, context, logger, client }) => {
 });
 
 // モーダル押下時
-app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ body, view, client }) => {
+app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, client }) => {
+    await ack();
     console.log(`
     app.view \n
     body: ${JSON.stringify(body)} \n
