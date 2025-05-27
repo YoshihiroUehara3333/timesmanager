@@ -14,7 +14,7 @@ class DynamoThreadRepository {
   // データの登録
   async putNewThread(threadModel) {
     const item = threadModel.toItem();
-    item.partition_key = `${DBConst.POST_CATEGORY.THREAD}-${userId + channel + date}`;
+    item.partition_key = `${DBConst.POST_CATEGORY.THREAD}-${threadModel.partitionKeyBase}`;
 
     try {
       return await this.dynamoDb.send(new PutCommand({
