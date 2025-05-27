@@ -1,12 +1,14 @@
 // Dynamo DBとの日記データのやり取りを担当するクラス
 
 // モジュール読み込み
-const AWS = require('aws-sdk');
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
+const { DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb');
 const { DBConst } = require('../constants/DBConst');
 
 class DynamoDiaryRepository {
     constructor () {
-        this.dynamodb = new AWS.DynamoDB.DocumentClient();
+        const client = new DynamoDBClient({});
+        this.dynamodb = DynamoDBDocumentClient.from(client);
     }
 
     async getDiaryByPartitionKey (diaryModel) {
@@ -14,10 +16,10 @@ class DynamoDiaryRepository {
             partition_key: `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`,
         };
 
-        const result = await this.dynamodb.get({
+        const result = await this.dynamodb.send(new GetCommand({
             TableName: process.env.DYNAMO_TABLE_NAME,
             Key: key,
-        }).promise();
+        }));
         
         return result;
     }
@@ -26,16 +28,16 @@ class DynamoDiaryRepository {
         const item = diaryModel.toItem();
         item.partition_key = `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`;
 
-        const result = await this.dynamodb.put({
+        const result = await this.dynamodb.send(new PutCommand({
             TableName: process.env.DYNAMO_TABLE_NAME,
             Item: item,
-        }).promise();
+        }));
 
         return result;
     }
     
     async getDiaryByThreadTs(thread_ts) {
-        const result = await this.dynamodb.query({
+        const result = await this.dynamodb.send(new QueryCommand({
             TableName: process.env.DYNAMO_TABLE_NAME,
             IndexName: DBConst.GSI_NAME.EVENT_TS, // 作成したGSI名
             KeyConditionExpression: '#indexKey = :indexValue', // 条件を指定
@@ -45,7 +47,7 @@ class DynamoDiaryRepository {
               ExpressionAttributeValues: {
                 ':indexValue': thread_ts // 検索する値
               }
-        }).promise();
+        }));
 
         if (result.Count == 1) {
             return result.Items[0];

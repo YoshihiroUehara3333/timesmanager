@@ -10,4 +10,5 @@ services:
       - .env.dev
     volumes:
       - .:/app
-    command: ["node", "app/index_local.js"]
+      - /app/node_modules
+    command: ["node", "app/index.js"]
