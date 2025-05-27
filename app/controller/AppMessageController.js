@@ -82,7 +82,7 @@ class AppMessageController {
         if (text.match(RegexConst.COMMANDS.AI_FEEDBACK)) {
             try {
                 logger.info("diaryService.aiFeedbackを実行");
-                const msg = await this.diaryService.generateFeedback(message, client);
+                const msg = await this.diaryService.generateFeedback(message);
                 logger.info("diaryService.aiFeedbackが終了:" + JSON.stringify(msg));
 
                 await this.slackPresenter.sendThreadMessage (client, msg, channel, ts);
