@@ -29,7 +29,6 @@ class AppCommandController {
         const { user_id, channel_id } = command;
         const view = await this.threadService.newThreadEntry(user_id, channel_id, client);
 
-        console.log(view);
         // モーダルを開く
         await client.views.open({
             trigger_id: command.trigger_id,

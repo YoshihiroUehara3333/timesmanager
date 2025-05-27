@@ -12,6 +12,22 @@ class DynamoThreadRepository {
   };
 
   // データの登録
+  async putNewThread(threadModel) {
+    const item = threadModel.toItem();
+    item.partition_key = `${DBConst.POST_CATEGORY.THREAD}-${userId + channel + date}`;
+
+    try {
+      return await this.dynamoDb.send(new PutCommand({
+        TableName: process.env.DYNAMO_TABLE_NAME,
+        Item: item,
+      }));
+    } catch (error) {
+      console.error("DynamoDB登録時エラー:", error);
+      return {};
+    }
+  };
+
+  // データの登録
   async putThreadReply(replyModel) {
     const item = replyModel.toItem();
     item.partition_key = `${DBConst.POST_CATEGORY.REPLY}-${replyModel.partitionKeyBase}`;
@@ -25,7 +41,6 @@ class DynamoThreadRepository {
       console.error("DynamoDB登録時エラー:", error);
       return {};
     }
-
   };
 
   // データの取得
