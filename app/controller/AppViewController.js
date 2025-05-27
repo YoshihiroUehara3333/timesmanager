@@ -21,8 +21,7 @@ class AppViewController {
     // /makethreadモーダル送信時の処理
     async handleMakeThreadModal(body, view, client){
         const userId = body.user.id;
-        const metadata = JSON.parse(view.private_metadata);
-        const { channel_id, thread_ts } = metadata;
+        const { channel_id, thread_ts } = JSON.parse(view.private_metadata);
 
         const content = view.state.values.content_block.content_input.value || '';
 

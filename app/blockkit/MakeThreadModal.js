@@ -1,4 +1,4 @@
-// /makethread実行時のモーダル定義
+// /makethread実行時のモーダルBlockKit定義定義
 const { ModalConst } = require('../constants/ModalConst');
 
 exports.MakeThreadModal = (channel_id, thread_ts, date) => ({

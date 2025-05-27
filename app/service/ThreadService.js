@@ -1,7 +1,7 @@
 // 【壁】関連のデータ加工を行うクラス
 const { ThreadModel } = require('../model/ThreadModel');
 const { ReplyModel } = require('../model/ReplyModel');
-const { MakeThreadModal } = require('../modals/MakeThreadModal');
+const { MakeThreadModal } = require('../blockkit/MakeThreadModal');
 
 class ThreadService {
     constructor (threadRepository) {
@@ -40,6 +40,7 @@ class ThreadService {
         await this.threadRepository.putNewReply(replyModel);
     }
 
+
     // ThreadModel生成
     createThreadModel (result, date, permalink) {
         const threadModel = new ThreadModel();
@@ -49,6 +50,17 @@ class ThreadService {
         threadModel.threadTs = result.ts;
         threadModel.slackUrl = permalink;
         return threadModel;
+    }
+
+    // ReplyModel生成
+    createReplyModel (result, date, permalink) {
+        const replyModel = new ReplyModel();
+        replyModel.date = date;
+        replyModel.userId = result.user;
+        replyModel.channel = result.channel;
+        replyModel.threadTs = result.ts;
+        replyModel.slackUrl = permalink;
+        return replyModel;
     }
 }
 
