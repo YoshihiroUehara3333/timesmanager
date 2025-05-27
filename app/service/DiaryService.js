@@ -21,7 +21,7 @@ class DiaryService {
         } catch (error) {
             console.error("エラー:", error);
             throw new Error("フィードバック生成中にエラーが発生しました。");
-        };
+        }
     };
 
     /*
@@ -44,20 +44,15 @@ class DiaryService {
         // DB新規重複チェック
         try {
             const result = await this.diaryRepository.getDiaryByPartitionKey(diaryModel);
-            if (result.Item) {
-                return `日付が重複しています。(${date})`;
+            if (result.Item) return `日付が重複しています。(${date})`;
+
+            let data = await this.diaryRepository.putDiary(diaryModel);
+            if (data.$metadata.httpStatusCode == 200) {
+                return  `日記(${date})のDB登録に成功しました。`;
             }
         } catch (error) {
             console.error("DB新規重複チェック時エラー:", error);
-            return `DBアクセスエラー(${error})`;
-        }
-
-        // DB保存実行
-        let result = await this.diaryRepository.putDiary(diaryModel);
-        if (result.$metadata.httpStatusCode == 200) {
-            return  `日記(${date})のDB登録に成功しました。`;
-        } else {
-            return `日記(${date})のDB登録に失敗しました。`;
+            throw new Error(`日記(${date})のDB登録に失敗しました。`);
         }
     }
 
