@@ -45,10 +45,10 @@ app.command(/.*/, async ({ ack, command, context, logger, client }) => {
     }
 
     console.log(`
-    app.command \n
-    context: ${JSON.stringify(context)} \n
-    command: ${JSON.stringify(command)} \n
-    `);
+    app.command\n
+    context:${JSON.stringify(context)}\n
+    command:${JSON.stringify(command)}\n
+    `.trim());
     
     await ack();
     await appCommandController.handleAppCommand(command, logger, client);
@@ -57,22 +57,26 @@ app.command(/.*/, async ({ ack, command, context, logger, client }) => {
 // メッセージ検知
 app.message(async ({ message, context, logger, client }) => {
     if(context.retryNum) return; // リトライ以降のリクエストは弾く
+    
     console.log(`
     app.message \n
     context: ${JSON.stringify(context)} \n
     message: ${JSON.stringify(message)} \n
-    `);
+    `.trim());
+
     await appMessageController.handleAppMessage(message, logger, client);
 });
 
 // モーダル押下時
 app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, client }) => {
     await ack();
+
     console.log(`
     app.view \n
     body: ${JSON.stringify(body)} \n
     view: ${JSON.stringify(view)} \n
-    `);
+    `.trim());
+
     await appViewController.handleModalCallback(body, view, client);
 });
 

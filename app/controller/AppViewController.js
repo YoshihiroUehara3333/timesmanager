@@ -24,11 +24,10 @@ class AppViewController {
         const metadata = JSON.parse(view.private_metadata);
         const { channel_id, thread_ts } = metadata;
 
-        const title = view.state.values.title_block.title_input.value || '';
         const content = view.state.values.content_block.content_input.value || '';
 
         // スレッドへの返信
-        const msg = `📝 <@${userId}> \n作業予定\n*タイトル:* ${title}\n*内容:* ${content}`;
+        const msg = `<@${userId}>\n📝作業計画\n${content}`;
         const result = 
             await this.slackPresenter.sendThreadMessage(client, msg, channel_id, thread_ts);
 

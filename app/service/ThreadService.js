@@ -1,26 +1,35 @@
 // 【壁】関連のデータ加工を行うクラス
-const { ThreadModal } = require('../modals/ThreadModal');
-
+const { ThreadModel } = require('../model/ThreadModel');
+const { ReplyModel } = require('../model/ReplyModel');
+const { MakeThreadModal } = require('../modals/MakeThreadModal');
 
 class ThreadService {
     constructor (threadRepository) {
         this.threadRepository = threadRepository;
     };
 
-    // 新規のスレッド文面を作成しViewを作成する
-    async newThreadEntry (user_id, channel_id, client) {
-        const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    // 新規のスレッド文面を作成しDBに登録する
+    async newThreadEntry (user_id, channel_id, date, client) {
         const text = `<@${user_id}> \n*【壁】${date}*`;
-
         const result = await client.chat.postMessage({
             channel: channel_id,
             text: text,
             mrkdwn: true,
         });
+        
+        // スレッドの投稿URLを取得
+        let { permalink } = await client.chat.getPermalink({
+            channel: result.channel,
+            message_ts: result.ts
+        });
+        const threadModel = this.createThreadModel (result, date, permalink);
+        const data = await this.threadRepository.putNewThread(threadModel);
 
-        console.log(JSON.stringify(result));
-
-        return ThreadModal(channel_id, result.ts);
+        if (data.$metadata.httpStatusCode === 200) {
+            return MakeThreadModal(channel_id, result.ts, date);
+        } else {
+            throw new Error();
+        }
     };
 
 
@@ -28,7 +37,18 @@ class ThreadService {
     async newThreadReply (message, logger, client) {
         const text = message.text;
 
-        this.threadRepository.put;
+        await this.threadRepository.putNewReply(replyModel);
+    }
+
+    // ThreadModel生成
+    createThreadModel (result, date, permalink) {
+        const threadModel = new ThreadModel();
+        threadModel.date = date;
+        threadModel.userId = result.user;
+        threadModel.channel = result.channel;
+        threadModel.threadTs = result.ts;
+        threadModel.slackUrl = permalink;
+        return threadModel;
     }
 }
 

@@ -6,6 +6,9 @@ exports.DBConst = {
         THREAD: "10",
         REPLY: "11",
         URL: "12",
+        AI: {
+            SUMMARY: 90,
+        }
     },
     GSI_NAME: {
         EVENT_TS: "event_ts-index",

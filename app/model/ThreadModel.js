@@ -1,5 +1,5 @@
-// `リプライのデータ構造定義クラス
-class ReplyModel {
+// スレッドのデータ構造定義クラス
+class ThreadModel {
     constructor () {
         this._date = '';
         this._userId = '';
@@ -63,4 +63,4 @@ class ReplyModel {
     };
 }
 
-exports.ReplyModel = ReplyModel;
+exports.ThreadModel = ThreadModel;
