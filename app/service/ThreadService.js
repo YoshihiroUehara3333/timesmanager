@@ -10,11 +10,12 @@ class ThreadService {
     // 新規のスレッド文面を作成しViewを作成する
     async newThreadEntry (user_id, channel_id, client) {
         const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        const text = `<@${user_id}> \n*【壁】${date}*`;
 
         const result = await client.chat.postMessage({
             channel: channel_id,
-            text: `<@${user_id}> \n*【壁】${date}*`,
-            mrkdwn: true
+            text: text,
+            mrkdwn: true,
         });
 
         console.log(JSON.stringify(result));
