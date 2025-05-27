@@ -1,9 +1,9 @@
-// Dynamo DBとの日記データのやり取りを担当するクラス
+// スレッド情報をDynamo DBに永続化するクラス
 
 // モジュール読み込み
 const AWS = require('aws-sdk');
 
-class DynamoTwitterRepository {
+class DynamoThreadRepository {
   constructor() {
     this.dynamodb = new AWS.DynamoDB.DocumentClient();
   };
@@ -25,4 +25,4 @@ class DynamoTwitterRepository {
   }
 }
 
-exports.DynamoTwitterRepository = DynamoTwitterRepository;
+exports.DynamoThreadRepository = DynamoThreadRepository;

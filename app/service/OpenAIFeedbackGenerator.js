@@ -13,9 +13,8 @@ class OpenAIFeedbackGenerator {
 
     async generateFeedback(diaryJson) {
         console.log("generateFeedback", JSON.stringify(diaryJson));
-        const prompt = Prompts.feedbackPrompt;
 
-        console.log("prompt:", prompt);
+        console.log(`prompt:${Prompts.feedback}`);
         console.log(`model:${process.env.GPT_MODEL}`);
         try {
             const response = await this.openAI.chat.completions.create({
@@ -25,7 +24,7 @@ class OpenAIFeedbackGenerator {
                 messages: [
                     { 
                         role: "system", 
-                        content: prompt
+                        content: Prompts.feedback
                     },
                     { 
                         role: "user", 

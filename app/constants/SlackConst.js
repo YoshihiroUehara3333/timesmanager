@@ -1,4 +1,4 @@
-exports.SlackConstants = {
+exports.SlackConst = {
     ID: {
         botUserId: process.env.SLACK_BOT_USER_ID,
     },

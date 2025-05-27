@@ -2,7 +2,7 @@
 
 // モジュール読み込み
 const AWS = require('aws-sdk');
-const { DBConst } = require('../constants/DBConstants');
+const { DBConst } = require('../constants/DBConst');
 
 class DynamoDiaryRepository {
     constructor () {
