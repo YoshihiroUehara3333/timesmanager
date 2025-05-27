@@ -50,7 +50,9 @@ AIによるフィードバックを生成し、スレッド内に返信する。
 │   │   ├── RegexConst.js
 │   │   └── SlackConstants.js
 │   ├── controller/
-│   │   ├── .js
+│   │   ├── AppCommandController.js
+│   │   ├── AppMessageController.js
+│   │   └── AppViewController.js
 │   ├── modals/
 │   │   ├── .js
 │   ├── model/
