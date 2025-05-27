@@ -11,11 +11,11 @@ class OpenAIFeedbackGenerator {
         });
     }
 
+    // AIによる日報のフィードバックを生成
     async generateFeedback(diaryJson) {
         console.log("generateFeedback", JSON.stringify(diaryJson));
-        const prompt = Prompts.feedbackPrompt;
 
-        console.log("prompt:", prompt);
+        console.log(`prompt:${Prompts.feedback}`);
         console.log(`model:${process.env.GPT_MODEL}`);
         try {
             const response = await this.openAI.chat.completions.create({
@@ -25,7 +25,7 @@ class OpenAIFeedbackGenerator {
                 messages: [
                     { 
                         role: "system", 
-                        content: prompt
+                        content: Prompts.feedback
                     },
                     { 
                         role: "user", 
@@ -40,7 +40,7 @@ class OpenAIFeedbackGenerator {
             return `使用モデル: ${process.env.GPT_MODEL}\nフィードバック:\n ${feedback}`;
         } catch (error) {
             console.error("OpenAI APIエラー:", error);
-            return  "フィードバックの生成に失敗しました。";
+            return  `フィードバックの生成に失敗しました。`;
         }
     }
 }

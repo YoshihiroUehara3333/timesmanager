@@ -1,41 +1,47 @@
 // Dynamo DBとの日記データのやり取りを担当するクラス
 
 // モジュール読み込み
-const AWS = require('aws-sdk');
-const { DBConst } = require('../constants/DBConstants');
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
+const { DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb');
+const { DBConst } = require('../constants/DBConst');
 
 class DynamoDiaryRepository {
     constructor () {
-        this.dynamodb = new AWS.DynamoDB.DocumentClient();
+        const client = new DynamoDBClient({});
+        this.dynamodb = DynamoDBDocumentClient.from(client);
     }
 
     async getDiaryByPartitionKey (diaryModel) {
         const key = {
-            partition_key: DBConst.POST_CATEGORY.DIARY + diaryModel.partitionKeyBase,
+            partition_key: `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`,
         };
-
-        const result = await this.dynamodb.get({
-            TableName: process.env.DYNAMO_TABLE_NAME,
-            Key: key,
-        }).promise();
-        
-        return result;
+        try {
+            return await this.dynamodb.send(new GetCommand({
+                TableName: process.env.DYNAMO_TABLE_NAME,
+                Key: key,
+            }));
+        } catch (error) {
+            console.error("DynamoDB問い合わせ時エラー:", error);
+            return {};
+        }
     }
 
     async putDiary (diaryModel) {
         const item = diaryModel.toItem();
-        item.partition_key = DBConst.POST_CATEGORY.DIARY + diaryModel.partitionKeyBase;
-
-        const result = await this.dynamodb.put({
-            TableName: process.env.DYNAMO_TABLE_NAME,
-            Item: item,
-        }).promise();
-
-        return result;
+        item.partition_key = `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`;
+        try {
+            return await this.dynamodb.send(new PutCommand({
+                TableName: process.env.DYNAMO_TABLE_NAME,
+                Item: item,
+            }));
+        } catch (error) {
+            console.error("DynamoDB登録時エラー:", error);
+            return {};
+        }
     }
     
     async getDiaryByThreadTs(thread_ts) {
-        const result = await this.dynamodb.query({
+        const result = await this.dynamodb.send(new QueryCommand({
             TableName: process.env.DYNAMO_TABLE_NAME,
             IndexName: DBConst.GSI_NAME.EVENT_TS, // 作成したGSI名
             KeyConditionExpression: '#indexKey = :indexValue', // 条件を指定
@@ -45,12 +51,12 @@ class DynamoDiaryRepository {
               ExpressionAttributeValues: {
                 ':indexValue': thread_ts // 検索する値
               }
-        }).promise();
+        }));
 
         if (result.Count == 1) {
             return result.Items[0];
         }
-        return undefined;
+        return {};
     }
 };
 

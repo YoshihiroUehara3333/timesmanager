@@ -1,3 +1,4 @@
+// /makethread実行時のモーダル定義
 const { ModalConst } = require('../constants/ModalConst');
 
 exports.ThreadModal = (channel_id, thread_ts, date) => ({
@@ -28,8 +29,7 @@ exports.ThreadModal = (channel_id, thread_ts, date) => ({
             element: {
                 type: 'plain_text_input',
                 action_id: 'content_input',
-                multiline: true
             }
         }
     ]
-})
+});

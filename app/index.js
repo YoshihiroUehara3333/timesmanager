@@ -1,28 +1,28 @@
 // モジュール読み込み
 const { App, AwsLambdaReceiver } = require('@slack/bolt');
 const { DynamoDiaryRepository } = require('./repository/DynamoDiaryRepository');
-const { DynamoTwitterRepository } = require('./repository/DynamoTwitterRepository');
+const { DynamoThreadRepository } = require('./repository/DynamoThreadRepository');
 const { AppCommandController } = require('./controller/AppCommandController');
 const { AppMessageController } = require('./controller/AppMessageController');
 const { AppViewController } = require('./controller/AppViewController');
 const { DiaryService } = require('./service/DiaryService');
-const { TwitterService } = require('./service/TwitterService');
+const { ThreadService } = require('./service/ThreadService');
 const { OpenAIFeedbackGenerator } = require('./service/OpenAIFeedbackGenerator');
 const { SlackPresenter } = require('./presenter/SlackPresenter');
 const { ModalConst } = require('./constants/ModalConst');
 
 // DI
 const diaryRepository = new DynamoDiaryRepository();
-const twitterRepository = new DynamoTwitterRepository();
+const threadRepository = new DynamoThreadRepository();
 
 const feedbackGenerator = new OpenAIFeedbackGenerator();
 const diaryService = new DiaryService(diaryRepository, feedbackGenerator);
-const twitterService = new TwitterService(twitterRepository);
+const threadService = new ThreadService(threadRepository);
 
 const slackPresenter = new SlackPresenter();
-const appCommandController = new AppCommandController(slackPresenter);
-const appMessageController = new AppMessageController(diaryService, twitterService, slackPresenter);
-const appViewController = new AppViewController();
+const appCommandController = new AppCommandController(threadService);
+const appMessageController = new AppMessageController(diaryService, threadService, slackPresenter);
+const appViewController = new AppViewController(threadService, slackPresenter);
 
 
 // アプリ初期化
@@ -43,11 +43,13 @@ app.command(/.*/, async ({ ack, command, context, logger, client }) => {
         await ack();
         return; // リトライ以降のリクエストは弾く
     }
+
     console.log(`
     app.command \n
     context: ${JSON.stringify(context)} \n
     command: ${JSON.stringify(command)} \n
     `);
+    
     await ack();
     await appCommandController.handleAppCommand(command, logger, client);
 });

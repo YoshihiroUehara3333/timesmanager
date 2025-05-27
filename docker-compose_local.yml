@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   app:
     build:
@@ -10,4 +9,5 @@ services:
       - .env.dev
     volumes:
       - .:/app
+      - /app/node_modules
     command: ["node", "app/index_local.js"]
