@@ -8,19 +8,21 @@ class AppViewController {
     };
 
     // dispatch
-    async handleModalCallback(body, view, client) {
+    async handleModalCallback(body, view, logger, client) {
         const callbackId = view.callback_id;
         
         switch (callbackId) {
             case ModalConst.CALLBACK_ID.MAKETHREAD:
-                return await this.handleMakeThreadModal(body, view, client);
+                return await this.handleMakeThreadModal(body, view, logger, client);
             default:
                 break;
         }
     }
 
     // /makethreadモーダル送信時の処理
-    async handleMakeThreadModal(body, view, client){
+    async handleMakeThreadModal(body, view, logger, client){
+        logger.info(`handleMakeThreadModalを実行。`);
+        
         const user_id = body.user.id;
         const { channel_id, thread_ts } = JSON.parse(view.private_metadata);
 
@@ -31,7 +33,7 @@ class AppViewController {
             channel: channel_id,
             thread_ts: thread_ts,
             mrkdwn: true,
-            blocks: WorkPlanBlock(user_id, content),
+            blocks: WorkPlanBlock(user_id, work_plan),
         };
         console.log(JSON.stringify(json));
 
