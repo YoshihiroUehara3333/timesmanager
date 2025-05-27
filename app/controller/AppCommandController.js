@@ -32,7 +32,7 @@ class AppCommandController {
             let view = await this.threadService.newThreadEntry(user_id, channel_id, date, client);
             await client.views.open({
                 trigger_id: command.trigger_id,
-                view: view, 
+                view: view,
             }); 
         } catch (error) {
             logger.info(error);
