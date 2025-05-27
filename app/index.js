@@ -20,9 +20,9 @@ const diaryService = new DiaryService(diaryRepository, feedbackGenerator);
 const threadService = new ThreadService(threadRepository);
 
 const slackPresenter = new SlackPresenter();
-const appCommandController = new AppCommandController(slackPresenter);
+const appCommandController = new AppCommandController(threadService);
 const appMessageController = new AppMessageController(diaryService, threadService, slackPresenter);
-const appViewController = new AppViewController();
+const appViewController = new AppViewController(threadService, slackPresenter);
 
 
 // アプリ初期化

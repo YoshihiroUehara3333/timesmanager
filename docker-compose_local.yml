@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   app:
     build:
@@ -11,4 +10,4 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    command: ["node", "app/index.js"]
+    command: ["node", "app/index_local.js"]

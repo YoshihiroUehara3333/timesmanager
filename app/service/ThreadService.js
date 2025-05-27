@@ -1,27 +1,22 @@
 // 【壁】関連のデータ加工を行うクラス
+const { ThreadModal } = require('../modals/ThreadModal');
 
 class ThreadService {
     constructor (threadRepository) {
         this.threadRepository = threadRepository;
     };
 
-    // 新規の【壁】のポスト情報をDBに保存する
-    async newThreadEntry (message, client) {
-        const text = message.text;
+    // 新規のスレッド文面を作成しViewを作成する
+    async newThreadEntry (user_id, channel_id, client) {
+        const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 
-        // 投稿URLを取得
-        var result = await client.chat.getPermalink({
-            channel: message.channel,
-            message_ts: message.ts
+        const result = await client.chat.postMessage({
+            channel: channel_id,
+            text: `<@${user_id}> \n*【壁】${date}*`,
+            mrkdwn: true
         });
 
-        // 下記カラムをDBに保存する
-        // partition_key
-        // thread_ts
-        // date
-        // slack_url
-
-        return '';
+        return ThreadModal(channel_id, result.ts, date);
     };
 }
 

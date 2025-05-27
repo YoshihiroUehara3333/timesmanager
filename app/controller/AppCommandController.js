@@ -6,8 +6,8 @@ require('date-utils');
 const { ThreadModal } = require('../modals/ThreadModal');
 
 class AppCommandController {
-    constructor(slackPresenter){
-        this.slackPresenter = slackPresenter;
+    constructor(threadService){
+        this.threadService = threadService;
     };
 
     async handleAppCommand (command, logger, client) {
@@ -26,21 +26,13 @@ class AppCommandController {
 
     // /makethread実行時
     async handleMakethread (command, logger, client) {
-        const { channel_id, user_id } = command;
-
-        const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-        const msg = `<@${user_id}> \n*【壁】${date}*`;
-
-        // 壁投稿（メインメッセージ）
-        const result = await this.slackPresenter.sendMessage(client, msg, channel_id);
-
-        // blocks設定
-        const view = ThreadModal(command.channel_id, result.ts, date);
+        const { user_id, channel_id } = command;
+        const result = this.threadService.newThreadEntry(user_id, channel_id);
 
         // モーダルを開く
         await client.views.open({
             trigger_id: command.trigger_id,
-            view: view,
+            view: ThreadModal(command.channel_id, result.ts, date),
         });
     }
 };

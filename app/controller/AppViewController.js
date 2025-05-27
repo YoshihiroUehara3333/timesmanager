@@ -1,8 +1,9 @@
 const { ModalConst } = require('../constants/ModalConst');
 
 class AppViewController {
-    constructor (threadService) {
+    constructor (threadService, slackPresenter) {
         this.threadService = threadService;
+        this.slackPresenter = slackPresenter;
     };
 
     // dispatch
@@ -18,20 +19,18 @@ class AppViewController {
     }
 
     // /makethreadモーダル送信時の処理
-    async handleMakeThreadModal(body, view, client) {
+    async handleMakeThreadModal(body, view, client){
         const userId = body.user.id;
         const metadata = JSON.parse(view.private_metadata);
-        const { channel_id, thread_ts, date } = metadata;
+        const { channel_id, thread_ts } = metadata;
 
-        const title = view.state.values.title_block.title_input.value;
-        const content = view.state.values.content_block.content_input.value;
+        const title = view.state.values.title_block.title_input.value || '';
+        const content = view.state.values.content_block.content_input.value || '';
 
         // スレッドへの返信
-        const result = await client.chat.postMessage({
-            channel: channel_id,
-            thread_ts: thread_ts,
-            text: `📝 <@${userId}> さんの作業予定\n*タイトル:* ${title}\n*内容:* ${content}`
-        });
+        const msg = `📝 <@${userId}> \n作業予定\n*タイトル:* ${title}\n*内容:* ${content}`;
+        const result = 
+            await this.slackPresenter.sendThreadMessage(client, msg, channel_id, thread_ts);
 
         // 必要であればDBに保存（例: DynamoDB）
         // await dynamo.put({ ... });
