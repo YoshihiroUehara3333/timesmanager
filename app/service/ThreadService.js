@@ -20,8 +20,14 @@ class ThreadService {
             channel: result.channel,
             message_ts: result.ts
         });
-        const threadModel = this.createThreadModel (result.message, date, permalink);
-        return await this.threadRepository.putNewThread(threadModel);
+        const threadModel = this.createThreadModel (result, date, permalink);
+        const { $metadata } = await this.threadRepository.putNewThread(threadModel);
+
+        if ($metadata.httpStatusCode === 200) {
+            return MakeThreadModal(channel_id, result.ts, date);
+        } else {
+            throw error;
+        }
     };
 
 
@@ -33,7 +39,7 @@ class ThreadService {
     }
 
     // ThreadModel生成
-    createThreadModel (message, date, permalink) {
+    createThreadModel (result, date, permalink) {
         const threadModel = new ThreadModel();
         threadModel.date = date;
         threadModel.userId = message.user;

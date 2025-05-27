@@ -30,21 +30,15 @@ class AppCommandController {
         const { user_id, channel_id } = command;
         const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 
-        let result = await this.threadService.newThreadEntry(user_id, channel_id, date, client);
-        console.log(JSON.stringify(result));
-
-        // DB保存実行
-        if (result.$metadata.httpStatusCode == 200) {
-            // モーダルを開く
-            const view =  MakeThreadModal(channel_id, result.ts, date);
+        try {
+            let view = await this.threadService.newThreadEntry(user_id, channel_id, date, client);
             await client.views.open({
                 trigger_id: command.trigger_id,
                 view: view, 
-            });
-        } else {
-            return `スレッド情報DB登録時エラー`;
+            }); 
+        } catch (error) {
+            return ``;
         }
-        
     }
 };
 
