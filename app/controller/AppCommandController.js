@@ -3,6 +3,7 @@ const { SlackConst } = require('../constants/SlackConst');
 
 //モジュール読み込み
 require('date-utils');
+const { MakeThreadModal } = require('../modals/MakeThreadModal');
 
 
 class AppCommandController {

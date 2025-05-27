@@ -1,7 +1,5 @@
 // 【壁】関連のデータ加工を行うクラス
-const { MakeThreadModal } = require('../modals/MakeThreadModal');
 const { ThreadModel } = require('../model/ThreadModel');
-
 
 class ThreadService {
     constructor (threadRepository) {
