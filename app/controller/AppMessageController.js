@@ -45,7 +45,7 @@ class AppMessageController {
                 await this.handleNewThreadMessage(message, logger, client);
             }
         } else {
-            logger.info("スレッド外のメッセージです。");
+            logger.debug("スレッド外のメッセージです。");
             await this.handleNewTopLevelMessage(message, logger, client);
         }
     };
