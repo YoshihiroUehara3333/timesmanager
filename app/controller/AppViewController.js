@@ -8,10 +8,10 @@ class AppViewController {
         
         switch (callbackId) {
             case ModalConst.CALLBACK_ID.MAKETHREAD:
-                return await this.handleMakethread(command, logger, client);
+                return await this.handleMakethreadModal(body, logger, client);
+            default:
+                break;
         }
-
-        await this.handleMakeThreadModal(body, view, client);
     }
 
     // /makethreadモーダル送信時の処理

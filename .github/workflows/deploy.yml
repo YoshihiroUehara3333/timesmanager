@@ -6,6 +6,8 @@ on:
       - main
     paths-ignore:
       - 'README.md'
+      - 'docker-compose_local.yml'
+      - 'Dockerfile'
 
 permissions:
   id-token: write
