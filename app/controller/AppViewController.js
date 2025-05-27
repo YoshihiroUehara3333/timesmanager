@@ -33,7 +33,7 @@ class AppViewController {
             text: msg,
             thread_ts: thread_ts,
             mrkdwn: true,
-            blocks: WorkPlanBlock(userId, content),
+            blocks: WorkPlanBlock(user_id, content),
         };
         console.log(JSON.stringify(json));
 
