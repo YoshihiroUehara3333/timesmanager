@@ -27,6 +27,7 @@ class AppViewController {
         const { channel_id, thread_ts } = JSON.parse(view.private_metadata);
 
         const work_plan = view.state.values.content_block.work_plan.value || '';
+        const seleted_time = `00:00`;
 
         // スレッドへの返信
         const json = {
