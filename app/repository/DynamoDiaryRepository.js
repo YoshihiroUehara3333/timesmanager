@@ -29,12 +29,10 @@ class DynamoDiaryRepository {
         item.partition_key = `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`;
 
         try {
-            const result = await this.dynamodb.send(new PutCommand({
+            return await this.dynamodb.send(new PutCommand({
                 TableName: process.env.DYNAMO_TABLE_NAME,
                 Item: item,
             }));
-
-            console.log(JSON.stringify(result));
         } catch (error) {
             console.error("DynamoDB登録時エラー:", error);
         }

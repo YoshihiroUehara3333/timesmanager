@@ -57,7 +57,12 @@ class DiaryService {
         }
 
         // DB保存実行
-        return await this.diaryRepository.putDiary(diaryModel);
+        let result = await this.diaryRepository.putDiary(diaryModel);
+        if (result.httpStatusCode == 200) {
+            return  `日記(${diaryModel.date})のDB登録に成功しました。`;
+        } else {
+            return `日記(${diaryModel.date})のDB登録に失敗しました。`;
+        }
     }
 
     /*
