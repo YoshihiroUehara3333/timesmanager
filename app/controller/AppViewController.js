@@ -27,7 +27,7 @@ class AppViewController {
         const content = view.state.values.content_block.content_input.value || '';
 
         // スレッドへの返信
-        const msg = `📝 <@${userId}>\n作業予定\n${content}`;
+        const msg = `<@${userId}>\n📝作業計画\n${content}`;
         const result = 
             await this.slackPresenter.sendThreadMessage(client, msg, channel_id, thread_ts);
 
