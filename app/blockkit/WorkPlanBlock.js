@@ -4,7 +4,7 @@ exports.WorkPlanBlock = (user_id, content) => ([
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: `<@${userId}>\n📝作業計画\n${content}`,
+				text: `<@${user_id}>\n📝作業計画\n${content}`,
 			}
 		},
 		{

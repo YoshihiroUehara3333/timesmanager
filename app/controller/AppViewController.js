@@ -21,13 +21,13 @@ class AppViewController {
 
     // /makethreadモーダル送信時の処理
     async handleMakeThreadModal(body, view, client){
-        const userId = body.user.id;
+        const user_id = body.user.id;
         const { channel_id, thread_ts } = JSON.parse(view.private_metadata);
 
         const content = view.state.values.content_block.content_input.value || '';
 
         // スレッドへの返信
-        const msg = `<@${userId}>\n📝作業計画\n${content}`;
+        const msg = `<@${user_id}>\n📝作業計画\n${content}`;
         const json = {
             channel: channel_id,
             text: msg,
