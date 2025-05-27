@@ -33,12 +33,12 @@ class AppCommandController {
             await client.views.open({
                 trigger_id: command.trigger_id,
                 view: view,
-            }); 
+            });
         } catch (error) {
             logger.info(error);
             await client.chat.postMessage({
                 channel: user_id,
-                text: error,
+                text: `エラー内容:${error}`,
             });
         }
     }
