@@ -16,6 +16,7 @@ class ThreadService {
             text: text,
             mrkdwn: true,
         });
+        console.log(`result:${JSON.stringify(result)}`);
 
         this.threadRepository.putNewThread();
 
