@@ -11,7 +11,7 @@ exports.MakeThreadModal = (channel_id, thread_ts, date) => ({
     }),
     title: { 
         type: "plain_text", 
-        text: "作業予定を入力",
+        text: "作業計画を入力",
     },
     submit: { 
         type: "plain_text", 
@@ -31,8 +31,25 @@ exports.MakeThreadModal = (channel_id, thread_ts, date) => ({
             },
             element: {
                 type: "plain_text_input",
-                action_id: "content_input",
+                action_id: "work_plan",
             }
         },
+        {
+			type: "section",
+			text: {
+				type: "mrkdwn",
+				text: "終了予定時刻"
+			},
+			accessory: {
+				type: "timepicker",
+				initial_time: "09:30",
+				placeholder: {
+					type: "plain_text",
+					text: "Select time",
+					emoji: true
+				},
+				action_id: "timepicker"
+			}
+		},
     ]
 });

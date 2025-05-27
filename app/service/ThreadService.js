@@ -30,7 +30,7 @@ class ThreadService {
         if (data.$metadata.httpStatusCode === 200) {
             return MakeThreadModal(channel_id, result.ts, date);
         } else {
-            throw new Error();
+            throw new Error("DB登録時エラー");
         }
     };
 

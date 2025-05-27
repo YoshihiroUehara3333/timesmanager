@@ -73,8 +73,8 @@ app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, client }) 
 
     console.log(`
     app.view \n
-    body: ${JSON.stringify(body)} \n
-    view: ${JSON.stringify(view)} \n
+    body:${JSON.stringify(body)} \n
+    view:${JSON.stringify(view)} \n
     `.trim());
 
     await appViewController.handleModalCallback(body, view, client);

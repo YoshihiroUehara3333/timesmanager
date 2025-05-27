@@ -24,13 +24,11 @@ class AppViewController {
         const user_id = body.user.id;
         const { channel_id, thread_ts } = JSON.parse(view.private_metadata);
 
-        const content = view.state.values.content_block.content_input.value || '';
+        const work_plan = view.state.values.content_block.work_plan.value || '';
 
         // スレッドへの返信
-        const msg = `<@${user_id}>\n📝作業計画\n${content}`;
         const json = {
             channel: channel_id,
-            text: msg,
             thread_ts: thread_ts,
             mrkdwn: true,
             blocks: WorkPlanBlock(user_id, content),
