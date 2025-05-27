@@ -58,10 +58,10 @@ class DiaryService {
 
         // DB保存実行
         let result = await this.diaryRepository.putDiary(diaryModel);
-        if (result.httpStatusCode == 200) {
-            return  `日記(${diaryModel.date})のDB登録に成功しました。`;
+        if (result.$metadata.httpStatusCode == 200) {
+            return  `日記(${date})のDB登録に成功しました。`;
         } else {
-            return `日記(${diaryModel.date})のDB登録に失敗しました。`;
+            return `日記(${date})のDB登録に失敗しました。`;
         }
     }
 
@@ -89,14 +89,12 @@ class DiaryService {
             return `DBアクセスエラー(${error})`;
         }
 
-        // DB保存用パラメータ設定
-        try {
-            await this.diaryRepository.putDiary(diaryModel);
-            return `日記(${date})のDB更新に成功しました。`;
-    
-        } catch (error) {
-            console.error("DynamoDB更新時エラー:", error);
-            return `日記(${date})のDB更新に失敗しました。`;
+        // DB保存実行
+        let result = await this.diaryRepository.putDiary(diaryModel);
+        if (result.$metadata.httpStatusCode == 200) {
+            return  `日記(${date})のDB登録に成功しました。`;
+        } else {
+            return `日記(${date})のDB登録に失敗しました。`;
         }
     };
 

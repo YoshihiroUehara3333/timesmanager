@@ -15,19 +15,19 @@ class DynamoDiaryRepository {
         const key = {
             partition_key: `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`,
         };
-
-        const result = await this.dynamodb.send(new GetCommand({
-            TableName: process.env.DYNAMO_TABLE_NAME,
-            Key: key,
-        }));
-        
-        return result;
+        try {
+            return await this.dynamodb.send(new GetCommand({
+                TableName: process.env.DYNAMO_TABLE_NAME,
+                Key: key,
+            }));
+        } catch (error) {
+            console.error("DynamoDB問い合わせ時エラー:", error);
+        }
     }
 
     async putDiary (diaryModel) {
         const item = diaryModel.toItem();
         item.partition_key = `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`;
-
         try {
             return await this.dynamodb.send(new PutCommand({
                 TableName: process.env.DYNAMO_TABLE_NAME,

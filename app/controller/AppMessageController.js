@@ -108,13 +108,13 @@ class AppMessageController {
 
         // messageから各情報取得
         const {user, text} = message;
-        // 正規表現で日記と壁を検知する
+        // 正規表現で日記を検知する
         if (text.match(RegexConst.DATE)) {
             // 日記新規投稿時
             try {
                 logger.info("diaryService.newDiaryEntryを実行");
                 const msg = await this.diaryService.newDiaryEntry(message, client);
-                logger.info("diaryService.newDiaryEntryが終了:" + JSON.stringify(msg));
+                logger.info("diaryService.newDiaryEntryが終了:" + msg);
 
                 await this.slackPresenter.sendDirectMessage(client, msg, user);
                 logger.info("DM送信成功");
