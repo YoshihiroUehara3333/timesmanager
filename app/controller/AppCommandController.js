@@ -35,7 +35,11 @@ class AppCommandController {
                 view: view, 
             }); 
         } catch (error) {
-            throw new Error();
+            logger.info(error);
+            await client.chat.postMessage({
+                channel: user_id,
+                text: error,
+            });
         }
     }
 };

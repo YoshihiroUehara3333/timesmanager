@@ -28,14 +28,13 @@ class AppViewController {
 
         // スレッドへの返信
         const msg = `<@${userId}>\n📝作業計画\n${content}`;
-        const result = 
-            await client.chat.postMessage({
-                channel: channel_id,
-                text: msg,
-                thread_ts: thread_ts,
-                mrkdwn: true,
-                blocks: WorkPlanBlock(),
-            });
+        const result = await client.chat.postMessage({
+            channel: channel_id,
+            text: msg,
+            thread_ts: thread_ts,
+            mrkdwn: true,
+            blocks: WorkPlanBlock(),
+        });
 
         // 必要であればDBに保存（例: DynamoDB）
         // await dynamo.put({ ... });
