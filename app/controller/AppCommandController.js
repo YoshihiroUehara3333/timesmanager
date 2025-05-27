@@ -26,7 +26,7 @@ class AppCommandController {
     // /makethread実行時
     async handleMakethread (command, logger, client) {
         const { user_id, channel_id } = command;
-        const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        const date = new Date().toFormat("YYYY-MM-DD"); // YYYY-MM-DD
 
         try {
             let view = await this.threadService.newThreadEntry(user_id, channel_id, date, client);

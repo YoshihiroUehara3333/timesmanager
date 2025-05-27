@@ -1,4 +1,6 @@
-// 【壁】関連のデータ加工を行うクラス
+// 【壁】関連のデータ加工と永続化移譲を行うクラス
+
+// モジュール読み込み
 const { ThreadModel } = require('../model/ThreadModel');
 const { ReplyModel } = require('../model/ReplyModel');
 const { MakeThreadModal } = require('../blockkit/MakeThreadModal');
