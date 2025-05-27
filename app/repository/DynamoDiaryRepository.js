@@ -22,6 +22,7 @@ class DynamoDiaryRepository {
             }));
         } catch (error) {
             console.error("DynamoDB問い合わせ時エラー:", error);
+            return {};
         }
     }
 
@@ -35,6 +36,7 @@ class DynamoDiaryRepository {
             }));
         } catch (error) {
             console.error("DynamoDB登録時エラー:", error);
+            return {};
         }
     }
     
@@ -54,7 +56,7 @@ class DynamoDiaryRepository {
         if (result.Count == 1) {
             return result.Items[0];
         }
-        return undefined;
+        return {};
     }
 };
 
