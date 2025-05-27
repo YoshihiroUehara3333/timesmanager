@@ -18,7 +18,6 @@ class ThreadService {
             text: text,
             mrkdwn: true,
         });
-        console.log(JSON.stringify(result));
         
         // スレッドの投稿URLを取得
         let { permalink } = await client.chat.getPermalink({
@@ -48,7 +47,7 @@ class ThreadService {
     createThreadModel (result, date, permalink) {
         const threadModel = new ThreadModel();
         threadModel.date = date;
-        threadModel.userId = result.user;
+        threadModel.userId = result.message.user;
         threadModel.channel = result.channel;
         threadModel.threadTs = result.ts;
         threadModel.slackUrl = permalink;
