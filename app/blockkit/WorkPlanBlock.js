@@ -1,10 +1,10 @@
 // 作業予定入力時のBlockKit定義
-exports.WorkPlanBlock = (user_id, work_plan) => ([
+exports.WorkPlanBlock = (user_id, work_plan, seleted_time) => ([
 		{
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: `<@${user_id}>\n📝作業計画\n${work_plan}`,
+				text: `<@${user_id}>\n📝*作業計画*`,
 			}
 		},
 		{
@@ -16,15 +16,7 @@ exports.WorkPlanBlock = (user_id, work_plan) => ([
 				},
 				{
 					type: "mrkdwn",
-					text: "*When:*\nSubmitted Aut 10"
-				},
-				{
-					type: "mrkdwn",
-					text: "*Last Update:*\nMar 10, 2015 (3 years, 5 months)"
-				},
-				{
-					type: "mrkdwn",
-					text: "*Reason:*\nAll vowel keys aren't working."
+					text: `*完了目標*\n${selected_time}`
 				}
 			]
 		},
