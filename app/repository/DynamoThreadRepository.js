@@ -16,10 +16,16 @@ class DynamoThreadRepository {
     const item = replyModel.toItem();
     item.partition_key = `${DBConst.POST_CATEGORY.REPLY}-${replyModel.partitionKeyBase}`;
 
-    return await this.dynamoDb.send(new PutCommand({
-      TableName: process.env.DYNAMO_TABLE_NAME,
-      Item: item,
-    }));
+    try {
+      return await this.dynamoDb.send(new PutCommand({
+        TableName: process.env.DYNAMO_TABLE_NAME,
+        Item: item,
+      }));
+    } catch (error) {
+      console.error("DynamoDB登録時エラー:", error);
+      return {};
+    }
+
   };
 
   // データの取得

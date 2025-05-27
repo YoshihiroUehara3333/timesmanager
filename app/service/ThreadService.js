@@ -17,6 +17,8 @@ class ThreadService {
             mrkdwn: true
         });
 
+        console.log(JSON.stringify(result));
+
         return ThreadModal(channel_id, result.ts, date);
     };
 
@@ -24,6 +26,8 @@ class ThreadService {
     // スレッド内のリプライをDBに保存する
     async newThreadReply (message, logger, client) {
         const text = message.text;
+
+        this.threadRepository.put
     }
 }
 
