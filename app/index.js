@@ -82,7 +82,7 @@ app.action(ModalConst.ACTION_ID.WORKREPORT.PROGRESS, async ({ack, body, logger})
     logger.info(`app.action\nbody:${JSON.stringify(body)}\n`.trim());
 
     await ack();
-    await appActionController.handleWorkPlanAction();
+    await appActionController.handleWorkReportAction();
 })
 
 // 作業完了ボタン
@@ -90,7 +90,7 @@ app.action(ModalConst.ACTION_ID.WORKREPORT.FINISH, async ({ack, body, logger}) =
     logger.info(`app.action \n body:${JSON.stringify(body)}\n`.trim());
 
     await ack();
-    await appActionController.handleWorkPlanAction();
+    await appActionController.handleWorkReportAction();
 })
 
 // ハンドラー生成
