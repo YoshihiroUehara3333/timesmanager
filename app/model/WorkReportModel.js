@@ -1,5 +1,5 @@
-// スレッドのデータ構造定義クラス
-class ThreadModel {
+// 作業経過のデータ構造定義クラス
+class WorkReportModel {
     constructor () {
         this._date = '';
         this._userId = '';
@@ -48,19 +48,19 @@ class ThreadModel {
 
     get threadTs() {
         return this._threadTs;
-    }
+    };
 
     set threadTs(threadTs) {
         this._threadTs = threadTs;
-    }
+    };
 
     get date () {
         return this._date;
-    }
+    };
 
     set date (date) {
         this._date = date;
-    }
-};
+    };
+}
 
-exports.ThreadModel = ThreadModel;
+exports.WorkReportModel = WorkReportModel;

@@ -11,28 +11,28 @@ class SlackPresenter {
     // DMを送信する
     async sendDirectMessage (client, msg, userId) {
         return await client.chat.postMessage({
-            channel: userId,
-            text: msg,
-            mrkdwn: true
+            channel   : userId,
+            text      : msg,
+            mrkdwn    : true
         });
     }
 
     // 対象チャンネルにポストする
     async sendMessage (client, msg, channel) {
         return await client.chat.postMessage({
-            channel: channel,
-            text: msg,
-            mrkdwn: true
+            channel   : channel,
+            text      : msg,
+            mrkdwn    : true
         });
     }
 
     // スレッド内に返信する
     async sendThreadMessage (client, msg, channel, threadTs) {
         return await client.chat.postMessage({
-            channel: channel,
-            text: msg,
-            thread_ts: threadTs,
-            mrkdwn: true
+            channel   : channel,
+            text      : msg,
+            thread_ts : threadTs,
+            mrkdwn    : true
         });
     }
 }
