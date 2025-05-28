@@ -33,8 +33,8 @@ const awsLambdaReceiver = new AwsLambdaReceiver({
     processBeforeResponse   : true,
 });
 const app = new App({
-    token   : process.env.SLACK_BOT_USER_ACCESS_TOKEN,
-    receiver: awsLambdaReceiver,
+    token    : process.env.SLACK_BOT_USER_ACCESS_TOKEN,
+    receiver : awsLambdaReceiver,
 });
 
 const handler = awsLambdaReceiver.toHandler();
