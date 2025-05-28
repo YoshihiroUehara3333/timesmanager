@@ -19,7 +19,7 @@ class AppViewController {
         }
     }
 
-    // /makethreadモーダル送信時の処理
+    // 作業記録モーダル送信時の処理
     async handleMakeThreadModal(body, view, logger, client){
         logger.info(`handleMakeThreadModalを実行。`);
         
@@ -41,6 +41,7 @@ class AppViewController {
             blocks      : WorkPlanBlock(user_id, work_plan, selected_time, option),
         };
         const reply = await client.chat.postMessage(json);
+        console.log(JSON.stringify(reply));
 
         // 必要であればDBに保存（例: DynamoDB）
         // await dynamo.put({ ... });
