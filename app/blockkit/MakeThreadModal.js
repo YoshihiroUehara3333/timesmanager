@@ -24,7 +24,7 @@ exports.MakeThreadModal = (channel_id, thread_ts, date) => ({
     blocks: [
         {
             type: 'input',
-            block_id: 'content_block',
+            block_id: 'work_plan',
             label: { 
                 type: "plain_text", 
                 text: "作業予定",
@@ -35,8 +35,9 @@ exports.MakeThreadModal = (channel_id, thread_ts, date) => ({
             }
         },
         {
-			type: "input",
-			element: {
+			type    : "input",
+            block_id: 'timepicker',
+			element : {
 				type: "timepicker",
 				initial_time: "10:00",
 				placeholder: {
@@ -54,7 +55,7 @@ exports.MakeThreadModal = (channel_id, thread_ts, date) => ({
 		},
         {
             type: 'input',
-            block_id: 'content_block',
+            block_id: 'option',
             label: { 
                 type: "plain_text", 
                 text: "備考",

@@ -25,7 +25,7 @@ class DynamoThreadRepository {
             console.error("DynamoDB登録時エラー:", error);
             return {};
         }
-    };
+    }
 
     // データの登録
     async putThreadReply(replyModel) {
@@ -41,7 +41,7 @@ class DynamoThreadRepository {
             console.error("DynamoDB登録時エラー:", error);
             return {};
         }
-      };
+    }
 
     // データの取得
     async getItem(params) {
@@ -53,6 +53,6 @@ class DynamoThreadRepository {
     async deleteItem(params) {
         return await this.dynamoDb.send(new DeleteCommand(params));
     }
-  }
+};
 
 exports.DynamoThreadRepository = DynamoThreadRepository;
