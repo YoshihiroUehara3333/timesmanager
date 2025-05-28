@@ -18,7 +18,8 @@ class DynamoDiaryRepository {
                 TableName: process.env.DYNAMO_TABLE_NAME,
                 Key      : {
                     partition_key: `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`,
-                }}));
+                },
+            }));
 
         } catch (error) {
             console.error("DynamoDB問い合わせ時エラー:", error);
