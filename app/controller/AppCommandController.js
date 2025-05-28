@@ -9,11 +9,9 @@ class AppCommandController {
         this.threadService = threadService;
     };
 
-    async handleAppCommand (command, logger, client) {
-        logger.info('受信コマンド出力:' + JSON.stringify((command)));
-
+    async dispatchAppCommand (command, logger, client) {
         const commandName = command.command;
-        console.log(`command:${commandName}`);
+        logger.info(`command:${commandName}`);
 
         switch (commandName) {
             case SlackConst.COMMAND.makeThread:
