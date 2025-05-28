@@ -60,6 +60,6 @@ class DynamoDiaryRepository {
         }
         return {};
     }
-};
+}
 
 exports.DynamoDiaryRepository = DynamoDiaryRepository;

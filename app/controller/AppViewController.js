@@ -43,7 +43,7 @@ class AppViewController {
 
         // 必要であればDBに保存（例: DynamoDB）
         // await dynamo.put({ ... });
-        this.threadService.
+        return await this.threadService.processNewWorkReport();
     }
 }
 

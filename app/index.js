@@ -31,11 +31,11 @@ const appActionController   = new AppActionController();
 const awsLambdaReceiver = new AwsLambdaReceiver({
     signingSecret           : process.env.SLACK_SIGNING_SECRET,
     processBeforeResponse   : true,
-});
+})
 const app = new App({
     token    : process.env.SLACK_BOT_USER_ACCESS_TOKEN,
     receiver : awsLambdaReceiver,
-});
+})
 
 const handler = awsLambdaReceiver.toHandler();
 
@@ -52,7 +52,7 @@ app.command(/.*/, async ({ ack, command, context, logger, client }) => {
     
     await ack();
     await appCommandController.handleAppCommand(command, logger, client);
-});
+})
 
 // メッセージ検知
 app.message(async ({ message, context, logger, client }) => {
@@ -66,7 +66,7 @@ app.message(async ({ message, context, logger, client }) => {
     };
 
     await appMessageController.handleAppMessage(message, logger, client);
-});
+})
 
 // モーダル押下時
 app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, logger, client }) => {
@@ -75,7 +75,7 @@ app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, logger, cl
 
     await ack();
     await appViewController.handleModalCallback(body, view, logger, client);
-});
+})
 
 // 途中経過記録ボタン
 app.action(ModalConst.ACTION_ID.WORKREPORT.PROGRESS, async ({ack, body, logger}) => {
@@ -83,7 +83,7 @@ app.action(ModalConst.ACTION_ID.WORKREPORT.PROGRESS, async ({ack, body, logger})
 
     await ack();
     await appActionController.handleWorkPlanAction();
-});
+})
 
 // 作業完了ボタン
 app.action(ModalConst.ACTION_ID.WORKREPORT.FINISH, async ({ack, body, logger}) => {
@@ -91,7 +91,7 @@ app.action(ModalConst.ACTION_ID.WORKREPORT.FINISH, async ({ack, body, logger}) =
 
     await ack();
     await appActionController.handleWorkPlanAction();
-});
+})
 
 // ハンドラー生成
 exports.handler = async (event, context, callback) => {    
