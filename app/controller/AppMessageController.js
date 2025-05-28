@@ -59,19 +59,20 @@ class AppMessageController {
         const { text, user } = message.message;
         if (text.match(RegexConst.DATE)) {
             // 日記編集時
+            const date = text.match(RegexConst.DATE)[0];
             try {
                 logger.info("diaryService.updateDiaryを実行");
                 const response = await this.diaryService.updateDiary(message, client);
 
-                const msg = '';
                 if (response.$metadata.httpStatusCode == 200) {
-                    msg = `日記(${date})のDB登録に成功しました。`;
+                    const msg = `日記(${date})のDB更新に成功しました。`;
                     await this.slackPresenter.sendDirectMessage(client, msg, user);
                 } else {
-                    throw new Error(`日記(${date})のDB登録に失敗しました。`);
+                    throw new Error(`日記(${date})のDB更新に失敗しました。`);
                 }
 
             } catch (error) {
+                logger.error(error.stack);
                 await this.slackPresenter.sendDirectMessage(client, error.toString(), user);
             }
         }
@@ -91,8 +92,8 @@ class AppMessageController {
                 logger.info("diaryService.aiFeedbackが終了:" + JSON.stringify(msg));
 
                 await this.slackPresenter.sendThreadMessage (client, msg, channel, ts);
-                logger.info("フィードバック送信成功");
             } catch (error) {
+                logger.error(error.stack);
                 await this.slackPresenter.sendThreadMessage (client, error.toString(), channel, ts);
             }
         }
@@ -122,8 +123,8 @@ class AppMessageController {
                 logger.info("diaryService.newDiaryEntryが終了:" + msg);
 
                 await this.slackPresenter.sendDirectMessage(client, msg, user);
-                logger.info("DM送信成功");
             } catch (error) {
+                logger.error(error.stack);
                 await this.slackPresenter.sendDirectMessage(client, error.toString(), user);
             }
         }
