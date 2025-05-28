@@ -18,8 +18,8 @@ class DynamoThreadRepository {
 
         try {
             return await this.dynamoDb.send(new PutCommand({
-                TableName: process.env.DYNAMO_TABLE_NAME,
-                Item: item,
+                TableName   : process.env.DYNAMO_TABLE_NAME,
+                Item        : item,
             }));
         } catch (error) {
             console.error("DynamoDB登録時エラー:", error);
@@ -29,13 +29,13 @@ class DynamoThreadRepository {
 
     // データの登録
     async putThreadReply(replyModel) {
-        const item = replyModel.toItem();
-        item.partition_key = `${DBConst.POST_CATEGORY.REPLY}-${replyModel.partitionKeyBase}`;
+        const item          = replyModel.toItem();
+        item.partition_key  = `${DBConst.POST_CATEGORY.REPLY}-${replyModel.partitionKeyBase}`;
 
         try {
             return await this.dynamoDb.send(new PutCommand({
-                TableName: process.env.DYNAMO_TABLE_NAME,
-                Item: item,
+                TableName   : process.env.DYNAMO_TABLE_NAME,
+                Item        : item,
             }));
         } catch (error) {
             console.error("DynamoDB登録時エラー:", error);
