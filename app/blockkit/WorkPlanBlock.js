@@ -53,4 +53,4 @@ exports.WorkPlanBlock = (user_id, work_plan, selected_time, option) => ([
 				}
 			]
 		}
-	]);
+]);
