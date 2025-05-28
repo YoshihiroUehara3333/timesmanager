@@ -27,7 +27,7 @@ exports.MakeThreadModal = (channel_id, thread_ts, date) => ({
             block_id: 'content_block',
             label: { 
                 type: "plain_text", 
-                text: "作業内容",
+                text: "作業予定",
             },
             element: {
                 type: "plain_text_input",
@@ -51,6 +51,18 @@ exports.MakeThreadModal = (channel_id, thread_ts, date) => ({
 				text: "完了予定",
 				emoji: true
 			}
-		}
+		},
+        {
+            type: 'input',
+            block_id: 'content_block',
+            label: { 
+                type: "plain_text", 
+                text: "備考",
+            },
+            element: {
+                type: "plain_text_input",
+                action_id: "option",
+            }
+        },
     ]
 });
