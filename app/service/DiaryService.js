@@ -72,7 +72,7 @@ class DiaryService {
 
             return await this.diaryRepository.putDiary(diaryModel);
         } catch (error) {
-            throw new Error(`日記(${date})のDB更新に失敗しました。`);
+            throw new Error(`日記(${date})のDB更新に失敗しました。`, error.stack);
         }
     };
 
