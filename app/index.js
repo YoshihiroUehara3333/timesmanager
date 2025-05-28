@@ -58,7 +58,6 @@ app.message(async ({ message, context, logger, client }) => {
     logger.info(`app.message\ncontext:${JSON.stringify(context)}\nmessage:${JSON.stringify(message)}\n`);
 
     if(context.retryNum) {
-        await ack();
         return; // リトライ以降のリクエストは弾く
     };
 
