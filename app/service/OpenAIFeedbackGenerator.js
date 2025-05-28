@@ -8,7 +8,7 @@ class OpenAIFeedbackGenerator {
         this.openAI = new OpenAI({
             apiKey: process.env.OPENAI_API_KEY,
             timeout: 180000 // ms指定
-        });
+        })
     }
 
     // AIによる日報のフィードバックを生成
@@ -37,12 +37,11 @@ class OpenAIFeedbackGenerator {
             console.log(JSON.stringify(response));
 
             const feedback = response.choices[0].message.content.trim();
-            return `使用モデル: ${process.env.GPT_MODEL}\nフィードバック:\n ${feedback}`;
+            return `使用モデル:${process.env.GPT_MODEL}\nフィードバック:\n ${feedback}`;
         } catch (error) {
-            console.error("OpenAI APIエラー:", error);
-            return  `フィードバックの生成に失敗しました。`;
+            throw new Error(error.message || "OpenAI API error");
         }
     }
-}
+};
 
 exports.OpenAIFeedbackGenerator = OpenAIFeedbackGenerator;

@@ -37,7 +37,7 @@ class AppCommandController {
                 view: view,
             });
         } catch (error) {
-            logger.info(error);
+            logger.error(error);
             await client.chat.postMessage({
                 channel: user_id,
                 text: `エラー内容:${error}`,

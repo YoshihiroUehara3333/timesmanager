@@ -27,14 +27,14 @@ class DiaryService {
     **   日記新規登録処理
     */
     async newDiaryEntry (message, client) {
-        const text = message.text;
-        const date = DiaryUtils.parseDate(text);
+        const text    = message.text;
+        const date    = DiaryUtils.parseDate(text);
         const content = DiaryUtils.parseContent(text);
 
         // 投稿URLを取得
         let { permalink } = await client.chat.getPermalink({
-            channel: message.channel,
-            message_ts: message.ts
+            channel    : message.channel,
+            message_ts : message.ts
         });
 
         // diaryModelを作成
@@ -45,7 +45,7 @@ class DiaryService {
             const result = await this.diaryRepository.getDiaryByPartitionKey(diaryModel);
             if (result.Item) return `日付が重複しています。(${date})`;
 
-            let response = await this.diaryRepository.putDiary(diaryModel);
+            const response = await this.diaryRepository.putDiary(diaryModel);
             if (response.$metadata.httpStatusCode == 200) {
                 return `日記(${date})のDB登録に成功しました。`;
             }
@@ -59,9 +59,9 @@ class DiaryService {
     **   日記編集処理
     */
     async updateDiary (message, client) {
-        const text = message.message.text;
-        const date = DiaryUtils.parseDate(text);
-        const content = DiaryUtils.parseContent(text);
+        const text       = message.message.text;
+        const date       = DiaryUtils.parseDate(text);
+        const content    = DiaryUtils.parseContent(text);
         const diaryModel = this.createDiaryModel(message.message, date, content, null);
 
         // DB更新重複チェック
@@ -80,12 +80,12 @@ class DiaryService {
     // DiaryModel生成
     createDiaryModel (message, date, content, permalink) {
         const diaryModel = new DiaryModel();
-        diaryModel.userId = message.user;
-        diaryModel.channel = message.channel;
-        diaryModel.date = date;
-        diaryModel.eventTs = message.ts;
-        diaryModel.content = content;
-        diaryModel.slackUrl = permalink;
+        diaryModel.userId      = message.user;
+        diaryModel.channel     = message.channel;
+        diaryModel.date        = date;
+        diaryModel.eventTs     = message.ts;
+        diaryModel.content     = content;
+        diaryModel.slackUrl    = permalink;
         diaryModel.clientMsgId = message.client_msg_id;
         return diaryModel;
     }
