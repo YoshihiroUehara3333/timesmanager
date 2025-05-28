@@ -4,8 +4,8 @@ const { RegexConst } = require('../constants/RegexConst');
 class DiaryUtils {
     // JSONデータから日記フォーマットに変換してreturnする
     static formatDiaryFromJson(diaryJson) {
-        const content = diaryJson.content || {};
-        const date = diaryJson.date || '';
+        const content  = diaryJson.content || {};
+        const date     = diaryJson.date || '';
     
         return (
             `*【日記】* ${date}\n` +
@@ -27,11 +27,11 @@ class DiaryUtils {
             other: ''
         };
 
-        const workingTimeMatch = text.match(RegexConst.WORKINGTIME);
-        const workMatch = text.match(RegexConst.WORK);
-        const evaluationMatch = text.match(RegexConst.EVALUATION);
-        const planMatch = text.match(RegexConst.PLAN);
-        const otherMatch = text.match(RegexConst.OTHER);
+        const workingTimeMatch  = text.match(RegexConst.WORKINGTIME);
+        const workMatch         = text.match(RegexConst.WORK);
+        const evaluationMatch   = text.match(RegexConst.EVALUATION);
+        const planMatch         = text.match(RegexConst.PLAN);
+        const otherMatch        = text.match(RegexConst.OTHER);
 
         if (workingTimeMatch) content.workingTime = workingTimeMatch[1].trim();
         if (workMatch) content.work = workMatch[1].trim();

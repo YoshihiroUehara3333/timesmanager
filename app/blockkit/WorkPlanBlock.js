@@ -12,7 +12,7 @@ exports.WorkPlanBlock = (user_id, work_plan, selected_time, option) => ([
 		{
 			type: "section",
 			fields: [
-				{
+			    {
 					type: "mrkdwn",
 					text: `*作業予定*\n${work_plan}`
 				},
