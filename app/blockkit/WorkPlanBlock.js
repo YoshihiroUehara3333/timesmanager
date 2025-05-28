@@ -6,7 +6,7 @@ exports.WorkPlanBlock = (user_id, work_plan, selected_time, option) => ([
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: `<@${user_id}>\n📝*作業計画*`,
+				text: `<@${user_id}>\n📝*作業記録*`,
 			}
 		},
 		{
