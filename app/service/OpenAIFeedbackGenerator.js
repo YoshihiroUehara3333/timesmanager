@@ -6,8 +6,8 @@ const { Prompts } = require("./prompts/Prompts");
 class OpenAIFeedbackGenerator {
     constructor() {
         this.openAI = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY,
-            timeout: 180000 // ms指定
+            apiKey  : process.env.OPENAI_API_KEY,
+            timeout : 180000 // ms指定
         })
     }
 
@@ -21,15 +21,15 @@ class OpenAIFeedbackGenerator {
             const response = await this.openAI.chat.completions.create({
                 // OpenAIのモデル一覧
                 // https://platform.openai.com/docs/models
-                model: process.env.GPT_MODEL, 
+                model   : process.env.GPT_MODEL, 
                 messages: [
                     { 
-                        role: "system", 
-                        content: Prompts.feedback
+                        role    : "system", 
+                        content : Prompts.feedback
                     },
                     { 
-                        role: "user", 
-                        content: DiaryUtils.formatDiaryFromJson(diaryJson) 
+                        role    : "user", 
+                        content : DiaryUtils.formatDiaryFromJson(diaryJson) 
                     }
                 ],
                 temperature: 0.5,

@@ -6,15 +6,15 @@ const { RegexConst } = require('../constants/RegexConst');
 
 class AppMessageController {
     constructor (diaryService, threadService, slackPresenter) {
-        this.diaryService = diaryService;
-        this.threadService = threadService;
+        this.diaryService   = diaryService;
+        this.threadService  = threadService;
         this.slackPresenter = slackPresenter;
 
         // subtype によって処理を切り替える戦略パターン風マップ
         // ここ後で勉強する
         this.messageHandlers = {
-            'message_changed': this.handleEditedMessage.bind(this),
-            'default': this.handleNewMessage.bind(this),
+            'message_changed'   : this.handleEditedMessage.bind(this),
+            'default'           : this.handleNewMessage.bind(this),
         };
     };
 

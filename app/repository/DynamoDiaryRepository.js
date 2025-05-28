@@ -7,7 +7,7 @@ const { DBConst } = require('../constants/DBConst');
 
 class DynamoDiaryRepository {
     constructor () {
-        const client = new DynamoDBClient({});
+        const client  = new DynamoDBClient({});
         this.dynamodb = DynamoDBDocumentClient.from(client);
     }
 
