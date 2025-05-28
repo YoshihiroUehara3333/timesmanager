@@ -34,22 +34,22 @@ exports.WorkPlanBlock = (user_id, work_plan, selected_time, option) => ([
 					text: {
 						type: "plain_text",
 						emoji: true,
-						text: "完了"
+						text: "途中経過記録"
 					},
 					style: "primary",
-					value: "finish",
-					action_id: ModalConst.ACTION_ID.WORKPLAN.FINISH,
+					value: "progess",
+					action_id: ModalConst.ACTION_ID.WORKREPORT.PROGRESS,
 				},
 				{
 					type: "button",
 					text: {
 						type: "plain_text",
 						emoji: true,
-						text: "やめた"
+						text: "業務終了"
 					},
 					style: "danger",
-					value: "cancel",
-					action_id: ModalConst.ACTION_ID.WORKPLAN.CANCEL,
+					value: "finish",
+					action_id: ModalConst.ACTION_ID.WORKREPORT.FINISH,
 				}
 			]
 		}

@@ -6,7 +6,7 @@ exports.DBConst = {
         THREAD: "10",
         REPLY: "11",
         URL: "12",
-        WORKPLAN: "20",
+        WORKREPORT: "20",
         AI: {
             SUMMARY: 90,
         }

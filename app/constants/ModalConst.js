@@ -3,9 +3,9 @@ exports.ModalConst = {
         MAKETHREAD: "makethread_modal",
     },
     ACTION_ID: {
-        WORKPLAN: {
-            FINISH: 'finishbutton',
-            CANCEL: 'cancelbutton'
+        WORKREPORT: {
+            PROGRESS: 'progress',
+            FINISH: 'finish',
         }
     }
 }

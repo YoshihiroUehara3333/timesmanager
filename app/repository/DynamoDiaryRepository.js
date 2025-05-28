@@ -12,14 +12,14 @@ class DynamoDiaryRepository {
     }
 
     async getDiaryByPartitionKey (diaryModel) {
-        const key = {
-            partition_key: `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`,
-        };
+
         try {
             return await this.dynamodb.send(new GetCommand({
                 TableName: process.env.DYNAMO_TABLE_NAME,
-                Key: key,
-            }));
+                Key      : {
+                    partition_key: `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`,
+                }}));
+
         } catch (error) {
             console.error("DynamoDB問い合わせ時エラー:", error);
             return {};
@@ -33,7 +33,7 @@ class DynamoDiaryRepository {
         try {
             return await this.dynamodb.send(new PutCommand({
                 TableName: process.env.DYNAMO_TABLE_NAME,
-                Item: item,
+                Item     : item,
             }));
         } catch (error) {
             console.error("DynamoDB登録時エラー:", error);
@@ -43,9 +43,9 @@ class DynamoDiaryRepository {
     
     async getDiaryByThreadTs(thread_ts) {
         const result = await this.dynamodb.send(new QueryCommand({
-            TableName: process.env.DYNAMO_TABLE_NAME,
-            IndexName: DBConst.GSI_NAME.EVENT_TS, // 作成したGSI名
-            KeyConditionExpression: '#indexKey = :indexValue', // 条件を指定
+            TableName                : process.env.DYNAMO_TABLE_NAME,
+            IndexName                : DBConst.GSI_NAME.EVENT_TS, // GSI名
+            KeyConditionExpression   : '#indexKey = :indexValue', // 条件指定
             ExpressionAttributeNames : {
                 "#indexKey"  : DBConst.GSI_PARTITION.EVENT_TS // GSIパーティションキー名を設定
               },
