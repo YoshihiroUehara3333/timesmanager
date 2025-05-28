@@ -23,26 +23,27 @@ class AppViewController {
     async handleMakeThreadModal(body, view, logger, client){
         logger.info(`handleMakeThreadModalを実行。`);
         
+        // メタデータ取得
         const user_id = body.user.id;
         const { channel_id, thread_ts } = JSON.parse(view.private_metadata);
 
-        const work_plan = view.state.values.content_block.work_plan.value || '';
+        // モーダル入力値を取得
+        const work_plan     = view.state.values.content_block.work_plan.value || '';
         const selected_time = view.state.values.RVSjM.timepicker.selected_time;
 
-        // スレッドへの返信
+        // スレッドへ返信
         const json = {
-            channel: channel_id,
-            thread_ts: thread_ts,
-            text: "作業計画",
-            mrkdwn: true,
-            blocks: WorkPlanBlock(user_id, work_plan, selected_time),
+            channel     : channel_id,
+            thread_ts   : thread_ts,
+            text        : "作業計画",
+            mrkdwn      : true,
+            blocks      : WorkPlanBlock(user_id, work_plan, selected_time),
         };
-        console.log(JSON.stringify(json));
-
-        const result = await client.chat.postMessage(json);
+        const reply = await client.chat.postMessage(json);
 
         // 必要であればDBに保存（例: DynamoDB）
         // await dynamo.put({ ... });
+        this.threadService.
     }
 }
 
