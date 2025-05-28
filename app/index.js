@@ -1,16 +1,17 @@
 // モジュール読み込み
-const { App, AwsLambdaReceiver }    = require('@slack/bolt');
-const { DynamoDiaryRepository }     = require('./repository/DynamoDiaryRepository');
-const { DynamoThreadRepository }    = require('./repository/DynamoThreadRepository');
-const { AppCommandController }      = require('./controller/AppCommandController');
-const { AppMessageController }      = require('./controller/AppMessageController');
-const { AppViewController }         = require('./controller/AppViewController');
-const { AppActionController }       = require('./controller/AppActionController');
-const { DiaryService }              = require('./service/DiaryService');
-const { ThreadService }             = require('./service/ThreadService');
-const { OpenAIFeedbackGenerator }   = require('./service/OpenAIFeedbackGenerator');
-const { SlackPresenter }            = require('./presenter/SlackPresenter');
-const { ModalConst }                = require('./constants/ModalConst');
+const { App, AwsLambdaReceiver }     = require('@slack/bolt');
+const { DynamoDiaryRepository }      = require('./repository/DynamoDiaryRepository');
+const { DynamoThreadRepository }     = require('./repository/DynamoThreadRepository');
+const { DynamoWorkReportRepository } = require('./repository/DynamoWorkReportRepository');
+const { AppCommandController }       = require('./controller/AppCommandController');
+const { AppMessageController }       = require('./controller/AppMessageController');
+const { AppViewController }          = require('./controller/AppViewController');
+const { AppActionController }        = require('./controller/AppActionController');
+const { DiaryService }               = require('./service/DiaryService');
+const { ThreadService }              = require('./service/ThreadService');
+const { OpenAIFeedbackGenerator }    = require('./service/OpenAIFeedbackGenerator');
+const { SlackPresenter }             = require('./presenter/SlackPresenter');
+const { ModalConst }                 = require('./constants/ModalConst');
 
 // DI
 const diaryRepository       = new DynamoDiaryRepository();
