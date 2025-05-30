@@ -15,6 +15,11 @@ class WorkReportService {
 
     createWorkReportModel (body, view) {
         const workReportModel = new WorkReportModel;
+        workReportModel.userId       = body.user.id;
+
+        workReportModel.workPlan     = view.state.values.work_plan.work_plan.value || '';
+        workReportModel.selectedTime = view.state.values.timepicker.timepicker.selected_time;
+        workReportModel.option       = view.state.values.option.option.value || '';
         return workReportModel;
     }
 }

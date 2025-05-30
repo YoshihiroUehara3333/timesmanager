@@ -28,6 +28,30 @@ class WorkReportModel {
         return this._userId + this._channel + this._date;
     };
 
+    get workPlan() {
+        return this._workPlan;
+    };
+
+    set workPlan(workPlan) {
+        this._workPlan = workPlan;
+    };
+
+    get selectedTime() {
+        return this._selectedTime;
+    };
+
+    set selectedTime(selectedTime) {
+        this._selectedTime = selectedTime;
+    };
+
+    get option() {
+        return this._option;
+    };
+
+    set option(option) {
+        this._option = option;
+    };
+
     get userId() {
         return this._userId;
     };

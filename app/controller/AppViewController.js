@@ -31,7 +31,7 @@ class AppViewController {
         // モーダル入力値を取得
         const work_plan     = view.state.values.work_plan.work_plan.value || '';
         const selected_time = view.state.values.timepicker.timepicker.selected_time;
-        const option        = view.state.values.option.option.value;
+        const option        = view.state.values.option.option.value || '';
 
         // スレッドへ返信
         const post = {
