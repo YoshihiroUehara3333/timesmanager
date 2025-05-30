@@ -15,7 +15,11 @@ class WorkReportService {
 
     createWorkReportModel (body, view) {
         const workReportModel = new WorkReportModel;
+        const { channel_id, thread_ts } = JSON.parse(view.private_metadata);
+
         workReportModel.userId       = body.user.id;
+        workReportModel.threadTs     = thread_ts;
+        workReportModel._channel     = channel_id;
 
         workReportModel.workPlan     = view.state.values.work_plan.work_plan.value || '';
         workReportModel.selectedTime = view.state.values.timepicker.timepicker.selected_time;
