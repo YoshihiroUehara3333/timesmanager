@@ -36,7 +36,7 @@ class DiaryUtils {
         if (workingTimeMatch) content.workingTime = workingTimeMatch[1].trim();
         if (workMatch) content.work = workMatch[1].trim();
         if (evaluationMatch) content.evaluation = evaluationMatch[1].trim();
-        if (planMatch) content.plan = planMatch[1].trim();s
+        if (planMatch) content.plan = planMatch[1].trim();
         if (otherMatch) content.other = otherMatch[1].trim();
 
         return content;

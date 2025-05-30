@@ -68,11 +68,13 @@ class DiaryService {
         try {
             const result = await this.diaryRepository.getDiaryByPartitionKey(diaryModel);
             if (result.Item?.edited_ts === diaryModel.editedTs) return `この日報はすでに最新の内容です。`;
-            diaryModel.slackUrl = result.Item.slack_url;
+            if (result.Item?.slack_url) {
+                diaryModel.slackUrl = result.Item.slack_url;
+            }
 
             return await this.diaryRepository.putDiary(diaryModel);
         } catch (error) {
-            throw new Error(`日記(${date})のDB更新に失敗しました。`);
+            throw new Error(`日記(${date})のDB更新に失敗しました。${error}`);
         }
     };
 

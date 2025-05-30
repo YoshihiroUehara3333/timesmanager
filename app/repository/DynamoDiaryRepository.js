@@ -23,7 +23,7 @@ class DynamoDiaryRepository {
 
         } catch (error) {
             console.error("DynamoDB問い合わせ時エラー:", error);
-            return {};
+            throw new Error(error.message);
         }
     }
 
@@ -38,7 +38,7 @@ class DynamoDiaryRepository {
             }));
         } catch (error) {
             console.error("DynamoDB登録時エラー:", error);
-            return {};
+            throw new Error(error.message);
         }
     }
     
