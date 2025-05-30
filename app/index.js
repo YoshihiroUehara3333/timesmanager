@@ -8,6 +8,7 @@ const { AppMessageController }       = require('./controller/AppMessageControlle
 const { AppViewController }          = require('./controller/AppViewController');
 const { AppActionController }        = require('./controller/AppActionController');
 const { DiaryService }               = require('./service/DiaryService');
+const { WorkReportService }          = require('./service/WorkReportService');
 const { ThreadService }              = require('./service/ThreadService');
 const { OpenAIFeedbackGenerator }    = require('./service/OpenAIFeedbackGenerator');
 const { SlackPresenter }             = require('./presenter/SlackPresenter');
@@ -16,15 +17,17 @@ const { ModalConst }                 = require('./constants/ModalConst');
 // DI
 const diaryRepository       = new DynamoDiaryRepository();
 const threadRepository      = new DynamoThreadRepository();
+const workReportRepository  = new DynamoWorkReportRepository;
 
 const feedbackGenerator     = new OpenAIFeedbackGenerator();
 const diaryService          = new DiaryService(diaryRepository, feedbackGenerator);
 const threadService         = new ThreadService(threadRepository);
+const workReportService     = new WorkReportService(workReportRepository);
 
 const slackPresenter        = new SlackPresenter();
 const appCommandController  = new AppCommandController(threadService);
 const appMessageController  = new AppMessageController(diaryService, threadService, slackPresenter);
-const appViewController     = new AppViewController(threadService, slackPresenter);
+const appViewController     = new AppViewController(threadService, workReportService, slackPresenter);
 const appActionController   = new AppActionController();
 
 
