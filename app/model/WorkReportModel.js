@@ -6,15 +6,21 @@ class WorkReportModel {
         this._channel = '';
         this._threadTs = '';
         this._slackUrl = '';
+        this._workPlan = '';
+        this._selectedTime = '';
+        this._option = '';
     };
 
     toItem () {
         return {
-            date: this._date,
-            user_id: this._userId,
-            channel: this._channel,
-            event_ts: this._threadTs,
-            slack_url: this._slackUrl,
+            date          : this._date,
+            user_id       : this._userId,
+            channel       : this._channel,
+            event_ts      : this._threadTs,
+            slack_url     : this._slackUrl,
+            work_plan     : this._workPlan,
+            selected_time : this._selectedTime,
+            option        : this._option,
         }
     };
 
