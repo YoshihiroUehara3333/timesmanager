@@ -16,7 +16,7 @@ class DynamoWorkReportRepository {
         item.partition_key = `${DBConst.POST_CATEGORY.WORKREPORT}-${workReportModel.partitionKeyBase}`;
         
         try {
-            return await this.dynamodb.send(new PutCommand({
+            return await this.dynamoDb.send(new PutCommand({
                 TableName: process.env.DYNAMO_TABLE_NAME,
                 Item     : item,
             }));

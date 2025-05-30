@@ -8,15 +8,15 @@ const { DBConst } = require('../constants/DBConst');
 class DynamoDiaryRepository {
     constructor () {
         const client  = new DynamoDBClient({});
-        this.dynamodb = DynamoDBDocumentClient.from(client);
+        this.dynamoDb = DynamoDBDocumentClient.from(client);
     }
 
     async getDiaryByPartitionKey (diaryModel) {
 
         try {
-            return await this.dynamodb.send(new GetCommand({
-                TableName: process.env.DYNAMO_TABLE_NAME,
-                Key      : {
+            return await this.dynamoDb.send(new GetCommand({
+                TableName : process.env.DYNAMO_TABLE_NAME,
+                Key       : {
                     partition_key: `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`,
                 },
             }));
@@ -32,9 +32,9 @@ class DynamoDiaryRepository {
         item.partition_key = `${DBConst.POST_CATEGORY.DIARY}-${diaryModel.partitionKeyBase}`;
         
         try {
-            return await this.dynamodb.send(new PutCommand({
-                TableName: process.env.DYNAMO_TABLE_NAME,
-                Item     : item,
+            return await this.dynamoDb.send(new PutCommand({
+                TableName : process.env.DYNAMO_TABLE_NAME,
+                Item      : item,
             }));
         } catch (error) {
             console.error("DynamoDB登録時エラー:", error);
@@ -43,7 +43,7 @@ class DynamoDiaryRepository {
     }
     
     async getDiaryByThreadTs(thread_ts) {
-        const result = await this.dynamodb.send(new QueryCommand({
+        const result = await this.dynamoDb.send(new QueryCommand({
             TableName                : process.env.DYNAMO_TABLE_NAME,
             IndexName                : DBConst.GSI_NAME.EVENT_TS, // GSI名
             KeyConditionExpression   : '#indexKey = :indexValue', // 条件指定
