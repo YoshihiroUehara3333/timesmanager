@@ -42,9 +42,7 @@ class ThreadService {
         await this.threadRepository.putNewReply(replyModel);
     }
 
-    async processNewWorkReport () {
 
-    };
 
 
     // ThreadModel生成

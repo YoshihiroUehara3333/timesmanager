@@ -5,21 +5,49 @@ class WorkReportModel {
         this._userId = '';
         this._channel = '';
         this._threadTs = '';
-        this._slackUrl = '';
+        this._workPlan = '';
+        this._selectedTime = '';
+        this._option = '';
     };
 
     toItem () {
         return {
-            date: this._date,
-            user_id: this._userId,
-            channel: this._channel,
-            event_ts: this._threadTs,
-            slack_url: this._slackUrl,
+            date          : this._date,
+            user_id       : this._userId,
+            channel       : this._channel,
+            event_ts      : this._threadTs,
+            work_plan     : this._workPlan,
+            selected_time : this._selectedTime,
+            option        : this._option,
         }
     };
 
     get partitionKeyBase() {
         return this._userId + this._channel + this._date;
+    };
+
+    get workPlan() {
+        return this._workPlan;
+    };
+
+    set workPlan(workPlan) {
+        this._workPlan = workPlan;
+    };
+
+    get selectedTime() {
+        return this._selectedTime;
+    };
+
+    set selectedTime(selectedTime) {
+        this._selectedTime = selectedTime;
+    };
+
+    get option() {
+        return this._option;
+    };
+
+    set option(option) {
+        this._option = option;
     };
 
     get userId() {
