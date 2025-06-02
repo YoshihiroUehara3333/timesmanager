@@ -1,5 +1,7 @@
 class AppActionController {
-    constructor () {};
+    constructor (workReportService) {
+        this.workReportService = workReportService;
+    };
 
     async handleWorkReportAction (){
         return;
