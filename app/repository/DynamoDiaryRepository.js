@@ -55,6 +55,7 @@ class DynamoDiaryRepository {
               }
         }));
 
+        console.log(JSON.stringify(result));
         if (result.Count == 1) {
             return result.Items[0];
         }
