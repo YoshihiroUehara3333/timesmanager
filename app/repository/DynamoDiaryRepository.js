@@ -54,12 +54,13 @@ class DynamoDiaryRepository {
                 ':indexValue': thread_ts // 検索する値
               }
         }));
-
-        console.log(JSON.stringify(result));
+        
         if (result.Count == 1) {
             return result.Items[0];
+        } else {
+            console.error(`DB取得結果${JSON.stringify(result)}`);
+            throw new Error(`DBのデータが不正です`);
         }
-        return {};
     }
 }
 
