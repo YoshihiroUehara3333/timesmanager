@@ -34,7 +34,7 @@ class OpenAIFeedbackGenerator {
                 ],
                 temperature: 0.3,
             });
-            console.log(JSON.stringify(response));
+            console.log(response);
 
             const feedback = response.choices[0].message.content.trim();
             return `使用モデル:${process.env.GPT_MODEL}\nフィードバック:\n ${feedback}`;
