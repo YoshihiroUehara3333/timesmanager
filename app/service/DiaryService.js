@@ -60,7 +60,7 @@ class DiaryService {
     /*
     **   日記編集処理
     */
-    async updateDiary (message) {
+    async processUpdateDiary (message) {
         const diaryModel = this.createDiaryModel(message, '');
         diaryModel.editedAt = new Date().toISOString();
 
