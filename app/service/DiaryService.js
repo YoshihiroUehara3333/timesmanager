@@ -63,7 +63,7 @@ class DiaryService {
             const response = await this.postDataRepository.putItem(diaryModel);
             const httpStatusCode = response?.$metadata.httpStatusCode;
             if (httpStatusCode == 200) {
-                return `日記(${date})のDB登録に成功しました。`;
+                return `日記(${date})のDB登録に成功しました。\n${diaryModel._slackUrl}`;
             } else {
                 throw new Error(`日記(${date})のDB登録に失敗しました。httpStatusCode=${httpStatusCode}`, { cause: error });
             }
@@ -93,7 +93,7 @@ class DiaryService {
             const response = await this.postDataRepository.putItem(diaryModel);
             const httpStatusCode = response?.$metadata.httpStatusCode;
             if (httpStatusCode == 200) {
-                return `日記(${date})のDB更新に成功しました。`;
+                return `日記(${date})のDB更新に成功しました。\n${diaryModel._slackUrl}`;
             } else {
                 throw new Error(`日記(${date})のDB登録に失敗しました。httpStatusCode=${httpStatusCode}`, { cause: error });
             }

@@ -61,7 +61,7 @@ class AppMessageController {
             try {
                 logger.info("diaryService.processUpdateDiaryを実行");
                 msg = await this.diaryService.processUpdateDiary(message, channelId);
-
+                logger.info("diaryService.processUpdateDiaryが終了:" + JSON.stringify(msg));
             } catch (error) {
                 logger.error(error.stack);
                 msg = error.toString();
