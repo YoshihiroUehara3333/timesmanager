@@ -29,13 +29,6 @@ exports.DBConst = {
         THREAD          : '#Thread',
         POSTS           : '#Posts',
     },
-    POSTS : {
-        TYPE_CD : {
-            TEXT  : 1,
-            URL   : 2,
-            OTHER : 9,
-        },
-    },
     GSI              : {
         ByDateAndSortKey: {
             NAME : 'GSI_ByDate_SortKey',

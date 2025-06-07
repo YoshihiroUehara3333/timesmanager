@@ -65,13 +65,13 @@ class DiaryUtils {
     };
 
     // textからAttendanceTypeCdを取得する
-    static parseAttendanceTypeCd (text) {
-        const Attendance = CdConst.ATTENDANCE;
+    static parseWorkingPlaceCd (text) {
+        const WorkingPlace = CdConst.WORKINGPLACE;
 
-        const attendanceMatch  = text.match(RegexConst.ATTENDANCE);
-        const name = attendanceMatch[1].trim();
+        const workingPlaceMatch  = text.match(RegexConst.WORKINGPLACE);
+        const name = workingPlaceMatch[1].trim();
         
-        return Attendance.getCodeByName(name);
+        return WorkingPlace.getCodeByName(name);
     }
 }
 
