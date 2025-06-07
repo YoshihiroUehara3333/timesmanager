@@ -42,9 +42,11 @@ class DiaryService {
     **   日記新規登録処理
     */
     async processNewDiaryEntry (message, client) {
+        const channelId = message.channel;
+
         // 投稿URLを取得
         let { permalink } = await client.chat.getPermalink({
-            channel    : message.channel,
+            channel    : channelId,
             message_ts : message.ts
         });
 
@@ -55,7 +57,7 @@ class DiaryService {
         // DB新規重複チェック
         const date = diaryModel.date;
         try {
-            const result = await this.postDataRepository.getDiaryByDate(message.channel, date);
+            const result = await this.postDataRepository.getDiaryByDate(channelId, date);
             if (result) return `日付が重複しています。(${date})`;
 
             const response = await this.postDataRepository.putItem(diaryModel);
