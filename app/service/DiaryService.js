@@ -1,6 +1,5 @@
 // モジュール読み込み
 const { DiaryUtils } = require('../utility/DiaryUtils');
-const { DbKeyUtils } = require('../utility/DbKeyUtils');
 const { DiaryModel } = require('../model/DiaryModel');
 const { DBConst } = require('../constants/DBConst');
 
