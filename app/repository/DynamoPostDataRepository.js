@@ -60,26 +60,27 @@ class DynamoPostDataRepository {
 
     // 指定したsort_keyのprefixとthread_tsからレコードを一意に取得する
     async queryByThreadTsAndSortKeyPrefix(threadTs, prefix) {
-        const { THREAD_TS, SORT_KEY }= DBConst.COLUMN_NAMES.POSTDATA;
+        const {NAME, PK, SK} = DBConst.GSI.ByThreadTsAndSortKeyPrefix;
 
         try {
-            const result = await this.dynamoDb.send(new QueryCommand({
+            const queryResult = await this.dynamoDb.send(new QueryCommand({
                 TableName                : this.TABLENAME,
-                KeyConditionExpression   : `${THREAD_TS} = :${THREAD_TS} AND begins_with(${SORT_KEY}, :prefix)`, // 条件指定
+                IndexName                : NAME, // GSI名
+                KeyConditionExpression   : `#pk = :pk AND begins_with(#sk, :prefix)`, // 条件指定
+                ExpressionAttributeNames: {
+                    '#pk'     : PK,
+                    '#sk'     : SK,
+                },
                 ExpressionAttributeValues: {
-                    [`:${THREAD_TS}`]: threadTs,
+                    ':pk'     : threadTs,
                     ":prefix" : prefix,
                 },
             }));
-        
-            if (result.Count === 1) {
-                return result.Items[0];
-            } else if (result.Count === 0) {
+
+            if (queryResult.Count === 0) {
                 return null;
-            } else {
-                console.log(`DB取得結果${JSON.stringify(result)}`);
-                throw new Error(`同じtsのデータが二つ以上存在しています`);
             }
+            return queryResult;
 
         } catch (error) {
             console.error("DynamoDB問い合わせ時エラー:", error);
@@ -94,7 +95,7 @@ class DynamoPostDataRepository {
                 TableName : this.TABLENAME,
                 Key : {
                     [this.COLNAMES.PARTITION_KEY]      : partitionKey,
-                    [this.COLNAMES.SORT_KEY]           : `${DBConst.SORT_KEY_BASE.DIARY}#${date}`,
+                    [this.COLNAMES.SORT_KEY]           : `${DBConst.SORT_KEY_PREFIX.DIARY}#${date}`,
                 }
             }));
 

@@ -4,7 +4,7 @@
 const { DBConst } = require('../constants/DBConst');
 
 class DiaryModel {
-    _sortKeyBase = DBConst.SORT_KEY_BASE.DIARY;
+    _sortKeyPrefix = DBConst.SORT_KEY_PREFIX.DIARY;
 
     constructor (channelId) {
         this._channelId        = channelId;
@@ -47,7 +47,7 @@ class DiaryModel {
     }
 
     get sortKey() {
-        return `${this._sortKeyBase}#${this._date}`;
+        return `${this._sortKeyPrefix}#${this._date}`;
     }
 
     get date () {

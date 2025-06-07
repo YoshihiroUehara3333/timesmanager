@@ -2,7 +2,7 @@
 const { DBConst } = require('../constants/DBConst');
 
 class ThreadModel {
-    _sortKeyBase = DBConst.SORT_KEY_BASE.THREAD;
+    _sortKeyPrefix = DBConst.SORT_KEY_PREFIX.THREAD;
 
     constructor (channelId) {
         this._channelId     = channelId; // パーティションキー
@@ -16,8 +16,8 @@ class ThreadModel {
         return {
             [COLNAMES.PARTITION_KEY]      : this.partitionKey,
             [COLNAMES.SORT_KEY]           : this.sortKey,
-            [COLNAMES.DATE]               : this.date,
             [COLNAMES.THREAD_TS]          : this.threadTs,
+            [COLNAMES.DATE]               : this.date,
             [COLNAMES.SLACK_URL]          : this.slackUrl,
             [COLNAMES.CREATED_AT]         : this.createdAt,
         }
@@ -28,7 +28,7 @@ class ThreadModel {
     }
 
     get sortKey() {
-        return `${this._sortKeyBase}#${this._date}`;
+        return `${this._sortKeyPrefix}#${this._threadTs}`;
     }
 
     get date () {

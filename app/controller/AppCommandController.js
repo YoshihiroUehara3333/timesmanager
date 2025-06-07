@@ -1,8 +1,7 @@
 // app.command受け取り時
-const { SlackConst } = require('../constants/SlackConst');
 
 //モジュール読み込み
-require('date-utils');
+const { SlackConst } = require('../constants/SlackConst');
 
 class AppCommandController {
     constructor(threadService, slackPresenter){
@@ -28,20 +27,15 @@ class AppCommandController {
 
     // /makethread実行時
     async handleMakethread (command, logger, client) {
-        const { user_id, channel_id } = command;
-
         try {
-            let view = await this.threadService.newThreadEntry(user_id, channel_id, date, client);
+            let view = await this.threadService.processNewThreadEntry(command, client);
             await client.views.open({
                 trigger_id : command.trigger_id,
                 view       : view,
             });
         } catch (error) {
             logger.error(error);
-            await client.chat.postMessage({
-                channel    : user_id,
-                text       : `エラー内容:${error}`,
-            });
+            await this.slackPresenter.sendDirectMessage(client, error.toString(), message.user);
         }
     }
 };

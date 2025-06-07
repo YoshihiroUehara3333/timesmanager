@@ -5,7 +5,7 @@ const { CdConst } = require('../constants/CdConst');
 const { DBConst } = require('../constants/DBConst');
 
 class PostModel {
-    _sortKeyBase = DBConst.SORT_KEY_BASE.POSTS;
+    _sortKeyPrefix = DBConst.SORT_KEY_PREFIX.POSTS;
 
     constructor (channelId, threadTs) {
         this._channelId      = channelId;
@@ -37,7 +37,7 @@ class PostModel {
     }
 
     get sortKey() {
-        return `${this._sortKeyBase}#${this._threadTs}`;
+        return `${this._sortKeyPrefix}#${this._threadTs}`;
     }
 
     get date () {

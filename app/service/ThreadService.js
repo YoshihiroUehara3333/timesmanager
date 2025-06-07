@@ -20,26 +20,33 @@ class ThreadService {
         const { user_id, channel_id } = command;
         const date = new Date().toFormat("YYYY-MM-DD"); // YYYY-MM-DD
 
-        const text = `<@${user_id}> \n*【壁】${date}*`;
-        const postResult = await client.chat.postMessage({
-            channel     : channel_id,
-            text        : text,
-            mrkdwn      : true,
-        });
-        
-        // スレッドの投稿URLを取得
-        let { permalink } = await client.chat.getPermalink({
-            channel    : postResult.channel,
-            message_ts : postResult.ts,
-        });
+        try {
+            // timesチャンネルにスレッド作成
+            const text = `<@${user_id}> \n*【壁】${date}*`;
+            const postResult = await client.chat.postMessage({
+                channel     : channel_id,
+                text        : text,
+                mrkdwn      : true,
+            });
+            
+            // 投稿情報をDBに保存
+            // スレッドの投稿URLを取得
+            let { permalink } = await client.chat.getPermalink({
+                channel    : postResult.channel,
+                message_ts : postResult.ts,
+            });
 
-        const threadModel = this.createThreadModel (postResult, date, permalink);
-        const response = await this.postDataRepository.putItem(threadModel);
+            const threadModel = this.createThreadModel (postResult, date, permalink);
+            const response = await this.postDataRepository.putItem(threadModel);
+            const httpStatusCode = response.$metadata?.httpStatusCode;
 
-        if (response.$metadata?.httpStatusCode === 200) {
-            return MakeThreadModal(channel_id, postResult.ts, date);
-        } else {
-            throw new Error("DB登録時エラー");
+            if (httpStatusCode === 200) {
+                return MakeThreadModal(channel_id, postResult.ts, date);
+            } else {
+                throw new Error(`スレッド情報をDB登録時エラー。httpStatusCode=${httpStatusCode}`, { cause: error });
+            } 
+        } catch (error) {
+            throw new Error(`/makethread実行中にエラーが起きました。`, { cause: error });
         }
     };
 
@@ -58,12 +65,10 @@ class ThreadService {
         const channelId = post.channel;
 
         const threadModel = new ThreadModel(channelId);
-
-        threadModel.date = date;
-        threadModel.ts = post.ts;
-        threadModel.slackUrl = permalink;
-        threadModel.createdAt = 'hh:mm';
-
+        threadModel.date        = date;
+        threadModel.threadTs    = post.threadTs;
+        threadModel.slackUrl    = permalink;
+        threadModel.createdAt   = new Date().toFormat('HH24:MI:SS');
         return threadModel;
     }
 

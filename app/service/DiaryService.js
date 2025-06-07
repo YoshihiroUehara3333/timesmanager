@@ -1,9 +1,13 @@
 // モジュール読み込み
+require('date-utils');
 const { DiaryUtils } = require('../utility/DiaryUtils');
 const { DiaryModel } = require('../model/DiaryModel');
 const { DBConst } = require('../constants/DBConst');
 
 class DiaryService {
+    postDataRepository;
+    feedbackGenerator;
+
     constructor(postDataRepository, feedbackGenerator) {
         this.postDataRepository = postDataRepository;
         this.feedbackGenerator = feedbackGenerator;
@@ -14,13 +18,21 @@ class DiaryService {
     */
     async generateFeedback(message){
         const threadTs = message.thread_ts;
+        const prefix = DBConst.SORT_KEY_PREFIX.DIARY;
+        const channelId = message.channel;
 
         // DBから業務日誌情報を取得
         try {
-            const diary = await this.postDataRepository.queryByThreadTsAndSortKeyPrefix(threadTs, DBConst.SORT_KEY_BASE.DIARY);
-            if (!diary) return "DBから日報を取得できませんでした。";
-            return await this.feedbackGenerator.generateFeedback(diary);
+            const queryResult = await this.postDataRepository.queryByThreadTsAndSortKeyPrefix(threadTs, prefix);
+            if (queryResult != null) return `DBから日報データを取得できませんでした。`;
+            
+            const filteredResult = queryResult.filter(item => item.partition_key === channelId);
+            if (filteredResult.length === 0) return `指定チャンネルのデータが見つかりませんでした。`;
 
+            // たいていは1件のみ想定
+            const diary = filteredItems[0];
+            return await this.feedbackGenerator.generateFeedback(diary);
+            
         } catch (error) {
             throw new Error("フィードバック生成中にエラーが発生しました。");
         }
@@ -38,7 +50,7 @@ class DiaryService {
 
         // diaryModelを作成
         const diaryModel = this.createDiaryModel(message, permalink);
-        diaryModel.postedAt = new Date().toISOString();
+        diaryModel.postedAt = new Date().toFormat('HH24:MI:SS');
 
         // DB新規重複チェック
         const date = diaryModel.date;
@@ -64,7 +76,7 @@ class DiaryService {
     */
     async processUpdateDiary (message) {
         const diaryModel = this.createDiaryModel(message, '');
-        diaryModel.editedAt = new Date().toISOString();
+        diaryModel.postedAt = new Date().toFormat('HH24:MI:SS');
 
         // DB更新
         const date = diaryModel.date;

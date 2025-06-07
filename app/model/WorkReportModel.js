@@ -4,7 +4,7 @@
 const { DBConst } = require('../constants/DBConst');
 
 class WorkReportModel {
-    _sortKeyBase = DBConst.SORT_KEY_BASE.WORKREPORT;
+    _sortKeyPrefix = DBConst.SORT_KEY_PREFIX.WORKREPORT;
 
     constructor (channelId, threadTs, date) {
         this._channelId     = channelId;
@@ -40,7 +40,7 @@ class WorkReportModel {
     }
 
     get sortKey() {
-        return `${this._sortKey}#${this._date}`;
+        return `${this._sortKeyPrefix}#${this._date}`;
     }
 
     get createdAt () {

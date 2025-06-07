@@ -23,7 +23,7 @@ exports.DBConst = {
         POSTDATA : POSTDATA_COLUMN_NAMES,
         USERDATA : USERDATA_COLUMN_NAMES,
     },
-    SORT_KEY_BASE    : {
+    SORT_KEY_PREFIX    : {
         DIARY           : '#Diary',
         WORKREPORT      : '#Workreport',
         THREAD          : '#Thread',
@@ -33,6 +33,11 @@ exports.DBConst = {
         ByDateAndSortKey: {
             NAME : 'GSI_ByDate_SortKey',
             PK   : POSTDATA_COLUMN_NAMES.DATE,
+            SK   : POSTDATA_COLUMN_NAMES.SORT_KEY,
+        },
+        ByThreadTsAndSortKeyPrefix: {
+            NAME : 'GSI_ByThreadTs_SortKeyPrefix',
+            PK   : POSTDATA_COLUMN_NAMES.THREAD_TS,
             SK   : POSTDATA_COLUMN_NAMES.SORT_KEY,
         },
     }
