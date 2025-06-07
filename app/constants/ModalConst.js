@@ -1,6 +1,6 @@
 exports.ModalConst = {
     CALLBACK_ID   : {
-        MAKETHREAD  : "makethread_modal",
+        NEWTASK  : "newTask_modal_callback",
     },
     ACTION_ID   :   {
         WORKREPORT  :  {

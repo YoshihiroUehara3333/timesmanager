@@ -76,7 +76,7 @@ app.action(ModalConst.ACTION_ID.WORKREPORT.PROGRESS, async ({ack, body, logger})
     logger.info(`app.action\nbody:${JSON.stringify(body)}`);
 
     await ack();
-    await appActionController.handleWorkReportAction();
+    await appActionController.dispatchModalCallback();
 })
 
 // 作業完了ボタン

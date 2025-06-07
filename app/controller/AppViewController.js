@@ -18,11 +18,11 @@ class AppViewController {
     };
 
     // dispatch
-    async handleModalCallback(body, view, logger, client) {
+    async dispatchModalCallback(body, view, logger, client) {
         const callbackId = view.callback_id;
         logger.info(`callbackId:${callbackId}`);
         
-        const callBackHandler = this.callBackHandlers[callbackId] || this.callBackHandlerss['default'];
+        const callBackHandler = this.callBackHandlers[callbackId] || this.callBackHandlers['default'];
         return callBackHandler(body, view, logger, client);
     }
 
