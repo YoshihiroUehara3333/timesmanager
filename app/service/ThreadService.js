@@ -28,6 +28,7 @@ class ThreadService {
                 text        : text,
                 mrkdwn      : true,
             });
+            console.log(JSON.stringify(postResult));
             
             // 投稿情報をDBに保存
             // スレッドの投稿URLを取得
@@ -37,6 +38,7 @@ class ThreadService {
             });
 
             const threadModel = this.createThreadModel (postResult, date, permalink);
+            console.log(JSON.stringify(threadModel));
             const response = await this.postDataRepository.putItem(threadModel);
             const httpStatusCode = response.$metadata?.httpStatusCode;
 
