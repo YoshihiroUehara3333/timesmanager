@@ -25,14 +25,14 @@ exports.NewTaskModal = (channel_id, thread_ts, date, serial) => ({
 	"blocks": [
 		{
 			"type"     : "input",
-			"block_id" : "overview",
+			"block_id" : "taskname",
 			"label" : {
 				"type" : "plain_text",
 				"text" : "タスク名"
 			},
 			"element" : {
 				"type"      : "plain_text_input",
-				"action_id" : "input"
+				"action_id" : "taskname_input"
 			}
 		},
 		{
@@ -44,16 +44,15 @@ exports.NewTaskModal = (channel_id, thread_ts, date, serial) => ({
 			},
 			"element" : {
 				"type"      : "plain_text_input",
-				"action_id" : "input"
+				"action_id" : "goal_input"
 			}
 		},
 		{
 			"type"     : "input",
-			"block_id" : "target_time",
+			"block_id" : "targettime",
 			"label" : {
 				"type"  : "plain_text",
 				"text"  : "完了目標",
-				"emoji" : true
 			},
 			"element" : {
 				"type"         : "timepicker",
@@ -63,7 +62,7 @@ exports.NewTaskModal = (channel_id, thread_ts, date, serial) => ({
 					"text"  : "Select time",
 					"emoji" : true
 				},
-				"action_id": "input"
+				"action_id": "targettime_input"
 			}
 		},
 		{ "type": "divider" },
@@ -78,7 +77,7 @@ exports.NewTaskModal = (channel_id, thread_ts, date, serial) => ({
 			"element": {
 				"type"      : "plain_text_input",
 				"multiline" : true,
-				"action_id" : "input"
+				"action_id" : "memo_input"
 			}
 		}
 	]
