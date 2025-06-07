@@ -11,6 +11,7 @@ class AppViewController {
         this.workReportService  = workReportService;
         this.slackPresenter     = slackPresenter;
 
+        // dispatch用ハンドラ定義
         this.callBackHandlers = {
             [`${this.CALLBACK_ID.NEWTASK}`]  : this.handleMakeThreadModal.bind(this),
             'default'                        : this.handleDefault.bind(this),
