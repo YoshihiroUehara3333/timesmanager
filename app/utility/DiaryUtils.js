@@ -1,15 +1,15 @@
 const { RegexConst } = require('../constants/RegexConst');
-
+const { CdConst }    = require('../constants/CdConst');
 
 class DiaryUtils {
     // JSONデータから日記フォーマットに変換してreturnする
-    static formatDiaryFromJson(diaryJson) {
+    static formatDiaryFromJSON(diaryJson) {
         const content  = diaryJson.content || {};
         const date     = diaryJson.date || '';
     
         return (
             `*【日記】* ${date}\n` +
-            `*【時間】* ${content.workingTime || ''}\n` +
+            `*【時間】* ${content.workingTime.start || ''}-${content.workingTime.end || ''}\n` +
             `*【業務内容】*\n${content.work_report || ''}\n` +
             `*【自己評価】*\n${content.evaluation || ''}\n` +
             `*【翌日の計画】*\n${content.plan || ''}\n` +
@@ -36,7 +36,15 @@ class DiaryUtils {
         const planMatch         = text.match(RegexConst.PLAN);
         const otherMatch        = text.match(RegexConst.OTHER);
 
-        if (workingTimeMatch) content.working_time = workingTimeMatch[1].trim();
+        if (workingTimeMatch) {
+            const timeText = workingTimeMatch[1].trim(); // "09:00-18:00"
+            const [start, end] = timeText.split('-').map(t => t.trim());
+            content.working_time = {
+                start : start || '',
+                end   : end || ''
+            };
+        }
+
         if (workReportMatch) content.work_report = workReportMatch[1].trim();
         if (evaluationMatch) content.evaluation = evaluationMatch[1].trim();
         if (planMatch) content.plan = planMatch[1].trim();
@@ -55,6 +63,16 @@ class DiaryUtils {
             return '';
         }
     };
+
+    // textからAttendanceTypeCdを取得する
+    static parseAttendanceTypeCd (text) {
+        const Attendance = CdConst.ATTENDANCE;
+
+        const attendanceMatch  = text.match(RegexConst.ATTENDANCE);
+        const name = attendanceMatch[1].trim();
+        
+        return Attendance.getCodeByName(name);
+    }
 }
 
 exports.DiaryUtils = DiaryUtils;

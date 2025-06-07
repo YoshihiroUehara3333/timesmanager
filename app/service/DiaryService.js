@@ -89,7 +89,7 @@ class DiaryService {
 
         const diaryModel = new DiaryModel(message.channel);
         diaryModel.date           = DiaryUtils.parseDate(text);
-        diaryModel.attendanceType = DiaryUtils.parseAttendanceType(text);
+        diaryModel.attendanceType = DiaryUtils.parseAttendanceTypeCd(text);
         diaryModel.threadTs       = message.ts;
         diaryModel.slackUrl       = permalink;
         diaryModel.content        = DiaryUtils.parseContent(text);
