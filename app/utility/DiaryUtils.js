@@ -9,7 +9,7 @@ class DiaryUtils {
     
         return (
             `*【日記】* ${date}\n` +
-            `*【時間】* ${content.workingTime.start || ''}-${content.workingTime.end || ''}\n` +
+            `*【時間】* ${content.working_time.start || ''}-${content.working_time.end || ''}\n` +
             `*【業務内容】*\n${content.work_report || ''}\n` +
             `*【自己評価】*\n${content.evaluation || ''}\n` +
             `*【翌日の計画】*\n${content.plan || ''}\n` +
