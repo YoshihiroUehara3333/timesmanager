@@ -103,6 +103,7 @@ class DynamoPostDataRepository {
                     [this.COLNAMES.SORT_KEY]           : `${DBConst.SORT_KEY_PREFIX.DIARY}#${date}`,
                 }
             }));
+            console.log(JSON.stringify(getResult));
 
             return getResult.Item || null;
         } catch (error) {
