@@ -1,5 +1,6 @@
 // モジュール読み込み
 const { DiaryUtils } = require('../utility/DiaryUtils');
+const { DbKeyUtils } = require('../utility/DbKeyUtils');
 const { DiaryModel } = require('../model/DiaryModel');
 const { DBConst } = require('../constants/DBConst');
 
@@ -62,18 +63,15 @@ class DiaryService {
     */
     async updateDiary (message) {
         const diaryModel = this.createDiaryModel(message, '');
-        diaryModel.postedAt = new Date().toISOString();
+        diaryModel.editedAt = new Date().toISOString();
 
         // DB更新
-        const date = diaryModel.date();
+        const date = diaryModel.date;
         try {
-            // クエリ用のソートキーを作成
-            const param = '';
-            const sortKey = this.DbKeyFactory.generateSortKey(DBConst.SORT_KEY.DIARY, param);
-
-            const queryResult = await this.postDataRepository.queryByDateAndSortKey(date, sortKey);
-            if (queryResult.slack_url) {
-                diaryModel.slackUrl = result.slack_url;
+            const getPartitionKey = diaryModel.channel;
+            const getResult = await this.postDataRepository.getDiaryByDate(getPartitionKey, date);
+            if (getResult.slack_url) {
+                diaryModel.slackUrl = getResult.slack_url;
             }
 
             return await this.postDataRepository.putItem(diaryModel);
@@ -88,11 +86,11 @@ class DiaryService {
         const text    = message.text;
 
         const diaryModel = new DiaryModel(message.channel);
-        diaryModel.date           = DiaryUtils.parseDate(text);
-        diaryModel.attendanceType = DiaryUtils.parseAttendanceTypeCd(text);
-        diaryModel.threadTs       = message.ts;
-        diaryModel.slackUrl       = permalink;
-        diaryModel.content        = DiaryUtils.parseContent(text);
+        diaryModel.date                = DiaryUtils.parseDate(text);
+        diaryModel.workingPlaceCd      = DiaryUtils.parseWorkingPlaceCd(text);
+        diaryModel.content             = DiaryUtils.parseContent(text);
+        diaryModel.threadTs            = message.ts;
+        diaryModel.slackUrl            = permalink;
 
         return diaryModel;
     }

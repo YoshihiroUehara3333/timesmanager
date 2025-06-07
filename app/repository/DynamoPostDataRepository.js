@@ -34,14 +34,14 @@ class DynamoPostDataRepository {
             const result = await this.dynamoDb.send(new QueryCommand({
                 TableName                : this.TABLENAME,
                 IndexName                : NAME, // GSI名
-                KeyConditionExpression   : `#${PK} = :${PK} AND #${SK} = :${SK}`, // 条件指定
+                KeyConditionExpression   : `#pk = :pk AND #sk = :sk`, // 条件指定
                 ExpressionAttributeNames: {
-                    [`#${PK}`]: PK,
-                    [`#${SK}`]: SK,
+                    '#pk' : PK,
+                    '#sk' : SK,
                 },
                 ExpressionAttributeValues: {
-                    [`:${PK}`]: date,
-                    [`:${SK}`]: sortKey,
+                    ':pk' : date,
+                    ':sk' : sortKey,
                 },
             }));
         
@@ -60,20 +60,22 @@ class DynamoPostDataRepository {
 
     // 指定したsort_keyのprefixとthread_tsからレコードを一意に取得する
     async queryByThreadTsAndSortKeyPrefix(threadTs, prefix) {
-        const COL_THREAD_TS = DBConst.COLUMN_NAMES.POSTDATA.THREAD_TS;
+        const { THREAD_TS, SORT_KEY }= DBConst.COLUMN_NAMES.POSTDATA;
 
         try {
             const result = await this.dynamoDb.send(new QueryCommand({
                 TableName                : this.TABLENAME,
-                KeyConditionExpression   : `${COL_THREAD_TS} = :${COL_THREAD_TS} AND begins_with(sort_key, :prefix)`, // 条件指定
+                KeyConditionExpression   : `${THREAD_TS} = :${THREAD_TS} AND begins_with(${SORT_KEY}, :prefix)`, // 条件指定
                 ExpressionAttributeValues: {
-                    [`:${COL_THREAD_TS}`]: threadTs,
+                    [`:${THREAD_TS}`]: threadTs,
                     ":prefix" : prefix,
                 },
             }));
         
             if (result.Count === 1) {
                 return result.Items[0];
+            } else if (result.Count === 0) {
+                return null;
             } else {
                 console.log(`DB取得結果${JSON.stringify(result)}`);
                 throw new Error(`同じtsのデータが二つ以上存在しています`);
@@ -81,6 +83,24 @@ class DynamoPostDataRepository {
 
         } catch (error) {
             console.error("DynamoDB問い合わせ時エラー:", error);
+            throw new Error(error.message);
+        }
+    }
+
+    // dateからDiaryを取得する
+    async getDiaryByDate (partitionKey, date) {
+        try {
+            const getResult = await this.dynamoDb.send(new GetCommand({
+                TableName : this.TABLENAME,
+                Key : {
+                    [COLNAMES.PARTITION_KEY]      : partitionKey,
+                    [COLNAMES.SORT_KEY]           : `${DBConst.SORT_KEY_BASE.DIARY}#${date}`,
+                }
+            }));
+
+            return getResult.Item || null;
+        } catch (error) {
+            console.error("DynamoDB登録時エラー:", error);
             throw new Error(error.message);
         }
     }
