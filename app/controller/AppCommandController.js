@@ -5,8 +5,9 @@ const { SlackConst } = require('../constants/SlackConst');
 require('date-utils');
 
 class AppCommandController {
-    constructor(threadService){
+    constructor(threadService, slackPresenter){
         this.threadService = threadService;
+        this.slackPresenter = slackPresenter;
     };
 
     async dispatchAppCommand (command, logger, client) {
@@ -28,7 +29,6 @@ class AppCommandController {
     // /makethread実行時
     async handleMakethread (command, logger, client) {
         const { user_id, channel_id } = command;
-        const date = new Date().toFormat("YYYY-MM-DD"); // YYYY-MM-DD
 
         try {
             let view = await this.threadService.newThreadEntry(user_id, channel_id, date, client);

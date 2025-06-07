@@ -12,8 +12,8 @@ class OpenAIFeedbackGenerator {
     }
 
     // AIによる日報のフィードバックを生成
-    async generateFeedback(diaryJson) {
-        console.log("generateFeedback", JSON.stringify(diaryJson));
+    async generateFeedback(diary) {
+        console.log("generateFeedback", JSON.stringify(diary));
 
         console.log(`prompt:${Prompts.feedback}`);
         console.log(`model:${process.env.GPT_MODEL}`);
@@ -29,10 +29,10 @@ class OpenAIFeedbackGenerator {
                     },
                     { 
                         role    : "user", 
-                        content : DiaryUtils.formatDiaryFromJson(diaryJson) 
+                        content : DiaryUtils.formatDiaryFromJson(diary),
                     }
                 ],
-                temperature: 0.5,
+                temperature: 0.3,
             });
             console.log(JSON.stringify(response));
 

@@ -7,6 +7,7 @@ exports.SlackConst = {
     },
     COMMAND : {
         makeThread   : "/makethread",
+        workReport   : "/workReport",
         warmUp       : "/warmup",
     },
 };

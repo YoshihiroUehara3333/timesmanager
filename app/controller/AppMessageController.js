@@ -3,6 +3,7 @@
 // モジュール読み込み
 const { SlackConst } = require('../constants/SlackConst');
 const { RegexConst } = require('../constants/RegexConst');
+const { DiaryUtils } = require('../utility/DiaryUtils');
 
 class AppMessageController {
     constructor (diaryService, threadService, slackPresenter) {
@@ -10,21 +11,20 @@ class AppMessageController {
         this.threadService  = threadService;
         this.slackPresenter = slackPresenter;
 
-        // subtype によって処理を切り替える戦略パターン風マップ
-        // ここ後で勉強する
-        this.messageHandlers = {
+        // subtype によって処理を切り替える
+        this.subtypeHandlers = {
             'message_changed'   : this.handleEditedMessage.bind(this),
             'default'           : this.handleNewMessage.bind(this),
-        };
-    };
+        }
+    }
 
     // subtypeによってmessageの構造が異なる為まずsubtypeで処理を分ける
     async handleAppMessage (message, logger, client) {
         logger.info("handleAppMessageが実行されました");
 
-        const handler = this.messageHandlers[message.subtype] || this.messageHandlers['default'];
-        return handler(message, logger, client);
-    };
+        const subtypeHandler = this.subtypeHandlers[message.subtype] || this.subtypeHandlers['default'];
+        return subtypeHandler(message, logger, client);
+    }
 
     // 新規投稿時はこの関数で処理する
     // ・スレッドの内部/外部
@@ -32,14 +32,9 @@ class AppMessageController {
     // 上記判定を行い、別関数に処理を移譲する。
     async handleNewMessage (message, logger, client) {
         logger.info("handleNewMessageが実行されました");
-
-        // messageからtext取得
-        const { text, thread_ts } = message;
-
-        // スレッド判別
-        const isInThread = !!thread_ts;
-        if(isInThread) {
-            if (text.match(`<@${SlackConst.ID.botUserId}>`)) {
+        
+        if(this.isInThread(message)) {
+            if (this.isBotMentioned(message)) {
                 // スレッド内ボットメンションは現状疑似スラッシュコマンドのみ
                 await this.handleNewThreadMentionMessage(message, logger, client);
             } else {
@@ -50,52 +45,58 @@ class AppMessageController {
             //スレッド外のメッセージ");
             await this.handleNewTopLevelMessage(message, logger, client);
         }
-    };
+    }
 
     // 編集投稿時はこの関数で処理する
-    async handleEditedMessage (message, logger, client) {
+    async handleEditedMessage (messageRaw, logger, client) {
         logger.info("handleEditedMessageが実行されました");
-
-        const { text, user } = message.message;
-        if (text.match(RegexConst.DATE)) {
+        let msg = '';
+        const message = messageRaw.message;
+        
+        if (this.isInThread(message)) {
+            // スレッド投稿を編集した時
+        } else if (this.isDiary(message)) {
             // 日記編集時
-            const date = text.match(RegexConst.DATE)[0];
             try {
                 logger.info("diaryService.updateDiaryを実行");
                 const response = await this.diaryService.updateDiary(message, client);
 
+                const date = DiaryUtils.parseDate(message.text);
                 if (response.$metadata.httpStatusCode == 200) {
-                    const msg = `日記(${date})のDB更新に成功しました。`;
-                    await this.slackPresenter.sendDirectMessage(client, msg, user);
+                    msg = `日記(${date})のDB更新に成功しました。`;
                 } else {
                     throw new Error(`日記(${date})のDB更新に失敗しました。`);
                 }
 
             } catch (error) {
                 logger.error(error.stack);
-                await this.slackPresenter.sendDirectMessage(client, error.toString(), user);
+                msg = error.toString();
             }
+
+            await this.slackPresenter.sendDirectMessage(client, msg, message.user);
         }
-    };
+    }
 
     // スレッド内部かつ、新規ポストかつ、ボットメンション時
     // 現状疑似スラッシュコマンドのみ
     async handleNewThreadMentionMessage (message, logger, client) {
         logger.info("handleNewThreadMentionMessageが実行されました");
+        let msg = '';
 
-        const {text, channel, ts} = message;
         // /AIフィードバック
-        if (text.match(RegexConst.COMMANDS.AI_FEEDBACK)) {
+        if (message.text.match(RegexConst.THREADCOMMANDS.AI_FEEDBACK)) {
             try {
                 logger.info("diaryService.aiFeedbackを実行");
-                const msg = await this.diaryService.generateFeedback(message);
+                msg = await this.diaryService.generateFeedback(message);
                 logger.info("diaryService.aiFeedbackが終了:" + JSON.stringify(msg));
-
-                await this.slackPresenter.sendThreadMessage (client, msg, channel, ts);
             } catch (error) {
                 logger.error(error.stack);
-                await this.slackPresenter.sendThreadMessage (client, error.toString(), channel, ts);
+                msg = error.toString();
             }
+
+            // SlackPresenter用のパラメータ値取得
+            const { channel, ts } = message;
+            await this.slackPresenter.sendThreadMessage (client, msg, channel, ts);
         }
     }
 
@@ -111,23 +112,37 @@ class AppMessageController {
     // スレッド外部かつ、新規ポスト時
     async handleNewTopLevelMessage (message, logger, client) {
         logger.info("handleTopLevelNewMessageが実行されました");
+        let msg = '';
 
-        // messageから各情報取得
-        const {user, text} = message;
         // 正規表現で日記を検知する
-        if (text.match(RegexConst.DATE)) {
+        if (this.isDiary(message)) {
             // 日記新規投稿時
             try {
                 logger.info("diaryService.newDiaryEntryを実行");
-                const msg = await this.diaryService.newDiaryEntry(message, client);
+                msg = await this.diaryService.newDiaryEntry(message, client);
                 logger.info("diaryService.newDiaryEntryが終了:" + msg);
 
-                await this.slackPresenter.sendDirectMessage(client, msg, user);
             } catch (error) {
                 logger.error(error.stack);
-                await this.slackPresenter.sendDirectMessage(client, error.toString(), user);
+                msg = error.toString();
             }
+
+            await this.slackPresenter.sendDirectMessage(client, msg, message.user);
         }
+    }
+
+
+    // Helper Methods ---------------------------------------------------------------------
+    isBotMentioned (message) {
+        return message.text.match(`<@${SlackConst.ID.botUserId}>`);
+    }
+
+    isInThread (message) {
+        return !!message.thread_ts;
+    }
+
+    isDiary (message) {
+        return message.text.match(RegexConst.DATE);
     }
 };
 

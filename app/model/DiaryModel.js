@@ -1,56 +1,69 @@
 // 日記のデータ構造定義クラス
 
 // モジュール読み込み
+const { DBConst } = require('../constants/DBConst');
+
 class DiaryModel {
-    constructor() {
-        this._userId = '';
-        this._channel = '';
-        this._eventTs = '';
+    _sortKeyBase = DBConst.SORT_KEY_BASE.DIARY;
+
+    constructor (channelId) {
+        this._channelId        = channelId;
+
+        this._date             = '';
+        this._attendanceTypeCd = '';
+        this._threadTs         = '';
+        this._slackUrl         = '';
+        this._postedAt         = '';
+        this._editedAt         = '';
         this._content = {
-            workingTime: '',
-            work: '',
-            evaluation: '',
-            plan: '',
-            other: ''
-        };
-        this._date = '';
-        this._clientMsgId = '';
-        this._editedTs = '';
-        this._slackUrl = '';
+            working_time : {
+                start : 'hh:mm',
+                end   : 'hh:mm',
+            },
+            work_report  : '',
+            evaluation   : '',
+            plan         : '',
+            other        : ''
+        }
     }
 
     toItem () {
+        const COLNAMES = DBConst.COLUMN_NAMES.POSTDATA;
         return {
-            date: this._date,
-            user_id: this._userId,
-            event_ts: this._eventTs,
-            content: { ...this._content },
-            slack_url: this._slackUrl,
-            edited_ts: this._editedTs,
-            client_msg_id: this._clientMsgId,
-            thread_ts: this._threadTs,
-            channel: this._channel
+            [COLNAMES.PARTITION_KEY]      : this.partitionKey,
+            [COLNAMES.SORT_KEY]           : this.sortKey,
+            [COLNAMES.DATE]               : this.date,
+            [COLNAMES.THREAD_TS]          : this.threadTs,
+            [COLNAMES.SLACK_URL]          : this.slackUrl,
+            [COLNAMES.ATTENDANCE_TYPE_CD] : this.attendanceTypeCd,
+            [COLNAMES.CONTENT]            : { ...this._content },
+            [COLNAMES.POSTED_AT]          : this.postedAt,
+            [COLNAMES.EDITED_AT]          : this.editedAt,
         }
-    };
+    }
 
-    get partitionKeyBase() {
-        return this._userId + this._channel + this._date;
-    };
+    get partitionKey () {
+        return `${this._channelId}`;
+    }
 
-    get userId() {
-        return this._userId;
-    };
+    get sortKey() {
+        return `${this._sortKeyBase}#${date}`;
+    }
 
-    set userId(userId) {
-        this._userId = userId;
-    };
+    get date () {
+        return this._date;
+    }
 
-    get channel() {
-        return this._channel;
-    };
+    set date (date) {
+        this._date = date;
+    }
 
-    set channel(channel) {
-        this._channel = channel;
+    get attendanceTypeCd () {
+        return this._attendanceTypeCd;
+    }
+    
+    set attendanceTypeCd (attendanceTypeCd) {
+        this._attendanceTypeCd = attendanceTypeCd;
     };
 
     get slackUrl() {
@@ -61,22 +74,6 @@ class DiaryModel {
         this._slackUrl = slackUrl;
     };
 
-    get eventTs() {
-        return this._eventTs;
-    };
-
-    set eventTs(eventTs) {
-        this._eventTs = eventTs;
-    };
-
-    get editedTs () {
-        return this._editedTs;
-    };
-
-    set editedTs (editedTs) {
-        this._editedTs = editedTs;
-    };
-
     get threadTs() {
         return this._threadTs;
     };
@@ -85,29 +82,29 @@ class DiaryModel {
         this._threadTs = threadTs;
     };
 
-    get date () {
-        return this._date;
+    get postedAt () {
+        return this._postedAt;
     };
 
-    set date (date) {
-        this._date = date;
+    set postedAt (postedAt) {
+        this._postedAt = postedAt;
+    }
+
+    get editedAt () {
+        return this._editedAt;
     };
 
-    get content(){
+    set editedAt (editedAt) {
+        this._editedAt = editedAt;
+    }
+
+    get content() {
         return this._content;
-    };
+    }
 
-    set content(content){
+    set content(content) {
         this._content = content;
-    };
-
-    get clientMsgId () {
-        return this._clientMsgId;
-    };
-
-    set clientMsgId (clientMsgId) {
-        this._clientMsgId = clientMsgId;
-    };
+    }
 }
 
 exports.DiaryModel = DiaryModel;

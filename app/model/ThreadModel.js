@@ -1,42 +1,43 @@
 // スレッドのデータ構造定義クラス
+const { DBConst } = require('../constants/DBConst');
+
 class ThreadModel {
-    constructor () {
-        this._date = '';
-        this._userId = '';
-        this._channel = '';
-        this._threadTs = '';
-        this._slackUrl = '';
-    };
+    _sortKeyBase = DBConst.SORT_KEY_BASE.THREAD;
+
+    constructor (channelId) {
+        this._channelId     = channelId; // パーティションキー
+        this._date          = ''; // GSI
+        this._threadTs      = '';
+        this._slackUrl      = '';
+        this._createdAt     = 'hh:mm';
+    }
 
     toItem () {
         return {
-            date: this._date,
-            user_id: this._userId,
-            channel: this._channel,
-            event_ts: this._threadTs,
-            slack_url: this._slackUrl,
+            [COLNAMES.PARTITION_KEY]      : this.partitionKey,
+            [COLNAMES.SORT_KEY]           : this.sortKey,
+            [COLNAMES.DATE]               : this.date,
+            [COLNAMES.THREAD_TS]          : this.threadTs,
+            [COLNAMES.SLACK_URL]          : this.slackUrl,
+            [COLNAMES.CREATED_AT]         : this.createdAt,
         }
-    };
+    }
 
-    get partitionKeyBase() {
-        return this._userId + this._channel + this._date;
-    };
+    get partitionKey () {
+        return `${this._channelId}`;
+    }
 
-    get userId() {
-        return this._userId;
-    };
+    get sortKey() {
+        return `${this._sortKeyBase}#${this._date}`;
+    }
 
-    set userId(userId) {
-        this._userId = userId;
-    };
+    get date () {
+        return this._date;
+    }
 
-    get channel() {
-        return this._channel;
-    };
-
-    set channel(channel) {
-        this._channel = channel;
-    };
+    set date (date) {
+        this._date = date;
+    }
 
     get slackUrl() {
         return this._slackUrl;
@@ -48,18 +49,18 @@ class ThreadModel {
 
     get threadTs() {
         return this._threadTs;
-    }
+    };
 
     set threadTs(threadTs) {
         this._threadTs = threadTs;
-    }
+    };
 
-    get date () {
-        return this._date;
-    }
+    get createdAt () {
+        return this._createdAt;
+    };
 
-    set date (date) {
-        this._date = date;
+    set createdAt (createdAt) {
+        this._createdAt = createdAt;
     }
 };
 
