@@ -11,7 +11,7 @@ const POSTDATA_COLUMN_NAMES = {
     EDITED_AT          : 'edited_at',
     CREATED_AT         : 'created_at',
     POST_TYPE_CD       : 'post_type_cd',
-    ATTENDANCE_TYPE_CD : 'attendance_type_cd',
+    WORKING_PLACE_CD   : 'working_place_cd'
 };
 
 const USERDATA_COLUMN_NAMES = {

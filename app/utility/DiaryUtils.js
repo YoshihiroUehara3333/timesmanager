@@ -64,7 +64,7 @@ class DiaryUtils {
         }
     };
 
-    // textからAttendanceTypeCdを取得する
+    // textからWorkingPlaceCdを取得する
     static parseWorkingPlaceCd (text) {
         const WorkingPlace = CdConst.WORKINGPLACE;
 

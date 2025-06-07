@@ -10,7 +10,7 @@ class DiaryModel {
         this._channelId        = channelId;
 
         this._date             = '';
-        this._attendanceTypeCd = '';
+        this._workingPlaceCd   = 9;
         this._threadTs         = '';
         this._slackUrl         = '';
         this._postedAt         = '';
@@ -35,7 +35,7 @@ class DiaryModel {
             [COLNAMES.DATE]               : this.date,
             [COLNAMES.THREAD_TS]          : this.threadTs,
             [COLNAMES.SLACK_URL]          : this.slackUrl,
-            [COLNAMES.ATTENDANCE_TYPE_CD] : this.attendanceTypeCd,
+            [COLNAMES.WORKING_PLACE_CD]   : this.workingPlaceCd,
             [COLNAMES.CONTENT]            : { ...this._content },
             [COLNAMES.POSTED_AT]          : this.postedAt,
             [COLNAMES.EDITED_AT]          : this.editedAt,
@@ -58,33 +58,33 @@ class DiaryModel {
         this._date = date;
     }
 
-    get attendanceTypeCd () {
-        return this._attendanceTypeCd;
+    get workingPlaceCd () {
+        return this._workingPlaceCd;
     }
     
-    set attendanceTypeCd (attendanceTypeCd) {
-        this._attendanceTypeCd = attendanceTypeCd;
-    };
+    set workingPlaceCd (workingPlaceCd) {
+        this._workingPlaceCd = workingPlaceCd;
+    }
 
     get slackUrl() {
         return this._slackUrl;
-    };
+    }
 
     set slackUrl(slackUrl) {
         this._slackUrl = slackUrl;
-    };
+    }
 
     get threadTs() {
         return this._threadTs;
-    };
+    }
 
     set threadTs(threadTs) {
         this._threadTs = threadTs;
-    };
+    }
 
     get postedAt () {
         return this._postedAt;
-    };
+    }
 
     set postedAt (postedAt) {
         this._postedAt = postedAt;
@@ -92,7 +92,7 @@ class DiaryModel {
 
     get editedAt () {
         return this._editedAt;
-    };
+    }
 
     set editedAt (editedAt) {
         this._editedAt = editedAt;
