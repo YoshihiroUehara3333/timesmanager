@@ -51,7 +51,7 @@ class DiaryService {
         });
 
         // diaryModelを作成
-        const diaryModel = this.createDiaryModel(message, permalink);
+        const diaryModel = this.createDiaryModel(message, channelId, permalink);
         diaryModel.postedAt = new Date().toFormat('HH24:MI:SS');
 
         // DB新規重複チェック
@@ -76,8 +76,10 @@ class DiaryService {
     /*
     **   日記編集処理
     */
-    async processUpdateDiary (message) {
-        const diaryModel = this.createDiaryModel(message, '');
+    async processUpdateDiary (message, previousMessage) {
+        const channelId = previousMessage.channel;
+
+        const diaryModel = this.createDiaryModel(message, channelId, '');
         diaryModel.postedAt = new Date().toFormat('HH24:MI:SS');
 
         // DB更新
@@ -92,7 +94,7 @@ class DiaryService {
             const response = await this.postDataRepository.putItem(diaryModel);
             const httpStatusCode = response?.$metadata.httpStatusCode;
             if (httpStatusCode == 200) {
-                return `日記(${date})のDB登録に成功しました。`;
+                return `日記(${date})のDB更新に成功しました。`;
             } else {
                 throw new Error(`日記(${date})のDB登録に失敗しました。httpStatusCode=${httpStatusCode}`, { cause: error });
             }
@@ -103,10 +105,8 @@ class DiaryService {
 
 
     // DiaryModel生成処理
-    createDiaryModel (message, permalink) {
-        const text    = message.text;
-
-        const diaryModel = new DiaryModel(message.channel);
+    createDiaryModel (message, channelId, permalink) {
+        const diaryModel = new DiaryModel(channelId);
         diaryModel.date                = DiaryUtils.parseDate(text);
         diaryModel.workingPlaceCd      = DiaryUtils.parseWorkingPlaceCd(text);
         diaryModel.content             = DiaryUtils.parseContent(text);
