@@ -26,15 +26,15 @@ class DiaryService {
             const queryResult = await this.postDataRepository.queryByThreadTsAndSortKeyPrefix(threadTs, prefix);
             if (queryResult == null) return `DBから日報データを取得できませんでした。`;
             
-            const filteredResult = queryResult.filter(item => item.partition_key === channelId);
+            const filteredResult = queryResult.Items.filter(item => item.partition_key === channelId);
             if (filteredResult.length === 0) return `指定チャンネルのデータが見つかりませんでした。`;
 
             // たいていは1件のみ想定
-            const diary = filteredItems[0];
+            const diary = filteredResult[0];
             return await this.feedbackGenerator.generateFeedback(diary);
             
         } catch (error) {
-            throw new Error(`フィードバック生成中にエラーが発生しました。`, { cause: error });
+            throw new Error(`フィードバック生成中にエラーが発生しました。${error.message}`, { cause: error });
         }
     };
 

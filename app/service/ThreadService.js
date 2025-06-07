@@ -71,6 +71,14 @@ class ThreadService {
         threadModel.createdAt   = new Date().toFormat('HH24:MI:SS');
         return threadModel;
     }
+
+    // PostModel生成
+    createPostModel (message) {
+        const channelId = message.channel;
+
+        const postModel = new PostModel(channelId);
+        return postModel;
+    }
 }
 
 exports.ThreadService = ThreadService;
