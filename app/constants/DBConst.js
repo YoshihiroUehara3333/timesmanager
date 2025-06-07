@@ -20,8 +20,8 @@ const USERDATA_COLUMN_NAMES = {
 
 exports.DBConst = {
     COLUMN_NAMES     : {
-        POSTDATA : POSTDATA_COLUMNS,
-        USERDATA : USERDATA_COLUMNS,
+        POSTDATA : POSTDATA_COLUMN_NAMES,
+        USERDATA : USERDATA_COLUMN_NAMES,
     },
     SORT_KEY_BASE    : {
         DIARY           : '#Diary',
