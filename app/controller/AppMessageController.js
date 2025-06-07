@@ -52,7 +52,8 @@ class AppMessageController {
         logger.info("handleEditedMessageが実行されました");
         let msg = '';
         const message = messageRaw.message;
-        const previousMessage = messageRaw.previous_message;
+        const channelId = messageRaw.channel;
+        console.log(JSON.stringify(channelId));
         
         if (this.isInThread(message)) {
             // スレッド投稿を編集した時
@@ -61,7 +62,7 @@ class AppMessageController {
             const msg = '';
             try {
                 logger.info("diaryService.processUpdateDiaryを実行");
-                msg = await this.diaryService.processUpdateDiary(message, previousMessage);
+                msg = await this.diaryService.processUpdateDiary(message, channelId);
 
             } catch (error) {
                 logger.error(error.stack);
