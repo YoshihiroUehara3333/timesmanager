@@ -57,16 +57,10 @@ class AppMessageController {
             // スレッド投稿を編集した時
         } else if (this.isDiary(message)) {
             // 日記編集時
+            const msg = '';
             try {
                 logger.info("diaryService.updateDiaryを実行");
-                const response = await this.diaryService.processUpdateDiary(message, client);
-
-                const date = DiaryUtils.parseDate(message.text);
-                if (response.$metadata.httpStatusCode == 200) {
-                    msg = `日記(${date})のDB更新に成功しました。`;
-                } else {
-                    throw new Error(`日記(${date})のDB更新に失敗しました。`);
-                }
+                msg = await this.diaryService.processUpdateDiary(message, client);
 
             } catch (error) {
                 logger.error(error.stack);
