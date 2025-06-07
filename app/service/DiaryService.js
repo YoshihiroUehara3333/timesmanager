@@ -106,6 +106,8 @@ class DiaryService {
 
     // DiaryModel生成処理
     createDiaryModel (message, channelId, permalink) {
+        const text = message.text;
+        
         const diaryModel = new DiaryModel(channelId);
         diaryModel.date                = DiaryUtils.parseDate(text);
         diaryModel.workingPlaceCd      = DiaryUtils.parseWorkingPlaceCd(text);
