@@ -83,8 +83,8 @@ class DiaryService {
         // DB更新
         const date = diaryModel.date;
         try {
-            const getPartitionKey = diaryModel.channel;
-            const getResult = await this.postDataRepository.getDiaryByDate(getPartitionKey, date);
+            const partitionKey = diaryModel.partitionKey;
+            const getResult = await this.postDataRepository.getDiaryByDate(partitionKey, date);
             if (getResult.slack_url) {
                 diaryModel.slackUrl = getResult.slack_url;
             }

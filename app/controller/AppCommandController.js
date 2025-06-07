@@ -29,10 +29,8 @@ class AppCommandController {
     async handleMakethread (command, logger, client) {
         try {
             let view = await this.threadService.processNewThreadEntry(command, client);
-            await client.views.open({
-                trigger_id : command.trigger_id,
-                view       : view,
-            });
+            await this.slackPresenter.openView (client, view, command.trigger_id);
+            
         } catch (error) {
             logger.error(error);
             await this.slackPresenter.sendDirectMessage(client, error.toString(), message.user);

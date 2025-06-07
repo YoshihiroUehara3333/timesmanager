@@ -35,6 +35,14 @@ class SlackPresenter {
             mrkdwn    : true
         });
     }
+
+    // モーダルを開く
+    async openView (client, view, triggerId) {
+        return await client.views.open({
+                trigger_id : triggerId,
+                view       : view,
+        })
+    }
 }
 
 exports.SlackPresenter = SlackPresenter;

@@ -54,7 +54,7 @@ class ThreadService {
     async processNewThreadReply (message, client) {
         const text = message.text;
 
-        const postModel = this.createReplyModel(message);
+        const postModel = this.createPostModel(message);
 
         await this.postDataRepository.putItem(postModel);
     }
@@ -70,15 +70,6 @@ class ThreadService {
         threadModel.slackUrl    = permalink;
         threadModel.createdAt   = new Date().toFormat('HH24:MI:SS');
         return threadModel;
-    }
-
-    // ReplyModel生成
-    createReplyModel (message) {
-        const channelId = message.channel;
-        const threadTs = message.thread_ts;
-
-        const postModel        = new PostModel(channelId, threadTs);
-        return postModel;
     }
 }
 

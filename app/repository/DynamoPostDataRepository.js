@@ -14,7 +14,7 @@ class DynamoPostDataRepository {
         this.dynamoDb = DynamoDBDocumentClient.from(client);
     }
 
-    // DBに登録する
+    // modelデータをDBに登録する
     async putItem (model) {
         try {
             return await this.dynamoDb.send(new PutCommand({
@@ -28,10 +28,13 @@ class DynamoPostDataRepository {
     }
 
     // dateとsort_keyで絞り込みをかける
+    // 絞り込みはServiceクラスで行う
+    // sort_keyにthread_tsを使用しているModelのみ有効
+    // GSI使用
     async queryByDateAndSortKey(date, sortKey) {
         const {NAME, PK, SK} = DBConst.GSI.ByDateAndSortKey;
         try {
-            const result = await this.dynamoDb.send(new QueryCommand({
+            const queryResult = await this.dynamoDb.send(new QueryCommand({
                 TableName                : this.TABLENAME,
                 IndexName                : NAME, // GSI名
                 KeyConditionExpression   : `#pk = :pk AND #sk = :sk`, // 条件指定
@@ -45,11 +48,10 @@ class DynamoPostDataRepository {
                 },
             }));
         
-            if (result.Count === 1) {
-                return result.Items[0];
+            if (queryResult.Count === 0) {
+                return null;
             } else {
-                console.log(`DB取得結果${JSON.stringify(result)}`);
-                throw new Error(`同じtsのデータが二つ以上存在しています`);
+                return queryResult;
             }
 
         } catch (error) {
@@ -58,7 +60,9 @@ class DynamoPostDataRepository {
         }
     }
 
-    // 指定したsort_keyのprefixとthread_tsからレコードを一意に取得する
+    // 指定したsort_keyのprefixとthread_tsを条件にレコードを取得する
+    // 絞り込みはServiceクラスで行う
+    // GSI使用
     async queryByThreadTsAndSortKeyPrefix(threadTs, prefix) {
         const {NAME, PK, SK} = DBConst.GSI.ByThreadTsAndSortKeyPrefix;
 
@@ -79,8 +83,9 @@ class DynamoPostDataRepository {
 
             if (queryResult.Count === 0) {
                 return null;
+            } else {
+                return queryResult;
             }
-            return queryResult;
 
         } catch (error) {
             console.error("DynamoDB問い合わせ時エラー:", error);
@@ -88,7 +93,7 @@ class DynamoPostDataRepository {
         }
     }
 
-    // dateからDiaryを取得する
+    // dateからSortKeyを生成し、Diaryを1件取得する
     async getDiaryByDate (partitionKey, date) {
         try {
             const getResult = await this.dynamoDb.send(new GetCommand({
