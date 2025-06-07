@@ -4,7 +4,7 @@
 require('date-utils');
 const { ThreadModel }       = require('../model/ThreadModel');
 const { PostModel }        = require('../model/PostModel');
-const { MakeThreadModal }   = require('../blockkit/MakeThreadModal');
+const { NewTaskModal }   = require('../blockkit/NewTaskModal');
 
 class ThreadService {
     postDataRepository;
@@ -41,7 +41,7 @@ class ThreadService {
             const httpStatusCode = response.$metadata?.httpStatusCode;
 
             if (httpStatusCode === 200) {
-                return MakeThreadModal(channel_id, postResult.ts, date);
+                return NewTaskModal(channel_id, postResult.ts, date, 1);
             } else {
                 throw new Error(`スレッド情報をDB登録時エラー。httpStatusCode=${httpStatusCode}`, { cause: error });
             } 
@@ -51,7 +51,7 @@ class ThreadService {
     };
 
     // スレッド内のリプライを扱う
-    async processNewThreadReply (message, client) {
+    async processNewThreadPost (message, client) {
         const text = message.text;
 
         const postModel = this.createPostModel(message);

@@ -37,7 +37,7 @@ class DiaryUtils {
         const otherMatch        = text.match(RegexConst.OTHER);
 
         if (workingTimeMatch) {
-            const timeText = workingTimeMatch[1].trim(); // "09:00-18:00"
+            const timeText = workingTimeMatch[1].trim(); //like "09:00-18:00"
             const [start, end] = timeText.split('-').map(t => t.trim());
             content.working_time = {
                 start : start || '',

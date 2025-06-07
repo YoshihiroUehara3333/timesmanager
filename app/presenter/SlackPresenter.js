@@ -26,6 +26,17 @@ class SlackPresenter {
         });
     }
 
+    // 対象チャンネルにポストする
+    async sendBlockMessage (client, msg, channel, thread_ts, blocks) {
+        return await client.chat.postMessage({
+            channel   : channel,
+            thread_ts : thread_ts,
+            text      : msg,
+            mrkdwn    : true,
+            blocks    : blocks
+        });
+    }
+
     // スレッド内に返信する
     async sendThreadMessage (client, msg, channel, threadTs) {
         return await client.chat.postMessage({

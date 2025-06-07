@@ -31,20 +31,20 @@ class DynamoPostDataRepository {
     // 絞り込みはServiceクラスで行う
     // sort_keyにthread_tsを使用しているModelのみ有効
     // GSI使用
-    async queryByDateAndSortKey(date, sortKey) {
-        const {NAME, PK, SK} = DBConst.GSI.ByDateAndSortKey;
+    async queryByDateAndSortKeyPrefix(date, prefix) {
+        const {NAME, PK, SK} = DBConst.GSI.ByDateAndSortKeyPrefix;
         try {
             const queryResult = await this.dynamoDb.send(new QueryCommand({
                 TableName                : this.TABLENAME,
                 IndexName                : NAME, // GSI名
-                KeyConditionExpression   : `#pk = :pk AND #sk = :sk`, // 条件指定
+                KeyConditionExpression   : `#pk = :pk AND begins_with(#sk, :prefix)`, // 条件指定
                 ExpressionAttributeNames: {
                     '#pk' : PK,
                     '#sk' : SK,
                 },
                 ExpressionAttributeValues: {
                     ':pk' : date,
-                    ':sk' : sortKey,
+                    ':prefix' : prefix,
                 },
             }));
         

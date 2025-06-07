@@ -1,5 +1,8 @@
 //モジュール読み込み
+require('date-utils');
+const { NewTaskModal }    = require('../blockkit/NewTaskModal');
 const { WorkReportModel } = require('../model/WorkReportModel');
+const { DBConst } = require('../constants/DBConst');
 
 class WorkReportService {
     postDataRepositry;
@@ -8,12 +11,36 @@ class WorkReportService {
         this.postDataRepositry = postDataRepositry;
     };
     
-    async processNewWorkReport (body, view, logger, client) {
-        const workReportModel = this.createWorkReportModel(body, view);
-        
+    // 新規タスク入力用モーダルのBlockkitを作成し返却する
+    async processNewTaskModal (command, client) {
+        const date   = new Date().toFormat("YYYY-MM-DD"); // YYYY-MM-DD
+        const thread = this.postDataRepositry.queryByDateAndSortKeyPrefix(date, DBConst.SORT_KEY_PREFIX.THREAD);
+        console.log(JSON.stringify(thread));
+
         // DB保存
-        await this.postDataRepositry.putItem(workReportModel.toItem());
+        return NewTaskModal(channel_id, postResult.ts, date, 1);
     };
+
+    // /makethread入力時のNewTaskモーダル受け取り
+    async processMakeThreadNewTask (body, view, client) {
+        // メタデータ取得
+        const user_id = body.user.id;
+        const metadata = JSON.parse(view.private_metadata);
+
+        // モーダル入力値を取得
+        const work_plan     = view.state.values.work_plan.work_plan.value || '';
+        const selected_time = view.state.values.timepicker.timepicker.selected_time;
+        const option        = view.state.values.option.option.value || '';
+
+        // スレッドへ返信
+        const msg = "作業計画";
+        const blocks = WorkPlanBlock(user_id, work_plan, selected_time, option);
+
+        console.log(`reply:${JSON.stringify(reply)}`);
+
+        // 必要であればDBに保存（例: DynamoDB）
+        await this.workReportService.processNewWorkReport(body, view, logger, client);
+    }
 
     createWorkReportModel (body, view) {
         const { channel_id, thread_ts } = JSON.parse(view.private_metadata);
