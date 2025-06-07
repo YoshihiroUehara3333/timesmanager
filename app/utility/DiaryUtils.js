@@ -3,7 +3,7 @@ const { CdConst }    = require('../constants/CdConst');
 
 class DiaryUtils {
     // JSONデータから日記フォーマットに変換してreturnする
-    static formatDiaryFromJSON(diaryJson) {
+    static formatDiaryFromJson(diaryJson) {
         const content  = diaryJson.content || {};
         const date     = diaryJson.date || '';
     
