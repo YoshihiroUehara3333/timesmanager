@@ -77,6 +77,7 @@ class DiaryService {
     **   日記編集処理
     */
     async processUpdateDiary (message, channelId) {
+        console.log(`channelId:${channelId}`);
         const diaryModel = this.createDiaryModel(message, channelId, '');
         diaryModel.postedAt = new Date().toFormat('HH24:MI:SS');
 
