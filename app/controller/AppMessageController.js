@@ -60,7 +60,7 @@ class AppMessageController {
             // 日記編集時
             const msg = '';
             try {
-                logger.info("diaryService.updateDiaryを実行");
+                logger.info("diaryService.processUpdateDiaryを実行");
                 msg = await this.diaryService.processUpdateDiary(message, previousMessage);
 
             } catch (error) {

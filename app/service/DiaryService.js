@@ -76,9 +76,7 @@ class DiaryService {
     /*
     **   日記編集処理
     */
-    async processUpdateDiary (message, previousMessage) {
-        const channelId = previousMessage.channel;
-
+    async processUpdateDiary (message, channelId) {
         const diaryModel = this.createDiaryModel(message, channelId, '');
         diaryModel.postedAt = new Date().toFormat('HH24:MI:SS');
 
@@ -107,7 +105,7 @@ class DiaryService {
     // DiaryModel生成処理
     createDiaryModel (message, channelId, permalink) {
         const text = message.text;
-        
+
         const diaryModel = new DiaryModel(channelId);
         diaryModel.date                = DiaryUtils.parseDate(text);
         diaryModel.workingPlaceCd      = DiaryUtils.parseWorkingPlaceCd(text);
