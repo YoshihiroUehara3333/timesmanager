@@ -37,7 +37,7 @@ class AppViewController {
     }
 
     async handleDefault (body, view, logger, client) {
-
+        
     }
 }
 

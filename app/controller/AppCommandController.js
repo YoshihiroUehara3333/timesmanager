@@ -24,7 +24,7 @@ class AppCommandController {
         logger.info(`command:${command.command}`);
 
         const appCommandHandler = this.commandHandlers[command.command] || this.commandHandlers['default'];
-        return appCommandHandler(message, logger, client);
+        return appCommandHandler(command, logger, client);
     };
 
     // /makethread実行時
@@ -42,7 +42,7 @@ class AppCommandController {
     // /newtask実行時
     async handleNewTask (command, logger, client) {
         try {
-            let view = await this.workReportService.processNewTask(command, client);
+            let view = await this.workReportService.processNewTaskModal(command, client);
             await this.slackPresenter.openView (client, view, command.trigger_id);
             
         } catch (error) {
