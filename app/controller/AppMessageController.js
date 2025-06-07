@@ -52,22 +52,16 @@ class AppMessageController {
         logger.info("handleEditedMessageが実行されました");
         let msg = '';
         const message = messageRaw.message;
+        const channelId = messageRaw.channel;
         
         if (this.isInThread(message)) {
             // スレッド投稿を編集した時
         } else if (this.isDiary(message)) {
             // 日記編集時
             try {
-                logger.info("diaryService.updateDiaryを実行");
-                const response = await this.diaryService.updateDiary(message, client);
-
-                const date = DiaryUtils.parseDate(message.text);
-                if (response.$metadata.httpStatusCode == 200) {
-                    msg = `日記(${date})のDB更新に成功しました。`;
-                } else {
-                    throw new Error(`日記(${date})のDB更新に失敗しました。`);
-                }
-
+                logger.info("diaryService.processUpdateDiaryを実行");
+                msg = await this.diaryService.processUpdateDiary(message, channelId);
+                logger.info("diaryService.processUpdateDiaryが終了:" + JSON.stringify(msg));
             } catch (error) {
                 logger.error(error.stack);
                 msg = error.toString();
@@ -93,11 +87,10 @@ class AppMessageController {
                 logger.error(error.stack);
                 msg = error.toString();
             }
-
-            // SlackPresenter用のパラメータ値取得
-            const { channel, ts } = message;
-            await this.slackPresenter.sendThreadMessage (client, msg, channel, ts);
         }
+        // SlackPresenter用のパラメータ値取得
+        const { channel, ts } = message;
+        await this.slackPresenter.sendThreadMessage (client, msg, channel, ts);
     }
 
     // スレッド内部かつ、新規ポストかつ、ボットメンションではない

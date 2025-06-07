@@ -3,13 +3,13 @@ const { CdConst }    = require('../constants/CdConst');
 
 class DiaryUtils {
     // JSONデータから日記フォーマットに変換してreturnする
-    static formatDiaryFromJSON(diaryJson) {
+    static formatDiaryFromJson(diaryJson) {
         const content  = diaryJson.content || {};
         const date     = diaryJson.date || '';
     
         return (
             `*【日記】* ${date}\n` +
-            `*【時間】* ${content.workingTime.start || ''}-${content.workingTime.end || ''}\n` +
+            `*【時間】* ${content.working_time.start || ''}-${content.working_time.end || ''}\n` +
             `*【業務内容】*\n${content.work_report || ''}\n` +
             `*【自己評価】*\n${content.evaluation || ''}\n` +
             `*【翌日の計画】*\n${content.plan || ''}\n` +
@@ -37,7 +37,7 @@ class DiaryUtils {
         const otherMatch        = text.match(RegexConst.OTHER);
 
         if (workingTimeMatch) {
-            const timeText = workingTimeMatch[1].trim(); // "09:00-18:00"
+            const timeText = workingTimeMatch[1].trim(); //like "09:00-18:00"
             const [start, end] = timeText.split('-').map(t => t.trim());
             content.working_time = {
                 start : start || '',

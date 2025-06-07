@@ -19,20 +19,25 @@ const USERDATA_COLUMN_NAMES = {
 };
 
 exports.DBConst = {
-    COLUMN_NAMES     : {
+    COLUMN_NAMES  : {
         POSTDATA : POSTDATA_COLUMN_NAMES,
         USERDATA : USERDATA_COLUMN_NAMES,
     },
-    SORT_KEY_BASE    : {
-        DIARY           : '#Diary',
-        WORKREPORT      : '#Workreport',
-        THREAD          : '#Thread',
-        POSTS           : '#Posts',
+    SORT_KEY_PREFIX : {
+        DIARY           : 'Diary',
+        WORKREPORT      : 'Workreport',
+        THREAD          : 'Thread',
+        POSTS           : 'Posts',
     },
-    GSI              : {
+    GSI : {
         ByDateAndSortKey: {
-            NAME : 'GSI_ByDate_SortKey',
+            NAME : 'GSI_ByDate_SortKeyPrefix',
             PK   : POSTDATA_COLUMN_NAMES.DATE,
+            SK   : POSTDATA_COLUMN_NAMES.SORT_KEY,
+        },
+        ByThreadTsAndSortKeyPrefix: {
+            NAME : 'GSI_ByThreadTs_SortKeyPrefix',
+            PK   : POSTDATA_COLUMN_NAMES.THREAD_TS,
             SK   : POSTDATA_COLUMN_NAMES.SORT_KEY,
         },
     }

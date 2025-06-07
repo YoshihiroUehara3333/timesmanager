@@ -14,7 +14,7 @@ class DynamoPostDataRepository {
         this.dynamoDb = DynamoDBDocumentClient.from(client);
     }
 
-    // DBに登録する
+    // modelデータをDBに登録する
     async putItem (model) {
         try {
             return await this.dynamoDb.send(new PutCommand({
@@ -28,28 +28,30 @@ class DynamoPostDataRepository {
     }
 
     // dateとsort_keyで絞り込みをかける
-    async queryByDateAndSortKey(date, sortKey) {
-        const {NAME, PK, SK} = DBConst.GSI.ByDateAndSortKey;
+    // 絞り込みはServiceクラスで行う
+    // sort_keyにthread_tsを使用しているModelのみ有効
+    // GSI使用
+    async queryByDateAndSortKeyPrefix(date, prefix) {
+        const {NAME, PK, SK} = DBConst.GSI.ByDateAndSortKeyPrefix;
         try {
-            const result = await this.dynamoDb.send(new QueryCommand({
+            const queryResult = await this.dynamoDb.send(new QueryCommand({
                 TableName                : this.TABLENAME,
                 IndexName                : NAME, // GSI名
-                KeyConditionExpression   : `#pk = :pk AND #sk = :sk`, // 条件指定
+                KeyConditionExpression   : `#pk = :pk AND begins_with(#sk, :prefix)`, // 条件指定
                 ExpressionAttributeNames: {
                     '#pk' : PK,
                     '#sk' : SK,
                 },
                 ExpressionAttributeValues: {
                     ':pk' : date,
-                    ':sk' : sortKey,
+                    ':prefix' : prefix,
                 },
             }));
         
-            if (result.Count === 1) {
-                return result.Items[0];
+            if (queryResult.Count === 0) {
+                return null;
             } else {
-                console.log(`DB取得結果${JSON.stringify(result)}`);
-                throw new Error(`同じtsのデータが二つ以上存在しています`);
+                return queryResult;
             }
 
         } catch (error) {
@@ -58,27 +60,31 @@ class DynamoPostDataRepository {
         }
     }
 
-    // 指定したsort_keyのprefixとthread_tsからレコードを一意に取得する
+    // 指定したsort_keyのprefixとthread_tsを条件にレコードを取得する
+    // 絞り込みはServiceクラスで行う
+    // GSI使用
     async queryByThreadTsAndSortKeyPrefix(threadTs, prefix) {
-        const { THREAD_TS, SORT_KEY }= DBConst.COLUMN_NAMES.POSTDATA;
+        const {NAME, PK, SK} = DBConst.GSI.ByThreadTsAndSortKeyPrefix;
 
         try {
-            const result = await this.dynamoDb.send(new QueryCommand({
+            const queryResult = await this.dynamoDb.send(new QueryCommand({
                 TableName                : this.TABLENAME,
-                KeyConditionExpression   : `${THREAD_TS} = :${THREAD_TS} AND begins_with(${SORT_KEY}, :prefix)`, // 条件指定
+                IndexName                : NAME, // GSI名
+                KeyConditionExpression   : `#pk = :pk AND begins_with(#sk, :prefix)`, // 条件指定
+                ExpressionAttributeNames: {
+                    '#pk'     : PK,
+                    '#sk'     : SK,
+                },
                 ExpressionAttributeValues: {
-                    [`:${THREAD_TS}`]: threadTs,
+                    ':pk'     : threadTs,
                     ":prefix" : prefix,
                 },
             }));
-        
-            if (result.Count === 1) {
-                return result.Items[0];
-            } else if (result.Count === 0) {
+
+            if (queryResult.Count === 0) {
                 return null;
             } else {
-                console.log(`DB取得結果${JSON.stringify(result)}`);
-                throw new Error(`同じtsのデータが二つ以上存在しています`);
+                return queryResult;
             }
 
         } catch (error) {
@@ -87,16 +93,17 @@ class DynamoPostDataRepository {
         }
     }
 
-    // dateからDiaryを取得する
+    // dateからSortKeyを生成し、Diaryを1件取得する
     async getDiaryByDate (partitionKey, date) {
         try {
             const getResult = await this.dynamoDb.send(new GetCommand({
                 TableName : this.TABLENAME,
                 Key : {
                     [this.COLNAMES.PARTITION_KEY]      : partitionKey,
-                    [this.COLNAMES.SORT_KEY]           : `${DBConst.SORT_KEY_BASE.DIARY}#${date}`,
+                    [this.COLNAMES.SORT_KEY]           : `${DBConst.SORT_KEY_PREFIX.DIARY}#${date}`,
                 }
             }));
+            console.log(JSON.stringify(getResult));
 
             return getResult.Item || null;
         } catch (error) {

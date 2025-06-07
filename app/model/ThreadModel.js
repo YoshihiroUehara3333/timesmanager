@@ -2,10 +2,11 @@
 const { DBConst } = require('../constants/DBConst');
 
 class ThreadModel {
-    _sortKeyBase = DBConst.SORT_KEY_BASE.THREAD;
+    _sortKeyPrefix = DBConst.SORT_KEY_PREFIX.THREAD;
 
     constructor (channelId) {
         this._channelId     = channelId; // パーティションキー
+
         this._date          = ''; // GSI
         this._threadTs      = '';
         this._slackUrl      = '';
@@ -13,11 +14,12 @@ class ThreadModel {
     }
 
     toItem () {
+        const COLNAMES = DBConst.COLUMN_NAMES.POSTDATA;
         return {
             [COLNAMES.PARTITION_KEY]      : this.partitionKey,
             [COLNAMES.SORT_KEY]           : this.sortKey,
-            [COLNAMES.DATE]               : this.date,
             [COLNAMES.THREAD_TS]          : this.threadTs,
+            [COLNAMES.DATE]               : this.date,
             [COLNAMES.SLACK_URL]          : this.slackUrl,
             [COLNAMES.CREATED_AT]         : this.createdAt,
         }
@@ -27,11 +29,11 @@ class ThreadModel {
         return `${this._channelId}`;
     }
 
-    get sortKey() {
-        return `${this._sortKeyBase}#${this._date}`;
+    get sortKey () {
+        return `${this._sortKeyPrefix}#${this._date}`;
     }
 
-    get date () {
+    get date() {
         return this._date;
     }
 

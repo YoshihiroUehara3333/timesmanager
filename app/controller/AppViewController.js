@@ -1,52 +1,44 @@
+//モジュール読み込み
+require('date-utils');
 const { ModalConst } = require('../constants/ModalConst');
 const { WorkPlanBlock } = require('../blockkit/WorkPlanBlock');
 
 class AppViewController {
+    CALLBACK_ID = ModalConst.CALLBACK_ID;
+
     constructor (threadService, workReportService, slackPresenter) {
         this.threadService      = threadService;
         this.workReportService  = workReportService;
         this.slackPresenter     = slackPresenter;
+
+        // dispatch用ハンドラ定義
+        this.callBackHandlers = {
+            [`${this.CALLBACK_ID.NEWTASK}`]  : this.handleNewTaskModalCallBack.bind(this),
+            'default'                        : this.handleDefault.bind(this),
+        }
     };
 
     // dispatch
-    async handleModalCallback(body, view, logger, client) {
+    async dispatchModalCallback(body, view, logger, client) {
         const callbackId = view.callback_id;
+        logger.info(`callbackId:${callbackId}`);
         
-        switch (callbackId) {
-            case ModalConst.CALLBACK_ID.MAKETHREAD:
-                return await this.handleMakeThreadModal(body, view, logger, client);
-            default:
-                break;
-        }
+        const callBackHandler = this.callBackHandlers[callbackId] || this.callBackHandlers['default'];
+        return callBackHandler(body, view, logger, client);
     }
 
-    // 作業記録モーダル送信時の処理
-    async handleMakeThreadModal(body, view, logger, client){
-        logger.info(`handleMakeThreadModalを実行。`);
-        
+    // 作業記録モーダル初回送信時の処理
+    async handleNewTaskModalCallBack(body, view, logger, client) {
         // メタデータ取得
-        const user_id = body.user.id;
-        const { channel_id, thread_ts } = JSON.parse(view.private_metadata);
-
-        // モーダル入力値を取得
-        const work_plan     = view.state.values.work_plan.work_plan.value || '';
-        const selected_time = view.state.values.timepicker.timepicker.selected_time;
-        const option        = view.state.values.option.option.value || '';
-
-        // スレッドへ返信
-        const post = {
-            channel     : channel_id,
-            thread_ts   : thread_ts,
-            text        : "作業計画",
-            mrkdwn      : true,
-            blocks      : WorkPlanBlock(user_id, work_plan, selected_time, option),
-        };
-        const reply = await client.chat.postMessage(post);
-        console.log(`reply:${JSON.stringify(reply)}`);
-
+        const metadata  = JSON.parse(view.private_metadata);
+        const blocks    = this.workReportService.processNewTaskEntry(body, view, client);
+        const reply = await client.chat.postBlockMessage(client, msg, metadata.channel_id, metadata.thread_ts, blocks);
         // 必要であればDBに保存（例: DynamoDB）
-        // await dynamo.put({ ... });
-        await this.workReportService.processNewWorkReport(body, view, logger, client);
+        await this.workReportService.processNewTaskSubmission(body, view, client);
+    }
+
+    async handleDefault (body, view, logger, client) {
+        
     }
 }
 

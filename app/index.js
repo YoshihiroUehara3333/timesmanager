@@ -21,9 +21,9 @@ const threadService         = new ThreadService(postDataRepository);
 const workReportService     = new WorkReportService(postDataRepository);
 
 const slackPresenter        = new SlackPresenter();
-const appCommandController  = new AppCommandController(threadService, slackPresenter);
+const appCommandController  = new AppCommandController(threadService, workReportService, slackPresenter);
 const appMessageController  = new AppMessageController(diaryService, threadService, slackPresenter);
-const appViewController     = new AppViewController(threadService, slackPresenter);
+const appViewController     = new AppViewController(threadService, workReportService, slackPresenter);
 const appActionController   = new AppActionController(workReportService);
 
 
@@ -63,8 +63,8 @@ app.message(async ({ message, context, logger, client }) => {
     await appMessageController.handleAppMessage(message, logger, client);
 })
 
-// モーダル押下時
-app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, logger, client }) => {
+// モーダルの「送信」押下時
+app.view({ type: 'view_submission' }, async ({ ack, body, view, logger, client }) => {
     logger.info(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`);
 
     await ack();
@@ -76,7 +76,7 @@ app.action(ModalConst.ACTION_ID.WORKREPORT.PROGRESS, async ({ack, body, logger})
     logger.info(`app.action\nbody:${JSON.stringify(body)}`);
 
     await ack();
-    await appActionController.handleWorkReportAction();
+    await appActionController.dispatchModalCallback();
 })
 
 // 作業完了ボタン
