@@ -47,7 +47,7 @@ class DiaryModel {
     }
 
     get sortKey() {
-        return `${this._sortKeyBase}#${date}`;
+        return `${this._sortKeyBase}#${this._date}`;
     }
 
     get date () {
