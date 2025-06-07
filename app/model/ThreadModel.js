@@ -29,7 +29,7 @@ class ThreadModel {
     }
 
     get sortKey() {
-        return `${this._sortKeyPrefix}#${this._threadTs}`;
+        return `${this._sortKeyPrefix}#${this._date}`;
     }
 
     get date () {

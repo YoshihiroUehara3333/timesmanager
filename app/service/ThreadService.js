@@ -37,8 +37,9 @@ class ThreadService {
                 message_ts : postResult.ts,
             });
 
-            const threadModel = this.createThreadModel (postResult, date, permalink);
+            const threadModel = this.createThreadModel (postResult.ts, date, permalink);
             console.log(JSON.stringify(threadModel));
+            console.log(JSON.stringify(threadModel.sortKey));
             const response = await this.postDataRepository.putItem(threadModel);
             const httpStatusCode = response.$metadata?.httpStatusCode;
 
@@ -63,12 +64,12 @@ class ThreadService {
 
 
     // ThreadModel生成
-    createThreadModel (post, date, permalink) {
+    createThreadModel (threadTs, date, permalink) {
         const channelId = post.channel;
 
         const threadModel = new ThreadModel(channelId);
         threadModel.date        = date;
-        threadModel.threadTs    = post.threadTs;
+        threadModel.threadTs    = post.ts;
         threadModel.slackUrl    = permalink;
         threadModel.createdAt   = new Date().toFormat('HH24:MI:SS');
         return threadModel;
