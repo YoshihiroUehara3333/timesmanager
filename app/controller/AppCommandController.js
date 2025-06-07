@@ -16,7 +16,7 @@ class AppCommandController {
         this.commandHandlers = {
             [`${SlackConst.APPCOMMANDS.MAKETHREAD}`]   : this.handleMakethread.bind(this),
             [`${SlackConst.APPCOMMANDS.NEWTASK}`]      : this.handleNewTask.bind(this),
-            [`${SlackConst.APPCOMMANDS.WARMUP}`]   : this.handleWarmUp.bind(this)
+            [`${SlackConst.APPCOMMANDS.WARMUP}`]       : this.handleWarmUp.bind(this)
         }
     };
 
@@ -36,7 +36,7 @@ class AppCommandController {
             
         } catch (error) {
             logger.error(error);
-            await this.slackPresenter.sendDirectMessage(client, error.toString(), command.user);
+            await this.slackPresenter.sendDirectMessage(client, error.toString(), command.user_id);
         }
     }
 
@@ -48,14 +48,19 @@ class AppCommandController {
             
         } catch (error) {
             logger.error(error);
-            await this.slackPresenter.sendDirectMessage(client, error.toString(), command.user);
+            await this.slackPresenter.sendDirectMessage(client, error.toString(), command.user_id);
         }
     }
 
     // /warmup実行時
     async handleWarmUp (command, logger, client) {
-        const msg = '/warmupが実行されました。'
-        await this.slackPresenter.sendDirectMessage(client, msg, command.user);
+        try {
+            const msg = '/warmupが実行されました。'
+            await this.slackPresenter.sendDirectMessage(client, msg, command.user_id);
+        } catch (error) {
+            logger.error(error);
+            await this.slackPresenter.sendDirectMessage(client, error.toString(), command.user_id);
+        }
     }
 
 };
