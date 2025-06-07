@@ -24,7 +24,7 @@ class DiaryService {
         // DBから業務日誌情報を取得
         try {
             const queryResult = await this.postDataRepository.queryByThreadTsAndSortKeyPrefix(threadTs, prefix);
-            if (queryResult != null) return `DBから日報データを取得できませんでした。`;
+            if (queryResult == null) return `DBから日報データを取得できませんでした。`;
             
             const filteredResult = queryResult.filter(item => item.partition_key === channelId);
             if (filteredResult.length === 0) return `指定チャンネルのデータが見つかりませんでした。`;
