@@ -6,6 +6,7 @@ class ThreadModel {
 
     constructor (channelId) {
         this._channelId     = channelId; // パーティションキー
+
         this._date          = ''; // GSI
         this._threadTs      = '';
         this._slackUrl      = '';
@@ -28,11 +29,11 @@ class ThreadModel {
         return `${this._channelId}`;
     }
 
-    get sortKey() {
+    get sortKey () {
         return `${this._sortKeyPrefix}#${this._date}`;
     }
 
-    get date () {
+    get date() {
         return this._date;
     }
 
