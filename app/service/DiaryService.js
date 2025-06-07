@@ -48,8 +48,11 @@ class DiaryService {
 
             const response = await this.postDataRepository.putItem(diaryModel);
             console.log(JSON.stringify(response));
-            if (response?.$metadata.httpStatusCode == 200) {
+            const httpStatusCode = response?.$metadata.httpStatusCode;
+            if (httpStatusCode == 200) {
                 return `日記(${date})のDB登録に成功しました。`;
+            } else {
+                throw new Error(`日記(${date})のDB登録に失敗しました。httpStatusCode=${httpStatusCode}`, { cause: error });
             }
 
         } catch (error) {
