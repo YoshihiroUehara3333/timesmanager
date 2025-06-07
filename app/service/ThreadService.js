@@ -3,7 +3,7 @@
 // モジュール読み込み
 require('date-utils');
 const { ThreadModel }       = require('../model/ThreadModel');
-const { PostModel }        = require('../model/PostsModel');
+const { PostModel }        = require('../model/PostModel');
 const { MakeThreadModal }   = require('../blockkit/MakeThreadModal');
 
 class ThreadService {
