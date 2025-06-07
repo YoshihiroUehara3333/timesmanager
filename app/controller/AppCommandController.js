@@ -35,7 +35,7 @@ class AppCommandController {
             await this.slackPresenter.openView (client, view, command.trigger_id);
             
         } catch (error) {
-            logger.error(error);
+            logger.error(error.data);
             await this.slackPresenter.sendDirectMessage(client, error.toString(), command.user_id);
         }
     }
@@ -58,7 +58,7 @@ class AppCommandController {
             const msg = '/warmupが実行されました。'
             await this.slackPresenter.sendDirectMessage(client, msg, command.user_id);
         } catch (error) {
-            logger.error(error);
+            logger.error(error.data);
             await this.slackPresenter.sendDirectMessage(client, error.toString(), command.user_id);
         }
     }
