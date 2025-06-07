@@ -47,10 +47,6 @@ class DiaryService {
             if (result) return `日付が重複しています。(${date})`;
 
             const response = await this.postDataRepository.putItem(diaryModel);
-<<<<<<< HEAD
-=======
-            console.log(JSON.stringify(response));
->>>>>>> 2f5abba8d64db41938b176e0663052d754b59fbc
             const httpStatusCode = response?.$metadata.httpStatusCode;
             if (httpStatusCode == 200) {
                 return `日記(${date})のDB登録に成功しました。`;
