@@ -18,7 +18,7 @@ class ThreadService {
     async processNewThreadEntry (command, client) {
         // 値を取得
         const { user_id, channel_id } = command;
-        const date = new Date().toFormat("YYYY-MM-DD"); // YYYY-MM-DD
+        const date = new Date().toFormat("YYYY-MM-DD");
 
         try {
             // timesチャンネルにスレッド作成

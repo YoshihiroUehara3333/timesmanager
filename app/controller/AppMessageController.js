@@ -93,11 +93,10 @@ class AppMessageController {
                 logger.error(error.stack);
                 msg = error.toString();
             }
-
-            // SlackPresenter用のパラメータ値取得
-            const { channel, ts } = message;
-            await this.slackPresenter.sendThreadMessage (client, msg, channel, ts);
         }
+        // SlackPresenter用のパラメータ値取得
+        const { channel, ts } = message;
+        await this.slackPresenter.sendThreadMessage (client, msg, channel, ts);
     }
 
     // スレッド内部かつ、新規ポストかつ、ボットメンションではない
