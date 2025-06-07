@@ -39,7 +39,7 @@ class OpenAIFeedbackGenerator {
             const feedback = response.choices[0].message.content.trim();
             return `使用モデル:${process.env.GPT_MODEL}\nフィードバック:\n ${feedback}`;
         } catch (error) {
-            throw new Error(error.message || "OpenAI API error");
+            throw new Error(error.message || "OpenAI API error",{ cause: error });
         }
     }
 };

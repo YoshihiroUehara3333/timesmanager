@@ -18,11 +18,11 @@ class DiaryService {
     */
     async generateFeedback(message){
         const threadTs = message.thread_ts;
-        const prefix = DBConst.SORT_KEY_PREFIX.DIARY;
         const channelId = message.channel;
 
         // DBから業務日誌情報を取得
         try {
+            const prefix = DBConst.SORT_KEY_PREFIX.DIARY;
             const queryResult = await this.postDataRepository.queryByThreadTsAndSortKeyPrefix(threadTs, prefix);
             if (queryResult == null) return `DBから日報データを取得できませんでした。`;
             
@@ -34,7 +34,7 @@ class DiaryService {
             return await this.feedbackGenerator.generateFeedback(diary);
             
         } catch (error) {
-            throw new Error("フィードバック生成中にエラーが発生しました。");
+            throw new Error(`フィードバック生成中にエラーが発生しました。`, { cause: error });
         }
     };
 
