@@ -78,14 +78,15 @@ class DiaryService {
     */
     async processUpdateDiary (message, channelId) {
         const diaryModel = this.createDiaryModel(message, channelId, '');
-        diaryModel.postedAt = new Date().toFormat('HH24:MI:SS');
+        diaryModel.editedAt = new Date().toFormat('HH24:MI:SS');
 
         // DB更新
         const date = diaryModel.date;
         try {
             const partitionKey = diaryModel.partitionKey;
             const getResult = await this.postDataRepository.getDiaryByDate(partitionKey, date);
-            if (getResult.slack_url) {
+            if (getResult) {
+                diaryModel.postedAt = getResult.posted_at;
                 diaryModel.slackUrl = getResult.slack_url;
             }
 
