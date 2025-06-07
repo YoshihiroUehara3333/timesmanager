@@ -93,8 +93,8 @@ class DynamoPostDataRepository {
             const getResult = await this.dynamoDb.send(new GetCommand({
                 TableName : this.TABLENAME,
                 Key : {
-                    [COLNAMES.PARTITION_KEY]      : partitionKey,
-                    [COLNAMES.SORT_KEY]           : `${DBConst.SORT_KEY_BASE.DIARY}#${date}`,
+                    [this.COLNAMES.PARTITION_KEY]      : partitionKey,
+                    [this.COLNAMES.SORT_KEY]           : `${DBConst.SORT_KEY_BASE.DIARY}#${date}`,
                 }
             }));
 
