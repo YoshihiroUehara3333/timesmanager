@@ -53,13 +53,11 @@ class AppMessageController {
         let msg = '';
         const message = messageRaw.message;
         const channelId = messageRaw.channel;
-        console.log(JSON.stringify(channelId));
         
         if (this.isInThread(message)) {
             // スレッド投稿を編集した時
         } else if (this.isDiary(message)) {
             // 日記編集時
-            const msg = '';
             try {
                 logger.info("diaryService.processUpdateDiaryを実行");
                 msg = await this.diaryService.processUpdateDiary(message, channelId);
