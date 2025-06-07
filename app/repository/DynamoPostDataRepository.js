@@ -1,4 +1,4 @@
-をを// DynamoDBのPostDataテーブルとやり取りを行うクラス
+// DynamoDBのPostDataテーブルとデータのやり取りを行うクラス
 
 // モジュール読み込み
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
