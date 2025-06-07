@@ -24,10 +24,10 @@ exports.DBConst = {
         USERDATA : USERDATA_COLUMN_NAMES,
     },
     SORT_KEY_PREFIX : {
-        DIARY           : '#Diary',
-        WORKREPORT      : '#Workreport',
-        THREAD          : '#Thread',
-        POSTS           : '#Posts',
+        DIARY           : 'Diary',
+        WORKREPORT      : 'Workreport',
+        THREAD          : 'Thread',
+        POSTS           : 'Posts',
     },
     GSI : {
         ByDateAndSortKey: {
