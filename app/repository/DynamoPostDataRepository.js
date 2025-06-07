@@ -6,7 +6,7 @@ const { DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand } = require
 const { DBConst } = require('../constants/DBConst');
 
 class DynamoPostDataRepository {
-    TABLENAME = `timesmanager_postdata_${process.env.TABLE_POSTFIX}`;
+    TABLENAME = `timesmanager_postdata${process.env.TABLE_POSTFIX}`;
     COLNAMES  = DBConst.COLUMN_NAMES.POSTDATA;
 
     constructor () {
