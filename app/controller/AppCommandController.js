@@ -29,6 +29,7 @@ class AppCommandController {
 
     // /makethread実行時
     async handleMakethread (command, logger, client) {
+        logger.debug(`handleMakethreadを実行`);
         try {
             let view = await this.threadService.processNewThreadEntry(command, client);
             await this.slackPresenter.openView (client, view, command.trigger_id);
@@ -42,7 +43,7 @@ class AppCommandController {
     // /newtask実行時
     async handleNewTask (command, logger, client) {
         try {
-            let view = await this.workReportService.processNewTaskModal(command, client);
+            let view = await this.workReportService.processNewTaskCommand(command, client);
             await this.slackPresenter.openView (client, view, command.trigger_id);
             
         } catch (error) {

@@ -25,6 +25,7 @@ class WorkReportModel {
     }
 
     toItem () {
+        const COLNAMES = DBConst.COLUMN_NAMES.POSTDATA;
         return {
             [COLNAMES.PARTITION_KEY]      : this.partitionKey,
             [COLNAMES.SORT_KEY]           : this.sortKey,

@@ -12,7 +12,7 @@ class WorkReportService {
     };
     
     // 新規タスク入力用モーダルのBlockkitを作成し返却する
-    async processNewTaskModal (command, client) {
+    async processNewTaskCommand (command, client) {
         const date   = new Date().toFormat("YYYY-MM-DD"); // YYYY-MM-DD
         const thread = this.postDataRepositry.queryByDateAndSortKeyPrefix(date, DBConst.SORT_KEY_PREFIX.THREAD);
         console.log(JSON.stringify(thread));
