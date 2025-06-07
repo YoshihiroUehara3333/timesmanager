@@ -9,7 +9,7 @@ class PostModel {
 
     constructor (channelId, threadTs) {
         this._channelId      = channelId;
-        this._threadTs      = threadTs;
+        this._threadTs       = threadTs;
 
         this._serial         = ''; // GSI
         this._postTypeCd     = CdConst.WORKING_PLACE.getCodeByName('');
@@ -37,7 +37,7 @@ class PostModel {
     }
 
     get sortKey() {
-        return `${this._sortKeyPrefix}#${this._threadTs}`;
+        return `${this._sortKeyPrefix}#${this._date}`;
     }
 
     get date () {

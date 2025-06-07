@@ -10,7 +10,7 @@ class WorkReportModel {
         this._channelId     = channelId;
         this._date          = date;
 
-        this._serial        = ''; // GSI
+        this._serial        = '';
         this._threadTs      = threadTs;
         this._createdAt     = 'hh:mm';
         this._content = {

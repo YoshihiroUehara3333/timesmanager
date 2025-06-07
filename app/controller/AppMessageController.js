@@ -59,7 +59,7 @@ class AppMessageController {
             // 日記編集時
             try {
                 logger.info("diaryService.updateDiaryを実行");
-                const response = await this.diaryService.updateDiary(message, client);
+                const response = await this.diaryService.processUpdateDiary(message, client);
 
                 const date = DiaryUtils.parseDate(message.text);
                 if (response.$metadata.httpStatusCode == 200) {

@@ -69,7 +69,7 @@ class DiaryService {
             }
 
         } catch (error) {
-            throw new Error(`日記(${date})のDB登録に失敗しました。`, { cause: error });
+            throw new Error(error.message, { cause: error });
         }
     }
 
@@ -89,9 +89,15 @@ class DiaryService {
                 diaryModel.slackUrl = getResult.slack_url;
             }
 
-            return await this.postDataRepository.putItem(diaryModel);
+            const response = await this.postDataRepository.putItem(diaryModel);
+            const httpStatusCode = response?.$metadata.httpStatusCode;
+            if (httpStatusCode == 200) {
+                return `日記(${date})のDB登録に成功しました。`;
+            } else {
+                throw new Error(`日記(${date})のDB登録に失敗しました。httpStatusCode=${httpStatusCode}`, { cause: error });
+            }
         } catch (error) {
-            throw new Error(`日記(${date})のDB更新に失敗しました。`, { cause: error });
+            throw new Error(error.message, { cause: error });
         }
     };
 
