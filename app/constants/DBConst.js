@@ -39,8 +39,8 @@ exports.DBConst = {
     GSI              : {
         ByDateAndSortKey: {
             NAME : 'GSI_ByDate_SortKey',
-            PK   : POSTDATA_COLUMNS.DATE,
-            SK   : POSTDATA_COLUMNS.SORT_KEY,
+            PK   : POSTDATA_COLUMN_NAMES.DATE,
+            SK   : POSTDATA_COLUMN_NAMES.SORT_KEY,
         },
     }
 }
