@@ -119,7 +119,7 @@ class AppMessageController {
             // 日記新規投稿時
             try {
                 logger.info("diaryService.newDiaryEntryを実行");
-                msg = await this.diaryService.newDiaryEntry(message, client);
+                msg = await this.diaryService.processNewDiaryEntry(message, client);
                 logger.info("diaryService.newDiaryEntryが終了:" + msg);
 
             } catch (error) {
