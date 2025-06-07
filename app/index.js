@@ -21,9 +21,9 @@ const threadService         = new ThreadService(postDataRepository);
 const workReportService     = new WorkReportService(postDataRepository);
 
 const slackPresenter        = new SlackPresenter();
-const appCommandController  = new AppCommandController(threadService, slackPresenter);
+const appCommandController  = new AppCommandController(threadService, workReportService, slackPresenter);
 const appMessageController  = new AppMessageController(diaryService, threadService, slackPresenter);
-const appViewController     = new AppViewController(threadService, slackPresenter);
+const appViewController     = new AppViewController(threadService, workReportService, slackPresenter);
 const appActionController   = new AppActionController(workReportService);
 
 
