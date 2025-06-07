@@ -58,6 +58,6 @@ const PostType = {
 
 
 exports.CdConst = {
-    WORKINGPLACE : WorkingPlace,
-    POSTTYPE     : PostType,
+    WORKING_PLACE : WorkingPlace,
+    POST_TYPE     : PostType,
 }

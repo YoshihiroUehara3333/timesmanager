@@ -1,6 +1,7 @@
 // スレッド内投稿のデータ構造定義クラス
 
 // モジュール読み込み
+const { CdConst } = require('../constants/CdConst');
 const { DBConst } = require('../constants/DBConst');
 
 class PostModel {
@@ -11,7 +12,7 @@ class PostModel {
         this._threadTs      = threadTs;
 
         this._serial         = ''; // GSI
-        this._postTypeCd     = DBConst.POSTS.TYPE_CD.OTHER;
+        this._postTypeCd     = CdConst.WORKING_PLACE.getCodeByName('');
         this._postedAt       = 'hh:mm';
         this._content = {
             text : '',

@@ -30,7 +30,7 @@ class DiaryUtils {
             other        : ''
         };
 
-        const workingTimeMatch  = text.match(RegexConst.WORKINGTIME);
+        const workingTimeMatch  = text.match(RegexConst.WORKING_TIME);
         const workReportMatch   = text.match(RegexConst.WORKREPORT);
         const evaluationMatch   = text.match(RegexConst.EVALUATION);
         const planMatch         = text.match(RegexConst.PLAN);
@@ -66,9 +66,9 @@ class DiaryUtils {
 
     // textからWorkingPlaceCdを取得する
     static parseWorkingPlaceCd (text) {
-        const WorkingPlace = CdConst.WORKINGPLACE;
+        const WorkingPlace = CdConst.WORKING_PLACE;
 
-        const workingPlaceMatch  = text.match(RegexConst.WORKINGPLACE);
+        const workingPlaceMatch  = text.match(RegexConst.WORKING_PLACE);
         const name = workingPlaceMatch[1].trim();
         
         return WorkingPlace.getCodeByName(name);
