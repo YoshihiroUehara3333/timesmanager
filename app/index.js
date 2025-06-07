@@ -63,8 +63,8 @@ app.message(async ({ message, context, logger, client }) => {
     await appMessageController.handleAppMessage(message, logger, client);
 })
 
-// モーダル押下時
-app.view(ModalConst.CALLBACK_ID.MAKETHREAD, async ({ ack, body, view, logger, client }) => {
+// モーダルの「送信」押下時
+app.view({ type: 'view_submission' }, async ({ ack, body, view, logger, client }) => {
     logger.info(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`);
 
     await ack();
