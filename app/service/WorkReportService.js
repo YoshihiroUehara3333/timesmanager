@@ -2,21 +2,23 @@
 const { WorkReportModel } = require('../model/WorkReportModel');
 
 class WorkReportService {
-    constructor (workReportRepository) {
-        this.workReportRepository = workReportRepository;
+    postDataRepositry;
+
+    constructor (postDataRepositry) {
+        this.postDataRepositry = postDataRepositry;
     };
     
     async processNewWorkReport (body, view, logger, client) {
         const workReportModel = this.createWorkReportModel(body, view);
         
         // DB保存
-        await this.workReportRepository.putWorkReport(workReportModel);
+        await this.postDataRepositry.putItem(workReportModel.toItem());
     };
 
     createWorkReportModel (body, view) {
-        const workReportModel = new WorkReportModel;
         const { channel_id, thread_ts } = JSON.parse(view.private_metadata);
 
+        const workReportModel = new WorkReportModel(channel_id, thread_ts);
         workReportModel.userId       = body.user.id;
         workReportModel.threadTs     = thread_ts;
         workReportModel._channel     = channel_id;

@@ -1,20 +1,39 @@
 // DB関連の定数定義
+const POSTDATA_COLUMN_NAMES = {
+    PARTITION_KEY      : 'partition_key',
+    SORT_KEY           : 'sort_key',
+    DATE               : 'date',
+    THREAD_TS          : 'thread_ts',
+    SLACK_URL          : 'slack_url',
+    SERIAL             : 'serial',
+    CONTENT            : 'content',
+    POSTED_AT          : 'posted_at',
+    EDITED_AT          : 'edited_at',
+    CREATED_AT         : 'created_at',
+    POST_TYPE_CD       : 'post_type_cd',
+    WORKING_PLACE_CD   : 'working_place_cd'
+};
+
+const USERDATA_COLUMN_NAMES = {
+    PARTITION_KEY : 'channel_id',
+};
 
 exports.DBConst = {
-    POST_CATEGORY : {
-        DIARY       : "00",
-        THREAD      : "10",
-        REPLY       : "11",
-        URL         : "12",
-        WORKREPORT  : "20",
-        AI          : {
-            SUMMARY   : 90,
-        }
+    COLUMN_NAMES     : {
+        POSTDATA : POSTDATA_COLUMN_NAMES,
+        USERDATA : USERDATA_COLUMN_NAMES,
     },
-    GSI_NAME      : {
-        EVENT_TS    : "event_ts-index",
+    SORT_KEY_BASE    : {
+        DIARY           : '#Diary',
+        WORKREPORT      : '#Workreport',
+        THREAD          : '#Thread',
+        POSTS           : '#Posts',
     },
-    GSI_PARTITION : {
-        EVENT_TS    : "event_ts",
-    },
-};
+    GSI              : {
+        ByDateAndSortKey: {
+            NAME : 'GSI_ByDate_SortKey',
+            PK   : POSTDATA_COLUMN_NAMES.DATE,
+            SK   : POSTDATA_COLUMN_NAMES.SORT_KEY,
+        },
+    }
+}

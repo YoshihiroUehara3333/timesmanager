@@ -1,94 +1,63 @@
 // 作業経過のデータ構造定義クラス
+
+// モジュール読み込み
+const { DBConst } = require('../constants/DBConst');
+
 class WorkReportModel {
-    constructor () {
-        this._date = '';
-        this._userId = '';
-        this._channel = '';
-        this._threadTs = '';
-        this._workPlan = '';
-        this._selectedTime = '';
-        this._option = '';
-    };
+    _sortKeyBase = DBConst.SORT_KEY_BASE.WORKREPORT;
+
+    constructor (channelId, threadTs, date) {
+        this._channelId     = channelId;
+        this._date          = date;
+
+        this._serial        = ''; // GSI
+        this._threadTs      = threadTs;
+        this._createdAt     = 'hh:mm';
+        this._content = {
+            overview : '',
+            goal     : '',
+            progression : {
+                target       : '',
+                input_time   : 'hh:mm',
+                memo         : '',
+            },
+        }
+    }
 
     toItem () {
         return {
-            date          : this._date,
-            user_id       : this._userId,
-            channel       : this._channel,
-            event_ts      : this._threadTs,
-            work_plan     : this._workPlan,
-            selected_time : this._selectedTime,
-            option        : this._option,
+            [COLNAMES.PARTITION_KEY]      : this.partitionKey,
+            [COLNAMES.SORT_KEY]           : this.sortKey,
+            [COLNAMES.SERIAL]             : this.serial,
+            [COLNAMES.THREAD_TS]          : this.threadTs,
+            [COLNAMES.CREATED_AT]         : this.createdAt,
+            [COLNAMES.CONTENT]            : { ...this._content },
         }
+    }
+
+    get partitionKey () {
+        return `${this._channelId}`;
+    }
+
+    get sortKey() {
+        return `${this._sortKey}#${this._date}`;
+    }
+
+    get createdAt () {
+        return this._createdAt;
     };
 
-    get partitionKeyBase() {
-        return this._userId + this._channel + this._date;
-    };
+    set createdAt (createdAt) {
+        this._createdAt = createdAt;
+    }
 
-    get workPlan() {
-        return this._workPlan;
-    };
+    get content() {
+        return this._content;
+    }
 
-    set workPlan(workPlan) {
-        this._workPlan = workPlan;
-    };
-
-    get selectedTime() {
-        return this._selectedTime;
-    };
-
-    set selectedTime(selectedTime) {
-        this._selectedTime = selectedTime;
-    };
-
-    get option() {
-        return this._option;
-    };
-
-    set option(option) {
-        this._option = option;
-    };
-
-    get userId() {
-        return this._userId;
-    };
-
-    set userId(userId) {
-        this._userId = userId;
-    };
-
-    get channel() {
-        return this._channel;
-    };
-
-    set channel(channel) {
-        this._channel = channel;
-    };
-
-    get slackUrl() {
-        return this._slackUrl;
-    };
-
-    set slackUrl(slackUrl) {
-        this._slackUrl = slackUrl;
-    };
-
-    get threadTs() {
-        return this._threadTs;
-    };
-
-    set threadTs(threadTs) {
-        this._threadTs = threadTs;
-    };
-
-    get date () {
-        return this._date;
-    };
-
-    set date (date) {
-        this._date = date;
-    };
+    set content(content) {
+        this._content = content;
+    }
 }
 
 exports.WorkReportModel = WorkReportModel;

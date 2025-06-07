@@ -1,10 +1,11 @@
 // モジュール読み込み
 const { DiaryUtils } = require('../utility/DiaryUtils');
 const { DiaryModel } = require('../model/DiaryModel');
+const { DBConst } = require('../constants/DBConst');
 
 class DiaryService {
-    constructor(diaryRepository, feedbackGenerator) {
-        this.diaryRepository = diaryRepository;
+    constructor(postDataRepository, feedbackGenerator) {
+        this.postDataRepository = postDataRepository;
         this.feedbackGenerator = feedbackGenerator;
     };
 
@@ -12,11 +13,13 @@ class DiaryService {
     **   thread_tsを基にフィードバックを生成する
     */
     async generateFeedback(message){
+        const threadTs = message.thread_ts;
+
         // DBから業務日誌情報を取得
         try {
-            const diary = await this.diaryRepository.getDiaryByThreadTs(message.thread_ts);
+            const diary = await this.postDataRepository.queryByThreadTsAndSortKeyPrefix(threadTs, DBConst.SORT_KEY_BASE.DIARY);
             if (!diary) return "DBから日報を取得できませんでした。";
-            return this.feedbackGenerator.generateFeedback(diary);
+            return await this.feedbackGenerator.generateFeedback(diary);
 
         } catch (error) {
             throw new Error("フィードバック生成中にエラーが発生しました。");
@@ -26,11 +29,7 @@ class DiaryService {
     /*
     **   日記新規登録処理
     */
-    async newDiaryEntry (message, client) {
-        const text    = message.text;
-        const date    = DiaryUtils.parseDate(text);
-        const content = DiaryUtils.parseContent(text);
-
+    async processNewDiaryEntry (message, client) {
         // 投稿URLを取得
         let { permalink } = await client.chat.getPermalink({
             channel    : message.channel,
@@ -38,57 +37,62 @@ class DiaryService {
         });
 
         // diaryModelを作成
-        const diaryModel = this.createDiaryModel(message, date, content, permalink);
+        const diaryModel = this.createDiaryModel(message, permalink);
+        diaryModel.postedAt = new Date().toISOString();
 
         // DB新規重複チェック
+        const date = diaryModel.date;
         try {
-            const result = await this.diaryRepository.getDiaryByPartitionKey(diaryModel);
-            if (result.Item) return `日付が重複しています。(${date})`;
+            const result = await this.postDataRepository.getDiaryByDate(message.channel, date);
+            if (result) return `日付が重複しています。(${date})`;
 
-            const response = await this.diaryRepository.putDiary(diaryModel);
-            if (response.$metadata.httpStatusCode == 200) {
+            const response = await this.postDataRepository.putItem(diaryModel);
+            const httpStatusCode = response?.$metadata.httpStatusCode;
+            if (httpStatusCode == 200) {
                 return `日記(${date})のDB登録に成功しました。`;
+            } else {
+                throw new Error(`日記(${date})のDB登録に失敗しました。httpStatusCode=${httpStatusCode}`, { cause: error });
             }
 
         } catch (error) {
-            throw new Error(`日記(${date})のDB登録に失敗しました。`);
+            throw new Error(`日記(${date})のDB登録に失敗しました。`, { cause: error });
         }
     }
 
     /*
     **   日記編集処理
     */
-    async updateDiary (message, client) {
-        const text       = message.message.text;
-        const date       = DiaryUtils.parseDate(text);
-        const content    = DiaryUtils.parseContent(text);
-        const diaryModel = this.createDiaryModel(message.message, date, content, null);
+    async processUpdateDiary (message) {
+        const diaryModel = this.createDiaryModel(message, '');
+        diaryModel.editedAt = new Date().toISOString();
 
-        // DB更新重複チェック
+        // DB更新
+        const date = diaryModel.date;
         try {
-            const result = await this.diaryRepository.getDiaryByPartitionKey(diaryModel);
-            if (result.Item?.edited_ts === diaryModel.editedTs) return `この日報はすでに最新の内容です。`;
-            if (result.Item?.slack_url) {
-                diaryModel.slackUrl = result.Item.slack_url;
+            const getPartitionKey = diaryModel.channel;
+            const getResult = await this.postDataRepository.getDiaryByDate(getPartitionKey, date);
+            if (getResult.slack_url) {
+                diaryModel.slackUrl = getResult.slack_url;
             }
 
-            return await this.diaryRepository.putDiary(diaryModel);
+            return await this.postDataRepository.putItem(diaryModel);
         } catch (error) {
-            throw new Error(`日記(${date})のDB更新に失敗しました。${error}`);
+            throw new Error(`日記(${date})のDB更新に失敗しました。`, { cause: error });
         }
     };
 
 
-    // DiaryModel生成
-    createDiaryModel (message, date, content, permalink) {
-        const diaryModel = new DiaryModel();
-        diaryModel.userId      = message.user;
-        diaryModel.channel     = message.channel;
-        diaryModel.date        = date;
-        diaryModel.eventTs     = message.ts;
-        diaryModel.content     = content;
-        diaryModel.slackUrl    = permalink;
-        diaryModel.clientMsgId = message.client_msg_id;
+    // DiaryModel生成処理
+    createDiaryModel (message, permalink) {
+        const text    = message.text;
+
+        const diaryModel = new DiaryModel(message.channel);
+        diaryModel.date                = DiaryUtils.parseDate(text);
+        diaryModel.workingPlaceCd      = DiaryUtils.parseWorkingPlaceCd(text);
+        diaryModel.content             = DiaryUtils.parseContent(text);
+        diaryModel.threadTs            = message.ts;
+        diaryModel.slackUrl            = permalink;
+
         return diaryModel;
     }
 }

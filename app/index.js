@@ -1,8 +1,6 @@
 // モジュール読み込み
 const { App, AwsLambdaReceiver }     = require('@slack/bolt');
-const { DynamoDiaryRepository }      = require('./repository/DynamoDiaryRepository');
-const { DynamoThreadRepository }     = require('./repository/DynamoThreadRepository');
-const { DynamoWorkReportRepository } = require('./repository/DynamoWorkReportRepository');
+const { DynamoPostDataRepository }      = require('./repository/DynamoPostDataRepository');
 const { AppCommandController }       = require('./controller/AppCommandController');
 const { AppMessageController }       = require('./controller/AppMessageController');
 const { AppViewController }          = require('./controller/AppViewController');
@@ -15,17 +13,15 @@ const { SlackPresenter }             = require('./presenter/SlackPresenter');
 const { ModalConst }                 = require('./constants/ModalConst');
 
 // DI
-const diaryRepository       = new DynamoDiaryRepository();
-const threadRepository      = new DynamoThreadRepository();
-const workReportRepository  = new DynamoWorkReportRepository();
+const postDataRepository    = new DynamoPostDataRepository();
 
 const feedbackGenerator     = new OpenAIFeedbackGenerator();
-const diaryService          = new DiaryService(diaryRepository, feedbackGenerator);
-const threadService         = new ThreadService(threadRepository);
-const workReportService     = new WorkReportService(workReportRepository);
+const diaryService          = new DiaryService(postDataRepository, feedbackGenerator);
+const threadService         = new ThreadService(postDataRepository);
+const workReportService     = new WorkReportService(postDataRepository);
 
 const slackPresenter        = new SlackPresenter();
-const appCommandController  = new AppCommandController(threadService);
+const appCommandController  = new AppCommandController(threadService, slackPresenter);
 const appMessageController  = new AppMessageController(diaryService, threadService, slackPresenter);
 const appViewController     = new AppViewController(threadService, slackPresenter);
 const appActionController   = new AppActionController(workReportService);
