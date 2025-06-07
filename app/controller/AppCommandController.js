@@ -14,9 +14,9 @@ class AppCommandController {
         this.slackPresenter = slackPresenter;
 
         this.commandHandlers = {
-            '/makethread'   : this.handleMakethread.bind(this),
-            '/newtask'      : this.handleNewTask.bind(this),
-            '/warmup'       : this.handleWarmUp.bind(this)
+            [`${SlackConst.APPCOMMANDS.MAKETHREAD}`]   : this.handleMakethread.bind(this),
+            [`${SlackConst.APPCOMMANDS.NEWTASK}`]      : this.handleNewTask.bind(this),
+            [`${SlackConst.APPCOMMANDS.WARMUP}`]   : this.handleWarmUp.bind(this)
         }
     };
 
