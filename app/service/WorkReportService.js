@@ -12,7 +12,7 @@ class WorkReportService {
     };
     
     // 新規タスク入力用モーダルのBlockkitを作成し返却する
-    async processNewTaskCommand (command, client) {
+    async processNewTask (command, client) {
         const date   = new Date().toFormat("YYYY-MM-DD"); // YYYY-MM-DD
         const thread = this.postDataRepositry.queryByDateAndSortKeyPrefix(date, DBConst.SORT_KEY_PREFIX.THREAD);
         console.log(JSON.stringify(thread));
@@ -22,7 +22,7 @@ class WorkReportService {
     };
 
     // /makethread入力時のNewTaskモーダル受け取り
-    async processMakeThreadNewTask (body, view, client) {
+    async processNewTaskSubmission (body, view, client) {
         // メタデータ取得
         const user_id = body.user.id;
         const metadata = JSON.parse(view.private_metadata);
