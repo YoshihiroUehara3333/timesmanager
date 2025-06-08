@@ -1,9 +1,9 @@
 // モジュール読み込み
 const { getOpenAiClient } = require('./OpenAIClientSingleton.js')
-const { DiaryUtils } = require("../utility/DiaryUtils.js");
+const { DiaryUtils } = require("../../utility/DiaryUtils.js");
 const { Prompts } = require("./prompts/Prompts");
 
-class OpenAIFeedbackGenerator {
+class OpenAiApiAdaptor {
     constructor() {
     }
     
@@ -40,4 +40,4 @@ class OpenAIFeedbackGenerator {
     }
 };
 
-exports.OpenAIFeedbackGenerator = OpenAIFeedbackGenerator;
+exports.OpenAiApiAdaptor = OpenAiApiAdaptor;

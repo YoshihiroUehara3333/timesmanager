@@ -5,13 +5,11 @@ const { DiaryModel } = require('../model/DiaryModel');
 const { DBConst } = require('../constants/DBConst');
 
 class DiaryService {
-    postDataRepository;
-    feedbackGenerator;
-
-    constructor(postDataRepository, feedbackGenerator) {
+    constructor(postDataRepository, openAiApiAdaptor, slackApiAdaptor) {
         this.postDataRepository = postDataRepository;
-        this.feedbackGenerator = feedbackGenerator;
-    };
+        this.openAiApiAdaptor = openAiApiAdaptor;
+        this.slackApiAdaptor = slackApiAdaptor;
+    }
 
     /*
     **   thread_tsを基にフィードバックを生成する
@@ -31,7 +29,7 @@ class DiaryService {
 
             // たいていは1件のみ想定
             const diary = filteredResult[0];
-            return await this.feedbackGenerator.generateFeedback(diary);
+            return await this.openAiApiAdaptor.generateFeedback(diary);
             
         } catch (error) {
             throw new Error(`フィードバック生成中にエラーが発生しました。${error.message}`, { cause: error });
@@ -41,14 +39,11 @@ class DiaryService {
     /*
     **   日記新規登録処理
     */
-    async processNewDiaryEntry (message, client) {
+    async processNewDiaryEntry (message) {
         const channelId = message.channel;
 
         // 投稿URLを取得
-        let { permalink } = await client.chat.getPermalink({
-            channel    : channelId,
-            message_ts : message.ts
-        });
+        let permalink = await this.slackApiAdaptor.getPermalink(channelId, message.ts);
 
         // diaryModelを作成
         const diaryModel = this.createDiaryModel(message, channelId, permalink);
