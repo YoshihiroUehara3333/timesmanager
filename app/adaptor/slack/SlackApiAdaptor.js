@@ -61,7 +61,14 @@ class SlackApiAdaptor {
     }
 
     // Slack投稿のURLを取得する
-    async 
+    async getPermalink(channelId, messageTs) {
+        const getResult = await client.chat.getPermalink({
+            channel    : channelId,
+            message_ts : messageTs
+        })
+
+        return getResult.permalink;
+    }
 }
 
 exports.SlackApiAdaptor = SlackApiAdaptor;
