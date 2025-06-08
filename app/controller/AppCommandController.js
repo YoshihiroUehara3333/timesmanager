@@ -17,18 +17,18 @@ class AppCommandController {
         }
     };
 
-    async dispatchAppCommand (command, logger, client) {
+    async dispatchAppCommand (command, logger) {
         logger.info(`command:${command.command}`);
 
         const appCommandHandler = this.commandHandlers[command.command] || this.commandHandlers['default'];
-        return appCommandHandler(command, logger, client);
+        return appCommandHandler(command, logger);
     };
 
     // /makethread実行時
     async handleMakethread (command, logger) {
         logger.debug(`handleMakethreadを実行`);
         try {
-            let view = await this.threadService.processNewThreadEntry(command, client);
+            let view = await this.threadService.processNewThreadEntry(command);
             await this.slackApiAdaptor.openView(view, command.trigger_id);
             
         } catch (error) {
@@ -40,12 +40,12 @@ class AppCommandController {
     // /newtask実行時
     async handleNewTask (command, logger) {
         try {
-            let view = await this.workReportService.processNewTaskCommand(command, client);
-            await this.slackPresenter.openView(view, command.trigger_id);
+            let view = await this.workReportService.processNewTaskCommand(command);
+            await this.slackApiAdaptor.openView(view, command.trigger_id);
             
         } catch (error) {
             logger.error(error);
-            await this.slackPresenter.sendDirectMessage(error.toString(), command.user_id);
+            await this.slackApiAdaptor.sendDirectMessage(error.toString(), command.user_id);
         }
     }
 
@@ -53,10 +53,10 @@ class AppCommandController {
     async handleWarmUp (command, logger) {
         try {
             const msg = '/warmupが実行されました。'
-            await this.slackPresenter.sendDirectMessage(msg, command.user_id);
+            await this.slackApiAdaptor.sendDirectMessage(msg, command.user_id);
         } catch (error) {
             logger.error(error.data);
-            await this.slackPresenter.sendDirectMessage(error.toString(), command.user_id);
+            await this.slackApiAdaptor.sendDirectMessage(error.toString(), command.user_id);
         }
     }
 
