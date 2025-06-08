@@ -1,6 +1,6 @@
 // モジュール読み込み
 const { App, AwsLambdaReceiver }     = require('@slack/bolt');
-const { DynamoPostDataRepository }      = require('./repository/DynamoPostDataRepository');
+const { DynamoPostDataRepository }   = require('./repository/DynamoPostDataRepository');
 const { AppCommandController }       = require('./controller/AppCommandController');
 const { AppMessageController }       = require('./controller/AppMessageController');
 const { AppViewController }          = require('./controller/AppViewController');
@@ -8,7 +8,7 @@ const { AppActionController }        = require('./controller/AppActionController
 const { DiaryService }               = require('./service/DiaryService');
 const { ThreadService }              = require('./service/ThreadService');
 const { WorkReportService }          = require('./service/WorkReportService');
-const { OpenAIFeedbackGenerator }    = require('./service/OpenAIFeedbackGenerator');
+const { OpenAIFeedbackGenerator }    = require('./ai/OpenAIFeedbackGenerator');
 const { SlackPresenter }             = require('./presenter/SlackPresenter');
 const { ModalConst }                 = require('./constants/ModalConst');
 

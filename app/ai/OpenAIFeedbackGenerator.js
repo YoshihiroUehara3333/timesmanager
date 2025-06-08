@@ -1,24 +1,20 @@
 // モジュール読み込み
-const { OpenAI } = require("openai");
+const { getOpenAiClient } = require('./OpenAIClientSingleton.js')
 const { DiaryUtils } = require("../utility/DiaryUtils.js");
 const { Prompts } = require("./prompts/Prompts");
 
 class OpenAIFeedbackGenerator {
     constructor() {
-        this.openAI = new OpenAI({
-            apiKey  : process.env.OPENAI_API_KEY,
-            timeout : 180000 // ms指定
-        })
     }
-
+    
     // AIによる日報のフィードバックを生成
     async generateFeedback(diary) {
         console.log("generateFeedback", JSON.stringify(diary));
-
-        console.log(`prompt:${Prompts.feedback}`);
-        console.log(`model:${process.env.GPT_MODEL}`);
         try {
-            const response = await this.openAI.chat.completions.create({
+            console.log(`prompt:${Prompts.feedback}`);
+            console.log(`model:${process.env.GPT_MODEL}`);
+            const client = getOpenAiClient();
+            const response = await client.chat.completions.create({
                 // OpenAIのモデル一覧
                 // https://platform.openai.com/docs/models
                 model   : process.env.GPT_MODEL, 
