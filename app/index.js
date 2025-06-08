@@ -71,7 +71,7 @@ app.view({ type: 'view_submission' }, async ({ ack, body, view, logger}) => {
     logger.info(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`);
 
     await ack();
-    await appViewController.handleModalCallback(body, view, logger);
+    await appViewController.dispatchModalCallback(body, view, logger);
 })
 
 // 途中経過記録ボタン
