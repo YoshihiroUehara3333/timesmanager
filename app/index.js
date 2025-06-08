@@ -52,7 +52,7 @@ app.command(/.*/, async ({ ack, command, context, logger}) => {
     };
     
     await ack();
-    await appCommandController.dispatchAppCommand(command, logger;
+    await appCommandController.dispatchAppCommand(command, logger);
 })
 
 // メッセージ検知
