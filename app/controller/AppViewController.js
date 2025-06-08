@@ -6,12 +6,12 @@ const { WorkPlanBlock } = require('../blockkit/WorkPlanBlock');
 class AppViewController {
     CALLBACK_ID = ModalConst.CALLBACK_ID;
 
-    constructor (threadService, workReportService, slackPresenter) {
+    constructor (threadService, workReportService, slackApiAdaptor) {
         this.threadService      = threadService;
         this.workReportService  = workReportService;
-        this.slackPresenter     = slackPresenter;
+        this.slackApiAdaptor    = slackApiAdaptor;
 
-        // dispatch用ハンドラ定義
+        // callback id dispatcher
         this.callBackHandlers = {
             [`${this.CALLBACK_ID.NEWTASK}`]  : this.handleNewTaskModalCallBack.bind(this),
             'default'                        : this.handleDefault.bind(this),
@@ -19,25 +19,26 @@ class AppViewController {
     };
 
     // dispatch
-    async dispatchModalCallback(body, view, logger, client) {
+    async dispatchModalCallback(body, view, logger) {
         const callbackId = view.callback_id;
         logger.info(`callbackId:${callbackId}`);
         
         const callBackHandler = this.callBackHandlers[callbackId] || this.callBackHandlers['default'];
-        return callBackHandler(body, view, logger, client);
+        return callBackHandler(body, view, logger);
     }
 
     // 作業記録モーダル初回送信時の処理
-    async handleNewTaskModalCallBack(body, view, logger, client) {
+    async handleNewTaskModalCallBack(body, view, logger) {
+        logger.info('handleNewTaskModalCallBackを実行');
         // メタデータ取得
         const metadata  = JSON.parse(view.private_metadata);
-        const blocks    = this.workReportService.processNewTaskEntry(body, view, client);
-        const reply = await client.chat.postBlockMessage(client, msg, metadata.channel_id, metadata.thread_ts, blocks);
+        const blocks    = this.workReportService.processNewTaskEntry(body, view);
+        const reply = await this.slackApiAdaptor.sendtBlockMessage(msg, metadata.channel_id, metadata.thread_ts, blocks);
         // 必要であればDBに保存（例: DynamoDB）
-        await this.workReportService.processNewTaskSubmission(body, view, client);
+        await this.workReportService.processNewTaskSubmission(body, view);
     }
 
-    async handleDefault (body, view, logger, client) {
+    async handleDefault (body, view, logger) {
         
     }
 }

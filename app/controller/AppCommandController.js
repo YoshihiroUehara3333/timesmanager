@@ -4,15 +4,12 @@
 const { SlackConst } = require('../constants/SlackConst');
 
 class AppCommandController {
-    threadService;
-    workReportService;
-    slackPresenter;
-
-    constructor(threadService, workReportService, slackPresenter){
+    constructor(threadService, workReportService, slackApiAdaptor){
         this.threadService = threadService;
         this.workReportService = workReportService;
-        this.slackPresenter = slackPresenter;
+        this.slackApiAdaptor = slackApiAdaptor;
 
+        // dispatch用のList
         this.commandHandlers = {
             [`${SlackConst.APPCOMMANDS.MAKETHREAD}`]   : this.handleMakethread.bind(this),
             [`${SlackConst.APPCOMMANDS.NEWTASK}`]      : this.handleNewTask.bind(this),
@@ -20,46 +17,46 @@ class AppCommandController {
         }
     };
 
-    async dispatchAppCommand (command, logger, client) {
+    async dispatchAppCommand (command, logger) {
         logger.info(`command:${command.command}`);
 
         const appCommandHandler = this.commandHandlers[command.command] || this.commandHandlers['default'];
-        return appCommandHandler(command, logger, client);
+        return appCommandHandler(command, logger);
     };
 
     // /makethread実行時
-    async handleMakethread (command, logger, client) {
+    async handleMakethread (command, logger) {
         logger.debug(`handleMakethreadを実行`);
         try {
-            let view = await this.threadService.processNewThreadEntry(command, client);
-            await this.slackPresenter.openView (client, view, command.trigger_id);
+            let view = await this.threadService.processNewThreadEntry(command);
+            await this.slackApiAdaptor.openView(view, command.trigger_id);
             
         } catch (error) {
             logger.error(error.data);
-            await this.slackPresenter.sendDirectMessage(client, error.toString(), command.user_id);
+            await this.slackApiAdaptor.sendDirectMessage(error.toString(), command.user_id);
         }
     }
 
     // /newtask実行時
-    async handleNewTask (command, logger, client) {
+    async handleNewTask (command, logger) {
         try {
-            let view = await this.workReportService.processNewTaskCommand(command, client);
-            await this.slackPresenter.openView (client, view, command.trigger_id);
+            let view = await this.workReportService.processNewTaskCommand(command);
+            await this.slackApiAdaptor.openView(view, command.trigger_id);
             
         } catch (error) {
             logger.error(error);
-            await this.slackPresenter.sendDirectMessage(client, error.toString(), command.user_id);
+            await this.slackApiAdaptor.sendDirectMessage(error.toString(), command.user_id);
         }
     }
 
     // /warmup実行時
-    async handleWarmUp (command, logger, client) {
+    async handleWarmUp (command, logger) {
         try {
             const msg = '/warmupが実行されました。'
-            await this.slackPresenter.sendDirectMessage(client, msg, command.user_id);
+            await this.slackApiAdaptor.sendDirectMessage(msg, command.user_id);
         } catch (error) {
             logger.error(error.data);
-            await this.slackPresenter.sendDirectMessage(client, error.toString(), command.user_id);
+            await this.slackApiAdaptor.sendDirectMessage(error.toString(), command.user_id);
         }
     }
 

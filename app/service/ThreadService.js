@@ -7,15 +7,14 @@ const { PostModel }        = require('../model/PostModel');
 const { NewTaskModal }   = require('../blockkit/NewTaskModal');
 
 class ThreadService {
-    postDataRepository;
-    
-    constructor (postDataRepository) {
+constructor (postDataRepository, slackApiAdaptor) {
         this.postDataRepository = postDataRepository;
+        this.slackApiAdaptor = slackApiAdaptor;
     };
 
     // 新規のスレッド文面を作成し投稿結果をDBに登録する
     // その後WorkReportを作成する
-    async processNewThreadEntry (command, client) {
+    async processNewThreadEntry (command) {
         // 値を取得
         const { user_id, channel_id } = command;
         const date = new Date().toFormat("YYYY-MM-DD");
@@ -23,18 +22,10 @@ class ThreadService {
         try {
             // timesチャンネルにスレッド作成
             const text = `<@${user_id}> \n*【壁】${date}*`;
-            const postResult = await client.chat.postMessage({
-                channel     : channel_id,
-                text        : text,
-                mrkdwn      : true,
-            });
+            const postResult = await this.slackApiAdaptor.sendMessage(text, channel_id);
             
             // 投稿情報をDBに保存
-            // スレッドの投稿URLを取得
-            let { permalink } = await client.chat.getPermalink({
-                channel    : postResult.channel,
-                message_ts : postResult.ts,
-            });
+            let permalink = await this.slackApiAdaptor.getPermalink(postResult.channel, postResult.ts);
 
             const threadModel = this.createThreadModel (postResult.channel, postResult.ts, date, permalink);
             const response = await this.postDataRepository.putItem(threadModel);
@@ -51,7 +42,7 @@ class ThreadService {
     };
 
     // スレッド内のリプライを扱う
-    async processNewThreadPost (message, client) {
+    async processNewThreadPost (message) {
         const text = message.text;
 
         const postModel = this.createPostModel(message);

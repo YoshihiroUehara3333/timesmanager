@@ -3,14 +3,19 @@
 //
 // chat.postMessage
 // https://api.slack.com/methods/chat.postMessage
+// chat.getpermalink
+// 
+// views.open
+//
 
-class SlackPresenter {
-    constructor () {
-    };
+class SlackApiAdaptor {
+    constructor (client) {
+        this.client = client;
+    }
 
     // DMを送信する
-    async sendDirectMessage (client, msg, userId) {
-        return await client.chat.postMessage({
+    async sendDirectMessage (msg, userId) {
+        return await this.client.chat.postMessage({
             channel   : userId,
             text      : msg,
             mrkdwn    : true
@@ -18,8 +23,8 @@ class SlackPresenter {
     }
 
     // 対象チャンネルにポストする
-    async sendMessage (client, msg, channel) {
-        return await client.chat.postMessage({
+    async sendMessage (msg, channel) {
+        return await this.client.chat.postMessage({
             channel   : channel,
             text      : msg,
             mrkdwn    : true
@@ -27,8 +32,8 @@ class SlackPresenter {
     }
 
     // 対象チャンネルにポストする
-    async sendBlockMessage (client, msg, channel, thread_ts, blocks) {
-        return await client.chat.postMessage({
+    async sendBlockMessage (msg, channel, thread_ts, blocks) {
+        return await this.client.chat.postMessage({
             channel   : channel,
             thread_ts : thread_ts,
             text      : msg,
@@ -38,8 +43,8 @@ class SlackPresenter {
     }
 
     // スレッド内に返信する
-    async sendThreadMessage (client, msg, channel, threadTs) {
-        return await client.chat.postMessage({
+    async sendThreadMessage (msg, channel, threadTs) {
+        return await this.client.chat.postMessage({
             channel   : channel,
             text      : msg,
             thread_ts : threadTs,
@@ -48,12 +53,22 @@ class SlackPresenter {
     }
 
     // モーダルを開く
-    async openView (client, view, triggerId) {
-        return await client.views.open({
+    async openView (view, triggerId) {
+        return await this.client.views.open({
                 trigger_id : triggerId,
                 view       : view,
         })
     }
+
+    // Slack投稿のURLを取得する
+    async getPermalink(channelId, messageTs) {
+        const getResult = await this.client.chat.getPermalink({
+            channel    : channelId,
+            message_ts : messageTs
+        })
+
+        return getResult.permalink;
+    }
 }
 
-exports.SlackPresenter = SlackPresenter;
+exports.SlackApiAdaptor = SlackApiAdaptor;

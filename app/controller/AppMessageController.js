@@ -6,12 +6,12 @@ const { RegexConst } = require('../constants/RegexConst');
 const { DiaryUtils } = require('../utility/DiaryUtils');
 
 class AppMessageController {
-    constructor (diaryService, threadService, slackPresenter) {
+    constructor (diaryService, threadService, slackApiAdaptor) {
         this.diaryService   = diaryService;
         this.threadService  = threadService;
-        this.slackPresenter = slackPresenter;
+        this.slackApiAdaptor = slackApiAdaptor;
 
-        // subtype によって処理を切り替える
+        // subtype dispatcher
         this.subtypeHandlers = {
             'message_changed'   : this.handleEditedMessage.bind(this),
             'default'           : this.handleNewMessage.bind(this),
@@ -19,36 +19,36 @@ class AppMessageController {
     }
 
     // subtypeによってmessageの構造が異なる為まずsubtypeで処理を分ける
-    async handleAppMessage (message, logger, client) {
+    async handleAppMessage (message, logger) {
         logger.info("handleAppMessageが実行されました");
 
         const subtypeHandler = this.subtypeHandlers[message.subtype] || this.subtypeHandlers['default'];
-        return subtypeHandler(message, logger, client);
+        return subtypeHandler(message, logger);
     }
 
     // 新規投稿時はこの関数で処理する
     // ・スレッドの内部/外部
     // ・メンション付きかどうか
     // 上記判定を行い、別関数に処理を移譲する。
-    async handleNewMessage (message, logger, client) {
+    async handleNewMessage (message, logger) {
         logger.info("handleNewMessageが実行されました");
         
         if(this.isInThread(message)) {
             if (this.isBotMentioned(message)) {
                 // スレッド内ボットメンションは現状疑似スラッシュコマンドのみ
-                await this.handleNewThreadMentionMessage(message, logger, client);
+                await this.handleNewThreadMentionMessage(message, logger);
             } else {
                 // スレッド内部だった場合
-                await this.handleNewThreadMessage(message, logger, client);
+                await this.handleNewThreadMessage(message, logger);
             }
         } else {
             //スレッド外のメッセージ");
-            await this.handleNewTopLevelMessage(message, logger, client);
+            await this.handleNewTopLevelMessage(message, logger);
         }
     }
 
     // 編集投稿時はこの関数で処理する
-    async handleEditedMessage (messageRaw, logger, client) {
+    async handleEditedMessage (messageRaw, logger) {
         logger.info("handleEditedMessageが実行されました");
         let msg = '';
         const message = messageRaw.message;
@@ -67,13 +67,13 @@ class AppMessageController {
                 msg = error.toString();
             }
 
-            await this.slackPresenter.sendDirectMessage(client, msg, message.user);
+            await this.slackApiAdaptor.sendDirectMessage(msg, message.user);
         }
     }
 
     // スレッド内部かつ、新規ポストかつ、ボットメンション時
     // 現状疑似スラッシュコマンドのみ
-    async handleNewThreadMentionMessage (message, logger, client) {
+    async handleNewThreadMentionMessage (message, logger) {
         logger.info("handleNewThreadMentionMessageが実行されました");
         let msg = '';
 
@@ -90,20 +90,20 @@ class AppMessageController {
         }
         // SlackPresenter用のパラメータ値取得
         const { channel, ts } = message;
-        await this.slackPresenter.sendThreadMessage (client, msg, channel, ts);
+        await this.slackApiAdaptor.sendThreadMessage (msg, channel, ts);
     }
 
     // スレッド内部かつ、新規ポストかつ、ボットメンションではない
     // ・
-    async handleNewThreadMessage (message, logger, client) {
+    async handleNewThreadMessage (message, logger) {
         logger.info("handleNewThreadMessageが実行されました");
 
         // 壁スレッドの中身だった場合ThreadServiceを使ってDBにtextを保存する
-        return this.threadService.newThreadReply(message, logger, client);
+        return this.threadService.newThreadReply(message, logger);
     }
 
     // スレッド外部かつ、新規ポスト時
-    async handleNewTopLevelMessage (message, logger, client) {
+    async handleNewTopLevelMessage (message, logger) {
         logger.info("handleTopLevelNewMessageが実行されました");
         let msg = '';
 
@@ -112,7 +112,7 @@ class AppMessageController {
             // 日記新規投稿時
             try {
                 logger.info("diaryService.newDiaryEntryを実行");
-                msg = await this.diaryService.processNewDiaryEntry(message, client);
+                msg = await this.diaryService.processNewDiaryEntry(message);
                 logger.info("diaryService.newDiaryEntryが終了:" + msg);
 
             } catch (error) {
@@ -120,7 +120,7 @@ class AppMessageController {
                 msg = error.toString();
             }
 
-            await this.slackPresenter.sendDirectMessage(client, msg, message.user);
+            await this.slackApiAdaptor.sendDirectMessage(msg, message.user);
         }
     }
 
