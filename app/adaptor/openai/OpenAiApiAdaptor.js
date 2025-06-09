@@ -1,3 +1,9 @@
+// OpenAIのモデル一覧
+// https://platform.openai.com/docs/models
+//
+// API仕様ドキュメント
+//
+
 // モジュール読み込み
 const { getOpenAiClient } = require('./OpenAIClientSingleton.js')
 const { DiaryUtils } = require("../../utility/DiaryUtils.js");
@@ -7,7 +13,7 @@ class OpenAiApiAdaptor {
     constructor() {
     }
     
-    // AIによる日報のフィードバックを生成
+    // OpenAIのAIによる日報のフィードバックを生成し、returnする
     async generateFeedback(diary) {
         console.log("generateFeedback", JSON.stringify(diary));
         try {
@@ -15,8 +21,6 @@ class OpenAiApiAdaptor {
             console.log(`model:${process.env.GPT_MODEL}`);
             const client = getOpenAiClient();
             const response = await client.chat.completions.create({
-                // OpenAIのモデル一覧
-                // https://platform.openai.com/docs/models
                 model   : process.env.GPT_MODEL, 
                 messages: [
                     { 

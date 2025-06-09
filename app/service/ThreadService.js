@@ -10,7 +10,7 @@ class ThreadService {
     constructor (postDataRepository, slackApiAdaptor) {
         this.postDataRepository = postDataRepository;
         this.slackApiAdaptor = slackApiAdaptor;
-    };
+    }
 
     // 新規のスレッド文面を作成し投稿結果をDBに登録する
     // その後WorkReportを作成する
@@ -25,17 +25,21 @@ class ThreadService {
             let text = `<@${userId}> \n*【壁】${date}*`;
             const postResult = await this.slackApiAdaptor.sendMessage(text, channelId);
             
-            // 投稿情報をDBに保存
+            // ThreadModelを作成
             let permalink = await this.slackApiAdaptor.getPermalink(channelId, postResult.ts);
             const threadModel = this.createThreadModel (channelId, date, postResult.ts, permalink);
+
+            // 投稿情報をDBに保存
             const response = await this.postDataRepository.putItem(threadModel);
 
+            // httpStatusCodeをチェックしてreturn
             const httpStatusCode = response.$metadata?.httpStatusCode;
             if (httpStatusCode === 200) {
                 return NewTaskModal(channel_id, postResult.ts, date, 1);
             } else {
                 throw new Error(
-                    `スレッド情報をDB登録時エラー。httpStatusCode=${httpStatusCode}`
+                    `スレッド情報をDB登録時エラー。/n`
+                    +`httpStatusCode=${httpStatusCode}`
                 )
             } 
         } catch (error) {
@@ -56,6 +60,7 @@ class ThreadService {
     }
 
 
+    // ----------------------------------------------------------------------------
     // ThreadModel生成
     createThreadModel (channelId, date, threadTs, permalink) {
         const threadModel = new ThreadModel(channelId, date);
@@ -68,10 +73,8 @@ class ThreadService {
     }
 
     // PostModel生成
-    createPostModel (message) {
-        const channelId = message.channel;
-
-        const postModel = new PostModel(channelId);
+    createPostModel (channelId, date) {
+        const postModel = new PostModel(channelId, date);
         return postModel;
     }
 }

@@ -1,10 +1,10 @@
 // 作業経過のデータ構造定義クラス
 
 // モジュール読み込み
-const { PostDataBaseModel } = require('./PostDataBaseModel');
+const { PostdataModelBase } = require('./PostdataModelBase');
 const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 
-class WorkReportModel extends PostDataBaseModel {
+class WorkReportModel extends PostdataModelBase {
     constructor (channelId, date, threadTs) {
         super(channelId, date);
         this._sortKeyPrefix = POSTDATA.SORT_KEY_PREFIX.WORKREPORT;

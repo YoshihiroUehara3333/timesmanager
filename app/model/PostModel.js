@@ -1,10 +1,10 @@
 // スレッド内投稿のデータ構造定義クラス
 
 // モジュール読み込み
-const { PostDataBaseModel } = require('./PostDataBaseModel');
+const { PostdataModelBase } = require('./PostdataModelBase');
 const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 
-class PostModel extends PostDataBaseModel {
+class PostModel extends PostdataModelBase {
 
     constructor (channelId, date, threadTs) {
         super(channelId, date);

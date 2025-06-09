@@ -20,7 +20,9 @@ class AppCommandController {
     async dispatchAppCommand (command, logger) {
         logger.info(`command:${command.command}`);
 
-        const appCommandHandler = this.commandHandlers[command.command] || this.commandHandlers['default'];
+        const appCommandHandler = 
+            this.commandHandlers[command.command] 
+            || this.commandHandlers['default'];
         return appCommandHandler(command, logger);
     };
 

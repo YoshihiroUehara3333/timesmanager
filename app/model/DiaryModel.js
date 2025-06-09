@@ -1,10 +1,10 @@
 // 日記のデータ構造定義クラス
 
 // モジュール読み込み
-const { PostDataBaseModel } = require('./PostDataBaseModel');
+const { PostdataModelBase } = require('./PostdataModelBase');
 const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 
-class DiaryModel extends PostDataBaseModel {
+class DiaryModel extends PostdataModelBase {
     constructor (channelId, date) {
         super(channelId, date);
         this._sortKeyPrefix = POSTDATA.SORT_KEY_PREFIX.DIARY;

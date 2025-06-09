@@ -11,9 +11,11 @@ class DiaryService {
         this.slackApiAdaptor = slackApiAdaptor;
     }
 
-    /*
-    **   thread_tsを基にフィードバックを生成する
-    */
+    /**
+     *  thread_tsを基にフィードバックを生成し、returnする
+     *  @param {Object} message - Slack APIから受け取ったリクエストの値
+     *  @returns {string} - Slack返信の文面
+     */
     async generateFeedback(message){
         // messageから値を取得
         const threadTs = message.thread_ts;
@@ -21,10 +23,12 @@ class DiaryService {
 
         // DBから業務日誌情報を取得
         try {
+            // 日報データをDBから取得
             const prefix = POSTDATA.SORT_KEY_PREFIX.DIARY;
             const queryResult = await this.postDataRepository.queryByThreadTsAndSortKeyPrefix(threadTs, prefix);
             if (queryResult == null) return `DBから日報データを取得できませんでした。`;
-            
+
+            // パーティションキーで絞り込み
             const filteredResult = queryResult.Items.filter(item => item.partition_key === channelId);
             if (filteredResult.length === 0) return `指定チャンネルのデータが見つかりませんでした。`;
 
@@ -42,13 +46,13 @@ class DiaryService {
     */
     async processNewDiaryEntry (message) {
         // messageから値を取得
-        let channelId = message.channel;
-        let threadTs = message.ts;
+        const channelId = message.channel;
+        const threadTs = message.ts;
         
         // 投稿URLを取得
         let permalink = await this.slackApiAdaptor.getPermalink(channelId, threadTs);
 
-        // diaryModelを作成
+        // DiaryModelを作成
         const diaryModel    = this.createDiaryModel(message.text, channelId, threadTs, permalink);
         diaryModel.postedAt = new Date().toFormat('HH24:MI:SS');
 
@@ -75,6 +79,7 @@ class DiaryService {
     **   日記編集処理
     */
     async processUpdateDiary (message, channelId) {
+        // DiaryModelを作成
         const diaryModel = this.createDiaryModel(message.text, channelId, message.ts, '');
         diaryModel.editedAt = new Date().toFormat('HH24:MI:SS');
 
@@ -121,7 +126,8 @@ class DiaryService {
             return `日記(${diaryModel.date})のDB${msg}に成功しました。\n${diaryModel.slackUrl}`;
         } else {
             throw new Error(
-                `日記(${diaryModel.date})のDB${msg}に失敗しました。httpStatusCode=${httpStatusCode}`
+                `日記(${diaryModel.date})のDB${msg}に失敗しました。\n`
+                + `httpStatusCode=${httpStatusCode}`
             )
         }
     }

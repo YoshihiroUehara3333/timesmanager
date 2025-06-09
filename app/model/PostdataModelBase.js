@@ -1,5 +1,5 @@
 // モジュール読み込み
-class PostDataBaseModel {
+class PostdataModelBase {
     constructor(channelId, date) {
         this._channelId     = channelId;
         this._date          = date;
@@ -19,4 +19,4 @@ class PostDataBaseModel {
     }
 }
 
-exports.PostDataBaseModel = PostDataBaseModel;
+exports.PostdataModelBase = PostdataModelBase;
