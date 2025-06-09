@@ -7,7 +7,7 @@ const { PostModel }        = require('../model/PostModel');
 const { NewTaskModal }   = require('../blockkit/NewTaskModal');
 
 class ThreadService {
-constructor (postDataRepository, slackApiAdaptor) {
+    constructor (postDataRepository, slackApiAdaptor) {
         this.postDataRepository = postDataRepository;
         this.slackApiAdaptor = slackApiAdaptor;
     };
@@ -16,27 +16,33 @@ constructor (postDataRepository, slackApiAdaptor) {
     // その後WorkReportを作成する
     async processNewThreadEntry (command) {
         // 値を取得
-        const { user_id, channel_id } = command;
-        const date = new Date().toFormat("YYYY-MM-DD");
+        let channelId = command.channel_id;
+        let userId = command.user_id;
+        let date = new Date().toFormat("YYYY-MM-DD");
 
         try {
             // timesチャンネルにスレッド作成
-            const text = `<@${user_id}> \n*【壁】${date}*`;
-            const postResult = await this.slackApiAdaptor.sendMessage(text, channel_id);
-            let permalink = await this.slackApiAdaptor.getPermalink(postResult.channel, postResult.ts);
-
+            let text = `<@${userId}> \n*【壁】${date}*`;
+            const postResult = await this.slackApiAdaptor.sendMessage(text, channelId);
+            
             // 投稿情報をDBに保存
-            const threadModel = this.createThreadModel (postResult.channel, postResult.ts, date, permalink);
+            let permalink = await this.slackApiAdaptor.getPermalink(channelId, postResult.ts);
+            const threadModel = this.createThreadModel (channelId, date, postResult.ts, permalink);
             const response = await this.postDataRepository.putItem(threadModel);
-            const httpStatusCode = response.$metadata?.httpStatusCode;
 
+            const httpStatusCode = response.$metadata?.httpStatusCode;
             if (httpStatusCode === 200) {
                 return NewTaskModal(channel_id, postResult.ts, date, 1);
             } else {
-                throw new Error(`スレッド情報をDB登録時エラー。httpStatusCode=${httpStatusCode}`, { cause: error });
+                throw new Error(
+                    `スレッド情報をDB登録時エラー。httpStatusCode=${httpStatusCode}`
+                )
             } 
         } catch (error) {
-            throw new Error(`/makethread実行中にエラーが起きました。`, { cause: error });
+            throw new Error(
+                `/makethread実行中にエラーが起きました。`
+                ,{ cause: error }
+            )
         }
     }
 
@@ -51,7 +57,7 @@ constructor (postDataRepository, slackApiAdaptor) {
 
 
     // ThreadModel生成
-    createThreadModel (channelId, threadTs, date, permalink) {
+    createThreadModel (channelId, date, threadTs, permalink) {
         const threadModel = new ThreadModel(channelId, date);
 
         threadModel.threadTs    = threadTs;
