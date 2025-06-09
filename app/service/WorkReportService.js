@@ -33,7 +33,7 @@ class WorkReportService {
 
         // Blocksを生成してreturn
         const blocks = WorkPlanBlock(userId, taskName, goal, targetTime, memo);
-        console.log(`reply:${JSON.stringify$(blocks)}`);
+        console.log(`reply:${JSON.stringify(blocks)}`);
         return blocks;
     }
 
