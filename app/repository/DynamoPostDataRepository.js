@@ -28,7 +28,7 @@ class DynamoPostDataRepository {
 
     // dateからSortKeyを生成し、Diaryを1件取得する
     async getDiaryByDate (partitionKey, date) {
-        const sortKey = `${POSTDATA.SORT_KEY_PREFIX.DIARY}#${date}`;
+        const sortKey = `${POSTDATA.PK_POSTFIX.DIARY}#${date}`;
         try {
             const getResult = await this._getItem (partitionKey, sortKey);
             return getResult.Item || null;
@@ -41,7 +41,7 @@ class DynamoPostDataRepository {
 
     // WorkReportの最新serialを取得
     async queryWorkReportLatestSerial (partitionKey, date) {
-        const sortKey = `${POSTDATA.SORT_KEY_PREFIX.WORKREPORT}#${date}`;
+        const sortKey = `${POSTDATA.PK_POSTFIX.WORKREPORT}#${date}`;
         try {
             const queryResult = await this._queryByPartitionKeyAndSortKey (partitionKey, sortKey);
             console.log(queryResult);
@@ -138,7 +138,7 @@ class DynamoPostDataRepository {
      * @param {string} prefix - GSIソートキーのプレフィックス
      * @returns {Promise<Object[]|null>} クエリ結果（0件ならnull）
      */
-    async _queryByIndexUsingBeginsWithSortKeyPrefix (indexName, pkAttrName, skAttrName, partitionKey, prefix) {
+    async _queryByIndexPartitionKeyUsingBeginsWith (indexName, pkAttrName, skAttrName, partitionKey, date) {
         const queryResult = await this.dynamoDb.send(new QueryCommand({
             TableName                : this.TABLENAME,
             IndexName                : indexName, // GSI名

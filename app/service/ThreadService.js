@@ -12,7 +12,7 @@ class ThreadService {
         this.slackApiAdaptor = slackApiAdaptor;
     }
 
-    // 新規のスレッド文面を作成し投稿結果をDBに登録する
+    // 新規のスレッド文面を作成し投稿結果をDBに保存する
     // その後WorkReportを作成する
     async processNewThreadEntry (command) {
         // 値を取得
