@@ -9,7 +9,7 @@ times投稿を管理したい
 #### 日報投稿フォーマット
 ````
 【日付】0000-00-00
-【時間】09:00～18:00
+【時間】09:00-18:00
 【業務内容】
 業務内容1
 業務内容2
@@ -37,45 +37,25 @@ AIによるフィードバックを生成し、スレッド内に返信する。
 
 ## スラッシュコマンド
 */makethread*<br>
+*/warmup*<br>
 <br>
 <br>
 ## ディレクトリ構成
 ````
 /timesmanager
-├── app/
-│   ├── index.js      ← Lambdaのエントリポイント
+├── src/
+│   ├── index.js      ← Lambda
 │   ├── constants/
-│   │   ├── DBConstants.js
-│   │   ├── ModalConst.js
-│   │   ├── RegexConst.js
-│   │   └── SlackConstants.js
+│   │   └──DynamoDB/
 │   ├── controller/
-│   │   ├── AppCommandController.js
-│   │   ├── AppMessageController.js
-│   │   └── AppViewController.js
-│   ├── modals/
-│   │   └── ThreadModal.js
 │   ├── model/
-│   │   ├── DiaryModel.js
-│   │   └── ThreadModel.js
-│   ├── presenter/
-│   │   └── SlackPresenter.js
 │   ├── repository/
-│   │   ├── DynamoDiaryRepository.js
-│   │   └── DynamoThreadRepository.js
 │   ├── service/
-│   │   ├── .js
-│   │   └──
 │   └── utility/
-│       └── DiaryUtils.js
 ├── .github
 │   └── workflows
-│       ├── deploy_main.yml            // mainブランチのGithub Actions定義
-│       └── deploy_develop.yml         // developブランチのGithub Actions定義
 ├── package.json
 ├── package-lock.json
-├── .env         
-├── Dockerfile
-├── docker-compose_local.yml
+├── .env
 └── README.md
 ````
