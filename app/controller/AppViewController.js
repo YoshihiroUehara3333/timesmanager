@@ -1,7 +1,7 @@
 //モジュール読み込み
 require('date-utils');
 const { ModalConst } = require('../constants/ModalConst');
-const { WorkPlanBlock } = require('../blockkit/WorkPlanBlock');
+
 
 class AppViewController {
     CALLBACK_ID = ModalConst.CALLBACK_ID;
@@ -42,7 +42,6 @@ class AppViewController {
             logger.error(error);
             await this.slackApiAdaptor.sendDirectMessage(error.toString(), metadata.user_id);
         }
-
     }
 
     async handleDefault (view, logger) {

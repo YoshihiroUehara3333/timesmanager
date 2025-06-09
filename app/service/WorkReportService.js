@@ -1,6 +1,8 @@
 //モジュール読み込み
 require('date-utils');
+const { WorkReportUtils } = require('../utility/WorkReportUtils');
 const { NewTaskModal }    = require('../blockkit/NewTaskModal');
+const { WorkPlanBlock }   = require('../blockkit/WorkPlanBlock');
 const { WorkReportModel } = require('../model/WorkReportModel');
 const { POSTDATA }        = require('../constants/DynamoDB/PostData');
 
@@ -20,12 +22,8 @@ class WorkReportService {
         return NewTaskModal(channel_id, postResult.ts, date, 1);
     }
 
-    // /makethread入力時のNewTaskモーダル入力値を処理する
+    // /makethread入力時のNewTaskモーダル入力値を取得し、Blocksを返す
     async processNewTaskSubmissionViewData(view, userId) {
-        // メタデータ取得
-        let date = new Date().toFormat("YYYY-MM-DD");
-        let metadata = JSON.parse(view.private_metadata);
-
         // モーダル入力値を取得
         const values        = view.state.values;
         const taskName      = values.taskname.input.value || '';
@@ -39,13 +37,26 @@ class WorkReportService {
         return blocks;
     }
 
-    createWorkReportModel (channelId, date, metadata) {
-        const workReportModel = new WorkReportModel(channelId, date);
-        workReportModel.threadTs     = metadata.thread_ts;
+    // NewTaskモーダル入力値からWorkReportModelを作成し、DBに保存する
+    async saveWorkReportData (view, metadata) {
+        let date = new Date().toFormat("YYYY-MM-DD");
+        const values = view.state.values;
 
-        workReportModel.workPlan     = view.state.values.work_plan.work_plan.value || '';
-        workReportModel.selectedTime = view.state.values.timepicker.timepicker.selected_time;
-        workReportModel.option       = view.state.values.option.option.value || '';
+        // WorkReportModelを生成
+        const workReportModel = this.createWorkReportModel(channelId, date, metadata, values);
+
+        try {
+            const response = await this.postDataRepository.putItem(workReportModel);
+        } catch (error) {
+            throw new Error(error.message, { cause: error });
+        }
+    }
+
+    // WorkReportModelを生成してreturn
+    createWorkReportModel (channelId, date, metadata, values) {
+        const workReportModel = new WorkReportModel(channelId, date);
+        workReportModel.threadTs    = metadata.thread_ts;
+        workReportModel.content     = WorkReportUtils.parseContent(values);
         return workReportModel;
     }
 }
