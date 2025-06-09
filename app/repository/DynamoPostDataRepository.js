@@ -30,10 +30,29 @@ class DynamoPostDataRepository {
     async getDiaryByDate (partitionKey, date) {
         const sortKey = `${POSTDATA.SORT_KEY_PREFIX.DIARY}#${date}`;
         try {
-            return await this._getItem (partitionKey, sortKey);
+            const getResult = await this._getItem (partitionKey, sortKey);
+            return getResult || null;
 
         } catch (error) {
             console.error("DynamoDB登録時エラー:", error);
+            throw new Error(error.message, { cause: error });
+        }
+    }
+
+    // WorkReportの最新serialを取得
+    async queryWorkReportLatestSerial (partitionKey, date) {
+        const sortKey = `${POSTDATA.SORT_KEY_PREFIX.WORKREPORT}#${date}`;
+        try {
+            const queryResult = await this._queryByPartitionKeyAndSortKey (partitionKey, sortKey);
+            console.log(queryResult);
+            if (queryResult) {
+                return queryResult.Count + 1;
+            } else {
+                return 1;
+            }
+
+        } catch (error) {
+            console.error("queryWorkReportLatestSerial実行時エラー:", error);
             throw new Error(error.message, { cause: error });
         }
     }
@@ -80,7 +99,28 @@ class DynamoPostDataRepository {
                 [POSTDATA.ATTR_NAMES.SORT_KEY]      : sortKey,
             }
         }))
-        return getResult.Item || null;
+        return getResult;
+    }
+
+    async _queryByPartitionKeyAndSortKey (partitionKey, sortKey) {
+        const queryResult = await this.dynamoDb.send(new QueryCommand({
+            TableName                : this.TABLENAME,
+            KeyConditionExpression   : `#pk = :pk AND #sk = :sk`, // 条件指定
+            ExpressionAttributeNames: {
+                '#pk'     : POSTDATA.ATTR_NAMES.PARTITION_KEY,
+                '#sk'     : POSTDATA.ATTR_NAMES.SORT_KEY,
+            },
+            ExpressionAttributeValues: {
+                ':pk'     : partitionKey,
+                ":sk"     : sortKey,
+            },
+        }));
+
+        if (queryResult.Count === 0) {
+            return null;
+        } else {
+            return queryResult;
+        }
     }
 
     /**
