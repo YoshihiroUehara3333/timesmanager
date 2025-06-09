@@ -1,7 +1,7 @@
 // /makethread or /newtask実行時のモーダルBlockKit定義定義
 const { ModalConst } = require('../constants/ModalConst');
 
-exports.NewTaskModal = (channelId, threadTs, date, serial) => ({
+exports.NewTaskModal = (channelId, threadTs, date, serial, userId) => ({
 	type        : "modal",
 	callback_id : ModalConst.CALLBACK_ID.NEWTASK,
 	private_metadata: JSON.stringify({

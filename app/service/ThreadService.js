@@ -34,7 +34,14 @@ class ThreadService {
 
             // httpStatusCodeをチェックしてreturn
             const httpStatusCode = response.$metadata?.httpStatusCode;
-            return this.checkHttpStatusCode(httpStatusCode, channelId, postResult.ts, date, 1);
+            if (httpStatusCode === 200) {
+                return NewTaskModal(channelId, threadTs, date, serial, userId);
+            } else {
+                throw new Error(
+                    `スレッド情報をDB登録時エラー。/n`
+                    +`httpStatusCode=${httpStatusCode}`
+                )
+            }
 
         } catch (error) {
             throw new Error(
@@ -70,18 +77,6 @@ class ThreadService {
     createPostModel (channelId, date) {
         const postModel = new PostModel(channelId, date);
         return postModel;
-    }
-
-    // DynamoDBへのPut成否をhttpStatusCodeから判断してreturnを作成する
-    checkHttpStatusCode (httpStatusCode, channelId, threadTs, date, serial) {
-        if (httpStatusCode === 200) {
-            return NewTaskModal(channelId, threadTs, date, serial);
-        } else {
-            throw new Error(
-                `スレッド情報をDB登録時エラー。/n`
-                +`httpStatusCode=${httpStatusCode}`
-            )
-        } 
     }
 }
 
