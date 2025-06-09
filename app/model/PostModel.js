@@ -8,10 +8,9 @@ class PostModel extends PostdataModelBase {
 
     constructor (channelId, date, threadTs) {
         super(channelId, date);
-        this._sortKeyPrefix = POSTDATA.SORT_KEY_PREFIX.POSTS;
+        this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.POSTS;
 
-        this._threadTs       = threadTs;
-        this._serial         = ''; // GSI
+        this._threadTs       = '';
         this._postTypeCd     = '';
         this._postedAt       = 'hh:mm';
         this._content = {
@@ -46,14 +45,6 @@ class PostModel extends PostdataModelBase {
 
     set postTypeCd (postTypeCd) {
         this._postTypeCd = postTypeCd;
-    }
-
-    get serial () {
-        return this._serial;
-    }
-
-    set serial (serial) {
-        this._serial = serial;
     }
 
     get threadTs() {
