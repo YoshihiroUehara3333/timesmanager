@@ -1,5 +1,7 @@
 node_modules/
 .env.dev
 .env.prod
+
 Dockerfile
 docker-compose_local.yml
+.dockerignore
