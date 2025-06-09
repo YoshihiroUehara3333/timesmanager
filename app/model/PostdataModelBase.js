@@ -5,7 +5,7 @@ class PostdataModelBase {
         this._date          = date;
         this._serial        = null;
 
-        this._partitionKeyPrefix = '';
+        this._partitionKeyPostfix = '';
     }
 
     toItem () {
