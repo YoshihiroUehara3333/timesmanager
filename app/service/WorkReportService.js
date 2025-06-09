@@ -2,14 +2,12 @@
 require('date-utils');
 const { NewTaskModal }    = require('../blockkit/NewTaskModal');
 const { WorkReportModel } = require('../model/WorkReportModel');
-const { POSTDATA }   = require('../constants/DynamoDB/DynamoDBConst');
+const { POSTDATA }        = require('../constants/DynamoDB/PostData');
 
 class WorkReportService {
-    postDataRepositry;
-
     constructor (postDataRepositry) {
         this.postDataRepositry = postDataRepositry;
-    };
+    }
     
     // 新規タスク入力用モーダルのBlockkitを作成し返却する
     async processNewTask (command) {
@@ -19,7 +17,7 @@ class WorkReportService {
 
         // DB保存
         return NewTaskModal(channel_id, postResult.ts, date, 1);
-    };
+    }
 
     // /makethread入力時のNewTaskモーダル受け取り
     async processNewTaskSubmission (body, view) {

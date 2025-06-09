@@ -89,8 +89,8 @@ class DynamoPostDataRepository {
             IndexName                : indexName, // GSI名
             KeyConditionExpression   : `#pk = :pk AND begins_with(#sk, :prefix)`, // 条件指定
             ExpressionAttributeNames: {
-                '#pk'     : PK,
-                '#sk'     : SK,
+                '#pk'     : pkAttr,
+                '#sk'     : skAttr,
             },
             ExpressionAttributeValues: {
                 ':pk'     : partitionKey,
