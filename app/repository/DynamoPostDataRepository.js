@@ -15,6 +15,7 @@ class DynamoPostDataRepository {
 
     // modelデータをDBに登録する
     async putItem (model) {
+        console.log(`putItem実行:${model.toItem()}`);
         try {
             return await this.dynamoDb.send(new PutCommand({
                 TableName : this.TABLENAME,
@@ -22,7 +23,7 @@ class DynamoPostDataRepository {
             }));
         } catch (error) {
             console.error("DynamoDB登録時エラー:", error);
-            throw new Error(error.message);
+            throw new Error(error.message, { cause: error });
         }
     }
 
@@ -51,7 +52,7 @@ class DynamoPostDataRepository {
             return await this._queryByIndexUsingBeginsWithSortKeyPrefix(NAME, PK, SK, threadTs, prefix);
         } catch (error) {
             console.error("DynamoDB問い合わせ時エラー:", error);
-            throw new Error(error.message);
+            throw new Error(error.message, { cause: error });
         }
     }
 
@@ -70,7 +71,7 @@ class DynamoPostDataRepository {
             return getResult.Item || null;
         } catch (error) {
             console.error("DynamoDB登録時エラー:", error);
-            throw new Error(error.message);
+            throw new Error(error.message, { cause: error });
         }
     }
 
