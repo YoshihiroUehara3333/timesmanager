@@ -2,11 +2,12 @@
 
 // モジュール読み込み
 const { PostDataBaseModel } = require('./PostDataBaseModel');
+const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 
 class DiaryModel extends PostDataBaseModel {
     constructor (channelId, date) {
         super(channelId, date);
-        this._sortKeyPrefix = PostDataBaseModel.POSTDATA.SORT_KEY_PREFIX.DIARY;
+        this._sortKeyPrefix = POSTDATA.SORT_KEY_PREFIX.DIARY;
 
         this._workingPlaceCd   = 9;
         this._threadTs         = '';
@@ -26,7 +27,7 @@ class DiaryModel extends PostDataBaseModel {
     }
 
     toItem () {
-        const ATTR_NAMES = PostDataBaseModel.POSTDATA.ATTR_NAMES;
+        const ATTR_NAMES = POSTDATA.ATTR_NAMES;
         return {
             [ATTR_NAMES.PARTITION_KEY]      : this.partitionKey,
             [ATTR_NAMES.SORT_KEY]           : this.sortKey,
