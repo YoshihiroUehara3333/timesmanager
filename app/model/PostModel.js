@@ -1,18 +1,18 @@
 // スレッド内投稿のデータ構造定義クラス
 
 // モジュール読み込み
-const { CdConst } = require('../constants/CdConst');
-const { DBConst } = require('../constants/DBConst');
+const { PostdataModelBase } = require('./PostdataModelBase');
+const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 
-class PostModel {
-    _sortKeyPrefix = DBConst.SORT_KEY_PREFIX.POSTS;
+class PostModel extends PostdataModelBase {
 
-    constructor (channelId, threadTs) {
-        this._channelId      = channelId;
+    constructor (channelId, date, threadTs) {
+        super(channelId, date);
+        this._sortKeyPrefix = POSTDATA.SORT_KEY_PREFIX.POSTS;
+
         this._threadTs       = threadTs;
-
         this._serial         = ''; // GSI
-        this._postTypeCd     = CdConst.WORKING_PLACE.getCodeByName('');
+        this._postTypeCd     = '';
         this._postedAt       = 'hh:mm';
         this._content = {
             text : '',
@@ -20,24 +20,16 @@ class PostModel {
     }
 
     toItem () {
-        const COLNAMES = DBConst.COLUMN_NAMES.POSTDATA;
+        const ATTR_NAMES = POSTDATA.ATTR_NAMES;
         return {
-            [COLNAMES.PARTITION_KEY]   : this.partitionKey,
-            [COLNAMES.SORT_KEY]        : this.sortKey,
-            [COLNAMES.DATE]            : this._date,
-            [COLNAMES.SERIAL]          : this._serial,
-            [COLNAMES.POST_TYPE_CD]    : this._postTypeCd,
-            [COLNAMES.POSTED_AT]       : this._postedAt,
-            [COLNAMES.CONTENT]         : { ...this._content },
+            [ATTR_NAMES.PARTITION_KEY]   : this.partitionKey,
+            [ATTR_NAMES.SORT_KEY]        : this.sortKey,
+            [ATTR_NAMES.DATE]            : this._date,
+            [ATTR_NAMES.SERIAL]          : this._serial,
+            [ATTR_NAMES.POST_TYPE_CD]    : this._postTypeCd,
+            [ATTR_NAMES.POSTED_AT]       : this._postedAt,
+            [ATTR_NAMES.CONTENT]         : { ...this._content },
         }
-    }
-
-    get partitionKey () {
-        return `${this._channelId}`;
-    }
-
-    get sortKey() {
-        return `${this._sortKeyPrefix}#${this._date}`;
     }
 
     get date () {

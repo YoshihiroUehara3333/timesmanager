@@ -3,7 +3,6 @@
 // モジュール読み込み
 const { SlackConst } = require('../constants/SlackConst');
 const { RegexConst } = require('../constants/RegexConst');
-const { DiaryUtils } = require('../utility/DiaryUtils');
 
 class AppMessageController {
     constructor (diaryService, threadService, slackApiAdaptor) {

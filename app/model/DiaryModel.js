@@ -1,15 +1,14 @@
 // 日記のデータ構造定義クラス
 
 // モジュール読み込み
-const { DBConst } = require('../constants/DBConst');
+const { PostdataModelBase } = require('./PostdataModelBase');
+const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 
-class DiaryModel {
-    _sortKeyPrefix = DBConst.SORT_KEY_PREFIX.DIARY;
+class DiaryModel extends PostdataModelBase {
+    constructor (channelId, date) {
+        super(channelId, date);
+        this._sortKeyPrefix = POSTDATA.SORT_KEY_PREFIX.DIARY;
 
-    constructor (channelId) {
-        this._channelId        = channelId;
-
-        this._date             = '';
         this._workingPlaceCd   = 9;
         this._threadTs         = '';
         this._slackUrl         = '';
@@ -28,26 +27,18 @@ class DiaryModel {
     }
 
     toItem () {
-        const COLNAMES = DBConst.COLUMN_NAMES.POSTDATA;
+        const ATTR_NAMES = POSTDATA.ATTR_NAMES;
         return {
-            [COLNAMES.PARTITION_KEY]      : this.partitionKey,
-            [COLNAMES.SORT_KEY]           : this.sortKey,
-            [COLNAMES.DATE]               : this.date,
-            [COLNAMES.THREAD_TS]          : this.threadTs,
-            [COLNAMES.SLACK_URL]          : this.slackUrl,
-            [COLNAMES.WORKING_PLACE_CD]   : this.workingPlaceCd,
-            [COLNAMES.CONTENT]            : { ...this._content },
-            [COLNAMES.POSTED_AT]          : this.postedAt,
-            [COLNAMES.EDITED_AT]          : this.editedAt,
+            [ATTR_NAMES.PARTITION_KEY]      : this.partitionKey,
+            [ATTR_NAMES.SORT_KEY]           : this.sortKey,
+            [ATTR_NAMES.DATE]               : this.date,
+            [ATTR_NAMES.THREAD_TS]          : this.threadTs,
+            [ATTR_NAMES.SLACK_URL]          : this.slackUrl,
+            [ATTR_NAMES.WORKING_PLACE_CD]   : this.workingPlaceCd,
+            [ATTR_NAMES.CONTENT]            : { ...this._content },
+            [ATTR_NAMES.POSTED_AT]          : this.postedAt,
+            [ATTR_NAMES.EDITED_AT]          : this.editedAt,
         }
-    }
-
-    get partitionKey () {
-        return `${this._channelId}`;
-    }
-
-    get sortKey() {
-        return `${this._sortKeyPrefix}#${this._date}`;
     }
 
     get date () {

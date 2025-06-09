@@ -2,7 +2,7 @@
 require('date-utils');
 const { DiaryUtils } = require('../utility/DiaryUtils');
 const { DiaryModel } = require('../model/DiaryModel');
-const { DBConst } = require('../constants/DBConst');
+const { POSTDATA }   = require('../constants/DynamoDB/PostData');
 
 class DiaryService {
     constructor(postDataRepository, openAiApiAdaptor, slackApiAdaptor) {
@@ -11,19 +11,24 @@ class DiaryService {
         this.slackApiAdaptor = slackApiAdaptor;
     }
 
-    /*
-    **   thread_tsを基にフィードバックを生成する
-    */
+    /**
+     *  thread_tsを基にフィードバックを生成し、returnする
+     *  @param {Object} message - Slack APIから受け取ったリクエストの値
+     *  @returns {string} - Slack返信の文面
+     */
     async generateFeedback(message){
+        // messageから値を取得
         const threadTs = message.thread_ts;
         const channelId = message.channel;
 
         // DBから業務日誌情報を取得
         try {
-            const prefix = DBConst.SORT_KEY_PREFIX.DIARY;
+            // 日報データをDBから取得
+            const prefix = POSTDATA.SORT_KEY_PREFIX.DIARY;
             const queryResult = await this.postDataRepository.queryByThreadTsAndSortKeyPrefix(threadTs, prefix);
             if (queryResult == null) return `DBから日報データを取得できませんでした。`;
-            
+
+            // パーティションキーで絞り込み
             const filteredResult = queryResult.Items.filter(item => item.partition_key === channelId);
             if (filteredResult.length === 0) return `指定チャンネルのデータが見つかりませんでした。`;
 
@@ -40,28 +45,30 @@ class DiaryService {
     **   日記新規登録処理
     */
     async processNewDiaryEntry (message) {
+        // messageから値を取得
         const channelId = message.channel;
-
+        const threadTs = message.ts;
+        
         // 投稿URLを取得
-        let permalink = await this.slackApiAdaptor.getPermalink(channelId, message.ts);
+        let permalink = await this.slackApiAdaptor.getPermalink(channelId, threadTs);
 
-        // diaryModelを作成
-        const diaryModel = this.createDiaryModel(message, channelId, permalink);
+        // DiaryModelを作成
+        const diaryModel    = this.createDiaryModel(message.text, channelId, threadTs, permalink);
         diaryModel.postedAt = new Date().toFormat('HH24:MI:SS');
 
-        // DB新規重複チェック
-        const date = diaryModel.date;
+        // DB登録
+        let date = diaryModel.date;
         try {
+            // DB新規重複チェック
             const result = await this.postDataRepository.getDiaryByDate(channelId, date);
             if (result) return `日付が重複しています。(${date})`;
 
+            // diaryModelをDBに登録
             const response = await this.postDataRepository.putItem(diaryModel);
+
+            // httpStatusCodeを判断しreturn
             const httpStatusCode = response?.$metadata.httpStatusCode;
-            if (httpStatusCode == 200) {
-                return `日記(${date})のDB登録に成功しました。\n${diaryModel._slackUrl}`;
-            } else {
-                throw new Error(`日記(${date})のDB登録に失敗しました。httpStatusCode=${httpStatusCode}`, { cause: error });
-            }
+            return this.checkHttpStatusCode(httpStatusCode, '登録', diaryModel);
 
         } catch (error) {
             throw new Error(error.message, { cause: error });
@@ -72,12 +79,14 @@ class DiaryService {
     **   日記編集処理
     */
     async processUpdateDiary (message, channelId) {
-        const diaryModel = this.createDiaryModel(message, channelId, '');
+        // DiaryModelを作成
+        const diaryModel = this.createDiaryModel(message.text, channelId, message.ts, '');
         diaryModel.editedAt = new Date().toFormat('HH24:MI:SS');
 
         // DB更新
-        const date = diaryModel.date;
+        let date = diaryModel.date;
         try {
+            // 更新元情報を取得しdiaryModelの値をマージ
             const partitionKey = diaryModel.partitionKey;
             const getResult = await this.postDataRepository.getDiaryByDate(partitionKey, date);
             if (getResult) {
@@ -85,31 +94,42 @@ class DiaryService {
                 diaryModel.slackUrl = getResult.slack_url;
             }
 
+            // diaryModelをDBに登録
             const response = await this.postDataRepository.putItem(diaryModel);
+
+            // httpStatusCodeを判断しreturn
             const httpStatusCode = response?.$metadata.httpStatusCode;
-            if (httpStatusCode == 200) {
-                return `日記(${date})のDB更新に成功しました。\n${diaryModel._slackUrl}`;
-            } else {
-                throw new Error(`日記(${date})のDB登録に失敗しました。httpStatusCode=${httpStatusCode}`, { cause: error });
-            }
+            return this.checkHttpStatusCode(httpStatusCode, '更新', diaryModel);
+
         } catch (error) {
             throw new Error(error.message, { cause: error });
         }
-    };
+    }
 
-
+    // -----------------------------------------------------------------------------------------
     // DiaryModel生成処理
-    createDiaryModel (message, channelId, permalink) {
-        const text = message.text;
+    createDiaryModel (text, channelId, threadTs, permalink) {
+        let date = DiaryUtils.parseDate(text);
 
-        const diaryModel = new DiaryModel(channelId);
-        diaryModel.date                = DiaryUtils.parseDate(text);
-        diaryModel.workingPlaceCd      = DiaryUtils.parseWorkingPlaceCd(text);
-        diaryModel.content             = DiaryUtils.parseContent(text);
-        diaryModel.threadTs            = message.ts;
-        diaryModel.slackUrl            = permalink;
+        const diaryModel = new DiaryModel(channelId, date);
+        diaryModel.workingPlaceCd  = DiaryUtils.parseWorkingPlaceCd(text);
+        diaryModel.content         = DiaryUtils.parseContent(text);
+        diaryModel.threadTs        = threadTs;
+        diaryModel.slackUrl        = permalink;
 
         return diaryModel;
+    }
+
+    // DynamoDBへのPut成否をhttpStatusCodeから判断してreturnを作成する
+    checkHttpStatusCode (httpStatusCode, msg, diaryModel) {
+        if (httpStatusCode == 200) {
+            return `日記(${diaryModel.date})のDB${msg}に成功しました。\n${diaryModel.slackUrl}`;
+        } else {
+            throw new Error(
+                `日記(${diaryModel.date})のDB${msg}に失敗しました。\n`
+                + `httpStatusCode=${httpStatusCode}`
+            )
+        }
     }
 }
 

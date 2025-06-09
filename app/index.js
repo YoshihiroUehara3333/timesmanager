@@ -93,4 +93,4 @@ app.action(ModalConst.ACTION_ID.WORKREPORT.FINISH, async ({ack, body, logger}) =
 // ハンドラー生成
 exports.handler = async (event, context, callback) => {    
     return await handler(event, context, callback);
-};
+}

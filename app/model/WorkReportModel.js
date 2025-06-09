@@ -1,14 +1,13 @@
 // 作業経過のデータ構造定義クラス
 
 // モジュール読み込み
-const { DBConst } = require('../constants/DBConst');
+const { PostdataModelBase } = require('./PostdataModelBase');
+const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 
-class WorkReportModel {
-    _sortKeyPrefix = DBConst.SORT_KEY_PREFIX.WORKREPORT;
-
-    constructor (channelId, threadTs, date) {
-        this._channelId     = channelId;
-        this._date          = date;
+class WorkReportModel extends PostdataModelBase {
+    constructor (channelId, date, threadTs) {
+        super(channelId, date);
+        this._sortKeyPrefix = POSTDATA.SORT_KEY_PREFIX.WORKREPORT;
 
         this._serial        = '';
         this._threadTs      = threadTs;
@@ -25,23 +24,15 @@ class WorkReportModel {
     }
 
     toItem () {
-        const COLNAMES = DBConst.COLUMN_NAMES.POSTDATA;
+        const ATTR_NAMES = POSTDATA.ATTR_NAMES;
         return {
-            [COLNAMES.PARTITION_KEY]      : this.partitionKey,
-            [COLNAMES.SORT_KEY]           : this.sortKey,
-            [COLNAMES.SERIAL]             : this.serial,
-            [COLNAMES.THREAD_TS]          : this.threadTs,
-            [COLNAMES.CREATED_AT]         : this.createdAt,
-            [COLNAMES.CONTENT]            : { ...this._content },
+            [ATTR_NAMES.PARTITION_KEY]      : this.partitionKey,
+            [ATTR_NAMES.SORT_KEY]           : this.sortKey,
+            [ATTR_NAMES.SERIAL]             : this.serial,
+            [ATTR_NAMES.THREAD_TS]          : this.threadTs,
+            [ATTR_NAMES.CREATED_AT]         : this.createdAt,
+            [ATTR_NAMES.CONTENT]            : { ...this._content },
         }
-    }
-
-    get partitionKey () {
-        return `${this._channelId}`;
-    }
-
-    get sortKey() {
-        return `${this._sortKeyPrefix}#${this._date}`;
     }
 
     get createdAt () {
