@@ -22,9 +22,9 @@ class WorkReportService {
     // /makethread入力時のNewTaskモーダル受け取り
     async processNewTaskSubmission (body, view) {
         // メタデータ取得
-        const userId  = body.user.id;
-        const metadata = JSON.parse(view.private_metadata);
-        console.log(JSON.stringify(metadata));
+        let userId  = body.user.id;
+        let date = new Date().toFormat("YYYY-MM-DD");
+        let metadata = JSON.parse(view.private_metadata);
 
         // モーダル入力値を取得
         const values        = view.state.values;
@@ -33,9 +33,12 @@ class WorkReportService {
         const selectedTime  = values.targettime.input.selected_time;
         const memo          = values.memo.input.value || '';
 
+        // WorkReportModel生成
+        // DB保存
+
         // スレッドへ返信
         const msg = "作業計画";
-        const blocks = WorkPlanBlock(user_id, taskName, goal, selectedTime, memo);
+        return WorkPlanBlock(userId, taskName, goal, selectedTime, memo);
 
         console.log(`reply:${JSON.stringify(reply)}`);
 
@@ -43,13 +46,10 @@ class WorkReportService {
         await this.workReportService.processNewWorkReport(body, view);
     }
 
-    createWorkReportModel (body, view) {
-        const { channel_id, thread_ts } = JSON.parse(view.private_metadata);
-
-        const workReportModel = new WorkReportModel(channel_id, thread_ts);
+    createWorkReportModel (channelId, date, metadata) {
+        const workReportModel = new WorkReportModel(channelId, date);
         workReportModel.userId       = body.user.id;
-        workReportModel.threadTs     = thread_ts;
-        workReportModel._channel     = channel_id;
+        workReportModel.threadTs     = metadata.thread_ts;
 
         workReportModel.workPlan     = view.state.values.work_plan.work_plan.value || '';
         workReportModel.selectedTime = view.state.values.timepicker.timepicker.selected_time;
