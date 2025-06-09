@@ -45,7 +45,7 @@ class WorkReportService {
 
         try {
             // 最新serialを取得
-            let latestSerial = await this.postDataRepository.getWorkReportLatestSerial(channelId, date);
+            let latestSerial = await this.postDataRepository.queryWorkReportLatestSerial(channelId, date);
 
             // WorkReportModelを生成
             const workReportModel  = this.createWorkReportModel(channelId, date, metadata, values);

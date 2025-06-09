@@ -102,6 +102,12 @@ class DynamoPostDataRepository {
         return getResult;
     }
 
+    /**
+     * 指定されたパーティションキーとソートキーでQuery実行する。
+     * @param {string} partitionKey - 検索対象のパーティションキーの値
+     * @param {string} sortKey - 検索対象のソートキーの値
+     * @returns {Promise<Object[]|null>} クエリ結果（0件ならnull）
+     */
     async _queryByPartitionKeyAndSortKey (partitionKey, sortKey) {
         const queryResult = await this.dynamoDb.send(new QueryCommand({
             TableName                : this.TABLENAME,
