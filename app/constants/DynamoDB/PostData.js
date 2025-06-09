@@ -28,10 +28,10 @@ const GSI = {
         PK   : ATTR_NAMES.DATE,
         SK   : ATTR_NAMES.SORT_KEY,
     },
-    ByThreadTsAndSortKeyPrefix: {
-        NAME : 'GSI_ByThreadTs_SortKeyPrefix',
-        PK   : ATTR_NAMES.THREAD_TS,
-        SK   : ATTR_NAMES.SORT_KEY,
+    ByPartitionKeyAndThreadTs: {
+        NAME : 'GSI_ByPartitionKeyAndThreadTs',
+        PK   : ATTR_NAMES.PARTITION_KEY,
+        SK   : ATTR_NAMES.THREAD_TS,
     }
 }
 
