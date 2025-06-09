@@ -35,7 +35,7 @@ class ThreadService {
             // httpStatusCodeをチェックしてreturn
             const httpStatusCode = response.$metadata?.httpStatusCode;
             if (httpStatusCode === 200) {
-                return NewTaskModal(channelId, threadTs, date, serial, userId);
+                return NewTaskModal(channelId, postResult.ts, date, serial, userId);
             } else {
                 throw new Error(
                     `スレッド情報をDB登録時エラー。/n`
