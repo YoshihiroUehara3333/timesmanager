@@ -3,7 +3,7 @@
 // モジュール読み込み
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb');
-const { POSTDATA } = require('../constants/DynamoDB/DynamoDBConst');
+const { POSTDATA } = require('../constants/DynamoDB/PostData');
 
 class DynamoPostDataRepository {
     TABLENAME        = `timesmanager_postdata${process.env.TABLE_POSTFIX}`;
