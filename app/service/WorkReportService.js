@@ -52,6 +52,16 @@ class WorkReportService {
             workReportModel.serial = latestSerial;
 
             const response = await this.postDataRepository.putItem(workReportModel);
+            // httpStatusCodeをチェックしてreturn
+            const httpStatusCode = response.$metadata?.httpStatusCode;
+            if (httpStatusCode === 200) {
+                return  `進捗情報ののDB登録に成功しました serial=${latestSerial}`;
+            } else {
+                throw new Error(
+                    `タスク情報をDB登録時エラー。/n`
+                    +`httpStatusCode=${httpStatusCode}`
+                )
+            }
         } catch (error) {
             throw new Error(error.message, { cause: error });
         }
@@ -61,6 +71,7 @@ class WorkReportService {
     createWorkReportModel (channelId, date, metadata, values) {
         const workReportModel = new WorkReportModel(channelId, date);
         workReportModel.threadTs    = metadata.thread_ts;
+        workReportModel.createdAt   = new Date().toFormat('HH24:MI:SS');
         workReportModel.content     = WorkReportUtils.parseContent(values);
         return workReportModel;
     }

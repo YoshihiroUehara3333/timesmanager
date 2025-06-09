@@ -31,6 +31,7 @@ class AppViewController {
     async handleNewTaskModalCallback(view, logger) {
         logger.info('handleNewTaskModalCallBackを実行');
         let metadata = JSON.parse(view.private_metadata);
+        let msg = '';
 
         try {
             // 入力データをBlocksとして返信
@@ -41,8 +42,9 @@ class AppViewController {
             logger.info(`post結果:${JSON.stringify(postResult)}`);
 
             // 入力データをDBに保存
-            await this.workReportService.saveWorkReportData(view, metadata);
-
+            msg = await this.workReportService.saveWorkReportData(view, metadata);
+            await this.slackApiAdaptor.sendDirectMessage(msg, metadata.user_id);
+            
         } catch (error) {
             logger.error(error);
             await this.slackApiAdaptor.sendDirectMessage(error.toString(), metadata.user_id);
