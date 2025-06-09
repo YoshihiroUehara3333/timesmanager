@@ -2,7 +2,5 @@
 const { POSTDATA }    = require('./PostData');
 const { CHANNELDATA } = require('./ChannelData');
 
-exports.DynamoDBConst = {
-    POSTDATA    : POSTDATA,
-    CHANNELDATA : CHANNELDATA,
-}
+exports.POSTDATA    = POSTDATA;
+exports.CHANNELDATA = CHANNELDATA;

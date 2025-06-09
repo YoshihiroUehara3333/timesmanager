@@ -13,7 +13,7 @@ class AppViewController {
 
         // callback id dispatcher
         this.callBackHandlers = {
-            [`${this.CALLBACK_ID.NEWTASK}`]  : this.handleNewTaskModalCallBack.bind(this),
+            [`${this.CALLBACK_ID.NEWTASK}`]  : this.handleNewTaskModalCallback.bind(this),
             'default'                        : this.handleDefault.bind(this),
         }
     }
@@ -24,22 +24,28 @@ class AppViewController {
         logger.info(`callbackId:${callbackId}`);
         
         const callBackHandler = this.callBackHandlers[callbackId] || this.callBackHandlers['default'];
-        return callBackHandler(body, view, logger);
+        return callBackHandler(view, logger);
     }
 
     // 作業記録モーダル初回送信時の処理
-    async handleNewTaskModalCallBack(body, view, logger) {
+    async handleNewTaskModalCallback(body, view, logger) {
         logger.info('handleNewTaskModalCallBackを実行');
-        // メタデータ取得
-        const metadata  = JSON.parse(view.private_metadata);
-        const blocks    = this.workReportService.processNewTaskSubmission(body, view);
-        const reply = await this.slackApiAdaptor.sendtBlockMessage(msg, metadata.channel_id, metadata.thread_ts, blocks);
-        // 必要であればDBに保存（例: DynamoDB）
-        await this.workReportService.processNewTaskSubmission(body, view);
+        let metadata = JSON.parse(view.private_metadata);
+
+        try {
+            const blocks = await this.workReportService.processNewTaskSubmissionViewData(view, metadata.user_id);
+            const postResult = await this.slackApiAdaptor.sendBlockMessage ('', metadata.channel_id, metadata.thread_ts, blocks);
+            logger.info(`post結果:${postResult}`);
+
+            await this.workReportService.saveWorkReportData(view, metadata);
+        } catch (error) {
+            logger.error(error);
+            await this.slackApiAdaptor.sendDirectMessage(error.toString(), metadata.user_id);
+        }
+
     }
 
-    async handleDefault (body, view, logger) {
-        
+    async handleDefault (view, logger) {
     }
 }
 

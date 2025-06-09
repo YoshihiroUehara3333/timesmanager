@@ -5,8 +5,9 @@ const { WorkReportModel } = require('../model/WorkReportModel');
 const { POSTDATA }        = require('../constants/DynamoDB/PostData');
 
 class WorkReportService {
-    constructor (postDataRepositry) {
+    constructor (postDataRepositry, slackApiAdaptor) {
         this.postDataRepositry = postDataRepositry;
+        this.slackApiAdaptor   = slackApiAdaptor;
     }
     
     // 新規タスク入力用モーダルのBlockkitを作成し返却する
@@ -19,10 +20,9 @@ class WorkReportService {
         return NewTaskModal(channel_id, postResult.ts, date, 1);
     }
 
-    // /makethread入力時のNewTaskモーダル受け取り
-    async processNewTaskSubmission (body, view) {
+    // /makethread入力時のNewTaskモーダル入力値を処理する
+    async processNewTaskSubmissionViewData(view, userId) {
         // メタデータ取得
-        let userId  = body.user.id;
         let date = new Date().toFormat("YYYY-MM-DD");
         let metadata = JSON.parse(view.private_metadata);
 
@@ -30,25 +30,17 @@ class WorkReportService {
         const values        = view.state.values;
         const taskName      = values.taskname.input.value || '';
         const goal          = values.goal.input.value || '';
-        const selectedTime  = values.targettime.input.selected_time;
+        const targetTime    = values.targettime.input.selected_time;
         const memo          = values.memo.input.value || '';
 
-        // WorkReportModel生成
-        // DB保存
-
-        // スレッドへ返信
-        const msg = "作業計画";
-        return WorkPlanBlock(userId, taskName, goal, selectedTime, memo);
-
-        console.log(`reply:${JSON.stringify(reply)}`);
-
-        // 必要であればDBに保存（例: DynamoDB）
-        await this.workReportService.processNewWorkReport(body, view);
+        // Blocksを生成してreturn
+        const blocks = WorkPlanBlock(userId, taskName, goal, targetTime, memo);
+        console.log(`reply:${JSON.stringify$(blocks)}`);
+        return blocks;
     }
 
     createWorkReportModel (channelId, date, metadata) {
         const workReportModel = new WorkReportModel(channelId, date);
-        workReportModel.userId       = body.user.id;
         workReportModel.threadTs     = metadata.thread_ts;
 
         workReportModel.workPlan     = view.state.values.work_plan.work_plan.value || '';

@@ -10,14 +10,13 @@ class WorkReportModel extends PostdataModelBase {
         this._sortKeyPrefix = POSTDATA.SORT_KEY_PREFIX.WORKREPORT;
 
         this._serial        = '';
-        this._threadTs      = threadTs;
+        this._threadTs      = '';
         this._createdAt     = 'hh:mm';
         this._content = {
-            overview : '',
+            taskName : '',
             goal     : '',
-            progression : {
-                target       : '',
-                input_time   : 'hh:mm',
+            progress: {
+                targetTime   : 'hh:mm',
                 memo         : '',
             },
         }

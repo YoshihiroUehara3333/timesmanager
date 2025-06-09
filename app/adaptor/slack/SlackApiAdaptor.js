@@ -32,11 +32,11 @@ class SlackApiAdaptor {
     }
 
     // 対象チャンネルにポストする
-    async sendBlockMessage (msg, channel, thread_ts, blocks) {
+    async sendBlockMessage (msg, channel, threadTs, blocks) {
         return await this.client.chat.postMessage({
-            channel   : channel,
-            thread_ts : thread_ts,
-            text      : msg,
+            channel   : channelId,
+            thread_ts : threadTs,
+            text      : text,
             mrkdwn    : true,
             blocks    : blocks
         });

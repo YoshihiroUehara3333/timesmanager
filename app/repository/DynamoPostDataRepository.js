@@ -40,7 +40,6 @@ class DynamoPostDataRepository {
 
     // dateとsort_keyで絞り込みをかける
     // 絞り込みはServiceクラスで行う
-    // sort_keyにthread_tsを使用しているModelのみ有効
     // GSI使用
     async queryByDateAndSortKeyPrefix(date, prefix) {
         const {NAME, PK, SK} = POSTDATA.GSI.ByDateAndSortKeyPrefix;
@@ -66,7 +65,6 @@ class DynamoPostDataRepository {
             throw new Error(error.message, { cause: error });
         }
     }
-
 
     /**
      * 指定されたパーティションキーとソートキーで検索する。
