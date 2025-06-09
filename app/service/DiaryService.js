@@ -24,16 +24,12 @@ class DiaryService {
         // DBから業務日誌情報を取得
         try {
             // 日報データをDBから取得
-            const partitionKey = `${channelId}#${POSTDATA.PK_POSTFIX.DIARY}`
+            const partitionKey = `${channelId}#${POSTDATA.PK_POSTFIX.DIARY}`;
             const queryResult = await this.postDataRepository.queryByPartitionKeyAndThreadTs(partitionKey, threadTs);
             if (queryResult == null) return `DBから日報データを取得できませんでした。`;
 
-            // パーティションキーで絞り込み
-            const filteredResult = queryResult.Items.filter(item => item.partition_key === channelId);
-            if (filteredResult.length === 0) return `指定チャンネルのデータが見つかりませんでした。`;
-
             // たいていは1件のみ想定
-            const diary = filteredResult[0];
+            const diary = queryResult[0];
             return await this.openAiApiAdaptor.generateFeedback(diary);
             
         } catch (error) {

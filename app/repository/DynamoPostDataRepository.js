@@ -59,7 +59,7 @@ class DynamoPostDataRepository {
     // dateとsort_keyで絞り込みをかける
     // 絞り込みはServiceクラスで行う
     // GSI使用
-    async queryByDateAndSortKeyPrefix(date, prefix) {
+    async queryByDateAndSortKeyPrefix (date, prefix) {
         const {NAME, PK, SK} = POSTDATA.GSI.ByDateAndSortKeyPrefix;
         
         try {
@@ -73,11 +73,16 @@ class DynamoPostDataRepository {
     // 指定したsort_keyのprefixとthread_tsを条件にレコードを取得する
     // 絞り込みはServiceクラスで行う
     // GSI使用
-    async queryByPartitonKeyAndThreadTs(partitionKey, threadTs) {
+    async queryByPartitionKeyAndThreadTs (partitionKey, threadTs) {
         const {NAME, PK, SK} = POSTDATA.GSI.ByPartitionKeyAndThreadTs;
 
         try {
-            return await this._queryByUsingIndex(NAME, PK, SK, partitionKey, threadTs);
+            const queryResult = await this._queryByUsingIndex(NAME, PK, SK, partitionKey, threadTs);
+            if (queryResult.Count === 0){
+                return null;
+            } else {
+                return queryResult.Items;
+            }
         } catch (error) {
             console.error("DynamoDB問い合わせ時エラー:", error);
             throw new Error(error.message, { cause: error });
