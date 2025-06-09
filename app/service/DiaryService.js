@@ -2,7 +2,7 @@
 require('date-utils');
 const { DiaryUtils } = require('../utility/DiaryUtils');
 const { DiaryModel } = require('../model/DiaryModel');
-const { POSTDATA }   = require('../constants/DynamoDB/DynamoDBConst');
+const { POSTDATA }   = require('../constants/DynamoDB/PostData');
 
 class DiaryService {
     constructor(postDataRepository, openAiApiAdaptor, slackApiAdaptor) {
