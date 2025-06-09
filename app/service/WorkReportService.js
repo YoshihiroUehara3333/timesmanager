@@ -7,15 +7,15 @@ const { WorkReportModel } = require('../model/WorkReportModel');
 const { POSTDATA }        = require('../constants/DynamoDB/PostData');
 
 class WorkReportService {
-    constructor (postDataRepositry, slackApiAdaptor) {
-        this.postDataRepositry = postDataRepositry;
+    constructor (postDataRepository, slackApiAdaptor) {
+        this.postDataRepository = postDataRepository;
         this.slackApiAdaptor   = slackApiAdaptor;
     }
     
     // 新規タスク入力用モーダルのBlockkitを作成し返却する
     async processNewTaskCommand (command) {
         const date   = new Date().toFormat("YYYY-MM-DD"); // YYYY-MM-DD
-        const thread = this.postDataRepositry.queryByDateAndSortKeyPrefix(date, POSTDATA.SORT_KEY_PREFIX.THREAD);
+        const thread = this.postDataRepository.queryByDateAndSortKeyPrefix(date, POSTDATA.SORT_KEY_PREFIX.THREAD);
         console.log(JSON.stringify(thread));
 
         // DB保存
@@ -45,7 +45,7 @@ class WorkReportService {
 
         try {
             // 最新serialを取得
-            let latestSerial = await this.postDataRepositry.queryWorkReportLatestSerial(channelId, date);
+            let latestSerial = await this.postDataRepository.queryWorkReportLatestSerial(channelId, date);
 
             // WorkReportModelを生成
             const workReportModel  = this.createWorkReportModel(channelId, date, metadata, values);
