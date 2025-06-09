@@ -1,6 +1,5 @@
 const { RegexConst } = require('../constants/RegexConst');
 const { CdConst }    = require('../constants/CdConst');
-const { memo } = require('react');
 
 class WorkReportUtils {
     static parseContent (values) {
