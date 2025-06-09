@@ -4,10 +4,9 @@
 const { PostDataBaseModel } = require('./PostDataBaseModel');
 
 class WorkReportModel extends PostDataBaseModel {
-    _sortKeyPrefix = this.POSTDATA.SORT_KEY_PREFIX.WORKREPORT;
-
     constructor (channelId, date, threadTs) {
         super(channelId, date);
+        this._sortKeyPrefix = PostDataBaseModel.POSTDATA.SORT_KEY_PREFIX.WORKREPORT;
 
         this._serial        = '';
         this._threadTs      = threadTs;

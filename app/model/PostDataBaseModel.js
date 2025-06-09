@@ -2,12 +2,13 @@
 const { POSTDATA } = require('../constants/DynamoDB/DynamoDBConst');
 
 class PostDataBaseModel {
-    POSTDATA = POSTDATA;
-    _sortKeyPrefix = '';
+    static POSTDATA = POSTDATA;
 
     constructor(channelId, date) {
         this._channelId     = channelId;
         this._date          = date;
+
+        this._sortKeyPrefix = '';
     }
 
     toItem () {

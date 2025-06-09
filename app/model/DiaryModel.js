@@ -4,9 +4,8 @@
 const { PostDataBaseModel } = require('./PostDataBaseModel');
 
 class DiaryModel extends PostDataBaseModel {
-    _sortKeyPrefix = super.POSTDATA.SORT_KEY_PREFIX.DIARY;
-
     constructor (channelId, date) {
+        this._sortKeyPrefix = PostDataBaseModel.POSTDATA.SORT_KEY_PREFIX.DIARY;
         super(channelId, date);
 
         this._workingPlaceCd   = 9;
