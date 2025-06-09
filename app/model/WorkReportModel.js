@@ -2,11 +2,12 @@
 
 // モジュール読み込み
 const { PostDataBaseModel } = require('./PostDataBaseModel');
+const { POSTDATA }          = require('../constants/DynamoDB/DynamoDBConst');
 
 class WorkReportModel extends PostDataBaseModel {
     constructor (channelId, date, threadTs) {
         super(channelId, date);
-        this._sortKeyPrefix = PostDataBaseModel.POSTDATA.SORT_KEY_PREFIX.WORKREPORT;
+        this._sortKeyPrefix = POSTDATA.SORT_KEY_PREFIX.WORKREPORT;
 
         this._serial        = '';
         this._threadTs      = threadTs;
@@ -23,7 +24,7 @@ class WorkReportModel extends PostDataBaseModel {
     }
 
     toItem () {
-        const ATTR_NAMES = this.POSTDATA.ATTR_NAMES;
+        const ATTR_NAMES = POSTDATA.ATTR_NAMES;
         return {
             [ATTR_NAMES.PARTITION_KEY]      : this.partitionKey,
             [ATTR_NAMES.SORT_KEY]           : this.sortKey,

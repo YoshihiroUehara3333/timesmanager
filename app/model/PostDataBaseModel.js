@@ -1,16 +1,10 @@
 // モジュール読み込み
-const { POSTDATA } = require('../constants/DynamoDB/DynamoDBConst');
-
 class PostDataBaseModel {
     constructor(channelId, date) {
         this._channelId     = channelId;
         this._date          = date;
 
         this._sortKeyPrefix = '';
-    }
-
-    static get POSTDATA() {
-        return POSTDATA;
     }
 
     toItem () {
