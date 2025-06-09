@@ -12,7 +12,7 @@ class PostdataModelBase {
     }
 
     get partitionKey () {
-        return `${this._channelId}#${this._partitionKeyPrefix}`;
+        return `${this._channelId}#${this._partitionKeyPostfix}`;
     }
 
     get sortKey() {

@@ -7,7 +7,7 @@ const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 class DiaryModel extends PostdataModelBase {
     constructor (channelId, date) {
         super(channelId, date);
-        this._partitionKeyPrefix = POSTDATA.PK_POSTFIX.DIARY;
+        this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.DIARY;
 
         this._workingPlaceCd   = 9;
         this._threadTs         = '';
