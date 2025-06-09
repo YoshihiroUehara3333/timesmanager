@@ -31,7 +31,7 @@ class DynamoPostDataRepository {
         const sortKey = `${POSTDATA.SORT_KEY_PREFIX.DIARY}#${date}`;
         try {
             const getResult = await this._getItem (partitionKey, sortKey);
-            return getResult || null;
+            return getResult.Item || null;
 
         } catch (error) {
             console.error("DynamoDB登録時エラー:", error);
