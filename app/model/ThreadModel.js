@@ -7,7 +7,7 @@ const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 class ThreadModel extends PostdataModelBase {
     constructor (channelId, date) {
         super(channelId, date);
-        this._sortKeyPrefix = POSTDATA.PK_POSTFIX.THREAD;
+        this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.THREAD;
 
         this._threadTs      = '';
         this._slackUrl      = '';
@@ -20,18 +20,9 @@ class ThreadModel extends PostdataModelBase {
             [ATTR_NAMES.PARTITION_KEY]      : this.partitionKey,
             [ATTR_NAMES.SORT_KEY]           : this.sortKey,
             [ATTR_NAMES.THREAD_TS]          : this.threadTs,
-            [ATTR_NAMES.DATE]               : this.date,
             [ATTR_NAMES.SLACK_URL]          : this.slackUrl,
             [ATTR_NAMES.CREATED_AT]         : this.createdAt,
         }
-    }
-
-    get date() {
-        return this._date;
-    }
-
-    set date (date) {
-        this._date = date;
     }
 
     get slackUrl() {
