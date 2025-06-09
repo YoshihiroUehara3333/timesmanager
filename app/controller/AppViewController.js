@@ -33,10 +33,12 @@ class AppViewController {
         let metadata = JSON.parse(view.private_metadata);
 
         try {
+            // 入力データをBlocksとして返信
             const blocks = await this.workReportService.processNewTaskSubmissionViewData(view, metadata.user_id);
             const postResult = await this.slackApiAdaptor.sendBlockMessage ('', metadata.channel_id, metadata.thread_ts, blocks);
             logger.info(`post結果:${postResult}`);
 
+            // 入力データをDBに保存
             await this.workReportService.saveWorkReportData(view, metadata);
         } catch (error) {
             logger.error(error);

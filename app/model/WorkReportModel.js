@@ -5,7 +5,7 @@ const { PostdataModelBase } = require('./PostdataModelBase');
 const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 
 class WorkReportModel extends PostdataModelBase {
-    constructor (channelId, date, threadTs) {
+    constructor (channelId, date) {
         super(channelId, date);
         this._sortKeyPrefix = POSTDATA.SORT_KEY_PREFIX.WORKREPORT;
 
@@ -34,9 +34,17 @@ class WorkReportModel extends PostdataModelBase {
         }
     }
 
+    get serial () {
+        return this._serial;
+    }
+
+    set serial (serial) {
+        this._serial = serial;
+    }
+
     get createdAt () {
         return this._createdAt;
-    };
+    }
 
     set createdAt (createdAt) {
         this._createdAt = createdAt;

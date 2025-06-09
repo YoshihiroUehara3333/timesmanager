@@ -41,11 +41,16 @@ class WorkReportService {
     async saveWorkReportData (view, metadata) {
         let date = new Date().toFormat("YYYY-MM-DD");
         const values = view.state.values;
-
-        // WorkReportModelを生成
-        const workReportModel = this.createWorkReportModel(channelId, date, metadata, values);
+        const channelId = metadata.channel_id;
 
         try {
+            // 最新serialを取得
+            //let latestSerial = await this.postDataRepository.getLatestWorkReportSerial(date);
+
+            // WorkReportModelを生成
+            const workReportModel  = this.createWorkReportModel(channelId, date, metadata, values);
+            workReportModel.serial = latestSerial;
+
             const response = await this.postDataRepository.putItem(workReportModel);
         } catch (error) {
             throw new Error(error.message, { cause: error });
