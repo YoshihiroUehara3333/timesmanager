@@ -24,8 +24,8 @@ class DiaryService {
         // DBから業務日誌情報を取得
         try {
             // 日報データをDBから取得
-            const prefix = POSTDATA.PK_POSTFIX.DIARY;
-            const queryResult = await this.postDataRepository.queryByThreadTsAndSortKeyPrefix(threadTs, prefix);
+            const partitionKey = `${channelId}#${POSTDATA.PK_POSTFIX.DIARY}`
+            const queryResult = await this.postDataRepository.queryByPartitionKeyAndThreadTs(partitionKey, threadTs);
             if (queryResult == null) return `DBから日報データを取得できませんでした。`;
 
             // パーティションキーで絞り込み
