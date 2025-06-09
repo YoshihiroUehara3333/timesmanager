@@ -2,12 +2,13 @@
 
 // モジュール読み込み
 const { PostDataBaseModel } = require('./PostDataBaseModel');
+const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 
 class PostModel extends PostDataBaseModel {
-    _sortKeyPrefix = this.POSTDATA.SORT_KEY_PREFIX.POSTS;
 
     constructor (channelId, date, threadTs) {
         super(channelId, date);
+        this._sortKeyPrefix = POSTDATA.SORT_KEY_PREFIX.POSTS;
 
         this._threadTs       = threadTs;
         this._serial         = ''; // GSI
@@ -19,7 +20,7 @@ class PostModel extends PostDataBaseModel {
     }
 
     toItem () {
-        const ATTR_NAMES = this.POSTDATA.ATTR_NAMES;
+        const ATTR_NAMES = POSTDATA.ATTR_NAMES;
         return {
             [ATTR_NAMES.PARTITION_KEY]   : this.partitionKey,
             [ATTR_NAMES.SORT_KEY]        : this.sortKey,
@@ -29,14 +30,6 @@ class PostModel extends PostDataBaseModel {
             [ATTR_NAMES.POSTED_AT]       : this._postedAt,
             [ATTR_NAMES.CONTENT]         : { ...this._content },
         }
-    }
-
-    get partitionKey () {
-        return `${this._channelId}`;
-    }
-
-    get sortKey() {
-        return `${this._sortKeyPrefix}#${this._date}`;
     }
 
     get date () {

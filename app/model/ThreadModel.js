@@ -2,12 +2,12 @@
 
 // モジュール読み込み
 const { PostDataBaseModel } = require('./PostDataBaseModel');
+const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 
 class ThreadModel extends PostDataBaseModel{
-    _sortKeyPrefix = this.POSTDATA.SORT_KEY_PREFIX.THREAD;
-
     constructor (channelId, date) {
         super(channelId, date);
+        this._sortKeyPrefix = POSTDATA.SORT_KEY_PREFIX.THREAD;
 
         this._threadTs      = '';
         this._slackUrl      = '';
@@ -15,7 +15,7 @@ class ThreadModel extends PostDataBaseModel{
     }
 
     toItem () {
-        const ATTR_NAMES = this.POSTDATA.ATTR_NAMES;
+        const ATTR_NAMES = POSTDATA.ATTR_NAMES;
         return {
             [ATTR_NAMES.PARTITION_KEY]      : this.partitionKey,
             [ATTR_NAMES.SORT_KEY]           : this.sortKey,

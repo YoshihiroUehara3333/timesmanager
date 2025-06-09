@@ -15,12 +15,11 @@ class DynamoPostDataRepository {
 
     // modelデータをDBに登録する
     async putItem (model) {
-        console.log(`putItem実行:${model.toItem()}`);
         try {
             return await this.dynamoDb.send(new PutCommand({
                 TableName : this.TABLENAME,
                 Item      : model.toItem(),
-            }));
+            }))
         } catch (error) {
             console.error("DynamoDB登録時エラー:", error);
             throw new Error(error.message, { cause: error });
