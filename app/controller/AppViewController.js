@@ -35,11 +35,14 @@ class AppViewController {
         try {
             // 入力データをBlocksとして返信
             const blocks = await this.workReportService.processNewTaskSubmissionViewData(view, metadata.user_id);
-            const postResult = await this.slackApiAdaptor.sendBlockMessage ('', metadata.channel_id, metadata.thread_ts, blocks);
-            logger.info(`post結果:${postResult}`);
+            const postResult = await this.slackApiAdaptor.sendBlockMessage (
+                'blocks送信', metadata.channel_id, metadata.thread_ts, blocks
+            );
+            logger.info(`post結果:${JSON.stringify(postResult)}`);
 
             // 入力データをDBに保存
             await this.workReportService.saveWorkReportData(view, metadata);
+
         } catch (error) {
             logger.error(error);
             await this.slackApiAdaptor.sendDirectMessage(error.toString(), metadata.user_id);
