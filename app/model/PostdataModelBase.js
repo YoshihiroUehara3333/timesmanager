@@ -3,19 +3,40 @@ class PostdataModelBase {
     constructor(channelId, date) {
         this._channelId     = channelId;
         this._date          = date;
+        this._serial        = null;
 
-        this._sortKeyPrefix = '';
+        this._partitionKeyPostfix = '';
     }
 
     toItem () {
     }
 
     get partitionKey () {
-        return `${this._channelId}`;
+        return `${this._channelId}#${this._partitionKeyPostfix}`;
     }
 
     get sortKey() {
-        return `${this._sortKeyPrefix}#${this._date}`;
+        return `${this._date}#${this.serial}`;
+    }
+
+    get date () {
+        return this._date;
+    }
+
+    set date (date) {
+        this._date = date;
+    }
+
+    get serial () {
+        if (this._serial) {
+            return this._serial;
+        } else {
+            return '';
+        }
+    }
+
+    set serial (serial) {
+        this._serial = serial;
     }
 }
 

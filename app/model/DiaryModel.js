@@ -7,7 +7,7 @@ const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 class DiaryModel extends PostdataModelBase {
     constructor (channelId, date) {
         super(channelId, date);
-        this._sortKeyPrefix = POSTDATA.SORT_KEY_PREFIX.DIARY;
+        this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.DIARY;
 
         this._workingPlaceCd   = 9;
         this._threadTs         = '';
@@ -39,14 +39,6 @@ class DiaryModel extends PostdataModelBase {
             [ATTR_NAMES.POSTED_AT]          : this.postedAt,
             [ATTR_NAMES.EDITED_AT]          : this.editedAt,
         }
-    }
-
-    get date () {
-        return this._date;
-    }
-
-    set date (date) {
-        this._date = date;
     }
 
     get workingPlaceCd () {

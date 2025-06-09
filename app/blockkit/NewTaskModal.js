@@ -1,12 +1,13 @@
 // /makethread or /newtask実行時のモーダルBlockKit定義定義
 const { ModalConst } = require('../constants/ModalConst');
 
-exports.NewTaskModal = (channel_id, thread_ts, date, serial) => ({
+exports.NewTaskModal = (channelId, threadTs, date, serial, userId) => ({
 	type        : "modal",
 	callback_id : ModalConst.CALLBACK_ID.NEWTASK,
 	private_metadata: JSON.stringify({
-        channel_id : channel_id,
-        thread_ts  : thread_ts,
+        channel_id : channelId,
+		user_id    : userId,
+        thread_ts  : threadTs,
         date       : date,
         serial     : serial
     }),
@@ -32,7 +33,7 @@ exports.NewTaskModal = (channel_id, thread_ts, date, serial) => ({
 			},
 			element : {
 				type      : "plain_text_input",
-				action_id : "taskname_input"
+				action_id : "input"
 			}
 		},
 		{
@@ -44,7 +45,7 @@ exports.NewTaskModal = (channel_id, thread_ts, date, serial) => ({
 			},
 			element : {
 				type      : "plain_text_input",
-				action_id : "goal_input"
+				action_id : "input"
 			}
 		},
 		{
@@ -62,7 +63,7 @@ exports.NewTaskModal = (channel_id, thread_ts, date, serial) => ({
 					text  : "Select time",
 					emoji : true
 				},
-				action_id : "targettime_input"
+				action_id : "input"
 			}
 		},
 		{ type : "divider" },
@@ -76,7 +77,7 @@ exports.NewTaskModal = (channel_id, thread_ts, date, serial) => ({
 			element : {
 				type      : "plain_text_input",
 				multiline : true,
-				action_id : "memo_input"
+				action_id : "input"
 			}
 		}
 	]

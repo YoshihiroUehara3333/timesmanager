@@ -15,7 +15,7 @@ const ATTR_NAMES = {
     WORKING_PLACE_CD   : 'working_place_cd',
 }
 
-const SORT_KEY_PREFIX = {
+const PK_POSTFIX = {
     DIARY           : 'Diary',
     WORKREPORT      : 'Workreport',
     THREAD          : 'Thread',
@@ -28,15 +28,15 @@ const GSI = {
         PK   : ATTR_NAMES.DATE,
         SK   : ATTR_NAMES.SORT_KEY,
     },
-    ByThreadTsAndSortKeyPrefix: {
-        NAME : 'GSI_ByThreadTs_SortKeyPrefix',
-        PK   : ATTR_NAMES.THREAD_TS,
-        SK   : ATTR_NAMES.SORT_KEY,
+    ByPartitionKeyAndThreadTs: {
+        NAME : 'GSI_ByPartitionKeyAndThreadTs',
+        PK   : ATTR_NAMES.PARTITION_KEY,
+        SK   : ATTR_NAMES.THREAD_TS,
     }
 }
 
 exports.POSTDATA = {
     ATTR_NAMES      : ATTR_NAMES,
-    SORT_KEY_PREFIX : SORT_KEY_PREFIX,
+    PK_POSTFIX      : PK_POSTFIX,
     GSI             : GSI,
 }

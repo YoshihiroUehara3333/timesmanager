@@ -5,19 +5,17 @@ const { PostdataModelBase } = require('./PostdataModelBase');
 const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 
 class WorkReportModel extends PostdataModelBase {
-    constructor (channelId, date, threadTs) {
+    constructor (channelId, date) {
         super(channelId, date);
-        this._sortKeyPrefix = POSTDATA.SORT_KEY_PREFIX.WORKREPORT;
+        this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.WORKREPORT;
 
-        this._serial        = '';
-        this._threadTs      = threadTs;
+        this._threadTs      = '';
         this._createdAt     = 'hh:mm';
         this._content = {
-            overview : '',
+            taskName : '',
             goal     : '',
-            progression : {
-                target       : '',
-                input_time   : 'hh:mm',
+            progress: {
+                targetTime   : 'hh:mm',
                 memo         : '',
             },
         }
@@ -37,7 +35,7 @@ class WorkReportModel extends PostdataModelBase {
 
     get createdAt () {
         return this._createdAt;
-    };
+    }
 
     set createdAt (createdAt) {
         this._createdAt = createdAt;

@@ -1,12 +1,12 @@
 // 作業予定入力時のBlockKit定義
 const { ModalConst } = require('../constants/ModalConst');
 
-exports.WorkPlanBlock = (user_id, work_plan, selected_time, option) => ([
+exports.WorkPlanBlock = (userId, taskName, goal, selectedTime, memo) => ([
 		{
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: `<@${user_id}>\n📝*作業記録*`,
+				text: `<@${userId}>\n📝*作業記録*`,
 			}
 		},
 		{
@@ -14,15 +14,19 @@ exports.WorkPlanBlock = (user_id, work_plan, selected_time, option) => ([
 			fields: [
 			    {
 					type: "mrkdwn",
-					text: `*作業予定*\n${work_plan}`
+					text: `*タスク名*\n${taskName}`
 				},
 				{
 					type: "mrkdwn",
-					text: `*完了目標*\n${selected_time}`
+					text: `*完了条件*\n${goal}`
 				},
 				{
 					type: "mrkdwn",
-					text: `*備考*\n${option}`
+					text: `*目標時間*\n${selectedTime}`
+				},
+				{
+					type: "mrkdwn",
+					text: `*備考*\n${memo}`
 				},
 			]
 		},
