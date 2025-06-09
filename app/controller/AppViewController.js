@@ -19,7 +19,7 @@ class AppViewController {
     }
 
     // dispatch
-    async dispatchModalCallback(body, view, logger) {
+    async dispatchModalCallback(view, logger) {
         const callbackId = view.callback_id;
         logger.info(`callbackId:${callbackId}`);
         
@@ -28,7 +28,7 @@ class AppViewController {
     }
 
     // 作業記録モーダル初回送信時の処理
-    async handleNewTaskModalCallback(body, view, logger) {
+    async handleNewTaskModalCallback(view, logger) {
         logger.info('handleNewTaskModalCallBackを実行');
         let metadata = JSON.parse(view.private_metadata);
 
