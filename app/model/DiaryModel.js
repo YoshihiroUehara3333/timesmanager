@@ -4,7 +4,7 @@
 const { PostDataBaseModel } = require('./PostDataBaseModel');
 
 class DiaryModel extends PostDataBaseModel {
-    _sortKeyPrefix = this.POSTDATA.SORT_KEY_PREFIX.DIARY;
+    _sortKeyPrefix = super.POSTDATA.SORT_KEY_PREFIX.DIARY;
 
     constructor (channelId, date) {
         super(channelId, date);
@@ -27,7 +27,7 @@ class DiaryModel extends PostDataBaseModel {
     }
 
     toItem () {
-        const ATTR_NAMES = this.POSTDATA.ATTR_NAMES;
+        const ATTR_NAMES = super.POSTDATA.ATTR_NAMES;
         return {
             [ATTR_NAMES.PARTITION_KEY]      : this.partitionKey,
             [ATTR_NAMES.SORT_KEY]           : this.sortKey,
