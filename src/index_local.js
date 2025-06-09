@@ -1,5 +1,5 @@
 // ローカル開発用の Bolt アプリ起動スクリプト
-require('dotenv').config();
+require('dotenv').config(); 
 // モジュール読み込み
 const { App } = require('@slack/bolt');
 const { DynamoDiaryRepository } = require('./repository/DynamoDiaryRepository');
