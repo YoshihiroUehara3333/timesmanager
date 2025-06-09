@@ -16,7 +16,7 @@ class PostdataModelBase {
     }
 
     get sortKey() {
-        return `${this._date}#${this._serial}`;
+        return `${this._date}#${this.serial}`;
     }
 
     get date () {
