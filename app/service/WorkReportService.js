@@ -44,14 +44,17 @@ class WorkReportService {
         const channelId = metadata.channel_id;
 
         try {
-            // 最新serialを取得
-            let latestSerial = await this.postDataRepository.queryWorkReportLatestSerial(channelId, date);
-
             // WorkReportModelを生成
             const workReportModel  = this.createWorkReportModel(channelId, date, metadata, values);
+
+            // 最新シリアルを取得
+            let partitionKey = workReportModel.partitionKey;
+            let latestSerial = await this.postDataRepository.queryWorkReportLatestSerial(partitionKey, date);
             workReportModel.serial = latestSerial;
 
+            // DB保存
             const response = await this.postDataRepository.putItem(workReportModel);
+            
             // httpStatusCodeをチェックしてreturn
             const httpStatusCode = response.$metadata?.httpStatusCode;
             if (httpStatusCode === 200) {

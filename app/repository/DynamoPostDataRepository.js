@@ -141,7 +141,7 @@ class DynamoPostDataRepository {
      * @param {string} prefix - GSIソートキーのプレフィックス
      * @returns {Promise<Object[]|null>} クエリ結果（0件ならnull）
      */
-    async _queryByPartitionKeyAndSortKeyBeginsWithDate (pkAttrName, skAttrName, partitionKey, date) {
+    async _queryByPartitionKeyAndSortKeyBeginsWithDate (partitionKey, date) {
         const queryResult = await this.dynamoDb.send(new QueryCommand({
             TableName                : this.TABLENAME,
             KeyConditionExpression   : `#pk = :pk AND begins_with(#sk, :date)`, // 条件指定
