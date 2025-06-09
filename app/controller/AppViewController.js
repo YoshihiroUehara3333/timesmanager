@@ -16,7 +16,7 @@ class AppViewController {
             [`${this.CALLBACK_ID.NEWTASK}`]  : this.handleNewTaskModalCallBack.bind(this),
             'default'                        : this.handleDefault.bind(this),
         }
-    };
+    }
 
     // dispatch
     async dispatchModalCallback(body, view, logger) {
@@ -32,7 +32,7 @@ class AppViewController {
         logger.info('handleNewTaskModalCallBackを実行');
         // メタデータ取得
         const metadata  = JSON.parse(view.private_metadata);
-        const blocks    = this.workReportService.processNewTaskEntry(body, view);
+        const blocks    = this.workReportService.processNewTaskSubmission(body, view);
         const reply = await this.slackApiAdaptor.sendtBlockMessage(msg, metadata.channel_id, metadata.thread_ts, blocks);
         // 必要であればDBに保存（例: DynamoDB）
         await this.workReportService.processNewTaskSubmission(body, view);
