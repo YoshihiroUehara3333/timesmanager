@@ -2,7 +2,7 @@
 
 // モジュール読み込み
 const { PostDataBaseModel } = require('./PostDataBaseModel');
-const { POSTDATA }          = require('../constants/DynamoDB/DynamoDBConst');
+const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 
 class WorkReportModel extends PostDataBaseModel {
     constructor (channelId, date, threadTs) {

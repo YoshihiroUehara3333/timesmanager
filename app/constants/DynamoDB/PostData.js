@@ -35,7 +35,7 @@ const GSI = {
     }
 }
 
-exports.PostData = {
+exports.POSTDATA = {
     ATTR_NAMES      : ATTR_NAMES,
     SORT_KEY_PREFIX : SORT_KEY_PREFIX,
     GSI             : GSI,
