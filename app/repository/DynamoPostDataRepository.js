@@ -146,8 +146,8 @@ class DynamoPostDataRepository {
             TableName                : this.TABLENAME,
             KeyConditionExpression   : `#pk = :pk AND begins_with(#sk, :date)`, // 条件指定
             ExpressionAttributeNames: {
-                '#pk'     : pkAttrName,
-                '#sk'     : skAttrName,
+                '#pk'     : POSTDATA.ATTR_NAMES.PARTITION_KEY,
+                '#sk'     : POSTDATA.ATTR_NAMES.SORT_KEY,
             },
             ExpressionAttributeValues: {
                 ':pk'     : partitionKey,
