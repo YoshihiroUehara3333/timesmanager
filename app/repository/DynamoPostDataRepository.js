@@ -28,7 +28,7 @@ class DynamoPostDataRepository {
 
     // dateからSortKeyを生成し、Diaryを1件取得する
     async getDiaryByDate (partitionKey, date) {
-        const sortKey = `${POSTDATA.PK_POSTFIX.DIARY}#${date}`;
+        const sortKey = `${date}#`;
         try {
             const getResult = await this._getItem (partitionKey, sortKey);
             return getResult.Item || null;
@@ -41,9 +41,8 @@ class DynamoPostDataRepository {
 
     // WorkReportの最新serialを取得
     async queryWorkReportLatestSerial (partitionKey, date) {
-        const sortKey = `${POSTDATA.PK_POSTFIX.WORKREPORT}#${date}`;
         try {
-            const queryResult = await this._queryByPartitionKeyAndSortKey (partitionKey, sortKey);
+            const queryResult = await this._queryByPartitionKeyAndSortKeyBeginsWithDate (partitionKey, date);
             console.log(queryResult);
             if (queryResult) {
                 return queryResult.Count + 1;
@@ -130,6 +129,35 @@ class DynamoPostDataRepository {
     }
 
     /**
+     * 指定されたパーティションキーとSortKeyのprefixでデータを検索する。
+     * @param {string} pkAttrName - パーティションキー属性名
+     * @param {string} skAttrName - ソートキー属性名
+     * @param {string} partitionKey - 検索対象のGSIパーティションキーの値
+     * @param {string} prefix - GSIソートキーのプレフィックス
+     * @returns {Promise<Object[]|null>} クエリ結果（0件ならnull）
+     */
+    async _queryByPartitionKeyAndSortKeyBeginsWithDate (pkAttrName, skAttrName, partitionKey, date) {
+        const queryResult = await this.dynamoDb.send(new QueryCommand({
+            TableName                : this.TABLENAME,
+            KeyConditionExpression   : `#pk = :pk AND begins_with(#sk, :date)`, // 条件指定
+            ExpressionAttributeNames: {
+                '#pk'     : pkAttrName,
+                '#sk'     : skAttrName,
+            },
+            ExpressionAttributeValues: {
+                ':pk'     : partitionKey,
+                ":date"   : date,
+            },
+        }));
+
+        if (queryResult.Count === 0) {
+            return null;
+        } else {
+            return queryResult;
+        }
+    }
+
+    /**
      * GSIを使って、指定されたパーティションキーとSortKeyのprefixでデータを検索する。
      * @param {string} indexName - 使用するGSI名
      * @param {string} pkAttrName - パーティションキー属性名
@@ -138,18 +166,18 @@ class DynamoPostDataRepository {
      * @param {string} prefix - GSIソートキーのプレフィックス
      * @returns {Promise<Object[]|null>} クエリ結果（0件ならnull）
      */
-    async _queryByIndexPartitionKeyUsingBeginsWith (indexName, pkAttrName, skAttrName, partitionKey, date) {
+    async _queryByUsingIndex (indexName, pkAttrName, skAttrName, pkValue, skValue) {
         const queryResult = await this.dynamoDb.send(new QueryCommand({
             TableName                : this.TABLENAME,
             IndexName                : indexName, // GSI名
-            KeyConditionExpression   : `#pk = :pk AND begins_with(#sk, :prefix)`, // 条件指定
+            KeyConditionExpression   : `#pk = :pk AND #sk = :sk`,// 条件指定
             ExpressionAttributeNames: {
                 '#pk'     : pkAttrName,
                 '#sk'     : skAttrName,
             },
             ExpressionAttributeValues: {
-                ':pk'     : partitionKey,
-                ":prefix" : prefix,
+                ':pk'     : pkValue,
+                ":sk"     : skValue,
             },
         }));
 
