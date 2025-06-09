@@ -44,7 +44,7 @@ class ThreadService {
             } 
         } catch (error) {
             throw new Error(
-                `/makethread実行中にエラーが起きました。`
+                `/makethread実行中にエラーが起きました。${error.message}`
                 ,{ cause: error }
             )
         }

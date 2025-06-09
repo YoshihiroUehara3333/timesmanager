@@ -15,7 +15,7 @@ class AppCommandController {
             [`${SlackConst.APPCOMMANDS.NEWTASK}`]      : this.handleNewTask.bind(this),
             [`${SlackConst.APPCOMMANDS.WARMUP}`]       : this.handleWarmUp.bind(this)
         }
-    };
+    }
 
     async dispatchAppCommand (command, logger) {
         logger.info(`command:${command.command}`);
@@ -24,7 +24,7 @@ class AppCommandController {
             this.commandHandlers[command.command] 
             || this.commandHandlers['default'];
         return appCommandHandler(command, logger);
-    };
+    }
 
     // /makethread実行時
     async handleMakethread (command, logger) {
