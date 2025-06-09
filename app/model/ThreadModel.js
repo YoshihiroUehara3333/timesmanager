@@ -1,36 +1,29 @@
 // スレッドのデータ構造定義クラス
-const { DBConst } = require('../constants/DBConst');
 
-class ThreadModel {
-    _sortKeyPrefix = DBConst.SORT_KEY_PREFIX.THREAD;
+// モジュール読み込み
+const { PostDataBaseModel } = require('./PostDataBaseModel');
 
-    constructor (channelId) {
-        this._channelId     = channelId; // パーティションキー
+class ThreadModel extends PostDataBaseModel{
+    _sortKeyPrefix = this.POSTDATA.SORT_KEY_PREFIX.THREAD;
 
-        this._date          = ''; // GSI
+    constructor (channelId, date) {
+        super(channelId, date);
+
         this._threadTs      = '';
         this._slackUrl      = '';
         this._createdAt     = 'hh:mm';
     }
 
     toItem () {
-        const COLNAMES = DBConst.COLUMN_NAMES.POSTDATA;
+        const ATTR_NAMES = this.POSTDATA.ATTR_NAMES;
         return {
-            [COLNAMES.PARTITION_KEY]      : this.partitionKey,
-            [COLNAMES.SORT_KEY]           : this.sortKey,
-            [COLNAMES.THREAD_TS]          : this.threadTs,
-            [COLNAMES.DATE]               : this.date,
-            [COLNAMES.SLACK_URL]          : this.slackUrl,
-            [COLNAMES.CREATED_AT]         : this.createdAt,
+            [ATTR_NAMES.PARTITION_KEY]      : this.partitionKey,
+            [ATTR_NAMES.SORT_KEY]           : this.sortKey,
+            [ATTR_NAMES.THREAD_TS]          : this.threadTs,
+            [ATTR_NAMES.DATE]               : this.date,
+            [ATTR_NAMES.SLACK_URL]          : this.slackUrl,
+            [ATTR_NAMES.CREATED_AT]         : this.createdAt,
         }
-    }
-
-    get partitionKey () {
-        return `${this._channelId}`;
-    }
-
-    get sortKey () {
-        return `${this._sortKeyPrefix}#${this._date}`;
     }
 
     get date() {

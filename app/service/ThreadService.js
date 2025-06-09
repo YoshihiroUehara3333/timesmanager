@@ -23,10 +23,9 @@ constructor (postDataRepository, slackApiAdaptor) {
             // timesチャンネルにスレッド作成
             const text = `<@${user_id}> \n*【壁】${date}*`;
             const postResult = await this.slackApiAdaptor.sendMessage(text, channel_id);
-            
-            // 投稿情報をDBに保存
             let permalink = await this.slackApiAdaptor.getPermalink(postResult.channel, postResult.ts);
 
+            // 投稿情報をDBに保存
             const threadModel = this.createThreadModel (postResult.channel, postResult.ts, date, permalink);
             const response = await this.postDataRepository.putItem(threadModel);
             const httpStatusCode = response.$metadata?.httpStatusCode;
@@ -39,7 +38,7 @@ constructor (postDataRepository, slackApiAdaptor) {
         } catch (error) {
             throw new Error(`/makethread実行中にエラーが起きました。`, { cause: error });
         }
-    };
+    }
 
     // スレッド内のリプライを扱う
     async processNewThreadPost (message) {
@@ -53,11 +52,12 @@ constructor (postDataRepository, slackApiAdaptor) {
 
     // ThreadModel生成
     createThreadModel (channelId, threadTs, date, permalink) {
-        const threadModel = new ThreadModel(channelId);
-        threadModel.date        = date;
+        const threadModel = new ThreadModel(channelId, date);
+
         threadModel.threadTs    = threadTs;
         threadModel.slackUrl    = permalink;
         threadModel.createdAt   = new Date().toFormat('HH24:MI:SS');
+
         return threadModel;
     }
 

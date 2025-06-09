@@ -2,7 +2,7 @@
 require('date-utils');
 const { NewTaskModal }    = require('../blockkit/NewTaskModal');
 const { WorkReportModel } = require('../model/WorkReportModel');
-const { DBConst } = require('../constants/DBConst');
+const { POSTDATA }   = require('../constants/DynamoDB/DynamoDBConst');
 
 class WorkReportService {
     postDataRepositry;
@@ -14,7 +14,7 @@ class WorkReportService {
     // 新規タスク入力用モーダルのBlockkitを作成し返却する
     async processNewTask (command) {
         const date   = new Date().toFormat("YYYY-MM-DD"); // YYYY-MM-DD
-        const thread = this.postDataRepositry.queryByDateAndSortKeyPrefix(date, DBConst.SORT_KEY_PREFIX.THREAD);
+        const thread = this.postDataRepositry.queryByDateAndSortKeyPrefix(date, POSTDATA.SORT_KEY_PREFIX.THREAD);
         console.log(JSON.stringify(thread));
 
         // DB保存
