@@ -27,18 +27,17 @@ const handler = awsLambdaReceiver.toHandler();
 // DI
 const postDataRepository    = new DynamoPostDataRepository();
 
-const openAiApiAdaptor      = new OpenAiApiAdaptor();
+const aiApiAdaptor      = new OpenAiApiAdaptor();
 const slackApiAdaptor       = new SlackApiAdaptor(app.client);
 
-const diaryService          = new DiaryService(postDataRepository, openAiApiAdaptor, slackApiAdaptor);
+const diaryService          = new DiaryService(postDataRepository, aiApiAdaptor, slackApiAdaptor);
 const threadService         = new ThreadService(postDataRepository, slackApiAdaptor);
 const workReportService     = new WorkReportService(postDataRepository);
 
 const appCommandController  = new AppCommandController(threadService, workReportService, slackApiAdaptor);
 const appMessageController  = new AppMessageController(diaryService, threadService, slackApiAdaptor);
 const appViewController     = new AppViewController(threadService, workReportService, slackApiAdaptor);
-const appActionController   = new AppActionController(workReportService);
-
+const appActionController   = new AppActionController(workReportService, slackApiAdaptor);
 
 
 
@@ -79,7 +78,7 @@ app.action({ type: 'block_actions' }, async ({ack, body, logger}) => {
     logger.info(`app.action\nbody:${JSON.stringify(body)}`);
 
     await ack();
-    await appActionController.dispatchModalCallback();
+    await appActionController.dispatchModalCallback(body, logger);
 })
 
 // ハンドラー生成

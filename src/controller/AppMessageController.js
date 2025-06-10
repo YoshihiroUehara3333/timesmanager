@@ -31,19 +31,22 @@ class AppMessageController {
     // 上記判定を行い、別関数に処理を移譲する。
     async handleNewMessage (message, logger) {
         logger.info("handleNewMessageが実行されました");
+        let msg;
         
         if(this.isInThread(message)) {
             if (this.isBotMentioned(message)) {
                 // スレッド内ボットメンションは現状疑似スラッシュコマンドのみ
-                await this.handleNewThreadMentionMessage(message, logger);
+                msg = await this.handleNewThreadMentionMessage(message, logger);
             } else {
                 // スレッド内部だった場合
-                await this.handleNewThreadMessage(message, logger);
+                msg = await this.handleNewThreadMessage(message, logger);
             }
         } else {
             //スレッド外のメッセージ");
-            await this.handleNewTopLevelMessage(message, logger);
+            msg = await this.handleNewTopLevelMessage(message, logger);
         }
+
+        await this.slackApiAdaptor.sendDirectMessage(msg, message.user);
     }
 
     // 編集投稿時はこの関数で処理する
@@ -55,6 +58,8 @@ class AppMessageController {
         
         if (this.isInThread(message)) {
             // スレッド投稿を編集した時
+            return;
+
         } else if (this.isDiary(message)) {
             // 日記編集時
             try {
@@ -65,9 +70,9 @@ class AppMessageController {
                 logger.error(error.stack);
                 msg = error.toString();
             }
-
-            await this.slackApiAdaptor.sendDirectMessage(msg, message.user);
         }
+
+        await this.slackApiAdaptor.sendDirectMessage(msg, message.user);
     }
 
     // スレッド内部かつ、新規ポストかつ、ボットメンション時
@@ -90,6 +95,8 @@ class AppMessageController {
         // SlackPresenter用のパラメータ値取得
         const { channel, ts } = message;
         await this.slackApiAdaptor.sendThreadMessage (msg, channel, ts);
+
+        return msg;
     }
 
     // スレッド内部かつ、新規ポストかつ、ボットメンションではない
@@ -104,7 +111,7 @@ class AppMessageController {
     // スレッド外部かつ、新規ポスト時
     async handleNewTopLevelMessage (message, logger) {
         logger.info("handleTopLevelNewMessageが実行されました");
-        let msg = '';
+        let msg;
 
         // 正規表現で日記を検知する
         if (this.isDiary(message)) {
@@ -118,8 +125,7 @@ class AppMessageController {
                 logger.error(error.stack);
                 msg = error.toString();
             }
-
-            await this.slackApiAdaptor.sendDirectMessage(msg, message.user);
+            return msg;
         }
     }
 

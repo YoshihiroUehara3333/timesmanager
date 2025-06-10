@@ -1,5 +1,10 @@
+// app.action用Controllerクラス
+
+//モジュール読み込み
+const { SlackConst } = require('../constants/SlackConst');
+
 class AppActionController {
-    constructor (workReportService) {
+    constructor (workReportService, slackApiAdaptor) {
         this.workReportService = workReportService;
     };
 

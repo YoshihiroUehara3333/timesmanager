@@ -5,9 +5,9 @@ const { DiaryModel } = require('../model/DiaryModel');
 const { POSTDATA }   = require('../constants/DynamoDB/PostData');
 
 class DiaryService {
-    constructor(postDataRepository, openAiApiAdaptor, slackApiAdaptor) {
+    constructor(postDataRepository, aiApiAdaptor, slackApiAdaptor) {
         this.postDataRepository = postDataRepository;
-        this.openAiApiAdaptor = openAiApiAdaptor;
+        this.openAiApiAdaptor = aiApiAdaptor;
         this.slackApiAdaptor = slackApiAdaptor;
     }
 
@@ -30,16 +30,18 @@ class DiaryService {
 
             // たいていは1件のみ想定
             const diary = queryResult[0];
-            return await this.openAiApiAdaptor.generateFeedback(diary);
+            return await this.aiApiAdaptor.generateFeedback(diary);
             
         } catch (error) {
             throw new Error(`フィードバック生成中にエラーが発生しました。${error.message}`, { cause: error });
         }
     };
 
-    /*
-    **   日記新規登録処理
-    */
+    /**
+     *  日報が新規投稿された際の処理を行い、Slack返信情報をreturn
+     *  @param {Object} message - Slack APIから受け取ったリクエストの値
+     *  @returns {string} - Slack返信の文面
+     */
     async processNewDiaryEntry (message) {
         // messageから値を取得
         const channelId = message.channel;
