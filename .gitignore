@@ -5,3 +5,5 @@ node_modules/
 Dockerfile
 docker-compose_local.yml
 .dockerignore
+
+README.md

@@ -74,20 +74,12 @@ app.view({ type: 'view_submission' }, async ({ ack, body, view, logger}) => {
     await appViewController.dispatchModalCallback(view, logger);
 })
 
-// 途中経過記録ボタン
-app.action(ModalConst.ACTION_ID.WORKREPORT.PROGRESS, async ({ack, body, logger}) => {
+// action受信
+app.action({ type: 'block_actions' }, async ({ack, body, logger}) => {
     logger.info(`app.action\nbody:${JSON.stringify(body)}`);
 
     await ack();
     await appActionController.dispatchModalCallback();
-})
-
-// 作業完了ボタン
-app.action(ModalConst.ACTION_ID.WORKREPORT.FINISH, async ({ack, body, logger}) => {
-    logger.info(`app.action\nbody:${JSON.stringify(body)}`);
-
-    await ack();
-    await appActionController.handleWorkReportAction();
 })
 
 // ハンドラー生成

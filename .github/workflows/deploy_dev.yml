@@ -3,7 +3,7 @@ name: Deploy to AWS Lambda Develop
 on:
   push:
     branches:
-      - feature
+      - develop
     paths-ignore:
       - 'README.md'
       - 'docker-compose_local.yml'
