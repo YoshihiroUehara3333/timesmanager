@@ -28,7 +28,7 @@ class AppMessageController {
     // 新規投稿時はこの関数で処理する
     // ・スレッドの内部/外部
     // ・メンション付きかどうか
-    // 上記判定を行い、別関数に処理を移譲する。
+    // 上記判定を行い、別関数に処理を振り分け後、戻り値をSlack APIに受け渡す
     async handleNewMessage (message, logger) {
         logger.info("handleNewMessageが実行されました");
         let msg;
