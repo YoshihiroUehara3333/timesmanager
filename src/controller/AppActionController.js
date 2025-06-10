@@ -30,14 +30,17 @@ class AppActionController {
     }
 
     async handleWorkReportUpdate(body, logger){
+        logger.info("handleNewMessageが実行されました");
         return;
     }
 
     async handleWorkReportFinish(body, logger){
+        logger.info("handleNewMessageが実行されました");
         return;
     }
 
     async handleDefault(body, logger){
+        logger.info("handleNewMessageが実行されました");
         return;
     }
 }
