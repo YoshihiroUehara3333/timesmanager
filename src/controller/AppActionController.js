@@ -18,7 +18,7 @@ class AppActionController {
 
     // actions.action_idによってメソッド振り分け
     async dispatchActionId (body, logger) {
-        const actions = body.actions;
+        const actions = body.actions[0];
 
         logger.info(`action_id:${actions.action_id}`);
 
@@ -30,17 +30,17 @@ class AppActionController {
     }
 
     async handleWorkReportUpdate(body, logger){
-        logger.info("handleNewMessageが実行されました");
+        logger.info("handleWorkReportUpdateが実行されました");
         return;
     }
 
     async handleWorkReportFinish(body, logger){
-        logger.info("handleNewMessageが実行されました");
+        logger.info("handleWorkReportFinishが実行されました");
         return;
     }
 
     async handleDefault(body, logger){
-        logger.info("handleNewMessageが実行されました");
+        logger.info("handleDefaultが実行されました");
         return;
     }
 }
