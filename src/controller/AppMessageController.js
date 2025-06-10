@@ -6,8 +6,8 @@ const { RegexConst } = require('../constants/RegexConst');
 
 class AppMessageController {
     constructor (diaryService, threadService, slackApiAdaptor) {
-        this.diaryService   = diaryService;
-        this.threadService  = threadService;
+        this.diaryService    = diaryService;
+        this.threadService   = threadService;
         this.slackApiAdaptor = slackApiAdaptor;
 
         // subtype dispatcher

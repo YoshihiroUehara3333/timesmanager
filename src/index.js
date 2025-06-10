@@ -75,7 +75,7 @@ app.view({ type: 'view_submission' }, async ({ ack, body, view, logger}) => {
 
 // action受信
 app.action({ type: 'block_actions' }, async ({ack, body, logger}) => {
-    logger.info(`app.action\nbody:${JSON.stringify(body)}`);
+    logger.info(`app.action\nbody:${JSON.stringify(body)}\nactions:${actions}`);
 
     await ack();
     await appActionController.dispatchModalCallback(body, logger);

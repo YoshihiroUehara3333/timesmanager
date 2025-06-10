@@ -5,9 +5,9 @@ const { SlackConst } = require('../constants/SlackConst');
 
 class AppCommandController {
     constructor(threadService, workReportService, slackApiAdaptor){
-        this.threadService = threadService;
+        this.threadService     = threadService;
         this.workReportService = workReportService;
-        this.slackApiAdaptor = slackApiAdaptor;
+        this.slackApiAdaptor   = slackApiAdaptor;
 
         // dispatch用のList
         this.commandHandlers = {
