@@ -78,7 +78,7 @@ app.action({ type: 'block_actions' }, async ({ack, body, logger}) => {
     logger.info(`app.action\nbody:${JSON.stringify(body)}\nactions:${actions}`);
 
     await ack();
-    await appActionController.dispatchModalCallback(body, logger);
+    await appActionController.dispatchActionId(body, logger);
 })
 
 // ハンドラー生成

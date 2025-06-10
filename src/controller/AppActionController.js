@@ -16,6 +16,7 @@ class AppActionController {
         }
     }
 
+    // actions.action_idによってメソッド振り分け
     async dispatchActionId (body, logger) {
         const actions = body.actions;
 
