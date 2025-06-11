@@ -17,14 +17,13 @@ class AppViewController {
         }
     }
 
-    // dispatch
     async handleModalCallback(view, logger) {
         const callbackId = view.callback_id;
         logger.info(`callbackId:${callbackId}`);
         
         try {
             const handler = this.callbackDispatcher[callbackId] || this.callbackDispatcher['default'];
-            const slackRequest = handler(view, logger);
+            const slackRequest = await handler(view, logger);
             if (slackRequest) {
                 await this.slackApiAdaptor.send(slackRequest);
             }
