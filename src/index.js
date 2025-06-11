@@ -70,7 +70,7 @@ app.view({ type: 'view_submission' }, async ({ ack, body, view, logger}) => {
     logger.info(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`);
 
     await ack();
-    await appViewController.dispatchModalCallback(view, logger);
+    await appViewController.handleModalCallback(view, logger);
 })
 
 // action受信
