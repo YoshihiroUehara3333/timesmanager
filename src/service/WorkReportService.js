@@ -60,7 +60,7 @@ class WorkReportService {
             const httpStatusCode = response.$metadata?.httpStatusCode;
             return new PostMessage(
                 metadata.user_id,
-                checkHttpStatusCode(httpStatusCode, workReportModel)
+                this.checkHttpStatusCode(httpStatusCode, workReportModel)
             );
 
         } catch (error) {
