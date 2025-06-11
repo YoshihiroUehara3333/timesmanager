@@ -10,20 +10,19 @@ class AppCommandController {
         this.workReportService = workReportService;
         this.slackApiAdaptor   = slackApiAdaptor;
 
-        // dispatch用のList
-        this.commandDispatcher = {
+        this.appCommandDispatcher = {
             [`${SlackConst.APPCOMMANDS.MAKETHREAD}`]   : this.handleMakethread.bind(this),
             [`${SlackConst.APPCOMMANDS.NEWTASK}`]      : this.handleNewTask.bind(this),
             [`${SlackConst.APPCOMMANDS.WARMUP}`]       : this.handleWarmUp.bind(this)
         }
     }
 
-    async dispatchAppCommand (command, logger) {
+    async handleAppCommand (command, logger) {
         logger.info(`command:${command.command}`);
 
-        const appCommandHandler = this.commandDispatcher[command.command];
+        const handler = this.appCommandDispatcher[command.command];
         try {
-            const slackRequest = await appCommandHandler(command, logger);
+            const slackRequest = await handler(command, logger);
             await this.slackApiAdaptor.send(slackRequest);
         } catch (error) {
             logger.error(error.stack);
