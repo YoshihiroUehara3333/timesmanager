@@ -1,7 +1,7 @@
 //モジュール読み込み
 require('date-utils');
 const { ModalConst } = require('../constants/ModalConst');
-
+const { PostMessage } = require('../adaptor/slack/SlackApiRequest');
 
 class AppViewController {
     CALLBACK_ID = ModalConst.CALLBACK_ID;
@@ -42,7 +42,7 @@ class AppViewController {
 
         // 入力データをBlocksとして返信
         const blocks = await this.workReportService.processNewTaskSubmissionViewData(view, metadata.user_id);
-        const postResponse = await this.slackApiAdaptor.send(new PostRequest(
+        const postResponse = await this.slackApiAdaptor.send(new PostMessage(
             metadata.channel_id, 
             'blocks送信',  
             metadata.thread_ts, 
