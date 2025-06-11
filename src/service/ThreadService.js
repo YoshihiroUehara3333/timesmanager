@@ -25,7 +25,7 @@ class ThreadService {
             // timesチャンネルにスレッド作成
             let text = `<@${userId}> \n*【壁】${date}*`;
             const postResult = await this.slackApiAdaptor.send(new PostMessage(
-                channeId,
+                channelId,
                 text
             ));
             
