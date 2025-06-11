@@ -40,7 +40,7 @@ class PostMessage {
 
 // chat.getpermalink
 // https://api.slack.com/methods/chat.getpermalink
-class GetPermaLink {
+class GetPermalink {
     constructor (
         channelId,
         messageTs,
@@ -98,6 +98,7 @@ class ViewsOpen {
     }
 }
 
+// exports
 exports.PostMessage = PostMessage;
 exports.ViewsOpen = ViewsOpen;
-exports.GetPermaLink = GetPermaLink;
+exports.GetPermalink = GetPermalink;
