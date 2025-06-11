@@ -36,39 +36,19 @@ class AppCommandController {
     // /makethread実行時
     async handleMakethread (command, logger) {
         logger.debug(`handleMakethreadを実行`);
-        try {
-            let view = await this.threadService.processNewThreadEntry(command);
-            return await this.slackApiAdaptor.openView(view, command.trigger_id);
-            
-        } catch (error) {
-            logger.error(error.data);
-            await this.slackApiAdaptor.sendDirectMessage(error.toString(), command.user_id);
-        }
+        return await this.threadService.processNewThreadEntry(command);
     }
 
     // /newtask実行時
     async handleNewTask (command, logger) {
-        try {
-            let view = await this.workReportService.processNewTaskCommand(command);
-            await this.slackApiAdaptor.openView(view, command.trigger_id);
-            
-        } catch (error) {
-            logger.error(error);
-            await this.slackApiAdaptor.sendDirectMessage(error.toString(), command.user_id);
-        }
+        logger.debug(`handleMakethreadを実行`);
+        return await this.workReportService.processNewTaskCommand(command);
     }
 
     // /warmup実行時
     async handleWarmUp (command, logger) {
-        try {
-            const msg = '/warmupが実行されました。'
-            await this.slackApiAdaptor.sendDirectMessage(msg, command.user_id);
-        } catch (error) {
-            logger.error(error.data);
-            await this.slackApiAdaptor.sendDirectMessage(error.toString(), command.user_id);
-        }
+        return new PostMessage(command.user, 'warmupが実行されました');
     }
-
 };
 
 exports.AppCommandController = AppCommandController;

@@ -24,7 +24,7 @@ class DiaryService {
         const threadTs  = message.ts;
         
         // 投稿URLを取得
-        let permalink = await this.slackApiAdaptor.getPermalink(new GetPermalink(
+        let permalink = await this.slackApiAdaptor.send(new GetPermalink(
             channelId, 
             threadTs
         ));
@@ -46,10 +46,9 @@ class DiaryService {
             // httpStatusCodeを判断しpostMessage用のtextを作成
             const httpStatusCode = response?.$metadata.httpStatusCode;
             const postText = this.checkHttpStatusCode(httpStatusCode, '登録', diaryModel);
-
             return new PostMessage(
                 message.user,
-                postText,
+                postText
             );
         } catch (error) {
             throw new Error(error.message, {cause: error});
@@ -80,16 +79,17 @@ class DiaryService {
             // diaryModelをDBに登録
             const response = await this.postDataRepository.putItem(diaryModel);
 
-            // httpStatusCodeを判断しreturn
+            // httpStatusCodeを判断しpostMessage用のtextを作成
             const httpStatusCode = response?.$metadata.httpStatusCode;
             const postText = this.checkHttpStatusCode(httpStatusCode, '登録', diaryModel);
 
+            // return
             return new PostMessage(
                 message.user,
-                postText,
+                postText
             );
         } catch (error) {
-            throw new Error(error.message, { cause: error });
+            throw new Error(error.message, {cause: error});
         }
     }
 
