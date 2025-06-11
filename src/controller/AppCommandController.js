@@ -2,6 +2,7 @@
 
 //モジュール読み込み
 const { SlackConst } = require('../constants/SlackConst');
+const { PostMessage, ViewsOpen } = require('../adaptor/slack/SlackApiRequest');
 
 class AppCommandController {
     constructor(threadService, workReportService, slackApiAdaptor){
@@ -23,7 +24,15 @@ class AppCommandController {
         const appCommandHandler = 
             this.commandHandlers[command.command] 
             || this.commandHandlers['default'];
-        return appCommandHandler(command, logger);
+        try {
+            const slackRequest = appCommandHandler(command, logger);
+            await this.slackApiAdaptor.send(slackRequest);
+        } catch (error) {
+            logger.error(error.stack);
+            await this.slackApiAdaptor.send(
+                new PostMessage(message.user, error.toString())
+            );
+        }
     }
 
     // /makethread実行時
@@ -31,7 +40,7 @@ class AppCommandController {
         logger.debug(`handleMakethreadを実行`);
         try {
             let view = await this.threadService.processNewThreadEntry(command);
-            await this.slackApiAdaptor.openView(view, command.trigger_id);
+            return await this.slackApiAdaptor.openView(view, command.trigger_id);
             
         } catch (error) {
             logger.error(error.data);

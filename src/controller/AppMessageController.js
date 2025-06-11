@@ -26,11 +26,11 @@ class AppMessageController {
             const subtypeHandler = this.subtypeHandlers[message.subtype] || this.subtypeHandlers['default'];
             const slackRequest = await subtypeHandler(message, logger);
             if (slackRequest) {
-                await this.slackApiAdaptor.postMessage(slackRequest);
+                await this.slackApiAdaptor.send(slackRequest);
             }
         } catch (error) {
             logger.error(error.stack);
-            await this.slackApiAdaptor.postMessage(
+            await this.slackApiAdaptor.send(
                 new PostMessage(message.user, error.toString())
             );
         }

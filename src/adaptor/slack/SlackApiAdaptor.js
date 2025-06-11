@@ -4,9 +4,22 @@
 class SlackApiAdaptor {
     constructor (client) {
         this.client = client;
+
+        this.methodDispatcher = {
+            'PostMessageRequest'  : this.postMessage.bind(this),
+            'GetPermaLinkRequest' : this.getPermalink.bind(this),
+            'ViewsOpenRequest'    : this.viewsOpen.bind(this)
+        }
     }
 
-    // DMを送信する
+    async send(request) {
+        const method = this.methodDispatcher[request.constructor.name];
+        if (!method) {
+            throw new Error(`Unsupported request type: ${request.constructor.name}`);
+        }
+        return await method(request);
+    }
+
     async postMessage (request) {
         try {
             return await this.client.chat.postMessage(request.toPayload());
@@ -15,7 +28,6 @@ class SlackApiAdaptor {
         }
     }
 
-    // Slack投稿のURLを取得する
     async getPermalink(request) {
         try {
             const getResult = await this.client.chat.getPermalink(request.toPayload());
@@ -25,7 +37,6 @@ class SlackApiAdaptor {
         }
     }
 
-    // モーダルを開く
     async viewsOpen (request) {
         try {
             return await this.client.views.open(request.toPayload());

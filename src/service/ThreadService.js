@@ -5,6 +5,7 @@ require('date-utils');
 const { ThreadModel }       = require('../model/ThreadModel');
 const { PostModel }        = require('../model/PostModel');
 const { NewTaskModal }   = require('../blockkit/NewTaskModal');
+const { PostMessage, GetPermalink } = require('../adaptor/slack/SlackApiRequest');
 
 class ThreadService {
     constructor (postDataRepository, slackApiAdaptor) {
@@ -23,10 +24,15 @@ class ThreadService {
         try {
             // timesチャンネルにスレッド作成
             let text = `<@${userId}> \n*【壁】${date}*`;
-            const postResult = await this.slackApiAdaptor.sendMessage(text, channelId);
+            const postResult = await this.slackApiAdaptor.postMessage(new PostMessage(
+                channeId, text
+            ));
             
             // ThreadModelを作成
-            let permalink = await this.slackApiAdaptor.getPermalink(channelId, postResult.ts);
+            let permalink = await this.slackApiAdaptor.getPermalink(new GetPermalink(
+                channelId, 
+                postResult.ts
+            ));
             const threadModel = this.createThreadModel (channelId, date, postResult.ts, permalink);
 
             // 投稿情報をDBに保存
