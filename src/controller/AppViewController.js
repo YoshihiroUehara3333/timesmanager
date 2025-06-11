@@ -11,44 +11,48 @@ class AppViewController {
         this.workReportService  = workReportService;
         this.slackApiAdaptor    = slackApiAdaptor;
 
-        // callback id dispatcher
-        this.callBackHandlers = {
+        this.callbackDispatcher = {
             [`${this.CALLBACK_ID.NEWTASK}`]  : this.handleNewTaskModalCallback.bind(this),
             'default'                        : this.handleDefault.bind(this),
         }
     }
 
     // dispatch
-    async dispatchModalCallback(view, logger) {
+    async handleModalCallback(view, logger) {
         const callbackId = view.callback_id;
         logger.info(`callbackId:${callbackId}`);
         
-        const callBackHandler = this.callBackHandlers[callbackId] || this.callBackHandlers['default'];
-        return callBackHandler(view, logger);
+        try {
+            const handler = this.callbackDispatcher[callbackId] || this.callbackDispatcher['default'];
+            const slackRequest = handler(view, logger);
+            if (slackRequest) {
+                await this.slackApiAdaptor.send(slackRequest);
+            }
+        } catch (error) {
+            logger.error(error.stack);
+            await this.slackApiAdaptor.send(
+                new PostMessage(view.private_metadata.user_id, error.toString())
+            )
+        }
     }
 
     // 作業記録モーダル初回送信時の処理
     async handleNewTaskModalCallback(view, logger) {
         logger.info('handleNewTaskModalCallBackを実行');
         let metadata = JSON.parse(view.private_metadata);
-        let msg = '';
 
-        try {
-            // 入力データをBlocksとして返信
-            const blocks = await this.workReportService.processNewTaskSubmissionViewData(view, metadata.user_id);
-            const postResult = await this.slackApiAdaptor.sendBlockMessage (
-                'blocks送信', metadata.channel_id, metadata.thread_ts, blocks
-            );
-            logger.info(`post結果:${JSON.stringify(postResult)}`);
+        // 入力データをBlocksとして返信
+        const blocks = await this.workReportService.processNewTaskSubmissionViewData(view, metadata.user_id);
+        const postResponse = await this.slackApiAdaptor.send(new PostRequest(
+            metadata.channel_id, 
+            'blocks送信',  
+            metadata.thread_ts, 
+            blocks
+        ));
+        logger.info(`post結果:${JSON.stringify(postResponse)}`);
 
-            // 入力データをDBに保存
-            msg = await this.workReportService.saveWorkReportData(view, metadata);
-            await this.slackApiAdaptor.sendDirectMessage(msg, metadata.user_id);
-            
-        } catch (error) {
-            logger.error(error);
-            await this.slackApiAdaptor.sendDirectMessage(error.toString(), metadata.user_id);
-        }
+        // 入力データをDBに保存
+        return await this.workReportService.saveWorkReportData(view, metadata);
     }
 
     async handleDefault (view, logger) {

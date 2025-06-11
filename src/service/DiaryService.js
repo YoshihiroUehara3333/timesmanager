@@ -140,7 +140,7 @@ class DiaryService {
 
     // DynamoDBへのPut成否をhttpStatusCodeから判断してreturnを作成する
     checkHttpStatusCode (httpStatusCode, msg, diaryModel) {
-        if (httpStatusCode == 200) {
+        if (httpStatusCode === 200) {
             return `日記(${diaryModel.date})のDB${msg}に成功しました。\n${diaryModel.slackUrl}`;
         } else {
             throw new Error(
