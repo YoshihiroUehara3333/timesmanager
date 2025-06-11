@@ -98,8 +98,6 @@ class ViewsOpen {
     }
 }
 
-exports.SlackApiRequest = {
-    PostMessage  : PostMessage,
-    ViewsOpen    : ViewsOpen,
-    GetPermaLink : GetPermaLink,
-};
+exports.PostMessage = PostMessage;
+exports.ViewsOpen = ViewsOpen;
+exports.GetPermaLink = GetPermaLink;

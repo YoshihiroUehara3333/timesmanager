@@ -12,36 +12,6 @@ class DiaryService {
         this.slackApiAdaptor = slackApiAdaptor;
     }
 
-    /**
-     *  thread_tsを基にフィードバックを生成し、returnする
-     *  @param   {Object} message - Slack APIから受け取ったリクエストの値
-     *  @returns {PostMessage}    - postMessageに引き渡すrequest DTO
-     */
-    async generateFeedback(message){
-        // messageから値を取得
-        const threadTs = message.thread_ts;
-        const channelId = message.channel;
-
-        // DBから業務日誌情報を取得
-        try {
-            // 日報データをDBから取得
-            const partitionKey = `${channelId}#${POSTDATA.PK_POSTFIX.DIARY}`;
-            const queryResult = await this.postDataRepository.queryByPartitionKeyAndThreadTs(partitionKey, threadTs);
-            if (queryResult == null) return `DBから日報データを取得できませんでした。`;
-            // たいていは1件のみ想定
-            const diary = queryResult[0];
-
-            // フィードバックを生成してreturn
-            const feedbackText = await this.aiApiAdaptor.generateFeedback(diary);
-            return new PostMessage(
-                channelId,
-                feedbackText,
-                threadTs
-            );
-        } catch (error) {
-            throw new Error(`フィードバック生成中にエラーが発生しました。${error.message}`, { cause: error });
-        }
-    };
 
     /**
      *  日報が新規投稿された際の処理を行う
@@ -120,6 +90,37 @@ class DiaryService {
             );
         } catch (error) {
             throw new Error(error.message, { cause: error });
+        }
+    }
+
+    /**
+     *  thread_tsを基にフィードバックを生成し、returnする
+     *  @param   {Object} message - Slack APIから受け取ったリクエストの値
+     *  @returns {PostMessage}    - postMessageに引き渡すrequest DTO
+     */
+    async generateFeedback(message){
+        // messageから値を取得
+        const threadTs = message.thread_ts;
+        const channelId = message.channel;
+
+        // DBから業務日誌情報を取得
+        try {
+            // 日報データをDBから取得
+            const partitionKey = `${channelId}#${POSTDATA.PK_POSTFIX.DIARY}`;
+            const queryResult = await this.postDataRepository.queryByPartitionKeyAndThreadTs(partitionKey, threadTs);
+            if (queryResult == null) return `DBから日報データを取得できませんでした。`;
+            // たいていは1件のみ想定
+            const diary = queryResult[0];
+
+            // フィードバックを生成してreturn
+            const feedbackText = await this.aiApiAdaptor.generateFeedback(diary);
+            return new PostMessage(
+                channelId,
+                feedbackText,
+                threadTs
+            );
+        } catch (error) {
+            throw new Error(`フィードバック生成中にエラーが発生しました。${error.message}`, { cause: error });
         }
     }
 
