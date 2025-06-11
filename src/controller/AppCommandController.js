@@ -27,7 +27,7 @@ class AppCommandController {
         } catch (error) {
             logger.error(error.stack);
             await this.slackApiAdaptor.send(
-                new PostMessage(message.user, error.toString())
+                new PostMessage(command.user_id, error.toString())
             );
         }
     }
