@@ -46,7 +46,7 @@ class AppCommandController {
 
     // /warmup実行時
     async handleWarmUp (command, logger) {
-        return new PostMessage(command.user, 'warmupが実行されました');
+        return new PostMessage(command.user_id, 'warmupが実行されました');
     }
 };
 
