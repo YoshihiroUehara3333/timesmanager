@@ -11,8 +11,7 @@ class AppMessageController {
         this.threadService   = threadService;
         this.slackApiAdaptor = slackApiAdaptor;
 
-        // subtype dispatcher
-        this.subtypeHandlers = {
+        this.subtypeDispatcher = {
             'message_changed'   : this.handleEditedMessage.bind(this),
             'default'           : this.handleNewMessage.bind(this),
         }
@@ -20,10 +19,9 @@ class AppMessageController {
 
     async handleAppMessage (message, logger) {
         logger.info("handleAppMessageが実行されました");
-
         try {
-            const subtypeHandler = this.subtypeHandlers[message.subtype] || this.subtypeHandlers['default'];
-            const slackRequest = await subtypeHandler(message, logger);
+            const handler = this.subtypeDispatcher[message.subtype] || this.subtypeDispatcher['default'];
+            const slackRequest = await handler(message, logger);
             if (slackRequest) {
                 await this.slackApiAdaptor.send(slackRequest);
             }
@@ -35,25 +33,18 @@ class AppMessageController {
         }
     }
 
-    // 新規投稿時はこの関数で処理する
-    // ・スレッドの内部/外部
-    // ・メンション付きかどうか
-    // 上記判定を行い、別関数に処理を振り分け後、戻り値をSlack APIに受け渡す
+    // 新規投稿時
     async handleNewMessage (message, logger) {
         logger.info("handleNewMessageが実行されました");
         
         if(this.isInThread(message)) {
-            if (this.isBotMentioned(message)) {
-                return await this.handleNewThreadMentionMessage(message, logger);
-            } else {
-                return await this.handleNewThreadMessage(message, logger);
-            }
+            return await this.handleNewThreadMessage(message, logger);
         } else {
             return await this.handleNewTopLevelMessage(message, logger);
         }
     }
 
-    // 編集投稿時はこの関数で処理する
+    // 投稿編集時
     async handleEditedMessage (messageRaw, logger) {
         logger.info("handleEditedMessageが実行されました");
         const message = messageRaw.message;
@@ -69,24 +60,19 @@ class AppMessageController {
         }
     }
 
-    // スレッド内部かつ、新規ポストかつ、ボットメンション時
-    // 現状疑似スラッシュコマンドのみ
-    async handleNewThreadMentionMessage (message, logger) {
-        logger.info("handleNewThreadMentionMessageが実行されました");
-
-        // /AIフィードバック
-        if (message.text.match(RegexConst.THREADCOMMANDS.AI_FEEDBACK)) {
-            logger.info("diaryService.aiFeedbackを実行");
-            return await this.diaryService.generateFeedback(message);
-        }
-    }
-
     // スレッド内部かつ、新規ポストかつ、ボットメンションではない
     async handleNewThreadMessage (message, logger) {
         logger.info("handleNewThreadMessageが実行されました");
 
+        if (this.isBotMentioned(message)) {
+            // /AIフィードバック
+            if (message.text.match(RegexConst.THREADCOMMANDS.AI_FEEDBACK)) {
+                logger.info("diaryService.aiFeedbackを実行");
+                return await this.diaryService.generateFeedback(message);
+            }
+        }
         // 壁スレッドの中身だった場合ThreadServiceを使ってDBにtextを保存する
-        return this.threadService.newThreadReply(message, logger);
+        return this.threadService.processNewThreadReply(message, logger);
     }
 
     // スレッド外部かつ、新規ポスト時
