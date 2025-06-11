@@ -23,7 +23,7 @@ class AppCommandController {
 
         const appCommandHandler = this.commandDispatcher[command.command];
         try {
-            const slackRequest = appCommandHandler(command, logger);
+            const slackRequest = await appCommandHandler(command, logger);
             await this.slackApiAdaptor.send(slackRequest);
         } catch (error) {
             logger.error(error.stack);
