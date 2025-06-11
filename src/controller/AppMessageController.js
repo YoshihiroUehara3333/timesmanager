@@ -18,7 +18,6 @@ class AppMessageController {
         }
     }
 
-    // subtypeによってmessageの構造が異なる為まずsubtypeで処理を分ける
     async handleAppMessage (message, logger) {
         logger.info("handleAppMessageが実行されました");
 
@@ -32,7 +31,7 @@ class AppMessageController {
             logger.error(error.stack);
             await this.slackApiAdaptor.send(
                 new PostMessage(message.user, error.toString())
-            );
+            )
         }
     }
 

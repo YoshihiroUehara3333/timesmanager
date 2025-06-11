@@ -6,9 +6,9 @@ class SlackApiAdaptor {
         this.client = client;
 
         this.methodDispatcher = {
-            'PostMessageRequest'  : this.postMessage.bind(this),
-            'GetPermaLinkRequest' : this.getPermalink.bind(this),
-            'ViewsOpenRequest'    : this.viewsOpen.bind(this)
+            'PostMessage'  : this.postMessage.bind(this),
+            'GetPermaLink' : this.getPermalink.bind(this),
+            'ViewsOpen'    : this.viewsOpen.bind(this)
         }
     }
 
