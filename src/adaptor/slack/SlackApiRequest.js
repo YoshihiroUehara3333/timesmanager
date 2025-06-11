@@ -2,7 +2,7 @@
 
 // chat.postMessage
 // https://api.slack.com/methods/chat.postMessage
-class SlackPostMessageRequest {
+class PostMessageRequest {
     constructor(
         channelId, 
         text,
@@ -40,7 +40,7 @@ class SlackPostMessageRequest {
 
 // chat.getpermalink
 // https://api.slack.com/methods/chat.getpermalink
-class SlackGetPermaLinkRequest {
+class GetPermaLinkRequest {
     constructor (
         channelId,
         messageTs,
@@ -70,7 +70,7 @@ class SlackGetPermaLinkRequest {
 
 // views.open
 // https://api.slack.com/methods/views.open
-class SlackViewsOpenRequest {
+class ViewsOpenRequest {
     constructor (
         triggerId,
         view,
@@ -98,8 +98,8 @@ class SlackViewsOpenRequest {
     }
 }
 
-exports.SlackApiDto = {
-    SlackPostMessageRequest  : SlackPostMessageRequest,
-    SlackViewsOpenRequest    : SlackViewsOpenRequest,
-    SlackGetPermaLinkRequest : SlackGetPermaLinkRequest,
+exports.SlackApiRequest = {
+    PostMessage  : PostMessageRequest,
+    ViewsOpen    : ViewsOpenRequest,
+    GetPermaLink : GetPermaLinkRequest,
 };
