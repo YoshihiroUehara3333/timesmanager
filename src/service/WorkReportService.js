@@ -5,6 +5,7 @@ const { NewTaskModal }    = require('../blockkit/NewTaskModal');
 const { WorkPlanBlock }   = require('../blockkit/WorkPlanBlock');
 const { WorkReportModel } = require('../model/WorkReportModel');
 const { POSTDATA }        = require('../constants/DynamoDB/PostData');
+const { PostMessage }     = require('../adaptor/slack/SlackApiRequest');
 
 class WorkReportService {
     constructor (postDataRepository, slackApiAdaptor) {
@@ -57,14 +58,11 @@ class WorkReportService {
             
             // httpStatusCodeをチェックしてreturn
             const httpStatusCode = response.$metadata?.httpStatusCode;
-            if (httpStatusCode === 200) {
-                return  `進捗情報ののDB登録に成功しました serial=${latestSerial}`;
-            } else {
-                throw new Error(
-                    `タスク情報をDB登録時エラー。/n`
-                    +`httpStatusCode=${httpStatusCode}`
-                )
-            }
+            return new PostMessage(
+                metadata.user_id,
+                this.checkHttpStatusCode(httpStatusCode, workReportModel)
+            );
+
         } catch (error) {
             throw new Error(error.message, { cause: error });
         }
@@ -77,6 +75,17 @@ class WorkReportService {
         workReportModel.createdAt   = new Date().toFormat('HH24:MI:SS');
         workReportModel.content     = WorkReportUtils.parseContent(values);
         return workReportModel;
+    }
+
+    // -----------------------------------------------------------------------------------
+    // DynamoDBへのPut成否をhttpStatusCodeから判断してreturnを作成する
+    checkHttpStatusCode (httpStatusCode, workReportModel) {
+        if (httpStatusCode === 200) {
+            return `進捗情報ののDB登録に成功しました serial=${workReportModel.serial}`;
+        } else {
+            return `進捗情報ののDB登録に失敗しました/n`
+                  +`httpStatusCode=${httpStatusCode}`;
+        }
     }
 }
 

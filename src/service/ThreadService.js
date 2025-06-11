@@ -5,6 +5,7 @@ require('date-utils');
 const { ThreadModel }       = require('../model/ThreadModel');
 const { PostModel }        = require('../model/PostModel');
 const { NewTaskModal }   = require('../blockkit/NewTaskModal');
+const { PostMessage, GetPermalink, ViewsOpen } = require('../adaptor/slack/SlackApiRequest');
 
 class ThreadService {
     constructor (postDataRepository, slackApiAdaptor) {
@@ -23,10 +24,16 @@ class ThreadService {
         try {
             // timesチャンネルにスレッド作成
             let text = `<@${userId}> \n*【壁】${date}*`;
-            const postResult = await this.slackApiAdaptor.sendMessage(text, channelId);
+            const postResult = await this.slackApiAdaptor.send(new PostMessage(
+                channelId,
+                text
+            ));
             
             // ThreadModelを作成
-            let permalink = await this.slackApiAdaptor.getPermalink(channelId, postResult.ts);
+            let permalink = await this.slackApiAdaptor.send(new GetPermalink(
+                channelId, 
+                postResult.ts
+            ));
             const threadModel = this.createThreadModel (channelId, date, postResult.ts, permalink);
 
             // 投稿情報をDBに保存
@@ -35,7 +42,10 @@ class ThreadService {
             // httpStatusCodeをチェックしてreturn
             const httpStatusCode = response.$metadata?.httpStatusCode;
             if (httpStatusCode === 200) {
-                return NewTaskModal(channelId, postResult.ts, date, 1, userId);
+                return new ViewsOpen(
+                    command.trigger_id,
+                    NewTaskModal(channelId, postResult.ts, date, 1, userId)
+                );
             } else {
                 throw new Error(
                     `スレッド情報をDB登録時エラー。/n`

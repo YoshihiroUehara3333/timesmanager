@@ -27,18 +27,17 @@ const handler = awsLambdaReceiver.toHandler();
 // DI
 const postDataRepository    = new DynamoPostDataRepository();
 
-const openAiApiAdaptor      = new OpenAiApiAdaptor();
+const aiApiAdaptor      = new OpenAiApiAdaptor();
 const slackApiAdaptor       = new SlackApiAdaptor(app.client);
 
-const diaryService          = new DiaryService(postDataRepository, openAiApiAdaptor, slackApiAdaptor);
+const diaryService          = new DiaryService(postDataRepository, aiApiAdaptor, slackApiAdaptor);
 const threadService         = new ThreadService(postDataRepository, slackApiAdaptor);
 const workReportService     = new WorkReportService(postDataRepository);
 
 const appCommandController  = new AppCommandController(threadService, workReportService, slackApiAdaptor);
 const appMessageController  = new AppMessageController(diaryService, threadService, slackApiAdaptor);
 const appViewController     = new AppViewController(threadService, workReportService, slackApiAdaptor);
-const appActionController   = new AppActionController(workReportService);
-
+const appActionController   = new AppActionController(workReportService, slackApiAdaptor);
 
 
 
@@ -52,7 +51,7 @@ app.command(/.*/, async ({ ack, command, context, logger}) => {
     };
     
     await ack();
-    await appCommandController.dispatchAppCommand(command, logger);
+    await appCommandController.handleAppCommand(command, logger);
 })
 
 // メッセージ検知
@@ -71,23 +70,15 @@ app.view({ type: 'view_submission' }, async ({ ack, body, view, logger}) => {
     logger.info(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`);
 
     await ack();
-    await appViewController.dispatchModalCallback(view, logger);
+    await appViewController.handleModalCallback(view, logger);
 })
 
-// 途中経過記録ボタン
-app.action(ModalConst.ACTION_ID.WORKREPORT.PROGRESS, async ({ack, body, logger}) => {
+// action受信
+app.action({ type: 'block_actions' }, async ({ack, body, logger}) => {
     logger.info(`app.action\nbody:${JSON.stringify(body)}`);
 
     await ack();
-    await appActionController.dispatchModalCallback();
-})
-
-// 作業完了ボタン
-app.action(ModalConst.ACTION_ID.WORKREPORT.FINISH, async ({ack, body, logger}) => {
-    logger.info(`app.action\nbody:${JSON.stringify(body)}`);
-
-    await ack();
-    await appActionController.handleWorkReportAction();
+    await appActionController.dispatchActionId(body, logger);
 })
 
 // ハンドラー生成

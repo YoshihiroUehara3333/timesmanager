@@ -1,11 +1,48 @@
-class AppActionController {
-    constructor (workReportService) {
-        this.workReportService = workReportService;
-    };
+// app.action用Controllerクラス
 
-    async handleWorkReportAction (){
+//モジュール読み込み
+const { ModalConst } = require('../constants/ModalConst');
+
+class AppActionController {
+    constructor (workReportService, slackApiAdaptor) {
+        this.workReportService = workReportService;
+        this.slackApiAdaptor   = slackApiAdaptor;
+
+        // dispatch用のList
+        this.actionIdDispatcher = {
+            [`${ModalConst.ACTION_ID.WORKREPORT.UPDATE}`]   : this.handleWorkReportUpdate.bind(this),
+            [`${ModalConst.ACTION_ID.WORKREPORT.FINISH}`]   : this.handleWorkReportFinish.bind(this),
+            'default'                                       : this.handleDefault.bind(this),
+        }
+    }
+
+    // actions.action_idによってメソッド振り分け
+    async dispatchActionId (body, logger) {
+        const actions = body.actions[0];
+
+        logger.info(`action_id:${actions.action_id}`);
+
+        const actionIdHandler = 
+            this.actionIdDispatcher[actions.action_id] 
+            || this.actionIdDispatcher['default'];
+
+        return actionIdHandler(body, logger);
+    }
+
+    async handleWorkReportUpdate(body, logger){
+        logger.info("handleWorkReportUpdateが実行されました");
         return;
-    };
+    }
+
+    async handleWorkReportFinish(body, logger){
+        logger.info("handleWorkReportFinishが実行されました");
+        return;
+    }
+
+    async handleDefault(body, logger){
+        logger.info("handleDefaultが実行されました");
+        return;
+    }
 }
 
 exports.AppActionController = AppActionController;
