@@ -37,6 +37,7 @@ class DiaryModelFactory {
      *  @returns {DiaryModel} model
      */
     static createDiaryModelFromMessage({channel, text, ts}){
+        console.log(`${channel}/n${text}/n${ts}`);
         let date = DiaryUtils.parseDate(text);
 
         const model = new DiaryModel(channel, date);
