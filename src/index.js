@@ -64,6 +64,12 @@ app.action({ type: 'block_actions' }, async ({ack, body, logger}) => {
     await appActionController.dispatchActionId(body, logger);
 })
 
+
+app.event({ type: 'app_home_opened' }, async ({ack, body, logger}) => {
+    logger.info(`app.event\nbody:${JSON.stringify(body)}`);
+    await ack();
+})
+
 // ハンドラー生成
 exports.handler = async (event, context, callback) => {    
     return await handler(event, context, callback);

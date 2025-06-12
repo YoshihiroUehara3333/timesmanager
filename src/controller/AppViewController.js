@@ -30,10 +30,9 @@ class AppViewController {
         } catch (error) {
             logger.error(error.stack);
             await this.slackApiAdaptor.send(new PostMessage(
-                    JSON.parse(view.private_metadata).user_id,
-                    error.toString()
-                )
-            )
+                JSON.parse(view.private_metadata).user_id,
+                error.toString()
+            ));
         }
     }
 
