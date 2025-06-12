@@ -33,9 +33,7 @@ class WorkReportService {
         const memo          = values.memo.input.value || '';
 
         // Blocksを生成してreturn
-        const blocks = WorkPlanBlock(userId, taskName, goal, targetTime, memo);
-        console.log(`reply:${JSON.stringify(blocks)}`);
-        return blocks;
+        return WorkPlanBlock(userId, taskName, goal, targetTime, memo);
     }
 
     // NewTaskモーダル入力値からWorkReportModelを作成し、DBに保存する
