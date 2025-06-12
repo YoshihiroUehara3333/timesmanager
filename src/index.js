@@ -65,8 +65,8 @@ app.action({ type: 'block_actions' }, async ({ack, body, logger}) => {
 })
 
 
-app.event({ type: 'app_home_opened' }, async ({ack, body, logger}) => {
-    logger.info(`app.event\nbody:${JSON.stringify(body)}`);
+app.event({ type: 'app_home_opened' }, async ({ack, body, event, logger}) => {
+    logger.info(`app.event\nevent:${JSON.stringify(event)}`);
     await ack();
 })
 
