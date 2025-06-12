@@ -30,7 +30,7 @@ class DiaryService {
             let date = diaryModel.date;
 
             // DB新規重複チェック
-            const result = await this.postDataRepository.getDiaryByDate(diaryModel.channelId, date);
+            const result = await this.postDataRepository.getDiaryByDate(diaryModel.partitionKey, date);
             if (result) return `日付が重複しています。(${date})`;
 
             // diaryModelをDBに登録
