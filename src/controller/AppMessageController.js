@@ -48,7 +48,7 @@ class AppMessageController {
     async handleEditedMessage (messageRaw, logger) {
         logger.info("handleEditedMessageが実行されました");
         const message = messageRaw.message;
-        const channelId = messageRaw.channel;
+        message.channel = messageRaw.channel;
         
         if (this.isInThread(message)) {
             // スレッド投稿を編集した時
