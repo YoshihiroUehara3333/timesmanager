@@ -8,7 +8,7 @@ const { NewTaskModal }   = require('../blockkit/NewTaskModal');
 const { PostMessage, GetPermalink, ViewsOpen } = require('../adaptor/slack/SlackApiRequest');
 
 class ThreadService {
-    constructor (postDataRepository, slackApiAdaptor) {
+    constructor ({postDataRepository, slackApiAdaptor}) {
         this.postDataRepository = postDataRepository;
         this.slackApiAdaptor = slackApiAdaptor;
     }

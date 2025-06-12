@@ -1,16 +1,10 @@
 // モジュール読み込み
 const { App, AwsLambdaReceiver }     = require('@slack/bolt');
-const { DynamoPostDataRepository }   = require('./repository/DynamoPostDataRepository');
+const { getDiContext }               = require('./di/Context');
 const { AppCommandController }       = require('./controller/AppCommandController');
 const { AppMessageController }       = require('./controller/AppMessageController');
 const { AppViewController }          = require('./controller/AppViewController');
 const { AppActionController }        = require('./controller/AppActionController');
-const { DiaryService }               = require('./service/DiaryService');
-const { ThreadService }              = require('./service/ThreadService');
-const { WorkReportService }          = require('./service/WorkReportService');
-const { OpenAiApiAdaptor }           = require('./adaptor/openai/OpenAiApiAdaptor');
-const { SlackApiAdaptor }            = require('./adaptor/slack/SlackApiAdaptor');
-const { ModalConst }                 = require('./constants/ModalConst');
 
 // アプリ初期化
 const awsLambdaReceiver = new AwsLambdaReceiver({
@@ -21,25 +15,14 @@ const app = new App({
     token    : process.env.SLACK_BOT_USER_ACCESS_TOKEN,
     receiver : awsLambdaReceiver,
 })
-
 const handler = awsLambdaReceiver.toHandler();
 
 // DI
-const postDataRepository    = new DynamoPostDataRepository();
-
-const aiApiAdaptor      = new OpenAiApiAdaptor();
-const slackApiAdaptor       = new SlackApiAdaptor(app.client);
-
-const diaryService          = new DiaryService(postDataRepository, aiApiAdaptor, slackApiAdaptor);
-const threadService         = new ThreadService(postDataRepository, slackApiAdaptor);
-const workReportService     = new WorkReportService(postDataRepository);
-
-const appCommandController  = new AppCommandController(threadService, workReportService, slackApiAdaptor);
-const appMessageController  = new AppMessageController(diaryService, threadService, slackApiAdaptor);
-const appViewController     = new AppViewController(threadService, workReportService, slackApiAdaptor);
-const appActionController   = new AppActionController(workReportService, slackApiAdaptor);
-
-
+const diContext = getDiContext(app.client);
+const appCommandController  = new AppCommandController(diContext.controller);
+const appMessageController  = new AppMessageController(diContext.controller);
+const appViewController     = new AppViewController(diContext.controller);
+const appActionController   = new AppActionController(diContext.controller);
 
 // スラッシュコマンド検知
 app.command(/.*/, async ({ ack, command, context, logger}) => {
@@ -79,6 +62,12 @@ app.action({ type: 'block_actions' }, async ({ack, body, logger}) => {
 
     await ack();
     await appActionController.dispatchActionId(body, logger);
+})
+
+
+app.event({ type: 'app_home_opened' }, async ({ack, body, event, logger}) => {
+    logger.info(`app.event\nevent:${JSON.stringify(event)}`);
+    await ack();
 })
 
 // ハンドラー生成

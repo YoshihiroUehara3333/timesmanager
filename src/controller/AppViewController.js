@@ -6,7 +6,7 @@ const { PostMessage } = require('../adaptor/slack/SlackApiRequest');
 class AppViewController {
     CALLBACK_ID = ModalConst.CALLBACK_ID;
 
-    constructor (threadService, workReportService, slackApiAdaptor) {
+    constructor ({threadService, workReportService, slackApiAdaptor}) {
         this.threadService      = threadService;
         this.workReportService  = workReportService;
         this.slackApiAdaptor    = slackApiAdaptor;
@@ -30,10 +30,9 @@ class AppViewController {
         } catch (error) {
             logger.error(error.stack);
             await this.slackApiAdaptor.send(new PostMessage(
-                    JSON.parse(view.private_metadata).user_id,
-                    error.toString()
-                )
-            )
+                JSON.parse(view.private_metadata).user_id,
+                error.toString()
+            ));
         }
     }
 

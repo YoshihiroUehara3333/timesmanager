@@ -8,7 +8,7 @@ const { POSTDATA }        = require('../constants/DynamoDB/PostData');
 const { PostMessage }     = require('../adaptor/slack/SlackApiRequest');
 
 class WorkReportService {
-    constructor (postDataRepository, slackApiAdaptor) {
+    constructor ({postDataRepository, slackApiAdaptor}) {
         this.postDataRepository = postDataRepository;
         this.slackApiAdaptor   = slackApiAdaptor;
     }
