@@ -8,7 +8,7 @@ const { PostMessage, GetPermalink } = require('../adaptor/slack/SlackApiRequest'
  * Slackメッセージから日報を処理・保存・更新・フィードバック生成するためのサービスクラス
  */
 class DiaryService {
-    constructor(postDataRepository, aiApiAdaptor, slackApiAdaptor) {
+    constructor({postDataRepository, aiApiAdaptor, slackApiAdaptor}) {
         this.postDataRepository = postDataRepository;
         this.openAiApiAdaptor = aiApiAdaptor;
         this.slackApiAdaptor = slackApiAdaptor;

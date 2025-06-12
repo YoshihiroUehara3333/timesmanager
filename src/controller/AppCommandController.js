@@ -2,10 +2,10 @@
 
 //モジュール読み込み
 const { SlackConst } = require('../constants/SlackConst');
-const { PostMessage, ViewsOpen } = require('../adaptor/slack/SlackApiRequest');
+const { PostMessage } = require('../adaptor/slack/SlackApiRequest');
 
 class AppCommandController {
-    constructor(threadService, workReportService, slackApiAdaptor){
+    constructor({threadService, workReportService, slackApiAdaptor}){
         this.threadService     = threadService;
         this.workReportService = workReportService;
         this.slackApiAdaptor   = slackApiAdaptor;

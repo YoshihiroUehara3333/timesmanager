@@ -4,7 +4,7 @@
 const { ModalConst } = require('../constants/ModalConst');
 
 class AppActionController {
-    constructor (workReportService, slackApiAdaptor) {
+    constructor ({workReportService, slackApiAdaptor}) {
         this.workReportService = workReportService;
         this.slackApiAdaptor   = slackApiAdaptor;
 

@@ -6,7 +6,7 @@ const { PostMessage } = require('../adaptor/slack/SlackApiRequest');
 class AppViewController {
     CALLBACK_ID = ModalConst.CALLBACK_ID;
 
-    constructor (threadService, workReportService, slackApiAdaptor) {
+    constructor ({threadService, workReportService, slackApiAdaptor}) {
         this.threadService      = threadService;
         this.workReportService  = workReportService;
         this.slackApiAdaptor    = slackApiAdaptor;

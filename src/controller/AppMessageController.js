@@ -6,7 +6,7 @@ const { RegexConst }  = require('../constants/RegexConst');
 const { PostMessage } = require('../adaptor/slack/SlackApiRequest');
 
 class AppMessageController {
-    constructor (diaryService, threadService, slackApiAdaptor) {
+    constructor ({diaryService, threadService, slackApiAdaptor}) {
         this.diaryService    = diaryService;
         this.threadService   = threadService;
         this.slackApiAdaptor = slackApiAdaptor;
@@ -56,7 +56,7 @@ class AppMessageController {
         } else if (this.isDiary(message)) {
             // 日記編集時
             logger.info("diaryService.processUpdateDiaryを実行");
-            return await this.diaryService.processUpdateDiary(message, channelId);
+            return await this.diaryService.processUpdateDiary(message);
         }
     }
 
