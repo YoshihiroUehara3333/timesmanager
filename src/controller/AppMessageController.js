@@ -72,7 +72,7 @@ class AppMessageController {
             }
         }
         // 壁スレッドの中身だった場合ThreadServiceを使ってDBにtextを保存する
-        return this.threadService.processNewThreadReply(message, logger);
+        return this.threadService.processNewThreadPost(message, logger);
     }
 
     // スレッド外部かつ、新規ポスト時
