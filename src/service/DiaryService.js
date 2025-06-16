@@ -10,7 +10,7 @@ const { PostMessage, GetPermalink } = require('../adaptor/slack/SlackApiRequest'
 class DiaryService {
     constructor({postDataRepository, aiApiAdaptor, slackApiAdaptor}) {
         this.postDataRepository = postDataRepository;
-        this.openAiApiAdaptor = aiApiAdaptor;
+        this.aiApiAdaptor = aiApiAdaptor;
         this.slackApiAdaptor = slackApiAdaptor;
     }
 
