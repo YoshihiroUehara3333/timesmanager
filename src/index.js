@@ -64,10 +64,9 @@ app.action({ type: 'block_actions' }, async ({ack, body, logger}) => {
     await appActionController.dispatchActionId(body, logger);
 })
 
-
+// homeタブを開いたとき
 app.event({ type: 'app_home_opened' }, async ({ack, body, event, logger}) => {
     logger.info(`app.event\nevent:${JSON.stringify(event)}`);
-    await ack();
 })
 
 // ハンドラー生成

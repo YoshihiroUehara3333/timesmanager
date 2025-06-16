@@ -7,12 +7,12 @@ const { WorkReportService }          = require('../service/WorkReportService');
 
 exports.getDiContext = (boltAppClient) => {
     const postDataRepository = new DynamoPostDataRepository();
-    const openAiApiAdaptor   = new OpenAiApiAdaptor();
+    const aiApiAdaptor       = new OpenAiApiAdaptor();
     const slackApiAdaptor    = new SlackApiAdaptor(boltAppClient);
 
     const serviceContext = {
         postDataRepository,
-        openAiApiAdaptor,
+        aiApiAdaptor,
         slackApiAdaptor,
     }
 
