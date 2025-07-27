@@ -123,7 +123,7 @@ class ViewsPublish {
     toPayload () {
         let payload = {};
         payload.user_id = this._userId;
-        payload.view       = this._view;
+        payload.view    = this._view;
         return payload;
     }
 }
