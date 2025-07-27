@@ -7,3 +7,6 @@ docker-compose_local.yml
 .dockerignore
 
 README.md
+
+springboot/.metadata/*
+springboot/Servers
