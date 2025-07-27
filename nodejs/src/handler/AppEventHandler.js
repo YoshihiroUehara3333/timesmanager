@@ -25,7 +25,7 @@ class AppEventHandler {
         } catch (error) {
             logger.error(error.stack);
             await this.slackApiAdaptor.send(new PostMessage(
-                event.user_id,
+                event.user,
                 error.toString()
             ));
         }
@@ -35,7 +35,7 @@ class AppEventHandler {
         logger.info('updateAppHomeを実行');
 
         this.slackApiAdaptor.send(new ViewsPublish(
-            event.user_id,
+            event.user,
             AppHomeView
         ));
 
