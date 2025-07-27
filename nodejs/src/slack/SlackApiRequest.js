@@ -115,8 +115,8 @@ class ViewsPublish {
         if (!this._userId || typeof this._userId !== 'string') {
             throw new Error("SlackViewsPublishRequest: userId is required and must be a string.");
         }
-        if (!this._view) {
-            throw new Error("SlackViewsPublishRequest: view is required");
+        if (!this._view || typeof this._view !== 'object') {
+            throw new Error("SlackViewsOpenRequest: view is required and must be a object.");
         }
     }
 

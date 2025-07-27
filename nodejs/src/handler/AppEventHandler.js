@@ -36,7 +36,7 @@ class AppEventHandler {
 
         this.slackApiAdaptor.send(new ViewsPublish(
             event.user,
-            AppHomeView
+            AppHomeView()
         ));
 
         return undefined;
