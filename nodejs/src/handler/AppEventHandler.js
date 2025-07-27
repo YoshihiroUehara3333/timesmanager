@@ -34,10 +34,10 @@ class AppEventHandler {
     async updateAppHome(event, logger){
         logger.info('updateAppHomeを実行');
 
-        this.slackApiAdaptor.send(new ViewsPublish({
-            userId: event.user_id,
-            view  : AppHomeView
-        }));
+        this.slackApiAdaptor.send(new ViewsPublish(
+            event.user_id,
+            AppHomeView
+        ));
     }
 };
 
