@@ -1,7 +1,7 @@
 // app.event受け取り時
 
 const { AppHomeView } = require("../blockkit/AppHomeView");
-const { ViewsPublish } = require("../slack/SlackApiRequest");
+const { ViewsPublish, PostMessage } = require("../slack/SlackApiRequest");
 
 class AppEventHandler {
     constructor
@@ -25,7 +25,7 @@ class AppEventHandler {
         } catch (error) {
             logger.error(error.stack);
             await this.slackApiAdaptor.send(new PostMessage(
-                JSON.parse(view.private_metadata).user_id,
+                event.user_id,
                 error.toString()
             ));
         }
@@ -38,6 +38,8 @@ class AppEventHandler {
             event.user_id,
             AppHomeView
         ));
+
+        return undefined;
     }
 };
 
