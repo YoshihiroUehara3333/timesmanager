@@ -23,11 +23,6 @@ const PK_POSTFIX = {
 }
 
 const GSI = {
-    ByDateAndSortKeyPrefix: {
-        NAME : 'GSI_ByDate_SortKeyPrefix',
-        PK   : ATTR_NAMES.DATE,
-        SK   : ATTR_NAMES.SORT_KEY,
-    },
     ByPartitionKeyAndThreadTs: {
         NAME : 'GSI_ByPartitionKeyAndThreadTs',
         PK   : ATTR_NAMES.PARTITION_KEY,

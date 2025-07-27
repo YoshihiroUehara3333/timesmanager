@@ -34,7 +34,19 @@ class DynamoPostDataRepository {
             return getResult.Item || null;
 
         } catch (error) {
-            console.error("DynamoDB登録時エラー:", error);
+            console.error("DynamoDB取得時エラー:", error);
+            throw new Error(error.message, { cause: error });
+        }
+    }
+
+    // dateからSortKeyを生成し、Threadを1件取得する
+    async getThreadByDate (partitionKey, date) {
+        const sortKey = `${date}#`;
+        try {
+            const getResult = await this._getItem (partitionKey, sortKey);
+            return getResult.Item || null;
+        } catch (error) {
+            console.error("DynamoDB取得時エラー:", error);
             throw new Error(error.message, { cause: error });
         }
     }
@@ -59,11 +71,9 @@ class DynamoPostDataRepository {
     // dateとsort_keyで絞り込みをかける
     // 絞り込みはServiceクラスで行う
     // GSI使用
-    async queryByDateAndSortKeyPrefix (date, prefix) {
-        const {NAME, PK, SK} = POSTDATA.GSI.ByDateAndSortKeyPrefix;
-        
+    async queryByDateAndSortKeyPostfix (date, postfix) {
         try {
-            return await this._queryByIndexUsingBeginsWithSortKeyPrefix(NAME, PK, SK, date, prefix);
+            return await this._queryByPartitionKeyAndSortKey(NAME, PK, SK, date, prefix);
         } catch (error) {
             console.error("DynamoDB問い合わせ時エラー:", error);
             throw new Error(error.message);

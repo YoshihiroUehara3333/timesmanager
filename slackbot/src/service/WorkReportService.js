@@ -15,13 +15,16 @@ class WorkReportService {
     
     // 新規タスク入力用モーダルのBlockkitを作成し返却する
     async processNewTaskCommand (command) {
-        const date   = new Date().toFormat("YYYY-MM-DD"); // YYYY-MM-DD
-        const thread = this.postDataRepository.queryByDateAndSortKeyPrefix(date, POSTDATA.PK_POSTFIX.THREAD);
+        const date   = new Date().toFormat("YYYY-MM-DD");
+
+        // DBからスレッド情報を取得
+        const partitionKey = `${command.user_id}#${POSTDATA.PK_POSTFIX.THREAD}`;
+        const thread = this.postDataRepository.getThreadByDate(partitionKey, date);
         console.log(JSON.stringify(thread));
         return {
             slackRequest: new ViewsOpen(
                 command.trigger_id,
-                NewTaskModal(channel_id, postResult.ts, date, 1)
+                NewTaskModal(command.channel_id, thread.ts, date, 1, command.user_id)
         )};
     }
 

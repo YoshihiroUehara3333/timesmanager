@@ -62,7 +62,7 @@ class AppCommandHandler{
         }
     }
 
-    // /diary実行時
+    // /managediary実行時
     async handleManageDiary (command, logger) {
         return null;
     }
