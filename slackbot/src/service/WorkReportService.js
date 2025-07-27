@@ -17,13 +17,14 @@ class WorkReportService {
     async createNewTask (command, thread) {
         const date   = new Date().toFormat("YYYY-MM-DD");
 
-        // DBからスレッド情報を取得
+        // DBから情報を取得
         if(!thread){
             const partitionKey = `${command.user_id}#${POSTDATA.PK_POSTFIX.THREAD}`;
             const thread = this.postDataRepository.getThreadByDate(partitionKey, date);
             console.log(JSON.stringify(thread));
         }
 
+        const partitionKey =  `${command.user_id}#${POSTDATA.PK_POSTFIX.WORKREPORT}`;
         let latestSerial = await this.postDataRepository.queryWorkReportLatestSerial(partitionKey, date);
 
         return {
