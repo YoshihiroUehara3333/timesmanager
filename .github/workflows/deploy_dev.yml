@@ -5,7 +5,7 @@ on:
     branches:
       - feature
     paths:
-      - 'nodejs/**'
+      - 'slackbot/**'
 
 permissions:
   id-token: write
