@@ -16,7 +16,7 @@ class WorkReportService {
     // 新規タスク入力用モーダルのBlockkitを作成し返却する
     async processNewTaskCommand (command) {
         const date   = new Date().toFormat("YYYY-MM-DD"); // YYYY-MM-DD
-        const thread = this.postDataRepository.queryByDateAndPartitionKeyPostfix(date, POSTDATA.PK_POSTFIX.THREAD);
+        const thread = this.postDataRepository.queryByDateAndSortKeyPrefix(date, POSTDATA.PK_POSTFIX.THREAD);
         console.log(JSON.stringify(thread));
         return {
             slackRequest: new ViewsOpen(
