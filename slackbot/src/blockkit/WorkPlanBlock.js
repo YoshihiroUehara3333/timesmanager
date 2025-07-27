@@ -18,7 +18,7 @@ exports.WorkPlanBlock = (userId, taskName, goal, selectedTime, memo) => ([
             },
             {
                 type : "mrkdwn",
-                text : `*完了条件*\n${goal}`
+                text : `*完了目標*\n${goal}`
             },
             {
                 type : "mrkdwn",

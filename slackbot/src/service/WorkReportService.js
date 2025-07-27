@@ -5,7 +5,7 @@ const { NewTaskModal }    = require('../blockkit/NewTaskModal');
 const { WorkPlanBlock }   = require('../blockkit/WorkPlanBlock');
 const { WorkReportModel } = require('../model/WorkReportModel');
 const { POSTDATA }        = require('../constants/DynamoDB/PostData');
-const { PostMessage }     = require('../slack/SlackApiRequest');
+const { PostMessage, ViewsOpen }     = require('../slack/SlackApiRequest');
 
 class WorkReportService {
     constructor ({postDataRepository, slackApiAdaptor}) {
@@ -18,9 +18,11 @@ class WorkReportService {
         const date   = new Date().toFormat("YYYY-MM-DD"); // YYYY-MM-DD
         const thread = this.postDataRepository.queryByDateAndPartitionKeyPostfix(date, POSTDATA.PK_POSTFIX.THREAD);
         console.log(JSON.stringify(thread));
-
-        // DB保存
-        return NewTaskModal(channel_id, postResult.ts, date, 1);
+        return {
+            slackRequest: new ViewsOpen(
+                command.trigger_id,
+                NewTaskModal(channel_id, postResult.ts, date, 1)
+        )};
     }
 
     // /makethread入力時のNewTaskモーダル入力値を取得し、Blocksを返す

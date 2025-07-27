@@ -39,10 +39,11 @@ class DiaryService {
             // httpStatusCodeを判断しpostMessage用のtextを作成
             const httpStatusCode = response?.$metadata.httpStatusCode;
             const postText = this.checkHttpStatusCode(httpStatusCode, '登録', diaryModel);
-            return new PostMessage(
-                message.user,
-                postText
-            );
+            return {
+                slackRequest: new PostMessage(
+                    message.user,
+                    postText
+            )};
         } catch (error) {
             throw new Error(error.message, {cause: error});
         }
@@ -77,10 +78,11 @@ class DiaryService {
             const postText = this.checkHttpStatusCode(httpStatusCode, '登録', diaryModel);
 
             // return
-            return new PostMessage(
-                message.user,
-                postText
-            );
+            return {
+                slackRequest: new PostMessage(
+                    message.user,
+                    postText
+            )};
         } catch (error) {
             throw new Error(error.message, {cause: error});
         }
@@ -107,11 +109,12 @@ class DiaryService {
 
             // フィードバックを生成してreturn
             const feedbackText = await this.aiApiAdaptor.generateFeedback(diary);
-            return new PostMessage(
-                channelId,
-                feedbackText,
-                threadTs
-            );
+            return {
+                slackRequest: new PostMessage(
+                    channelId,
+                    feedbackText,
+                    threadTs
+            )};
         } catch (error) {
             throw new Error(`フィードバック生成中にエラーが発生しました。${error.message}`, { cause: error });
         }

@@ -54,7 +54,12 @@ class AppCommandHandler{
 
     // /warmup実行時
     async handleWarmUp (command, logger) {
-        return new PostMessage(command.user_id, 'warmupが実行されました');
+        return {
+            slackRequest: new PostMessage(
+                command.user_id,
+                'warmupが実行されました'
+            )
+        }
     }
 
     // /diary実行時
