@@ -1,6 +1,6 @@
 // モジュール読み込み
 const { App, AwsLambdaReceiver }     = require('@slack/bolt');
-const { getDiContext }               = require('./di/Context');
+const { getDiContext }               = require('./di/getDiContext');
 const { AppCommandHandler }       = require('./handler/AppCommandHandler');
 const { AppMessageHandler }       = require('./handler/AppMessageHandler');
 const { AppViewHandler }          = require('./handler/AppViewHandler');
