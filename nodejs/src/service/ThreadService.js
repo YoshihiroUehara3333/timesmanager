@@ -5,7 +5,7 @@ require('date-utils');
 const { ThreadModel }       = require('../model/ThreadModel');
 const { PostModel }        = require('../model/PostModel');
 const { NewTaskModal }   = require('../blockkit/NewTaskModal');
-const { PostMessage, GetPermalink, ViewsOpen } = require('../adaptor/slack/SlackApiRequest');
+const { PostMessage, GetPermalink, ViewsOpen } = require('../slack/SlackApiRequest');
 
 class ThreadService {
     constructor ({postDataRepository, slackApiAdaptor}) {
