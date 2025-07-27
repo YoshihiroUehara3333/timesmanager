@@ -3,33 +3,29 @@ require('date-utils');
 const { ModalConst } = require('../constants/ModalConst');
 const { PostMessage } = require('../adaptor/slack/SlackApiRequest');
 
-class AppViewHanler {
+class AppViewController {
     CALLBACK_ID = ModalConst.CALLBACK_ID;
 
-    constructor ({
-        threadService, 
-        workReportService, 
-        slackApiAdaptor
-    }) {
+    constructor ({threadService, workReportService, slackApiAdaptor}) {
         this.threadService      = threadService;
         this.workReportService  = workReportService;
         this.slackApiAdaptor    = slackApiAdaptor;
 
-        this.dispatcher = {
+        this.callbackDispatcher = {
             [`${this.CALLBACK_ID.NEWTASK}`]  : this.handleNewTaskModalCallback.bind(this),
+            'default'                        : this.handleDefault.bind(this),
         }
     }
 
-    // handle
-    async handle(view, logger){
+    async handleModalCallback(view, logger) {
         const callbackId = view.callback_id;
         logger.info(`callbackId:${callbackId}`);
         
         try {
-            const handler = this.dispatcher[callbackId];
-            const result = await handler(view, logger);
-            if (result?.slackRequest) {
-                await this.slackApiAdaptor.send(result.slackRequest);
+            const handler = this.callbackDispatcher[callbackId] || this.callbackDispatcher['default'];
+            const slackRequest = await handler(view, logger);
+            if (slackRequest) {
+                await this.slackApiAdaptor.send(slackRequest);
             }
         } catch (error) {
             logger.error(error.stack);
@@ -58,6 +54,9 @@ class AppViewHanler {
         // 入力データをDBに保存
         return await this.workReportService.saveWorkReportData(view, metadata);
     }
+
+    async handleDefault (view, logger) {
+    }
 }
 
-exports.AppViewHanler = AppViewHanler ;
+exports.AppViewController = AppViewController;

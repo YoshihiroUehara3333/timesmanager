@@ -42,19 +42,17 @@ class ThreadService {
             // httpStatusCodeをチェックしてreturn
             const httpStatusCode = response.$metadata?.httpStatusCode;
             if (httpStatusCode === 200) {
-                return {
-                    status : true,
-                    slackRequest : new ViewsOpen(
-                        command.trigger_id,
-                        NewTaskModal(channelId, postResult.ts, date, 1, userId)
-                    )
-                }
+                return new ViewsOpen(
+                    command.trigger_id,
+                    NewTaskModal(channelId, postResult.ts, date, 1, userId)
+                );
             } else {
                 throw new Error(
                     `スレッド情報をDB登録時エラー。/n`
                     +`httpStatusCode=${httpStatusCode}`
                 )
             }
+
         } catch (error) {
             throw new Error(
                 `/makethread実行中にエラーが起きました。${error.message}`
