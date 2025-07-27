@@ -6,9 +6,8 @@ on:
       - feature
     paths-ignore:
       - 'README.md'
-      - 'docker-compose_local.yml'
-      - 'Dockerfile'
-      - 'springboot'
+      - 'springboot/'
+      - '.env.sample'
 
 permissions:
   id-token: write
