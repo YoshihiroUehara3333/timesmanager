@@ -18,7 +18,7 @@ class AppEventHandler {
     async handle(body, event, logger) {
         try {
             const handler = this.dispatcher[event.type];
-            const result = await handler(view, logger);
+            const result = await handler(event, logger);
             if (result?.slackRequest) {
                 await this.slackApiAdaptor.send(result.slackRequest);
             }
