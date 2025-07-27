@@ -24,7 +24,7 @@ const appCommandHandler  = new AppCommandHandler(diContext.handler);
 const appMessageHandler  = new AppMessageHandler(diContext.handler);
 const appViewHandler     = new AppViewHandler(diContext.handler);
 const appActionHandler   = new AppActionHandler(diContext.handler);
-const AppEventHandler    = new AppEventHandler(diContext.handler);
+const appEventHandler    = new AppEventHandler(diContext.handler);
 
 // スラッシュコマンド検知
 app.command(/.*/, async ({ack, command, context, logger}) => {
@@ -64,7 +64,9 @@ app.action({ type: 'block_actions' }, async ({ack, body, logger}) => {
 
 // homeタブを開いたとき
 app.event({ type: 'app_home_opened' }, async ({ack, body, event, logger}) => {
-    logger.info(`app.event\nevent:${JSON.stringify(event)}`);
+    logger.info(`app.event\nevent:${JSON.stringify(event)}/nbody:${JSON.stringify(body)}\n`);
+
+    await appEventHandler.handle(event, logger);
 })
 
 // ハンドラー生成
