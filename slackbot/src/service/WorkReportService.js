@@ -14,17 +14,22 @@ class WorkReportService {
     }
     
     // 新規タスク入力用モーダルのBlockkitを作成し返却する
-    async processNewTaskCommand (command) {
+    async createNewTask (command, thread) {
         const date   = new Date().toFormat("YYYY-MM-DD");
 
         // DBからスレッド情報を取得
-        const partitionKey = `${command.user_id}#${POSTDATA.PK_POSTFIX.THREAD}`;
-        const thread = this.postDataRepository.getThreadByDate(partitionKey, date);
-        console.log(JSON.stringify(thread));
+        if(!thread){
+            const partitionKey = `${command.user_id}#${POSTDATA.PK_POSTFIX.THREAD}`;
+            const thread = this.postDataRepository.getThreadByDate(partitionKey, date);
+            console.log(JSON.stringify(thread));
+        }
+
+        let latestSerial = await this.postDataRepository.queryWorkReportLatestSerial(partitionKey, date);
+
         return {
             slackRequest: new ViewsOpen(
                 command.trigger_id,
-                NewTaskModal(command.channel_id, thread.ts, date, 1, command.user_id)
+                NewTaskModal(command.channel_id, thread.ts, date, latestSerial, command.user_id)
         )};
     }
 

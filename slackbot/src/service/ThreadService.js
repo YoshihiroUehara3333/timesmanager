@@ -44,10 +44,7 @@ class ThreadService {
             if (httpStatusCode === 200) {
                 return {
                     status : true,
-                    slackRequest : new ViewsOpen(
-                        command.trigger_id,
-                        NewTaskModal(channelId, postResult.ts, date, 1, userId)
-                    )
+                    thread : postResult.ts
                 }
             } else {
                 throw new Error(
