@@ -17,7 +17,7 @@ class DiaryService {
     /**
      *  日報が新規投稿された際の処理を行う
      *  @param   {Object} message - Slack APIから受け取ったメッセージオブジェクト
-     *  @returns {PostMessage}    - postMessageに引き渡すrequest DTO
+     *  @returns {ServiceResult} object   - Service実行結果を格納したobject
      */
     async processNewDiaryEntry (message) {
         // DiaryModelを作成

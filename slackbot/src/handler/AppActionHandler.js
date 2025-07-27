@@ -2,6 +2,7 @@
 
 //モジュール読み込み
 const { ModalConst } = require('../constants/ModalConst');
+const { PostMessage } = require('../slack/SlackApiRequest');
 
 class AppActionHandler {
     constructor ({
