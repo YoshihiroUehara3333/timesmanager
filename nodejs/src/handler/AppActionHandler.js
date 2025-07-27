@@ -4,29 +4,36 @@
 const { ModalConst } = require('../constants/ModalConst');
 
 class AppActionController {
-    constructor ({workReportService, slackApiAdaptor}) {
+    constructor ({
+        workReportService,
+        slackApiAdaptor
+    }) {
         this.workReportService = workReportService;
         this.slackApiAdaptor   = slackApiAdaptor;
 
-        // dispatch用のList
-        this.actionIdDispatcher = {
+        this.dispatcher = {
             [`${ModalConst.ACTION_ID.WORKREPORT.UPDATE}`]   : this.handleWorkReportUpdate.bind(this),
             [`${ModalConst.ACTION_ID.WORKREPORT.FINISH}`]   : this.handleWorkReportFinish.bind(this),
             'default'                                       : this.handleDefault.bind(this),
         }
     }
 
-    // actions.action_idによってメソッド振り分け
-    async dispatchActionId (body, logger) {
+    async handle(body, logger) {
         const actions = body.actions[0];
-
         logger.info(`action_id:${actions.action_id}`);
 
-        const actionIdHandler = 
-            this.actionIdDispatcher[actions.action_id] 
-            || this.actionIdDispatcher['default'];
-
-        return actionIdHandler(body, logger);
+        const handler = this.dispatcher[actions.action_id] || this.dispatcher['default'];
+        try {
+            const result = await handler(body, logger);
+            if (result?.slackRequest) {
+                await this.slackApiAdaptor.send(slackRequest);
+            }
+        } catch (error) {
+            logger.error(error.stack);
+            await this.slackApiAdaptor.send(
+                new PostMessage(command.user_id, error.toString())
+            );
+        }
     }
 
     async handleWorkReportUpdate(body, logger){

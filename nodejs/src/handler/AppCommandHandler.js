@@ -18,7 +18,8 @@ class AppCommandHandler{
         this.dispatcher = {
             [`${SlackConst.APPCOMMANDS.MAKETHREAD}`]   : this.handleMakethread.bind(this),
             [`${SlackConst.APPCOMMANDS.NEWTASK}`]      : this.handleNewTask.bind(this),
-            [`${SlackConst.APPCOMMANDS.WARMUP}`]       : this.handleWarmUp.bind(this)
+            [`${SlackConst.APPCOMMANDS.WARMUP}`]       : this.handleWarmUp.bind(this),
+            [`${SlackConst.APPCOMMANDS.MANAGEDIARY}`]  : this.handleManageDiary.bind(this)
         }
     }
 
@@ -27,8 +28,10 @@ class AppCommandHandler{
 
         const handler = this.dispatcher[command.command];
         try {
-            const slackRequest = await handler(command, logger);
-            await this.slackApiAdaptor.send(slackRequest);
+            const result = await handler(command, logger);
+            if (result?.slackRequest) {
+                await this.slackApiAdaptor.send(slackRequest);
+            }
         } catch (error) {
             logger.error(error.stack);
             await this.slackApiAdaptor.send(
@@ -40,8 +43,7 @@ class AppCommandHandler{
     // /makethread実行時
     async handleMakethread (command, logger) {
         logger.debug(`handleMakethreadを実行`);
-        result = await this.threadService.processNewThreadEntry(command);
-        
+        return await this.threadService.processNewThreadEntry(command);
     }
 
     // /newtask実行時
@@ -53,6 +55,11 @@ class AppCommandHandler{
     // /warmup実行時
     async handleWarmUp (command, logger) {
         return new PostMessage(command.user_id, 'warmupが実行されました');
+    }
+
+    // /diary実行時
+    async handleManageDiary (command, logger) {
+        return null;
     }
 };
 
