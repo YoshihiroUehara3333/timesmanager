@@ -6,7 +6,7 @@
 
 // モジュール読み込み
 const { getOpenAiClient } = require('./OpenAIClientSingleton.js')
-const { DiaryUtils } = require("../../utility/DiaryUtils.js");
+const { DiaryUtils } = require("../utility/DiaryUtils.js");
 const { Prompts } = require("./prompts/Prompts");
 
 class OpenAiApiAdaptor {
