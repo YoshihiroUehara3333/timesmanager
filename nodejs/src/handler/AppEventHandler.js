@@ -12,8 +12,15 @@ class AppEventHandler {
         }
     }
 
-    async handle(event, logger) {
-        const eventType = event.type
+    async handle(body, event, logger) {
+        const eventType = event.type;
+        const handler = this.dispatcher[eventType];
+
+        handler(event, logger);
+    }
+
+    async updateAppHome(event, logger){
+
     }
 };
 

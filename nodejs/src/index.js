@@ -66,7 +66,7 @@ app.action({ type: 'block_actions' }, async ({ack, body, logger}) => {
 app.event({ type: 'app_home_opened' }, async ({ack, body, event, logger}) => {
     logger.info(`app.event\nevent:${JSON.stringify(event)}/nbody:${JSON.stringify(body)}\n`);
 
-    await appEventHandler.handle(event, logger);
+    await appEventHandler.handle(body, event, logger);
 })
 
 // ハンドラー生成
