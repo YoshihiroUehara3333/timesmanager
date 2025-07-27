@@ -8,15 +8,12 @@ class AppEventHandler {
         this.slackApiAdaptor   = slackApiAdaptor;
 
         this.dispatcher = {
-            [`${SlackConst.APPCOMMANDS.MAKETHREAD}`]   : this.handleMakethread.bind(this),
-            [`${SlackConst.APPCOMMANDS.NEWTASK}`]      : this.handleNewTask.bind(this),
-            [`${SlackConst.APPCOMMANDS.WARMUP}`]       : this.handleWarmUp.bind(this),
-            [`${SlackConst.APPCOMMANDS.MANAGEDIARY}`]  : this.handleManageDiary.bind(this)
+            'app_home_opened' : this.updateAppHome.bind(this),
         }
     }
 
     async handle(event, logger) {
-        
+        const eventType = event.type
     }
 };
 
