@@ -15,7 +15,7 @@ class AppEventHandler {
         }
     }
 
-    async handle(event, logger) {
+    async handle(body, event, logger) {
         try {
             const handler = this.dispatcher[event.type];
             const result = await handler(view, logger);
