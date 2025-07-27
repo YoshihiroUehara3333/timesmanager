@@ -20,7 +20,7 @@ exports.getDiContext = (boltAppClient) => {
     const threadService         = new ThreadService(serviceContext);
     const workReportService     = new WorkReportService(serviceContext);
 
-    const controllerContext = {
+    const handlerContext = {
         diaryService,
         threadService,
         workReportService,
@@ -29,6 +29,6 @@ exports.getDiContext = (boltAppClient) => {
 
     return {
         service    : serviceContext,
-        controller : controllerContext,
+        handler : handlerContext,
     }
 };

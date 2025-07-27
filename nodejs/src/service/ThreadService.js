@@ -17,9 +17,9 @@ class ThreadService {
     // その後WorkReportを作成する
     async processNewThreadEntry (command) {
         // 値を取得
-        let channelId = command.channel_id;
-        let userId = command.user_id;
-        let date = new Date().toFormat("YYYY-MM-DD");
+        const channelId = command.channel_id;
+        const userId = command.user_id;
+        const date = new Date().toFormat("YYYY-MM-DD");
 
         try {
             // timesチャンネルにスレッド作成
@@ -29,7 +29,7 @@ class ThreadService {
                 text
             ));
             
-            // ThreadModelを作成
+            // Modelを作成
             let permalink = await this.slackApiAdaptor.send(new GetPermalink(
                 channelId, 
                 postResult.ts

@@ -4,23 +4,28 @@
 const { SlackConst } = require('../constants/SlackConst');
 const { PostMessage } = require('../adaptor/slack/SlackApiRequest');
 
-class AppCommandController {
-    constructor({threadService, workReportService, slackApiAdaptor}){
+class AppCommandHandler{
+    constructor
+    ({
+        threadService, 
+        workReportService, 
+        slackApiAdaptor
+    }){
         this.threadService     = threadService;
         this.workReportService = workReportService;
         this.slackApiAdaptor   = slackApiAdaptor;
 
-        this.appCommandDispatcher = {
+        this.dispatcher = {
             [`${SlackConst.APPCOMMANDS.MAKETHREAD}`]   : this.handleMakethread.bind(this),
             [`${SlackConst.APPCOMMANDS.NEWTASK}`]      : this.handleNewTask.bind(this),
             [`${SlackConst.APPCOMMANDS.WARMUP}`]       : this.handleWarmUp.bind(this)
         }
     }
 
-    async handleAppCommand (command, logger) {
+    async handle (command, logger) {
         logger.info(`command:${command.command}`);
 
-        const handler = this.appCommandDispatcher[command.command];
+        const handler = this.dispatcher[command.command];
         try {
             const slackRequest = await handler(command, logger);
             await this.slackApiAdaptor.send(slackRequest);
@@ -35,7 +40,8 @@ class AppCommandController {
     // /makethread実行時
     async handleMakethread (command, logger) {
         logger.debug(`handleMakethreadを実行`);
-        return await this.threadService.processNewThreadEntry(command);
+        result = await this.threadService.processNewThreadEntry(command);
+        
     }
 
     // /newtask実行時
@@ -50,4 +56,4 @@ class AppCommandController {
     }
 };
 
-exports.AppCommandController = AppCommandController;
+exports.AppCommandHandler = AppCommandHandler;

@@ -1,10 +1,10 @@
 // モジュール読み込み
 const { App, AwsLambdaReceiver }     = require('@slack/bolt');
 const { getDiContext }               = require('./di/Context');
-const { AppCommandController }       = require('./controller/AppCommandController');
-const { AppMessageController }       = require('./controller/AppMessageController');
-const { AppViewController }          = require('./controller/AppViewController');
-const { AppActionController }        = require('./controller/AppActionController');
+const { AppCommandHandler }       = require('./handler/AppCommandHandler');
+const { AppMessageHandler }       = require('./handler/AppMessageHandler');
+const { AppViewHandler }          = require('./handler/AppViewHandler');
+const { AppActionHandler }        = require('./handler/AppActionHandler');
 
 // アプリ初期化
 const awsLambdaReceiver = new AwsLambdaReceiver({
@@ -19,10 +19,10 @@ const handler = awsLambdaReceiver.toHandler();
 
 // DI
 const diContext = getDiContext(app.client);
-const appCommandController  = new AppCommandController(diContext.controller);
-const appMessageController  = new AppMessageController(diContext.controller);
-const appViewController     = new AppViewController(diContext.controller);
-const appActionController   = new AppActionController(diContext.controller);
+const appCommandHandler  = new AppCommandHandler(diContext.handler);
+const appMessageHandler  = new AppMessageHandler(diContext.handler);
+const appViewHandler     = new AppViewHandler(diContext.handler);
+const appActionHandler   = new AppActionHandler(diContext.handler);
 
 // スラッシュコマンド検知
 app.command(/.*/, async ({ ack, command, context, logger}) => {
@@ -34,7 +34,7 @@ app.command(/.*/, async ({ ack, command, context, logger}) => {
     };
     
     await ack();
-    await appCommandController.handleAppCommand(command, logger);
+    await appCommandHandler.handle(command, logger);
 })
 
 // メッセージ検知
@@ -45,7 +45,7 @@ app.message(async ({ message, context, logger}) => {
         return; // リトライ以降のリクエストは弾く
     };
 
-    await appMessageController.handleAppMessage(message, logger);
+    await appMessageHandler.handle(message, logger);
 })
 
 // モーダルの「送信」押下時
@@ -53,7 +53,7 @@ app.view({ type: 'view_submission' }, async ({ ack, body, view, logger}) => {
     logger.info(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`);
 
     await ack();
-    await appViewController.handleModalCallback(view, logger);
+    await appViewHandler.handle(view, logger);
 })
 
 // action受信
@@ -61,7 +61,7 @@ app.action({ type: 'block_actions' }, async ({ack, body, logger}) => {
     logger.info(`app.action\nbody:${JSON.stringify(body)}`);
 
     await ack();
-    await appActionController.dispatchActionId(body, logger);
+    await appActionHandler.handle(body, logger);
 })
 
 // homeタブを開いたとき
