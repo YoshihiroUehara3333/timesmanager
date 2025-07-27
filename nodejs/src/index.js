@@ -5,7 +5,7 @@ const { AppCommandHandler }       = require('./handler/AppCommandHandler');
 const { AppMessageHandler }       = require('./handler/AppMessageHandler');
 const { AppViewHandler }          = require('./handler/AppViewHandler');
 const { AppActionHandler }        = require('./handler/AppActionHandler');
-const { AppEventHandler, AppEventHandler }        = require('./handler/AppEventHandler');
+const { AppEventHandler }        = require('./handler/AppEventHandler');
 
 // アプリ初期化
 const awsLambdaReceiver = new AwsLambdaReceiver({
