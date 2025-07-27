@@ -47,6 +47,7 @@ class SlackApiAdaptor {
 
     async viewsPublish (request) {
         try {
+            console.log(request.toPayload());
             return await this.client.views.publish(request.toPayload());
         } catch (error) {
             throw new Error (error.message, {cause: error});
