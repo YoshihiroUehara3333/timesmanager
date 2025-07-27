@@ -15,6 +15,7 @@ class WorkReportService {
     
     // 新規タスク入力用モーダルのBlockkitを作成し返却する
     async createNewTask (command, thread) {
+        logger.debug(`createNewTaskを実行`);
         const date   = new Date().toFormat("YYYY-MM-DD");
 
         // DBから情報を取得

@@ -43,13 +43,13 @@ class AppCommandHandler{
     // /makethread実行時
     async handleMakethread (command, logger) {
         logger.debug(`handleMakethreadを実行`);
-        result = await this.threadService.processNewThreadEntry(command);
-        return await this.workReportService.createNewTask(command, result.thread);
+        const result = await this.threadService.processNewThreadEntry(command);
+        return await this.workReportService.createNewTask(command, result?.thread);
     }
 
     // /newtask実行時
     async handleNewTask (command, logger) {
-        logger.debug(`handleMakethreadを実行`);
+        logger.debug(`handleNewTaskを実行`);
         return await this.workReportService.createNewTask(command, undefined);
     }
 
