@@ -4,10 +4,8 @@ on:
   push:
     branches:
       - feature
-    paths-ignore:
-      - 'README.md'
-      - 'springboot/'
-      - '.env.sample'
+    paths:
+      - 'nodejs/**'
 
 permissions:
   id-token: write
