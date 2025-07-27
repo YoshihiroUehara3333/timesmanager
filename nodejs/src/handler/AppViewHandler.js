@@ -20,7 +20,6 @@ class AppViewHandler {
         }
     }
 
-    // handle
     async handle(view, logger){
         const callbackId = view.callback_id;
         logger.info(`callbackId:${callbackId}`);

@@ -1,5 +1,8 @@
 // app.event受け取り時
 
+const { AppHomeView } = require("../blockkit/AppHomeView");
+const { ViewsPublish } = require("../slack/SlackApiRequest");
+
 class AppEventHandler {
     constructor
     ({
@@ -30,6 +33,11 @@ class AppEventHandler {
 
     async updateAppHome(event, logger){
         logger.info('updateAppHomeを実行');
+
+        this.slackApiAdaptor.send(new ViewsPublish({
+            userId: event.user_id,
+            view  : AppHomeView
+        }));
     }
 };
 

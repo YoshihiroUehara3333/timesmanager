@@ -1,5 +1,4 @@
 // Slack Clientのラッパー
-//
 
 class SlackApiAdaptor {
     constructor (client) {
@@ -8,7 +7,8 @@ class SlackApiAdaptor {
         this.methodDispatcher = {
             'PostMessage'  : this.postMessage.bind(this),
             'GetPermalink' : this.getPermalink.bind(this),
-            'ViewsOpen'    : this.viewsOpen.bind(this)
+            'ViewsOpen'    : this.viewsOpen.bind(this),
+            'ViewsPublish' : this.viewsPublish.bind(this),
         }
     }
 
@@ -40,6 +40,14 @@ class SlackApiAdaptor {
     async viewsOpen (request) {
         try {
             return await this.client.views.open(request.toPayload());
+        } catch (error) {
+            throw new Error (error.message, {cause: error});
+        }
+    }
+
+    async viewsPublish (request) {
+        try {
+            return await this.client.views.publish(request.toPayload());
         } catch (error) {
             throw new Error (error.message, {cause: error});
         }

@@ -98,7 +98,38 @@ class ViewsOpen {
     }
 }
 
+// views.publish
+// https://api.slack.com/methods/views.publish
+class ViewsPublish {
+    constructor (
+        userId,
+        view,
+    ) {
+        this._userId = userId;
+        this._view      = view;
+
+        this.validate();
+    }
+
+    validate() {
+        if (!this._userId || typeof this._userId !== 'string') {
+            throw new Error("SlackViewsPublishRequest: userId is required and must be a string.");
+        }
+        if (!this._view || typeof this._view !== 'object') {
+            throw new Error("SlackViewsPublishRequest: messageTs is required and must be a object.");
+        }
+    }
+
+    toPayload () {
+        let payload = {};
+        payload.trigger_id = this._triggerId;
+        payload.view       = this._view;
+        return payload;
+    }
+}
+
 // exports
 exports.PostMessage = PostMessage;
 exports.ViewsOpen = ViewsOpen;
 exports.GetPermalink = GetPermalink;
+exports.ViewsPublish = ViewsPublish;
