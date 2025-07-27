@@ -44,7 +44,7 @@ class AppCommandHandler{
     async handleMakethread (command, logger) {
         logger.debug(`handleMakethreadを実行`);
         result = await this.threadService.processNewThreadEntry(command);
-        await this.workReportService.createNewTask(command, result.thread);
+        return await this.workReportService.createNewTask(command, result.thread);
     }
 
     // /newtask実行時

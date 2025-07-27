@@ -21,7 +21,16 @@ class WorkReportService {
         if(!thread){
             const partitionKey = `${command.user_id}#${POSTDATA.PK_POSTFIX.THREAD}`;
             const thread = this.postDataRepository.getThreadByDate(partitionKey, date);
+
             console.log(JSON.stringify(thread));
+            if(!thread){
+                return {
+                status: false,
+                slackRequest: new PostMessage(
+                    command.user_id,
+                    '今日のスレッドがまだ作成されていません。'
+                )}
+            }
         }
 
         const partitionKey =  `${command.user_id}#${POSTDATA.PK_POSTFIX.WORKREPORT}`;
