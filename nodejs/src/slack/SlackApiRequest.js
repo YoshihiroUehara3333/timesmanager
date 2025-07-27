@@ -83,10 +83,10 @@ class ViewsOpen {
 
     validate() {
         if (!this._triggerId || typeof this._triggerId !== 'string') {
-            throw new Error("SlackViewsOpenRequest: channelId is required and must be a string.");
+            throw new Error("SlackViewsOpenRequest: triggerId is required and must be a string.");
         }
         if (!this._view || typeof this._view !== 'object') {
-            throw new Error("SlackViewsOpenRequest: messageTs is required and must be a object.");
+            throw new Error("SlackViewsOpenRequest: view is required and must be a object.");
         }
     }
 
@@ -115,8 +115,8 @@ class ViewsPublish {
         if (!this._userId || typeof this._userId !== 'string') {
             throw new Error("SlackViewsPublishRequest: userId is required and must be a string.");
         }
-        if (!this._view || typeof this._view !== 'object') {
-            throw new Error("SlackViewsPublishRequest: messageTs is required and must be a object.");
+        if (!this._view) {
+            throw new Error("SlackViewsPublishRequest: view is required");
         }
     }
 
