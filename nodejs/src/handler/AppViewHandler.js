@@ -3,7 +3,7 @@ require('date-utils');
 const { ModalConst } = require('../constants/ModalConst');
 const { PostMessage } = require('../adaptor/slack/SlackApiRequest');
 
-class AppViewHanler {
+class AppViewHandler {
     CALLBACK_ID = ModalConst.CALLBACK_ID;
 
     constructor ({
@@ -60,4 +60,4 @@ class AppViewHanler {
     }
 }
 
-exports.AppViewHanler = AppViewHanler ;
+exports.AppViewHandler = AppViewHandler ;

@@ -5,6 +5,7 @@ const { AppCommandHandler }       = require('./handler/AppCommandHandler');
 const { AppMessageHandler }       = require('./handler/AppMessageHandler');
 const { AppViewHandler }          = require('./handler/AppViewHandler');
 const { AppActionHandler }        = require('./handler/AppActionHandler');
+const { AppEventHandler, AppEventHandler }        = require('./handler/AppEventHandler');
 
 // アプリ初期化
 const awsLambdaReceiver = new AwsLambdaReceiver({
@@ -23,27 +24,24 @@ const appCommandHandler  = new AppCommandHandler(diContext.handler);
 const appMessageHandler  = new AppMessageHandler(diContext.handler);
 const appViewHandler     = new AppViewHandler(diContext.handler);
 const appActionHandler   = new AppActionHandler(diContext.handler);
+const AppEventHandler    = new AppEventHandler(diContext.handler);
 
 // スラッシュコマンド検知
-app.command(/.*/, async ({ ack, command, context, logger}) => {
+app.command(/.*/, async ({ack, command, context, logger}) => {
     logger.info(`app.command\ncontext:${JSON.stringify(context)}\ncommand:${JSON.stringify(command)}\n`);
 
-    if(context.retryNum) {
-        await ack();
-        return; // リトライ以降のリクエストは弾く
-    };
-    
-    await ack();
+    ack();
+    if(context.retryNum) return;
+
     await appCommandHandler.handle(command, logger);
 })
 
 // メッセージ検知
-app.message(async ({ message, context, logger}) => {
+app.message(async ({ack, message, context, logger}) => {
     logger.info(`app.message\ncontext:${JSON.stringify(context)}\nmessage:${JSON.stringify(message)}\n`);
 
-    if(context.retryNum) {
-        return; // リトライ以降のリクエストは弾く
-    };
+    ack();
+    if(context.retryNum) return; // リトライ以降のリクエストは弾く
 
     await appMessageHandler.handle(message, logger);
 })
@@ -59,8 +57,8 @@ app.view({ type: 'view_submission' }, async ({ ack, body, view, logger}) => {
 // action受信
 app.action({ type: 'block_actions' }, async ({ack, body, logger}) => {
     logger.info(`app.action\nbody:${JSON.stringify(body)}`);
-
     await ack();
+
     await appActionHandler.handle(body, logger);
 })
 

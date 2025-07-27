@@ -3,7 +3,7 @@
 //モジュール読み込み
 const { ModalConst } = require('../constants/ModalConst');
 
-class AppActionController {
+class AppActionHandler {
     constructor ({
         workReportService,
         slackApiAdaptor
@@ -14,7 +14,6 @@ class AppActionController {
         this.dispatcher = {
             [`${ModalConst.ACTION_ID.WORKREPORT.UPDATE}`]   : this.handleWorkReportUpdate.bind(this),
             [`${ModalConst.ACTION_ID.WORKREPORT.FINISH}`]   : this.handleWorkReportFinish.bind(this),
-            'default'                                       : this.handleDefault.bind(this),
         }
     }
 
@@ -22,7 +21,7 @@ class AppActionController {
         const actions = body.actions[0];
         logger.info(`action_id:${actions.action_id}`);
 
-        const handler = this.dispatcher[actions.action_id] || this.dispatcher['default'];
+        const handler = this.dispatcher[actions.action_id];
         try {
             const result = await handler(body, logger);
             if (result?.slackRequest) {
@@ -52,4 +51,4 @@ class AppActionController {
     }
 }
 
-exports.AppActionController = AppActionController;
+exports.AppActionHandler = AppActionHandler;
