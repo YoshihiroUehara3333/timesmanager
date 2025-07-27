@@ -2,7 +2,7 @@
 
 //モジュール読み込み
 const { SlackConst } = require('../constants/SlackConst');
-const { PostMessage } = require('../adaptor/slack/SlackApiRequest');
+const { PostMessage } = require('../slack/SlackApiRequest');
 
 class AppCommandHandler{
     constructor

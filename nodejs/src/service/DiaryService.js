@@ -2,7 +2,7 @@
 require('date-utils');
 const { DiaryModelFactory }  = require('../model/factory/DiaryModelFactory');
 const { POSTDATA }           = require('../constants/DynamoDB/PostData');
-const { PostMessage, GetPermalink } = require('../adaptor/slack/SlackApiRequest');
+const { PostMessage, GetPermalink } = require('../slack/SlackApiRequest');
 
 /**
  * Slackメッセージから日報を処理・保存・更新・フィードバック生成するためのサービスクラス

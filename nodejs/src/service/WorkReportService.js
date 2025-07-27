@@ -5,7 +5,7 @@ const { NewTaskModal }    = require('../blockkit/NewTaskModal');
 const { WorkPlanBlock }   = require('../blockkit/WorkPlanBlock');
 const { WorkReportModel } = require('../model/WorkReportModel');
 const { POSTDATA }        = require('../constants/DynamoDB/PostData');
-const { PostMessage }     = require('../adaptor/slack/SlackApiRequest');
+const { PostMessage }     = require('../slack/SlackApiRequest');
 
 class WorkReportService {
     constructor ({postDataRepository, slackApiAdaptor}) {

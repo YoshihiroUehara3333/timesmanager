@@ -1,7 +1,7 @@
 //モジュール読み込み
 require('date-utils');
 const { ModalConst } = require('../constants/ModalConst');
-const { PostMessage } = require('../adaptor/slack/SlackApiRequest');
+const { PostMessage } = require('../slack/SlackApiRequest');
 
 class AppViewHandler {
     CALLBACK_ID = ModalConst.CALLBACK_ID;

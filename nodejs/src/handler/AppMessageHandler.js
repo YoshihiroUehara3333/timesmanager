@@ -3,7 +3,7 @@
 // モジュール読み込み
 const { SlackConst }  = require('../constants/SlackConst');
 const { RegexConst }  = require('../constants/RegexConst');
-const { PostMessage } = require('../adaptor/slack/SlackApiRequest');
+const { PostMessage } = require('../slack/SlackApiRequest');
 
 class AppMessageHandler {
     constructor ({diaryService, threadService, slackApiAdaptor}) {
