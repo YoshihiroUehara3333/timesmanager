@@ -1,0 +1,7 @@
+package com.timesmanager.timesmanager;
+
+import com.slack.api.bolt.servlet.SlackAppServlet;
+
+public class SlackAppController extends SlackAppServlet {
+
+}

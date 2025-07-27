@@ -9,5 +9,6 @@ exports.SlackConst = {
         MAKETHREAD   : "/makethread",
         NEWTASK      : "/newtask",
         WARMUP       : "/warmup",
+        MANAGEDIARY  : "/managediary"
     },
 };

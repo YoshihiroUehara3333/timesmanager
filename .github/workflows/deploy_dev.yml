@@ -5,9 +5,7 @@ on:
     branches:
       - feature
     paths-ignore:
-      - 'README.md'
-      - 'docker-compose_local.yml'
-      - 'Dockerfile'
+      - 'springboot'
 
 permissions:
   id-token: write
