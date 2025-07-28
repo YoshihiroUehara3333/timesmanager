@@ -40,7 +40,8 @@ class DynamoPostDataRepository {
     }
 
     // dateからSortKeyを生成し、Threadを1件取得する
-    async getThreadByDate (partitionKey, date) {
+    async getThreadByDate (userId, date) {
+        const partitionKey = `${userId}#${POSTDATA.PK_POSTFIX.THREAD}`;
         const sortKey = `${date}#`;
         try {
             const getResult = await this._getItem (partitionKey, sortKey);
@@ -52,14 +53,15 @@ class DynamoPostDataRepository {
     }
 
     // WorkReportの最新serialを取得
-    async queryWorkReportLatestSerial (partitionKey, date) {
+    async getWorkReportCount (user_id, date) {
+        const partitionKey =  `${userId}#${POSTDATA.PK_POSTFIX.WORKREPORT}`;
         try {
             const queryResult = await this._queryByPartitionKeyAndSortKeyBeginsWithDate (partitionKey, date);
             console.log(queryResult);
             if (queryResult) {
-                return queryResult.Count + 1;
+                return queryResult.Count;
             } else {
-                return 1;
+                return 0;
             }
 
         } catch (error) {

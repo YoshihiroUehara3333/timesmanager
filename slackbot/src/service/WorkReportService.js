@@ -21,11 +21,12 @@ class WorkReportService {
         console.log(`createNewTaskを実行`);
         const date   = new Date().toFormat("YYYY-MM-DD");
 
+        const userId = command.user_id;
         // DBから情報を取得
         if(!thread){
-            const partitionKey = `${command.user_id}#${POSTDATA.PK_POSTFIX.THREAD}`;
-            const thread = this.postDataRepository.getThreadByDate(partitionKey, date);
+            const thread = this.postDataRepository.getThreadByDate(userId, date);
     
+            console.log(`thread取得値:${JSON.stringify(thread)}`);
             if(!thread){
                 return {
                     status: false,
@@ -34,13 +35,12 @@ class WorkReportService {
                         '今日のスレッドがまだ作成されていません。'
                 )}
             }
-            console.log(JSON.stringify(thread));
         }
 
-        const partitionKey =  `${command.user_id}#${POSTDATA.PK_POSTFIX.WORKREPORT}`;
-        let latestSerial = await this.postDataRepository.queryWorkReportLatestSerial(partitionKey, date);
+        let latestSerial = await this.postDataRepository.getWorkReportCount(command.user_id, date);
 
         return {
+            status: true,
             slackRequest: new ViewsOpen(
                 command.trigger_id,
                 NewTaskModal(command.channel_id, thread.ts, date, latestSerial, command.user_id)
