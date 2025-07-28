@@ -15,15 +15,14 @@ class WorkReportService {
     
     // 新規タスク入力用モーダルのBlockkitを作成し返却する
     async createNewTask (command, thread) {
-        logger.debug(`createNewTaskを実行`);
+        console.log(`createNewTaskを実行`);
         const date   = new Date().toFormat("YYYY-MM-DD");
 
         // DBから情報を取得
         if(!thread){
             const partitionKey = `${command.user_id}#${POSTDATA.PK_POSTFIX.THREAD}`;
             const thread = this.postDataRepository.getThreadByDate(partitionKey, date);
-
-            console.log(JSON.stringify(thread));
+    
             if(!thread){
                 return {
                 status: false,
@@ -32,6 +31,7 @@ class WorkReportService {
                     '今日のスレッドがまだ作成されていません。'
                 )}
             }
+            console.log(JSON.stringify(thread));
         }
 
         const partitionKey =  `${command.user_id}#${POSTDATA.PK_POSTFIX.WORKREPORT}`;

@@ -14,7 +14,6 @@ class ThreadService {
     }
 
     // 新規のスレッド文面を作成し投稿結果をDBに保存する
-    // その後WorkReportを作成する
     async processNewThreadEntry (command) {
         // 値を取得
         const channelId = command.channel_id;
@@ -44,7 +43,7 @@ class ThreadService {
             if (httpStatusCode === 200) {
                 return {
                     status : true,
-                    thread : postResult.ts
+                    thread : postResult
                 }
             } else {
                 throw new Error(

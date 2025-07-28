@@ -56,6 +56,7 @@ class AppCommandHandler{
     // /warmup実行時
     async handleWarmUp (command, logger) {
         return {
+            status: true,
             slackRequest: new PostMessage(
                 command.user_id,
                 'warmupが実行されました'
