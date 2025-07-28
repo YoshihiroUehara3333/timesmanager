@@ -44,6 +44,8 @@ class DynamoPostDataRepository {
     async getThreadByDate (channelId, date) {
         const partitionKey = `${channelId}#${POSTDATA.PK_POSTFIX.THREAD}`;
         const sortKey = `${date}#`;
+
+        console.log(`getThreadByDate\npartitionKey:${partitionKey}\nsortKey:${sortKey}`);
         try {
             const getResult = await this._getItem (partitionKey, sortKey);
             return getResult.Item || null;
@@ -106,7 +108,7 @@ class DynamoPostDataRepository {
      * 指定されたパーティションキーとソートキーで検索する。
      * @param {string} partitionKey - 検索対象のGSIパーティションキーの値
      * @param {string} sortKey - GSIソートキーのプレフィックス
-     * @returns {Promise<Object[]|null>} クエリ結果（0件ならnull）
+     * @returns {Promise<Object[]|null>} クエリ結果
      */
     async _getItem (partitionKey, sortKey) {
         const getResult = await this.dynamoDb.send(new GetCommand({
@@ -152,27 +154,23 @@ class DynamoPostDataRepository {
      * @param {string} skAttrName - ソートキー属性名
      * @param {string} partitionKey - 検索対象のGSIパーティションキーの値
      * @param {string} prefix - GSIソートキーのプレフィックス
-     * @returns {Promise<Object[]|null>} クエリ結果（0件ならnull）
+     * @returns {Promise<Object[]} クエリ結果
      */
     async _queryByPartitionKeyAndSortKeyBeginsWithDate (partitionKey, date) {
         const queryResult = await this.dynamoDb.send(new QueryCommand({
             TableName                : this.TABLENAME,
-            KeyConditionExpression   : `#pk = :pk AND begins_with(#sk, :date)`, // 条件指定
+            KeyConditionExpression   : `#pk = :pk AND begins_with(#sk, :sk)`, // 条件指定
             ExpressionAttributeNames: {
                 '#pk'     : POSTDATA.ATTR_NAMES.PARTITION_KEY,
                 '#sk'     : POSTDATA.ATTR_NAMES.SORT_KEY,
             },
             ExpressionAttributeValues: {
                 ':pk'     : partitionKey,
-                ":date"   : date,
+                ':sk'     : date,
             },
         }));
 
-        if (queryResult.Count === 0) {
-            return null;
-        } else {
-            return queryResult;
-        }
+        return queryResult;
     }
 
     /**
