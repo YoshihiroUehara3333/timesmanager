@@ -48,7 +48,7 @@ class DynamoPostDataRepository {
         console.log(`getThreadByDate\npartitionKey:${partitionKey}\nsortKey:${sortKey}`);
         try {
             const getResult = await this._getItem (partitionKey, sortKey);
-            return getResult.Item || null;
+            return getResult;
         } catch (error) {
             console.error("DynamoDB取得時エラー:", error);
             throw new Error(error.message, { cause: error });
@@ -106,9 +106,8 @@ class DynamoPostDataRepository {
 
     /**
      * 指定されたパーティションキーとソートキーで検索する。
-     * @param {string} partitionKey - 検索対象のGSIパーティションキーの値
-     * @param {string} sortKey - GSIソートキーのプレフィックス
-     * @returns {Promise<Object[]|null>} クエリ結果
+     * @param {string} partitionKey - パーティションキー
+     * @param {string} sortKey - ソートキー
      */
     async _getItem (partitionKey, sortKey) {
         const getResult = await this.dynamoDb.send(new GetCommand({
