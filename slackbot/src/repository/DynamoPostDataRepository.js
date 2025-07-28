@@ -32,7 +32,7 @@ class DynamoPostDataRepository {
         const sortKey = `${date}#`;
         try {
             const getResult = await this._getItem (partitionKey, sortKey);
-            return getResult.Item || null;
+            return getResult.Items || null;
 
         } catch (error) {
             console.error("DynamoDB取得時エラー:", error);
@@ -113,8 +113,8 @@ class DynamoPostDataRepository {
         const getResult = await this.dynamoDb.send(new GetCommand({
             TableName : this.TABLENAME,
             Key : {
-                [POSTDATA.ATTR_NAMES.PARTITION_KEY] : partitionKey,
-                [POSTDATA.ATTR_NAMES.SORT_KEY]      : sortKey,
+                'partition_key' : partitionKey,
+                'sort_key'      : sortKey,
             }
         }))
         return getResult;
