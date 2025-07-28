@@ -32,7 +32,7 @@ class DynamoPostDataRepository {
         const sortKey = `${date}#`;
         try {
             const getResult = await this._getItem (partitionKey, sortKey);
-            return getResult.Items || null;
+            return getResult.Item || null;
 
         } catch (error) {
             console.error("DynamoDB取得時エラー:", error);
@@ -45,10 +45,9 @@ class DynamoPostDataRepository {
         const partitionKey = `${channelId}#${POSTDATA.PK_POSTFIX.THREAD}`;
         const sortKey = `${date}#`;
 
-        console.log(`getThreadByDate\npartitionKey:${partitionKey}\nsortKey:${sortKey}`);
         try { 
             const getResult = await this._getItem (partitionKey, sortKey);
-            return getResult.Items;
+            return getResult.Item || null;
         } catch (error) {
             console.error("DynamoDB取得時エラー:", error);
             throw new Error(error.message, { cause: error });
