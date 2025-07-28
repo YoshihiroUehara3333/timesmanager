@@ -23,16 +23,17 @@ class AppCommandHandler extends HandlerBase{
             [`${SlackConst.APPCOMMANDS.MAKETHREAD}`]   : this.handleMakethread.bind(this),
             [`${SlackConst.APPCOMMANDS.NEWTASK}`]      : this.handleNewTask.bind(this),
             [`${SlackConst.APPCOMMANDS.WARMUP}`]       : this.handleWarmUp.bind(this),
-            [`${SlackConst.APPCOMMANDS.MANAGEDIARY}`]  : this.handleManageDiary.bind(this)
+            [`${SlackConst.APPCOMMANDS.MANAGEDIARY}`]  : this.handleManageDiary.bind(this),
+             'default'                                 : this.handleDefault.bind(this)
         }
     }
 
     async handle (command, logger) {
         logger.info(`command:${command.command}`);
-
-        const handler = this.dispatcher[command.command];
+        
         let slackRequest;
         try {
+            const handler = this.dispatcher[command.command];
             slackRequest = await handler(command, logger);
         } 
         catch (error) {
@@ -50,7 +51,7 @@ class AppCommandHandler extends HandlerBase{
     async handleMakethread (command, logger) {
         logger.debug(`handleMakethreadを実行`);
         const thread = await this.threadService.createNewThread(command);
-        const params = await this.workReportService.createTaskModalParams(command, thread);
+        const params = await this.workReportService.createTaskInputModalParams(command, thread);
         if (params) {
             return new ViewsOpen(
                 command.trigger_id,

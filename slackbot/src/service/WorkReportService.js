@@ -17,7 +17,7 @@ class WorkReportService {
     }
     
     // 新規タスク入力用モーダルのBlockkit作成用パラメータを取得し返却する
-    async createTaskModalParams (command, thread) {
+    async createTaskInputModalParams (command, thread) {
         console.log(`openCreateTaskModalを実行`);
 
         const date   = new Date().toFormat("YYYY-MM-DD");

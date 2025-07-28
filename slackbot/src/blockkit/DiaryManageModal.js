@@ -1,4 +1,3 @@
-// 日報入力モーダルBlockKit定義定義
 const { ModalConst } = require('../constants/ModalConst');
 
 exports.DiaryManageModal = () => ({
@@ -23,38 +22,56 @@ exports.DiaryManageModal = () => ({
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: `本日の日報/勤怠状況`
+				text: "*本日の日報/勤怠状況を入力してください*"
 			}
 		},
 		{ type: "divider" },
 		{
-			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: ":calendar: *勤務時間*\nCreate a new event"
+			type: "input",
+			block_id: "starttime",
+			label: {
+				type: "plain_text",
+				text: "開始時間"
 			},
-			accessory: {
-				type: "button",
-				text: {
-					"type": "plain_text",
-					"text": "Create event",
-					"emoji": true
+			element: {
+				type: "timepicker",
+				initial_time: "10:00",
+				placeholder: {
+					type: "plain_text",
+					text: "開始時間を選択"
 				},
-				style: "primary",
-				value: "click_me_123"
+				action_id: "start_time"
 			}
 		},
 		{
-			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: ":clipboard: *作業場所を選択してください*"
+			type: "input",
+			block_id: "endtime",
+			label: {
+				type: "plain_text",
+				text: "終了時間"
 			},
-			accessory: {
+			element: {
+				type: "timepicker",
+				initial_time: "19:00",
+				placeholder: {
+					type: "plain_text",
+					text: "終了時間を選択"
+				},
+				action_id: "end_time"
+			}
+		},
+		{
+			type: "input",
+			block_id: "workplace",
+			label: {
+				type: "plain_text",
+				text: "作業場所"
+			},
+			element: {
 				type: "static_select",
 				placeholder: {
 					type: "plain_text",
-					text: "Choose list",
+					text: "選択してください",
 					emoji: true
 				},
 				options: [
@@ -64,25 +81,26 @@ exports.DiaryManageModal = () => ({
 							text: "出社",
 							emoji: true
 						},
-						value: "1"
+						value: "onsite"
 					},
 					{
 						text: {
 							type: "plain_text",
-							text: "出社",
+							text: "リモート",
 							emoji: true
 						},
-						value: "1"
+						value: "remote"
 					},
 					{
 						text: {
 							type: "plain_text",
-							text: "出社",
+							text: "休暇",
 							emoji: true
 						},
-						value: "1"
+						value: "vacation"
 					}
-				]
+				],
+				action_id: "select_workplace"
 			}
 		},
 		{
@@ -92,19 +110,21 @@ exports.DiaryManageModal = () => ({
 					type: "button",
 					text: {
 						type: "plain_text",
-						text: "Send feedback",
+						text: "フィードバックを送信",
 						emoji: true
 					},
-					value: "click_me_123"
+					value: "send_feedback",
+					action_id: "send_feedback"
 				},
 				{
 					type: "button",
 					text: {
 						type: "plain_text",
-						text: "FAQs",
+						text: "よくある質問",
 						emoji: true
 					},
-					value: "click_me_123"
+					value: "show_faq",
+					action_id: "show_faq"
 				}
 			]
 		}

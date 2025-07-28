@@ -4,6 +4,7 @@
 const { HandlerBase } = require('./HandlerBase');
 const { ModalConst } = require('../constants/ModalConst');
 const { PostMessage, ViewsOpen } = require('../slack/SlackApiRequest');
+
 const { TaskInputModal } = require('../blockkit/TaskInputModal');
 
 class AppActionHandler extends HandlerBase{

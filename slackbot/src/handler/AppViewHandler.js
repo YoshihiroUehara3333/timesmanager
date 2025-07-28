@@ -3,7 +3,7 @@ require('date-utils');
 const { ModalConst } = require('../constants/ModalConst');
 const { PostMessage } = require('../slack/SlackApiRequest');
 const { HandlerBase } = require('./HandlerBase');
-const { TaskInputModal } = require('../blockkit/TaskInputModal');
+
 
 class AppViewHandler extends HandlerBase {
     CALLBACK_ID = ModalConst.CALLBACK_ID;

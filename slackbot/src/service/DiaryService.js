@@ -8,7 +8,11 @@ const { PostMessage, GetPermalink } = require('../slack/SlackApiRequest');
  * Slackメッセージから日報を処理・保存・更新・フィードバック生成するためのサービスクラス
  */
 class DiaryService {
-    constructor({postDataRepository, aiApiAdaptor, slackApiAdaptor}) {
+    constructor({
+        postDataRepository, 
+        aiApiAdaptor, 
+        slackApiAdaptor
+    }) {
         this.postDataRepository = postDataRepository;
         this.aiApiAdaptor = aiApiAdaptor;
         this.slackApiAdaptor = slackApiAdaptor;
@@ -30,7 +34,7 @@ class DiaryService {
             let date = diaryModel.date;
 
             // DB新規重複チェック
-            const result = await this.postDataRepository.getDiaryByDate(diaryModel.partitionKey, date);
+            const result = await this.postDataRepository.getDiaryByDate(message.channel, date);
             if (result) {
                 return { msg: `日付が重複しています。(${date})`}
             }
@@ -81,8 +85,9 @@ class DiaryService {
         }
     }
 
-    async setDiaryManageFormData (){
-        
+    async getDiaryManageFormData(body){
+        const date = new Date().toFormat('HH24:MI:SS');
+        this.postDataRepository.getDiaryByDate();
     }
 
     /**
