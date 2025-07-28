@@ -23,21 +23,19 @@ class WorkReportService {
         try {
             if(!thread){
                 const thread = this.postDataRepository.getThreadByDate(channelId, date);
+                console.log(`thread取得結果:${JSON.stringify(thread)}`);
         
                 if(!thread){
                     return {
-                    status: false,
-                    slackRequest: new PostMessage(
-                        command.user_id,
-                        '今日のスレッドがまだ作成されていません。'
+                        status: false,
+                        slackRequest: new PostMessage(
+                            command.user_id,
+                            '今日のスレッドが取得できませんでした。'
                     )}
                 }
-                console.log(JSON.stringify(thread));
             }
 
-            const partitionKey =  `${channelId}#${POSTDATA.PK_POSTFIX.WORKREPORT}`;
-            let latestSerial = await this.postDataRepository.getWorkReportCount(partitionKey, date) + 1;
-
+            let latestSerial = await this.postDataRepository.getWorkReportCount(channelId, date) + 1;
             return {
                 status: true,
                 slackRequest: new ViewsOpen(
