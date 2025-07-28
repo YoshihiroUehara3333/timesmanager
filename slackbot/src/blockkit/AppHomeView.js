@@ -25,21 +25,12 @@ exports.AppHomeView = () => ({
 					type: "button",
 					text: {
 						type: "plain_text",
-						text: "今日の日報を編集する",
+						text: "本日の日報管理",
 						emoji: true
 					},
 					style: "primary",
-					value: "edit_diary"
-				},
-				{
-					type: "button",
-					text: {
-						type: "plain_text",
-						text: "勤怠記録",
-						emoji: true
-					},
-					style: "primary",
-					value: "attendance_report"
+					value: "edit_diary",
+					action_id : ModalConst.ACTION_ID.DIARY.MANAGE,
 				}
 			]
 		},
@@ -95,7 +86,7 @@ exports.AppHomeView = () => ({
 				value: "task2"
 			}
 		},
-		{ type: "divider"},
+		{ type: "divider" },
 		{
 			type: "actions",
 			elements: [

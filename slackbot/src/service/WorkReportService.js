@@ -43,7 +43,18 @@ class WorkReportService {
         } catch(error) {
             throw new Error(error.message, { cause: error });
         }
+    }
 
+    // タスク更新用モーダルのBlockkitを作成し返却する
+    async updateTask () {
+        // DBからタスク情報を取得
+        
+        return {
+            status: true,
+            slackRequest: new ViewsOpen(
+                command.trigger_id,
+                CreateTaskModal(channelId, thread.thread_ts, date, latestSerial, command.user_id)
+        )};
     }
 
     // /makethread入力時のNewTaskモーダル入力値を取得し、Blocksを返す
