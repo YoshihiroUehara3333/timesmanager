@@ -18,7 +18,7 @@ exports.AppHomeView = () => ({
 					type: "button",
 					text: {
 						type: "plain_text",
-						text: "Create New Task",
+						text: "タスク新規作成",
 						emoji: true
 					},
 					style: "primary",
@@ -28,19 +28,19 @@ exports.AppHomeView = () => ({
 					type: "button",
 					text: {
 						type: "plain_text",
-						text: "Create New Project",
+						text: "今日の日報を編集する",
 						emoji: true
 					},
-					value: "create_project"
+					value: "edit_diary"
 				},
 				{
 					type: "button",
 					text: {
 						type: "plain_text",
-						text: "Help",
+						text: "勤怠記録",
 						emoji: true
 					},
-					value: "help"
+					value: "attendance_record"
 				}
 			]
 		},
@@ -58,7 +58,7 @@ exports.AppHomeView = () => ({
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: "*Your Configurations*"
+				text: "*タスク一覧*"
 			}
 		},
 		{
@@ -68,7 +68,7 @@ exports.AppHomeView = () => ({
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: "*#public-relations*\n<fakelink.toUrl.com|PR Strategy 2019> posts new tasks, comments, and project updates to <fakelink.toChannel.com|#public-relations>"
+				text: "*タスク1*"
 			},
 			accessory: {
 				type: "button",
@@ -77,7 +77,7 @@ exports.AppHomeView = () => ({
 					text: "Edit",
 					emoji: true
 				},
-				value: "public-relations"
+				value: "task1"
 			}
 		},
 		{
@@ -87,7 +87,7 @@ exports.AppHomeView = () => ({
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: "*#team-updates*\n<fakelink.toUrl.com|Q4 Team Projects> posts project updates to <fakelink.toChannel.com|#team-updates>"
+				text: "*タスク2*"
 			},
 			accessory: {
 				type: "button",
@@ -96,7 +96,7 @@ exports.AppHomeView = () => ({
 					text: "Edit",
 					emoji: true
 				},
-				value: "public-relations"
+				value: "task2"
 			}
 		},
 		{
@@ -109,10 +109,11 @@ exports.AppHomeView = () => ({
 					type: "button",
 					text: {
 						type: "plain_text",
-						text: "New Configuration",
+						text: "タスク新規作成",
 						emoji: true
 					},
-					value: "new_configuration"
+					style: "primary",
+					value: "create_task"
 				}
 			]
 		}

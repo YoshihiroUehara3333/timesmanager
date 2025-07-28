@@ -7,10 +7,12 @@ const { PostMessage } = require('../slack/SlackApiRequest');
 class AppCommandHandler{
     constructor
     ({
+        diaryService,
         threadService, 
         workReportService, 
         slackApiAdaptor
     }){
+        this.diaryService      = diaryService;
         this.threadService     = threadService;
         this.workReportService = workReportService;
         this.slackApiAdaptor   = slackApiAdaptor;

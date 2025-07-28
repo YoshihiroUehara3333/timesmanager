@@ -1,7 +1,7 @@
 //モジュール読み込み
 require('date-utils');
 const { WorkReportUtils } = require('../utility/WorkReportUtils');
-const { NewTaskModal }    = require('../blockkit/NewTaskModal');
+const { CreateTaskModal } = require('../blockkit/CreateTaskModal');
 const { WorkPlanBlock }   = require('../blockkit/WorkPlanBlock');
 const { WorkReportModel } = require('../model/WorkReportModel');
 const { POSTDATA }        = require('../constants/DynamoDB/PostData');
@@ -14,8 +14,8 @@ class WorkReportService {
     }
     
     // 新規タスク入力用モーダルのBlockkitを作成し返却する
-    async createNewTask (command, thread) {
-        console.log(`createNewTaskを実行`);
+    async createTask (command, thread) {
+        console.log(`createTaskを実行`);
         const date   = new Date().toFormat("YYYY-MM-DD");
         const channelId = command.channel_id;
 
@@ -38,7 +38,7 @@ class WorkReportService {
                 status: true,
                 slackRequest: new ViewsOpen(
                     command.trigger_id,
-                    NewTaskModal(channelId, thread.thread_ts, date, latestSerial, command.user_id)
+                    CreateTaskModal(channelId, thread.thread_ts, date, latestSerial, command.user_id)
             )};
         } catch(error) {
             throw new Error(error.message, { cause: error });
@@ -47,7 +47,7 @@ class WorkReportService {
     }
 
     // /makethread入力時のNewTaskモーダル入力値を取得し、Blocksを返す
-    async processNewTaskSubmissionViewData(view, userId) {
+    async convertNewTaskSubmissionToBlock(view, userId) {
         // モーダル入力値を取得
         const values        = view.state.values;
         const taskName      = values.taskname.input.value || '';
@@ -60,7 +60,7 @@ class WorkReportService {
     }
 
     // NewTaskモーダル入力値からWorkReportModelを作成し、DBに保存する
-    async saveWorkReportData (view, metadata) {
+    async processNewTaskSubmition (view, metadata) {
         let date = new Date().toFormat("YYYY-MM-DD");
         const values = view.state.values;
         const channelId = metadata.channel_id;
