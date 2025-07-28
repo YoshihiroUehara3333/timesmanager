@@ -142,3 +142,4 @@ exports.DiaryManageModal = () => ({
 			]
 		}
 	]
+});
