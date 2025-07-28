@@ -9,9 +9,9 @@ exports.DiaryManageModal = () => ({
 		emoji: true
 	},
 	submit: {
-		"type": "plain_text",
-		"text": "Submit",
-		"emoji": true
+		type: "plain_text",
+		text: "Submit",
+		emoji: true
 	},
 	close: {
 		type: "plain_text",
@@ -40,104 +40,71 @@ exports.DiaryManageModal = () => ({
 					"text": "Create event",
 					"emoji": true
 				},
-				"style": "primary",
-				"value": "click_me_123"
+				style: "primary",
+				value: "click_me_123"
 			}
 		},
 		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": ":clipboard: *List of events*\nChoose from different event lists"
+			type: "section",
+			text: {
+				type: "mrkdwn",
+				text: ":clipboard: *作業場所を選択してください*"
 			},
-			"accessory": {
-				"type": "static_select",
-				"placeholder": {
-					"type": "plain_text",
-					"text": "Choose list",
-					"emoji": true
+			accessory: {
+				type: "static_select",
+				placeholder: {
+					type: "plain_text",
+					text: "Choose list",
+					emoji: true
 				},
-				"options": [
+				options: [
 					{
-						"text": {
-							"type": "plain_text",
-							"text": "My events",
-							"emoji": true
+						text: {
+							type: "plain_text",
+							text: "出社",
+							emoji: true
 						},
-						"value": "value-0"
+						value: "1"
 					},
 					{
-						"text": {
-							"type": "plain_text",
-							"text": "All events",
-							"emoji": true
+						text: {
+							type: "plain_text",
+							text: "出社",
+							emoji: true
 						},
-						"value": "value-1"
+						value: "1"
 					},
 					{
-						"text": {
-							"type": "plain_text",
-							"text": "Event invites",
-							"emoji": true
+						text: {
+							type: "plain_text",
+							text: "出社",
+							emoji: true
 						},
-						"value": "value-1"
+						value: "1"
 					}
 				]
 			}
 		},
 		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": ":gear: *Settings*\nManage your notifications and team settings"
-			},
-			"accessory": {
-				"type": "static_select",
-				"placeholder": {
-					"type": "plain_text",
-					"text": "Edit settings",
-					"emoji": true
-				},
-				"options": [
-					{
-						"text": {
-							"type": "plain_text",
-							"text": "Notifications",
-							"emoji": true
-						},
-						"value": "value-0"
-					},
-					{
-						"text": {
-							"type": "plain_text",
-							"text": "Team settings",
-							"emoji": true
-						},
-						"value": "value-1"
-					}
-				]
-			}
-		},
-		{
-			"type": "actions",
-			"elements": [
+			type: "actions",
+			elements: [
 				{
-					"type": "button",
-					"text": {
-						"type": "plain_text",
-						"text": "Send feedback",
-						"emoji": true
+					type: "button",
+					text: {
+						type: "plain_text",
+						text: "Send feedback",
+						emoji: true
 					},
-					"value": "click_me_123"
+					value: "click_me_123"
 				},
 				{
-					"type": "button",
-					"text": {
-						"type": "plain_text",
-						"text": "FAQs",
-						"emoji": true
+					type: "button",
+					text: {
+						type: "plain_text",
+						text: "FAQs",
+						emoji: true
 					},
-					"value": "click_me_123"
+					value: "click_me_123"
 				}
 			]
 		}
