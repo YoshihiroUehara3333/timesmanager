@@ -33,8 +33,8 @@ class WorkReportService {
                 }
             }
 
-            let latestSerial = await this.postDataRepository.getWorkReportCount(channelId, date);
-            latestSerial++;
+            let stringWorkReportCount = await this.postDataRepository.getWorkReportCount(channelId, date);
+            const latestSerial = parseInt(stringWorkReportCount) + 1;
             return {
                 status: true,
                 slackRequest: new ViewsOpen(
