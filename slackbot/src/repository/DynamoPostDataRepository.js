@@ -48,7 +48,8 @@ class DynamoPostDataRepository {
         console.log(`getThreadByDate\npartitionKey:${partitionKey}\nsortKey:${sortKey}`);
         try {
             const getResult = await this._getItem (partitionKey, sortKey);
-            return getResult;
+            console.log(JSON.stringify(getResult));
+            return getResult.Item;
         } catch (error) {
             console.error("DynamoDB取得時エラー:", error);
             throw new Error(error.message, { cause: error });
