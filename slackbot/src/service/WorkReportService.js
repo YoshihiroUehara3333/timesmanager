@@ -22,9 +22,7 @@ class WorkReportService {
         // DBから情報を取得
         try {
             if(!thread){
-                const thread = this.postDataRepository.getThreadByDate(channelId, date);
-                console.log(`thread取得結果:${JSON.stringify(thread)}`);
-        
+                const thread = await this.postDataRepository.getThreadByDate(channelId, date);
                 if(!thread){
                     return {
                         status: false,
