@@ -49,7 +49,7 @@ exports.WorkPlanBlock = (userId, taskName, goal, selectedTime, memo) => ([
                 text : {
                     type  : "plain_text",
                     emoji : true,
-                    text  : "業務終了"
+                    text  : "完了"
                 },
                 style     : "danger",
                 value     : "finish",

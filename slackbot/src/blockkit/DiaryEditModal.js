@@ -17,6 +17,6 @@ exports.DiaryEditModal = () => ({
 		text : "キャンセル"
 	},
     blocks : [
-        
+
     ]
-})
+});

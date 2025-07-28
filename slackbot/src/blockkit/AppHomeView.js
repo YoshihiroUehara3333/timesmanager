@@ -68,6 +68,7 @@ exports.AppHomeView = () => ({
 			},
 			accessory: {
 				type: "button",
+				action_id : ModalConst.ACTION_ID.WORKREPORT.UPDATE,
 				text: {
 					type: "plain_text",
 					text: "Edit",
@@ -76,9 +77,7 @@ exports.AppHomeView = () => ({
 				value: "task1"
 			}
 		},
-		{
-			type: "divider"
-		},
+		{ type: "divider" },
 		{
 			type: "section",
 			text: {
@@ -87,6 +86,7 @@ exports.AppHomeView = () => ({
 			},
 			accessory: {
 				type: "button",
+				
 				text: {
 					type: "plain_text",
 					text: "Edit",
@@ -95,9 +95,7 @@ exports.AppHomeView = () => ({
 				value: "task2"
 			}
 		},
-		{
-			type: "divider"
-		},
+		{ type: "divider"},
 		{
 			type: "actions",
 			elements: [
