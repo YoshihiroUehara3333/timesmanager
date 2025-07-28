@@ -43,7 +43,7 @@ class AppActionHandler {
 
     async handleDiaryManage(body, logger){
         logger.info("handleDiaryManageが実行されました");
-        this.diaryService
+        // this.diaryService.
         return;
     }
 
