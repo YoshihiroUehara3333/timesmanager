@@ -30,7 +30,7 @@ class AppCommandHandler{
         try {
             const result = await handler(command, logger);
             if (result?.slackRequest) {
-                await this.slackApiAdaptor.send(slackRequest);
+                await this.slackApiAdaptor.send(result.slackRequest);
             }
         } catch (error) {
             logger.error(error.stack);

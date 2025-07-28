@@ -8,7 +8,10 @@ const { POSTDATA }        = require('../constants/DynamoDB/PostData');
 const { PostMessage, ViewsOpen }     = require('../slack/SlackApiRequest');
 
 class WorkReportService {
-    constructor ({postDataRepository, slackApiAdaptor}) {
+    constructor ({
+        postDataRepository, 
+        slackApiAdaptor
+    }) {
         this.postDataRepository = postDataRepository;
         this.slackApiAdaptor   = slackApiAdaptor;
     }
@@ -25,10 +28,10 @@ class WorkReportService {
     
             if(!thread){
                 return {
-                status: false,
-                slackRequest: new PostMessage(
-                    command.user_id,
-                    '今日のスレッドがまだ作成されていません。'
+                    status: false,
+                    slackRequest: new PostMessage(
+                        command.user_id,
+                        '今日のスレッドがまだ作成されていません。'
                 )}
             }
             console.log(JSON.stringify(thread));
