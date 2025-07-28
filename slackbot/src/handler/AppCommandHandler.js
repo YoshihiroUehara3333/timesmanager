@@ -2,7 +2,8 @@
 
 //モジュール読み込み
 const { SlackConst } = require('../constants/SlackConst');
-const { PostMessage } = require('../slack/SlackApiRequest');
+const { PostMessage, ViewsOpen } = require('../slack/SlackApiRequest');
+const { CreateTaskModal } = require('../blockkit/CreateTaskModal');
 
 class AppCommandHandler{
     constructor
@@ -29,16 +30,18 @@ class AppCommandHandler{
         logger.info(`command:${command.command}`);
 
         const handler = this.dispatcher[command.command];
+        let slackRequest;
         try {
-            const slackRequest = await handler(command, logger);
+            slackRequest = await handler(command, logger);
+        } 
+        catch (error) {
+            logger.error(error.stack);
+            slackRequest = new PostMessage(command.user_id, error.toString());
+        } 
+        finally {
             if (slackRequest) {
                 await this.slackApiAdaptor.send(slackRequest);
             }
-        } catch (error) {
-            logger.error(error.stack);
-            await this.slackApiAdaptor.send(
-                new PostMessage(command.user_id, error.toString())
-            );
         }
     }
 
@@ -47,7 +50,7 @@ class AppCommandHandler{
         logger.debug(`handleMakethreadを実行`);
         const result = await this.threadService.processNewThreadEntry(command);
 
-        params = await this.workReportService.createTaskModalParams(command, result?.thread);
+        const params = await this.workReportService.createTaskModalParams(command, result?.thread);
         if (params) {
             return new ViewsOpen(
                 command.trigger_id,
@@ -59,7 +62,7 @@ class AppCommandHandler{
     // /newtask実行時
     async handleNewTask (command, logger) {
         logger.debug(`handleNewTaskを実行`);
-        params = await this.workReportService.createTaskModalParams(command, undefined);
+        const params = await this.workReportService.createTaskModalParams(command, undefined);
         if (params) {
             return new ViewsOpen(
                 command.trigger_id,
@@ -83,7 +86,7 @@ class AppCommandHandler{
 
     // /managediary実行時
     async handleManageDiary (command, logger) {
-        return null;
+        return undefined;
     }
 };
 

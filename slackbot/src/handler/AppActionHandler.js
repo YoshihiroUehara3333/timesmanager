@@ -23,7 +23,7 @@ class AppActionHandler {
         }
     }
 
-    async handle(body, logger) {
+    async handle (body, logger) {
         const actions = body.actions[0];
         logger.info(`action_id:${actions.action_id}`);
 

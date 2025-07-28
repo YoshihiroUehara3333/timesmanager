@@ -1,7 +1,7 @@
 //モジュール読み込み
 require('date-utils');
 const { WorkReportUtils } = require('../utility/WorkReportUtils');
-const { CreateTaskModal } = require('../blockkit/CreateTaskModal');
+
 const { WorkPlanBlock }   = require('../blockkit/WorkPlanBlock');
 const { WorkReportModel } = require('../model/WorkReportModel');
 const { POSTDATA }        = require('../constants/DynamoDB/PostData');
@@ -13,7 +13,7 @@ class WorkReportService {
         slackApiAdaptor
     }) {
         this.postDataRepository = postDataRepository;
-        this.slackApiAdaptor   　= slackApiAdaptor;
+        this.slackApiAdaptor    = slackApiAdaptor;
     }
     
     // 新規タスク入力用モーダルのBlockkit作成用パラメータを取得し返却する

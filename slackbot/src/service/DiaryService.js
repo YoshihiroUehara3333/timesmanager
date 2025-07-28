@@ -32,12 +32,8 @@ class DiaryService {
             // DB新規重複チェック
             const result = await this.postDataRepository.getDiaryByDate(diaryModel.partitionKey, date);
             if (result) {
-                return {
-                    slackRequest: new PostMessage(
-                        message.user,
-                        `日付が重複しています。(${date})`
-                    )
-                }};
+                return { msg: `日付が重複しています。(${date})`}
+            }
 
             // diaryModelをDBに登録
             const response = await this.postDataRepository.putItem(diaryModel);
@@ -45,11 +41,8 @@ class DiaryService {
             // httpStatusCodeを判断しpostMessage用のtextを作成
             const httpStatusCode = response?.$metadata.httpStatusCode;
             const postText = this.checkHttpStatusCode(httpStatusCode, '登録', diaryModel);
-            return {
-                slackRequest: new PostMessage(
-                    message.user,
-                    postText
-            )};
+            return { msg: postText };
+
         } catch (error) {
             throw new Error(error.message, {cause: error});
         }
@@ -82,13 +75,7 @@ class DiaryService {
             // httpStatusCodeを判断しpostMessage用のtextを作成
             const httpStatusCode = response?.$metadata.httpStatusCode;
             const postText = this.checkHttpStatusCode(httpStatusCode, '登録', diaryModel);
-
-            // return
-            return {
-                slackRequest: new PostMessage(
-                    message.user,
-                    postText
-            )};
+            return { msg: postText };
         } catch (error) {
             throw new Error(error.message, {cause: error});
         }
@@ -119,12 +106,7 @@ class DiaryService {
 
             // フィードバックを生成してreturn
             const feedbackText = await this.aiApiAdaptor.generateFeedback(diary);
-            return {
-                slackRequest: new PostMessage(
-                    channelId,
-                    feedbackText,
-                    threadTs
-            )};
+            return { msg: feedbackText};
         } catch (error) {
             throw new Error(`フィードバック生成中にエラーが発生しました。${error.message}`, { cause: error });
         }
@@ -136,10 +118,8 @@ class DiaryService {
         if (httpStatusCode === 200) {
             return `日記(${diaryModel.date})のDB${msg}に成功しました。\n${diaryModel.slackUrl}`;
         } else {
-            throw new Error(
-                `日記(${diaryModel.date})のDB${msg}に失敗しました。\n`
+            return `日記(${diaryModel.date})のDB${msg}に失敗しました。\n`
                 + `httpStatusCode=${httpStatusCode}`
-            )
         }
     }
 }
