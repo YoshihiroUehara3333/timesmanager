@@ -8,10 +8,7 @@ const { POSTDATA }        = require('../constants/DynamoDB/PostData');
 const { PostMessage, ViewsOpen }     = require('../slack/SlackApiRequest');
 
 class WorkReportService {
-    constructor ({
-        postDataRepository, 
-        slackApiAdaptor
-    }) {
+    constructor ({postDataRepository, slackApiAdaptor}) {
         this.postDataRepository = postDataRepository;
         this.slackApiAdaptor   = slackApiAdaptor;
     }
@@ -21,23 +18,24 @@ class WorkReportService {
         console.log(`createNewTaskを実行`);
         const date   = new Date().toFormat("YYYY-MM-DD");
 
-        const userId = command.user_id;
         // DBから情報を取得
         if(!thread){
-            const thread = this.postDataRepository.getThreadByDate(userId, date);
+            const partitionKey = `${command.user_id}#${POSTDATA.PK_POSTFIX.THREAD}`;
+            const thread = this.postDataRepository.getThreadByDate(partitionKey, date);
     
-            console.log(`thread取得値:${JSON.stringify(thread)}`);
             if(!thread){
                 return {
-                    status: false,
-                    slackRequest: new PostMessage(
-                        command.user_id,
-                        '今日のスレッドがまだ作成されていません。'
+                status: false,
+                slackRequest: new PostMessage(
+                    command.user_id,
+                    '今日のスレッドがまだ作成されていません。'
                 )}
             }
+            console.log(JSON.stringify(thread));
         }
 
-        let latestSerial = await this.postDataRepository.getWorkReportCount(command.user_id, date);
+        const partitionKey =  `${command.user_id}#${POSTDATA.PK_POSTFIX.WORKREPORT}`;
+        let latestSerial = await this.postDataRepository.queryWorkReportLatestSerial(partitionKey, date);
 
         return {
             status: true,
