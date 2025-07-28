@@ -13,9 +13,11 @@ class AppActionHandler {
         this.slackApiAdaptor   = slackApiAdaptor;
 
         this.dispatcher = {
+            [`${ModalConst.ACTION_ID.DIARY.MANAGE}`]        : this.handleDiaryManage.bind(this),
             [`${ModalConst.ACTION_ID.WORKREPORT.CREATE}`]   : this.handleWorkReportCreate.bind(this),
             [`${ModalConst.ACTION_ID.WORKREPORT.UPDATE}`]   : this.handleWorkReportUpdate.bind(this),
             [`${ModalConst.ACTION_ID.WORKREPORT.FINISH}`]   : this.handleWorkReportFinish.bind(this),
+            'default'                                       : this.handleDefault.bind(this)
         }
     }
 
@@ -37,6 +39,11 @@ class AppActionHandler {
         }
     }
 
+    async handleDiaryManage(body, logger){
+        logger.info("handleDiaryManageが実行されました");
+        return;
+    }
+
     async handleWorkReportCreate(body, logger){
         logger.info("handleWorkReportCreateが実行されました");
         return;
@@ -44,7 +51,7 @@ class AppActionHandler {
     
     async handleWorkReportUpdate(body, logger){
         logger.info("handleWorkReportUpdateが実行されました");
-        return;
+        return await this.workReportService.createNewTask(command, undefined);
     }
 
     async handleWorkReportFinish(body, logger){
