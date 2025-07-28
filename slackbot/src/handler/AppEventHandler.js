@@ -12,33 +12,39 @@ class AppEventHandler {
 
         this.dispatcher = {
             'app_home_opened' : this.updateAppHome.bind(this),
+            'default'         : this.handleDefault.bind(this)
         }
     }
 
     async handle(body, event, logger) {
+        let slackRequest;
         try {
-            const handler = this.dispatcher[event.type];
-            const result = await handler(event, logger);
-            if (result?.slackRequest) {
-                await this.slackApiAdaptor.send(result.slackRequest);
-            }
-        } catch (error) {
+            const handler = this.dispatcher[event.type] || this.dispatcher['default'];
+            slackRequest = await handler(event, logger);
+        }
+        catch (error) {
             logger.error(error.stack);
-            await this.slackApiAdaptor.send(new PostMessage(
-                event.user,
-                error.toString()
-            ));
+            slackRequest = new PostMessage(command.user_id, error.toString());
+        } 
+        finally {
+            if (slackRequest) {
+                await this.slackApiAdaptor.send(slackRequest);
+            }
         }
     }
 
     async updateAppHome(event, logger){
         logger.info('updateAppHomeを実行');
 
-        await this.slackApiAdaptor.send(new ViewsPublish(
+        await new ViewsPublish(
             event.user,
             AppHomeView()
-        ));
+        );
 
+        return undefined;
+    }
+
+    async handleDefault(event, logger){
         return undefined;
     }
 };

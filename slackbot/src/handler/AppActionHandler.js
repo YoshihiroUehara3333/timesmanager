@@ -23,27 +23,29 @@ class AppActionHandler {
         }
     }
 
-    async handle(body, logger) {
+    async handle (body, logger) {
         const actions = body.actions[0];
         logger.info(`action_id:${actions.action_id}`);
 
-        const handler = this.dispatcher[actions.action_id] || this.dispatcher['default'];
+        let slackRequest;
         try {
-            const result = await handler(body, logger);
-            if (result?.slackRequest) {
+            const handler = this.dispatcher[actions.action_id] || this.dispatcher['default'];
+            slackRequest = await handler(body, logger);
+        }
+        catch (error) {
+            logger.error(error.stack);
+            slackRequest = new PostMessage(message.user, error.toString());
+        }
+        finally {
+            if (slackRequest) {
                 await this.slackApiAdaptor.send(slackRequest);
             }
-        } catch (error) {
-            logger.error(error.stack);
-            await this.slackApiAdaptor.send(
-                new PostMessage(command.user_id, error.toString())
-            );
         }
     }
 
     async handleDiaryManage(body, logger){
         logger.info("handleDiaryManageが実行されました");
-        // this.diaryService.
+        const form = this.diaryService.setDiaryManageFormData;
         return;
     }
 

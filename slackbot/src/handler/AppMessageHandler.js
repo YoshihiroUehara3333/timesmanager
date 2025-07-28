@@ -13,24 +13,41 @@ class AppMessageHandler {
 
         this.dispatcher = {
             'handleEditedTopLevelMessage' : this.handleEditedTopLevelMessage.bind(this),
-            'handleEditedThreadMessage'   : this.handleEditedThreadMessage.bind(this),
-            'handleNewThreadMessage'      : this.handleNewThreadMessage.bind(this),
+            // 'handleEditedThreadMessage'   : this.handleEditedThreadMessage.bind(this),
+            // 'handleNewThreadMessage'      : this.handleNewThreadMessage.bind(this),
             'handleNewTopLevelMessage'    : this.handleNewTopLevelMessage.bind(this),
             'handleThreadCommand'         : this.handleThreadCommand.bind(this),
+            'default'                     : this.handleDefault.bind(this)
         }
     }
 
     async handle (message, logger) {
+        let slackRequest;
         try {
-            const handler = this.dispatcher[this.checkMessagetype(message)];
-            const result = await handler(message, logger);
-            if (result?.slackRequest) {
-                await this.slackApiAdaptor.send(result.slackRequest);
-            }
-        } catch (error) {
+            const handler = this.dispatcher[this.checkMessagetype(message)] || this.dispatcher['default'];
+            slackRequest = await handler(message, logger);
+        }
+        catch (error) {
             logger.error(error.stack);
-            await this.slackApiAdaptor.send(
-                new PostMessage(message.user, error.toString())
+            slackRequest = new PostMessage(message.user, error.toString());
+        }
+        finally {
+            if (slackRequest) {
+                await this.slackApiAdaptor.send(slackRequest);
+            }
+        }
+    }
+
+    // スレッド外部かつ、新規ポスト時
+    async handleNewTopLevelMessage (message, logger) {
+        logger.info("handleTopLevelNewMessageが実行されました");
+
+        if (this.isDiary(message)) {
+            logger.info("diaryService.newDiaryEntryを実行");
+            const result = await this.diaryService.processNewDiaryEntry(message);
+            return new PostMessage(
+                message.user,
+                result.msg
             )
         }
     }
@@ -43,36 +60,40 @@ class AppMessageHandler {
         
         if (this.isDiary(message)) {
             logger.info("diaryService.processUpdateDiaryを実行");
-            return await this.diaryService.processUpdateDiary(message);
+            const result = await this.diaryService.processUpdateDiary(message);
+            return new PostMessage(
+                message.user,
+                result.msg
+            )
         }
     }
 
-    async handleEditedThreadMessage (message, logger) {
-        logger.info("handleEditedThreadMessageが実行されました");
-    }
+    // async handleEditedThreadMessage (message, logger) {
+    //     logger.info("handleEditedThreadMessageが実行されました");
+    // }
 
-    // スレッド内部かつ、新規ポストかつ、ボットメンションではない
-    async handleNewThreadMessage (message, logger) {
-        logger.info("handleNewThreadMessageが実行されました");
-        return this.threadService.processNewThreadPost(message, logger);
-    }
+    // // スレッド内部かつ、新規ポストかつ、ボットメンションではない
+    // async handleNewThreadMessage (message, logger) {
+    //     logger.info("handleNewThreadMessageが実行されました");
+    //     return this.threadService.processNewThreadPost(message, logger);
+    // }
 
-    // スレッド外部かつ、新規ポスト時
-    async handleNewTopLevelMessage (message, logger) {
-        logger.info("handleTopLevelNewMessageが実行されました");
-
-        if (this.isDiary(message)) {
-            logger.info("diaryService.newDiaryEntryを実行");
-            return await this.diaryService.processNewDiaryEntry(message);
-        }
-    }
 
     async handleThreadCommand(message, logger) {
         // /AIフィードバック
         if (message.text.match(RegexConst.THREADCOMMANDS.AI_FEEDBACK)) {
             logger.info("diaryService.aiFeedbackを実行");
-            return await this.diaryService.generateFeedback(message);
+            const result = await this.diaryService.generateFeedback(message);
+            return new PostMessage(
+                message.channel,
+                result.msg,
+                message.thread_ts
+            )
         }
+    }
+
+    async handleDefault(message, logger){
+        return undefined;
     }
 
     checkMessagetype(message) {
@@ -98,6 +119,7 @@ class AppMessageHandler {
     isDiary (message) {
         return message.text.match(RegexConst.DATE);
     }
-};
+}
+;
 
 exports.AppMessageHandler = AppMessageHandler;
