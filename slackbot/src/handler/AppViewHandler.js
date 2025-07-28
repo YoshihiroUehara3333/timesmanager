@@ -44,7 +44,7 @@ class AppViewHandler {
         let metadata = JSON.parse(view.private_metadata);
 
         // 入力データをBlocksとして返信
-        const params = await this.workReportService.setWorkPlanBlockParams(view, metadata);
+        const params = await this.workReportService.setWorkPlanBlockParams(view);
         const postResponse = await this.slackApiAdaptor.send(new PostMessage(
             metadata.channel_id, 
             'blocks送信',  
@@ -54,7 +54,7 @@ class AppViewHandler {
         logger.info(`post結果:${JSON.stringify(postResponse)}`);
 
         // 入力データをDBに保存
-        return await this.workReportService.processNewTaskSubmition(view, metadata);
+        return await this.workReportService.processNewTaskSubmition(view);
     }
 }
 

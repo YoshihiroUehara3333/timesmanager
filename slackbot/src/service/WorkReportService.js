@@ -59,37 +59,33 @@ class WorkReportService {
     }
 
     // /makethread入力時のNewTaskモーダル入力値を取得し、Blocksを返す
-    async setWorkPlanBlockParams(view, metadata) {
+    async setWorkPlanBlockParams(view) {
         const workPlanBlockParams = {};
 
+        const metadata = JSON.parse(view.private_metadata);
+        workPlanBlockParams.serial = metadata.serial;
         workPlanBlockParams.userId = metadata.userId;
-        
+
         const values        = view.state.values;
         workPlanBlockParams.taskName      = values.taskname.input.value || '';
         workPlanBlockParams.goal          = values.goal.input.value || '';
         workPlanBlockParams.targetTime    = values.targettime.input.selected_time;
         workPlanBlockParams.memo          = values.memo.input.value || '';
 
-        let stringWorkReportCount = await this.postDataRepository.getWorkReportCount(metadata.channelId, date);
-        workPlanBlockParams.serial = parseInt(stringWorkReportCount) + 1;
-
         // Blocksを生成してreturn
         return workPlanBlockParams;
     }
 
     // NewTaskモーダル入力値からWorkReportModelを作成し、DBに保存する
-    async processNewTaskSubmition (view, metadata) {
+    async processNewTaskSubmition (view) {
         let date = new Date().toFormat("YYYY-MM-DD");
         const values = view.state.values;
+        const metadata = JSON.parse(view.private_metadata);
         const channelId = metadata.channel_id;
-
+        
         try {
             // WorkReportModelを生成
             const workReportModel = this.createWorkReportModel(channelId, date, metadata, values);
-
-            // 最新シリアルを取得
-            let stringWorkReportCount = await this.postDataRepository.getWorkReportCount(channelId, date);
-            workReportModel.serial = parseInt(stringWorkReportCount) + 1;
 
             // DB保存
             const response = await this.postDataRepository.putItem(workReportModel);
@@ -115,6 +111,7 @@ class WorkReportService {
         workReportModel.threadTs    = metadata.thread_ts;
         workReportModel.createdAt   = new Date().toFormat('HH24:MI:SS');
         workReportModel.content     = WorkReportUtils.parseContent(values);
+        workReportModel.serial      = metadata.serial;
         return workReportModel;
     }
 
