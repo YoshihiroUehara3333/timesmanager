@@ -17,32 +17,37 @@ class WorkReportService {
     async createNewTask (command, thread) {
         console.log(`createNewTaskを実行`);
         const date   = new Date().toFormat("YYYY-MM-DD");
+        const channelId = command.channel_id;
 
         // DBから情報を取得
-        if(!thread){
-            const partitionKey = `${command.user_id}#${POSTDATA.PK_POSTFIX.THREAD}`;
-            const thread = this.postDataRepository.getThreadByDate(partitionKey, date);
-    
+        try {
             if(!thread){
-                return {
-                status: false,
-                slackRequest: new PostMessage(
-                    command.user_id,
-                    '今日のスレッドがまだ作成されていません。'
-                )}
+                const thread = this.postDataRepository.getThreadByDate(channelId, date);
+        
+                if(!thread){
+                    return {
+                    status: false,
+                    slackRequest: new PostMessage(
+                        command.user_id,
+                        '今日のスレッドがまだ作成されていません。'
+                    )}
+                }
+                console.log(JSON.stringify(thread));
             }
-            console.log(JSON.stringify(thread));
+
+            const partitionKey =  `${channelId}#${POSTDATA.PK_POSTFIX.WORKREPORT}`;
+            let latestSerial = await this.postDataRepository.getWorkReportCount(partitionKey, date);
+
+            return {
+                status: true,
+                slackRequest: new ViewsOpen(
+                    command.trigger_id,
+                    NewTaskModal(channelId, thread.ts, date, latestSerial, command.user_id)
+            )};
+        } catch(error) {
+            throw new Error(error.message, { cause: error });
         }
 
-        const partitionKey =  `${command.user_id}#${POSTDATA.PK_POSTFIX.WORKREPORT}`;
-        let latestSerial = await this.postDataRepository.queryWorkReportLatestSerial(partitionKey, date);
-
-        return {
-            status: true,
-            slackRequest: new ViewsOpen(
-                command.trigger_id,
-                NewTaskModal(command.channel_id, thread.ts, date, latestSerial, command.user_id)
-        )};
     }
 
     // /makethread入力時のNewTaskモーダル入力値を取得し、Blocksを返す

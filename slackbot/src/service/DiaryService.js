@@ -31,7 +31,13 @@ class DiaryService {
 
             // DB新規重複チェック
             const result = await this.postDataRepository.getDiaryByDate(diaryModel.partitionKey, date);
-            if (result) return `日付が重複しています。(${date})`;
+            if (result) {
+                return {
+                    slackRequest: new PostMessage(
+                        message.user,
+                        `日付が重複しています。(${date})`
+                    )
+            }};
 
             // diaryModelをDBに登録
             const response = await this.postDataRepository.putItem(diaryModel);
