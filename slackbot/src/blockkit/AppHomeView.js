@@ -8,7 +8,14 @@ exports.AppHomeView = () => ({
 			type: "header",
 			text: {
 				type: "plain_text",
-				text: "timesmanagerホーム"
+				text: "timesmanager"
+			}
+		},
+		{
+			type: "section",
+			text: {
+				type: "mrkdwn",
+				text: "*日報管理*"
 			}
 		},
 		{
@@ -21,6 +28,7 @@ exports.AppHomeView = () => ({
 						text: "今日の日報を編集する",
 						emoji: true
 					},
+					style: "primary",
 					value: "edit_diary"
 				},
 				{
@@ -30,14 +38,15 @@ exports.AppHomeView = () => ({
 						text: "勤怠記録",
 						emoji: true
 					},
-					value: "勤怠記録"
+					style: "primary",
+					value: "attendance_report"
 				}
 			]
 		},
 		{
 			type: "section",
 			text: {
-				type: "plain_text",
+				type: "mrkdwn",
 				text: "*タスク管理*"
 			}
 		},
