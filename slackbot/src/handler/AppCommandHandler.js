@@ -3,9 +3,10 @@
 //モジュール読み込み
 const { SlackConst } = require('../constants/SlackConst');
 const { PostMessage, ViewsOpen } = require('../slack/SlackApiRequest');
-const { CreateTaskModal } = require('../blockkit/CreateTaskModal');
+const { TaskInputModal } = require('../blockkit/TaskInputModal');
+const { HandlerBase } = require('./HandlerBase');
 
-class AppCommandHandler{
+class AppCommandHandler extends HandlerBase{
     constructor
     ({
         diaryService,
@@ -48,13 +49,12 @@ class AppCommandHandler{
     // /makethread実行時
     async handleMakethread (command, logger) {
         logger.debug(`handleMakethreadを実行`);
-        const result = await this.threadService.processNewThreadEntry(command);
-
-        const params = await this.workReportService.createTaskModalParams(command, result?.thread);
+        const thread = await this.threadService.createNewThread(command);
+        const params = await this.workReportService.createTaskModalParams(command, thread);
         if (params) {
             return new ViewsOpen(
                 command.trigger_id,
-                CreateTaskModal(params)
+                TaskInputModal(params)
             )
         }
     }
@@ -62,11 +62,11 @@ class AppCommandHandler{
     // /newtask実行時
     async handleNewTask (command, logger) {
         logger.debug(`handleNewTaskを実行`);
-        const params = await this.workReportService.createTaskModalParams(command, undefined);
+        const params = await this.workReportService.createTaskInputModalParams(command, undefined);
         if (params) {
             return new ViewsOpen(
                 command.trigger_id,
-                CreateTaskModal(params)
+                TaskInputModal(params)
             )
         } else {
             return new PostMessage(

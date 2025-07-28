@@ -13,7 +13,7 @@ class ThreadService {
     }
 
     // 新規のスレッド文面を作成し投稿結果をDBに保存する
-    async processNewThreadEntry (command) {
+    async createNewThread (command) {
         // 値を取得
         const channelId = command.channel_id;
         const userId = command.user_id;
@@ -26,8 +26,6 @@ class ThreadService {
                 channelId,
                 text
             ));
-            
-            // Modelを作成
             let permalink = await this.slackApiAdaptor.send(new GetPermalink(
                 channelId, 
                 postResult.ts
@@ -40,10 +38,7 @@ class ThreadService {
             // httpStatusCodeをチェックしてreturn
             const httpStatusCode = response.$metadata?.httpStatusCode;
             if (httpStatusCode === 200) {
-                return {
-                    status : true,
-                    thread : postResult
-                }
+                return postResult;
             } else {
                 throw new Error(
                     `スレッド情報をDB登録時エラー。/n`

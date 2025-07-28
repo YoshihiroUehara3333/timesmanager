@@ -2,8 +2,9 @@
 
 const { AppHomeView } = require("../blockkit/AppHomeView");
 const { ViewsPublish, PostMessage } = require("../slack/SlackApiRequest");
+const { HandlerBase } = require("./HandlerBase");
 
-class AppEventHandler {
+class AppEventHandler extends HandlerBase{
     constructor
     ({
         slackApiAdaptor
@@ -36,16 +37,10 @@ class AppEventHandler {
     async updateAppHome(event, logger){
         logger.info('updateAppHomeを実行');
 
-        await new ViewsPublish(
+        return new ViewsPublish(
             event.user,
             AppHomeView()
-        );
-
-        return undefined;
-    }
-
-    async handleDefault(event, logger){
-        return undefined;
+        )
     }
 };
 

@@ -1,10 +1,12 @@
 // app.action用Controllerクラス
 
 //モジュール読み込み
+const { HandlerBase } = require('./HandlerBase');
 const { ModalConst } = require('../constants/ModalConst');
-const { PostMessage } = require('../slack/SlackApiRequest');
+const { PostMessage, ViewsOpen } = require('../slack/SlackApiRequest');
+const { TaskInputModal } = require('../blockkit/TaskInputModal');
 
-class AppActionHandler {
+class AppActionHandler extends HandlerBase{
     constructor ({
         diaryService,
         workReportService,
@@ -45,7 +47,7 @@ class AppActionHandler {
 
     async handleDiaryManage(body, logger){
         logger.info("handleDiaryManageが実行されました");
-        const form = this.diaryService.setDiaryManageFormData;
+        const form = this.diaryService.setDiaryManageFormData(body);
         return;
     }
 
@@ -56,15 +58,16 @@ class AppActionHandler {
     
     async handleWorkReportUpdate(body, logger){
         logger.info("handleWorkReportUpdateが実行されました");
-        return await this.workReportService.createNewTask(command, undefined);
+        const params = await this.workReportService.updateTask(body);
+
+        return new ViewsOpen(
+            command.trigger_id,
+            TaskInputModal(params)
+        )
     }
 
     async handleWorkReportFinish(body, logger){
         logger.info("handleWorkReportFinishが実行されました");
-        return;
-    }
-
-    async handleDefault(body, logger){
         return;
     }
 }

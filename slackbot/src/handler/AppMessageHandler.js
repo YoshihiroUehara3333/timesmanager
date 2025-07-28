@@ -1,11 +1,12 @@
 // app.message受け取り時
 
 // モジュール読み込み
+const { HandlerBase } = require('./HandlerBase');
 const { SlackConst }  = require('../constants/SlackConst');
 const { RegexConst }  = require('../constants/RegexConst');
 const { PostMessage } = require('../slack/SlackApiRequest');
 
-class AppMessageHandler {
+class AppMessageHandler extends HandlerBase{
     constructor ({diaryService, threadService, slackApiAdaptor}) {
         this.diaryService    = diaryService;
         this.threadService   = threadService;
@@ -90,10 +91,6 @@ class AppMessageHandler {
                 message.thread_ts
             )
         }
-    }
-
-    async handleDefault(message, logger){
-        return undefined;
     }
 
     checkMessagetype(message) {

@@ -19,10 +19,9 @@ class WorkReportService {
     // 新規タスク入力用モーダルのBlockkit作成用パラメータを取得し返却する
     async createTaskModalParams (command, thread) {
         console.log(`openCreateTaskModalを実行`);
+
         const date   = new Date().toFormat("YYYY-MM-DD");
         const channelId = command.channel_id;
-
-        // DBから情報を取得
         try {
             if(!thread){
                 thread = await this.postDataRepository.getThreadByDate(channelId, date);
