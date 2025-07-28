@@ -82,9 +82,8 @@ class WorkReportService {
             const workReportModel = this.createWorkReportModel(channelId, date, metadata, values);
 
             // 最新シリアルを取得
-            let partitionKey = workReportModel.partitionKey;
-            let latestSerial = await this.postDataRepository.getWorkReportCount(partitionKey, date) + 1;
-            workReportModel.serial = latestSerial;
+            let stringWorkReportCount = await this.postDataRepository.getWorkReportCount(channelId, date);
+            workReportModel.serial = parseInt(stringWorkReportCount) + 1;
 
             // DB保存
             const response = await this.postDataRepository.putItem(workReportModel);
