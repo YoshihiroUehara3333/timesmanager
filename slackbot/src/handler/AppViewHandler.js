@@ -17,6 +17,7 @@ class AppViewHandler {
 
         this.dispatcher = {
             [`${this.CALLBACK_ID.NEWTASK}`]  : this.handleNewTaskModalCallback.bind(this),
+            'default'                        : this.handleDefault.bind(this)
         }
     }
 
@@ -24,18 +25,22 @@ class AppViewHandler {
         const callbackId = view.callback_id;
         logger.info(`callbackId:${callbackId}`);
         
+        let slackRequest;
         try {
-            const handler = this.dispatcher[callbackId];
-            const result = await handler(view, logger);
-            if (result?.slackRequest) {
-                await this.slackApiAdaptor.send(result.slackRequest);
-            }
-        } catch (error) {
+            const handler = this.dispatcher[callbackId] || this.dispatcher['default'];
+            slackRequest = await handler(view, logger);
+        } 
+        catch (error) {
             logger.error(error.stack);
-            await this.slackApiAdaptor.send(new PostMessage(
+            slackRequest = new PostMessage(
                 JSON.parse(view.private_metadata).user_id,
                 error.toString()
-            ));
+            )
+        }
+        finally {
+            if (slackRequest) {
+                await this.slackApiAdaptor.send(slackRequest);
+            }
         }
     }
 

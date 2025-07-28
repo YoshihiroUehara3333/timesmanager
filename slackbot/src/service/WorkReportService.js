@@ -5,7 +5,7 @@ const { WorkReportUtils } = require('../utility/WorkReportUtils');
 const { WorkPlanBlock }   = require('../blockkit/WorkPlanBlock');
 const { WorkReportModel } = require('../model/WorkReportModel');
 const { POSTDATA }        = require('../constants/DynamoDB/PostData');
-const { PostMessage, ViewsOpen }     = require('../slack/SlackApiRequest');
+const { PostMessage }     = require('../slack/SlackApiRequest');
 
 class WorkReportService {
     constructor ({
@@ -91,14 +91,10 @@ class WorkReportService {
             
             // httpStatusCodeをチェックしてreturn
             const httpStatusCode = response.$metadata?.httpStatusCode;
-            return {
-                status: true,
-                slackRequest: new PostMessage(
-                    metadata.user_id,
-                    this.checkHttpStatusCode(httpStatusCode, workReportModel)
-                )
-            };
-
+            return new PostMessage(
+                metadata.user_id,
+                this.checkHttpStatusCode(httpStatusCode, workReportModel)
+            )
         } catch (error) {
             throw new Error(error.message, { cause: error });
         }

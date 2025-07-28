@@ -22,14 +22,16 @@ class AppMessageHandler {
     }
 
     async handle (message, logger) {
-        const handler = this.dispatcher[this.checkMessagetype(message)] || this.dispatcher['default'];
         let slackRequest;
         try {
+            const handler = this.dispatcher[this.checkMessagetype(message)] || this.dispatcher['default'];
             slackRequest = await handler(message, logger);
-        } catch (error) {
+        }
+        catch (error) {
             logger.error(error.stack);
             slackRequest = new PostMessage(message.user, error.toString());
-        } finally {
+        }
+        finally {
             if (slackRequest) {
                 await this.slackApiAdaptor.send(slackRequest);
             }
