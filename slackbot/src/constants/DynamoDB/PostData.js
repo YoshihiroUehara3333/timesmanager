@@ -5,7 +5,7 @@ const ATTR_NAMES = {
     SORT_KEY           : 'sort_key',
     DATE               : 'date',
     THREAD_TS          : 'thread_ts',
-    SLACK_URL          : 'slack_url',
+    SLACK_URL          : 'slac k_url',
     SERIAL             : 'serial',
     CONTENT            : 'content',
     POSTED_AT          : 'posted_at',

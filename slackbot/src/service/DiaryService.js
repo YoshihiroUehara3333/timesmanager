@@ -37,7 +37,7 @@ class DiaryService {
                         message.user,
                         `日付が重複しています。(${date})`
                     )
-            }};
+                }};
 
             // diaryModelをDBに登録
             const response = await this.postDataRepository.putItem(diaryModel);
@@ -92,6 +92,10 @@ class DiaryService {
         } catch (error) {
             throw new Error(error.message, {cause: error});
         }
+    }
+
+    async setDiaryManageFormData (){
+        
     }
 
     /**

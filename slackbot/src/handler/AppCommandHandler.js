@@ -30,9 +30,9 @@ class AppCommandHandler{
 
         const handler = this.dispatcher[command.command];
         try {
-            const result = await handler(command, logger);
-            if (result?.slackRequest) {
-                await this.slackApiAdaptor.send(result.slackRequest);
+            const slackRequest = await handler(command, logger);
+            if (slackRequest) {
+                await this.slackApiAdaptor.send(slackRequest);
             }
         } catch (error) {
             logger.error(error.stack);
@@ -46,24 +46,39 @@ class AppCommandHandler{
     async handleMakethread (command, logger) {
         logger.debug(`handleMakethreadを実行`);
         const result = await this.threadService.processNewThreadEntry(command);
-        return await this.workReportService.createTask(command, result?.thread);
+
+        params = await this.workReportService.createTaskModalParams(command, result?.thread);
+        if (params) {
+            return new ViewsOpen(
+                command.trigger_id,
+                CreateTaskModal(params)
+            )
+        }
     }
 
     // /newtask実行時
     async handleNewTask (command, logger) {
         logger.debug(`handleNewTaskを実行`);
-        return await this.workReportService.createTask(command, undefined);
+        params = await this.workReportService.createTaskModalParams(command, undefined);
+        if (params) {
+            return new ViewsOpen(
+                command.trigger_id,
+                CreateTaskModal(params)
+            )
+        } else {
+            return new PostMessage(
+                command.user_id,
+                '今日のスレッド情報を取得できませんでした。'
+            )
+        }
     }
 
     // /warmup実行時
     async handleWarmUp (command, logger) {
-        return {
-            status: true,
-            slackRequest: new PostMessage(
-                command.user_id,
-                'warmupが実行されました'
-            )
-        }
+        return new PostMessage(
+            command.user_id,
+            'warmupが実行されました'
+        )
     }
 
     // /managediary実行時

@@ -36,14 +36,14 @@ class AppActionHandler {
         } catch (error) {
             logger.error(error.stack);
             await this.slackApiAdaptor.send(
-                new PostMessage(command.user_id, error.toString())
+                new PostMessage(body.user.id, error.toString())
             );
         }
     }
 
     async handleDiaryManage(body, logger){
         logger.info("handleDiaryManageが実行されました");
-        // this.diaryService.
+        const form = this.diaryService.setDiaryManageFormData;
         return;
     }
 
