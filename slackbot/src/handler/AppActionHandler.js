@@ -13,6 +13,7 @@ class AppActionHandler {
         this.slackApiAdaptor   = slackApiAdaptor;
 
         this.dispatcher = {
+            [`${ModalConst.ACTION_ID.WORKREPORT.CREATE}`]   : this.handleWorkReportUpdate.bind(this),
             [`${ModalConst.ACTION_ID.WORKREPORT.UPDATE}`]   : this.handleWorkReportUpdate.bind(this),
             [`${ModalConst.ACTION_ID.WORKREPORT.FINISH}`]   : this.handleWorkReportFinish.bind(this),
         }

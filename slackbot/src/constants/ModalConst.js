@@ -4,6 +4,7 @@ exports.ModalConst = {
     },
     ACTION_ID   :   {
         WORKREPORT  :  {
+            CREATE    : 'workreport_create',
             UPDATE    : 'workreport_update',
             PROGRESS  : 'workreport_progress',
             FINISH    : 'workreport_finish',
