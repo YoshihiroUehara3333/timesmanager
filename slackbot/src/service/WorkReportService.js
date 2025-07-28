@@ -28,7 +28,7 @@ class WorkReportService {
                         status: false,
                         slackRequest: new PostMessage(
                             command.user_id,
-                            '今日のスレッドが取得できませんでした。'
+                            '今日のスレッド情報を取得できませんでした。'
                     )}
                 }
             }
@@ -38,7 +38,7 @@ class WorkReportService {
                 status: true,
                 slackRequest: new ViewsOpen(
                     command.trigger_id,
-                    NewTaskModal(channelId, thread.ts, date, latestSerial, command.user_id)
+                    NewTaskModal(channelId, thread.thread_ts, date, latestSerial, command.user_id)
             )};
         } catch(error) {
             throw new Error(error.message, { cause: error });
