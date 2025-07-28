@@ -1,54 +1,64 @@
 //モジュール読み込み
 require('date-utils');
 const { WorkReportUtils } = require('../utility/WorkReportUtils');
-const { NewTaskModal }    = require('../blockkit/NewTaskModal');
+const { CreateTaskModal } = require('../blockkit/CreateTaskModal');
 const { WorkPlanBlock }   = require('../blockkit/WorkPlanBlock');
 const { WorkReportModel } = require('../model/WorkReportModel');
 const { POSTDATA }        = require('../constants/DynamoDB/PostData');
 const { PostMessage, ViewsOpen }     = require('../slack/SlackApiRequest');
 
 class WorkReportService {
-    constructor ({
-        postDataRepository, 
-        slackApiAdaptor
-    }) {
+    constructor ({postDataRepository, slackApiAdaptor}) {
         this.postDataRepository = postDataRepository;
         this.slackApiAdaptor   = slackApiAdaptor;
     }
     
     // 新規タスク入力用モーダルのBlockkitを作成し返却する
-    async createNewTask (command, thread) {
-        console.log(`createNewTaskを実行`);
+    async createTask (command, thread) {
+        console.log(`createTaskを実行`);
         const date   = new Date().toFormat("YYYY-MM-DD");
+        const channelId = command.channel_id;
 
-        const userId = command.user_id;
         // DBから情報を取得
-        if(!thread){
-            const thread = this.postDataRepository.getThreadByDate(userId, date);
-    
-            console.log(`thread取得値:${JSON.stringify(thread)}`);
+        try {
             if(!thread){
-                return {
-                    status: false,
-                    slackRequest: new PostMessage(
-                        command.user_id,
-                        '今日のスレッドがまだ作成されていません。'
-                )}
+                thread = await this.postDataRepository.getThreadByDate(channelId, date);
+                if(!thread){
+                    return {
+                        status: false,
+                        slackRequest: new PostMessage(
+                            command.user_id,
+                            '今日のスレッド情報を取得できませんでした。'
+                    )}
+                }
             }
+
+            let latestSerial = await this.postDataRepository.getWorkReportCount(channelId, date) + 1;
+            return {
+                status: true,
+                slackRequest: new ViewsOpen(
+                    command.trigger_id,
+                    CreateTaskModal(channelId, thread.thread_ts, date, latestSerial, command.user_id)
+            )};
+        } catch(error) {
+            throw new Error(error.message, { cause: error });
         }
+    }
 
-        let latestSerial = await this.postDataRepository.getWorkReportCount(command.user_id, date);
-
+    // タスク更新用モーダルのBlockkitを作成し返却する
+    async updateTask () {
+        // DBからタスク情報を取得
+        
         return {
             status: true,
             slackRequest: new ViewsOpen(
                 command.trigger_id,
-                NewTaskModal(command.channel_id, thread.ts, date, latestSerial, command.user_id)
+                CreateTaskModal(channelId, thread.thread_ts, date, latestSerial, command.user_id)
         )};
     }
 
     // /makethread入力時のNewTaskモーダル入力値を取得し、Blocksを返す
-    async processNewTaskSubmissionViewData(view, userId) {
+    async convertNewTaskSubmissionToBlock(view, userId) {
         // モーダル入力値を取得
         const values        = view.state.values;
         const taskName      = values.taskname.input.value || '';
@@ -61,18 +71,18 @@ class WorkReportService {
     }
 
     // NewTaskモーダル入力値からWorkReportModelを作成し、DBに保存する
-    async saveWorkReportData (view, metadata) {
+    async processNewTaskSubmition (view, metadata) {
         let date = new Date().toFormat("YYYY-MM-DD");
         const values = view.state.values;
         const channelId = metadata.channel_id;
 
         try {
             // WorkReportModelを生成
-            const workReportModel  = this.createWorkReportModel(channelId, date, metadata, values);
+            const workReportModel = this.createWorkReportModel(channelId, date, metadata, values);
 
             // 最新シリアルを取得
             let partitionKey = workReportModel.partitionKey;
-            let latestSerial = await this.postDataRepository.queryWorkReportLatestSerial(partitionKey, date);
+            let latestSerial = await this.postDataRepository.getWorkReportCount(partitionKey, date) + 1;
             workReportModel.serial = latestSerial;
 
             // DB保存
@@ -80,10 +90,13 @@ class WorkReportService {
             
             // httpStatusCodeをチェックしてreturn
             const httpStatusCode = response.$metadata?.httpStatusCode;
-            return new PostMessage(
-                metadata.user_id,
-                this.checkHttpStatusCode(httpStatusCode, workReportModel)
-            );
+            return {
+                status: true,
+                slackRequest: new PostMessage(
+                    metadata.user_id,
+                    this.checkHttpStatusCode(httpStatusCode, workReportModel)
+                )
+            };
 
         } catch (error) {
             throw new Error(error.message, { cause: error });

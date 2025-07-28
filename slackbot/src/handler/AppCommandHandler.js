@@ -7,10 +7,12 @@ const { PostMessage } = require('../slack/SlackApiRequest');
 class AppCommandHandler{
     constructor
     ({
+        diaryService,
         threadService, 
         workReportService, 
         slackApiAdaptor
     }){
+        this.diaryService      = diaryService;
         this.threadService     = threadService;
         this.workReportService = workReportService;
         this.slackApiAdaptor   = slackApiAdaptor;
@@ -44,13 +46,13 @@ class AppCommandHandler{
     async handleMakethread (command, logger) {
         logger.debug(`handleMakethreadを実行`);
         const result = await this.threadService.processNewThreadEntry(command);
-        return await this.workReportService.createNewTask(command, result?.thread);
+        return await this.workReportService.createTask(command, result?.thread);
     }
 
     // /newtask実行時
     async handleNewTask (command, logger) {
         logger.debug(`handleNewTaskを実行`);
-        return await this.workReportService.createNewTask(command, undefined);
+        return await this.workReportService.createTask(command, undefined);
     }
 
     // /warmup実行時

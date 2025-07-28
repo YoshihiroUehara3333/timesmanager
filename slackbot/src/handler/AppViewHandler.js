@@ -39,13 +39,12 @@ class AppViewHandler {
         }
     }
 
-    // 作業記録モーダル初回送信時の処理
     async handleNewTaskModalCallback(view, logger) {
         logger.info('handleNewTaskModalCallBackを実行');
         let metadata = JSON.parse(view.private_metadata);
 
         // 入力データをBlocksとして返信
-        const blocks = await this.workReportService.processNewTaskSubmissionViewData(view, metadata.user_id);
+        const blocks = await this.workReportService.convertNewTaskSubmissionToBlock(view, metadata.user_id);
         const postResponse = await this.slackApiAdaptor.send(new PostMessage(
             metadata.channel_id, 
             'blocks送信',  
@@ -55,7 +54,7 @@ class AppViewHandler {
         logger.info(`post結果:${JSON.stringify(postResponse)}`);
 
         // 入力データをDBに保存
-        return await this.workReportService.saveWorkReportData(view, metadata);
+        return await this.workReportService.processNewTaskSubmition(view, metadata);
     }
 }
 

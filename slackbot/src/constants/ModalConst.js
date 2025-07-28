@@ -3,7 +3,11 @@ exports.ModalConst = {
         NEWTASK  : "newTask_modal_callback",
     },
     ACTION_ID   :   {
+        DIARY       : {
+            MANAGE    : 'diary_manage'
+        },
         WORKREPORT  :  {
+            CREATE    : 'workreport_create',
             UPDATE    : 'workreport_update',
             PROGRESS  : 'workreport_progress',
             FINISH    : 'workreport_finish',

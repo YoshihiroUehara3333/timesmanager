@@ -8,7 +8,14 @@ exports.AppHomeView = () => ({
 			type: "header",
 			text: {
 				type: "plain_text",
-				text: "timesmanagerホーム"
+				text: "timesmanager"
+			}
+		},
+		{
+			type: "section",
+			text: {
+				type: "mrkdwn",
+				text: "*日報管理*"
 			}
 		},
 		{
@@ -18,39 +25,12 @@ exports.AppHomeView = () => ({
 					type: "button",
 					text: {
 						type: "plain_text",
-						text: "Create New Task",
+						text: "本日の日報管理",
 						emoji: true
 					},
 					style: "primary",
-					value: "create_task"
-				},
-				{
-					type: "button",
-					text: {
-						type: "plain_text",
-						text: "Create New Project",
-						emoji: true
-					},
-					value: "create_project"
-				},
-				{
-					type: "button",
-					text: {
-						type: "plain_text",
-						text: "Help",
-						emoji: true
-					},
-					value: "help"
-				}
-			]
-		},
-		{
-			type: "context",
-			elements: [
-				{
-					type: "image",
-					image_url: "https://api.slack.com/img/blocks/bkb_template_images/placeholder.png",
-					alt_text: "placeholder"
+					value: "edit_diary",
+					action_id : ModalConst.ACTION_ID.DIARY.MANAGE,
 				}
 			]
 		},
@@ -58,7 +38,7 @@ exports.AppHomeView = () => ({
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: "*Your Configurations*"
+				text: "*タスク管理*"
 			}
 		},
 		{
@@ -68,40 +48,45 @@ exports.AppHomeView = () => ({
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: "*#public-relations*\n<fakelink.toUrl.com|PR Strategy 2019> posts new tasks, comments, and project updates to <fakelink.toChannel.com|#public-relations>"
-			},
-			accessory: {
-				type: "button",
-				text: {
-					type: "plain_text",
-					text: "Edit",
-					emoji: true
-				},
-				value: "public-relations"
+				text: "*タスク一覧*"
 			}
-		},
-		{
-			type: "divider"
 		},
 		{
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: "*#team-updates*\n<fakelink.toUrl.com|Q4 Team Projects> posts project updates to <fakelink.toChannel.com|#team-updates>"
+				text: "*タスク1*"
 			},
 			accessory: {
 				type: "button",
+				action_id : ModalConst.ACTION_ID.WORKREPORT.UPDATE,
 				text: {
 					type: "plain_text",
 					text: "Edit",
 					emoji: true
 				},
-				value: "public-relations"
+				value: "task1"
 			}
 		},
+		{ type: "divider" },
 		{
-			type: "divider"
+			type: "section",
+			text: {
+				type: "mrkdwn",
+				text: "*タスク2*"
+			},
+			accessory: {
+				type: "button",
+				
+				text: {
+					type: "plain_text",
+					text: "Edit",
+					emoji: true
+				},
+				value: "task2"
+			}
 		},
+		{ type: "divider" },
 		{
 			type: "actions",
 			elements: [
@@ -109,10 +94,11 @@ exports.AppHomeView = () => ({
 					type: "button",
 					text: {
 						type: "plain_text",
-						text: "New Configuration",
+						text: "タスク新規作成",
 						emoji: true
 					},
-					value: "new_configuration"
+					style: "primary",
+					value: "create_task"
 				}
 			]
 		}
