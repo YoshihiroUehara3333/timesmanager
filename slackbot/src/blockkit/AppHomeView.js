@@ -18,16 +18,6 @@ exports.AppHomeView = () => ({
 					type: "button",
 					text: {
 						type: "plain_text",
-						text: "タスク新規作成",
-						emoji: true
-					},
-					style: "primary",
-					value: "create_task"
-				},
-				{
-					type: "button",
-					text: {
-						type: "plain_text",
 						text: "今日の日報を編集する",
 						emoji: true
 					},
@@ -40,19 +30,19 @@ exports.AppHomeView = () => ({
 						text: "勤怠記録",
 						emoji: true
 					},
-					value: "attendance_record"
+					value: "勤怠記録"
 				}
 			]
 		},
 		{
-			type: "context",
-			elements: [
-				{
-					type: "image",
-					image_url: "https://api.slack.com/img/blocks/bkb_template_images/placeholder.png",
-					alt_text: "placeholder"
-				}
-			]
+			type: "section",
+			text: {
+				type: "plain_text",
+				text: "*タスク管理*"
+			}
+		},
+		{
+			type: "divider"
 		},
 		{
 			type: "section",
@@ -60,9 +50,6 @@ exports.AppHomeView = () => ({
 				type: "mrkdwn",
 				text: "*タスク一覧*"
 			}
-		},
-		{
-			type: "divider"
 		},
 		{
 			type: "section",
