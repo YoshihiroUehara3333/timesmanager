@@ -36,7 +36,7 @@ class WorkReportService {
             }
 
             const partitionKey =  `${channelId}#${POSTDATA.PK_POSTFIX.WORKREPORT}`;
-            let latestSerial = await this.postDataRepository.getWorkReportCount(partitionKey, date);
+            let latestSerial = await this.postDataRepository.getWorkReportCount(partitionKey, date) + 1;
 
             return {
                 status: true,
@@ -71,11 +71,11 @@ class WorkReportService {
 
         try {
             // WorkReportModelを生成
-            const workReportModel  = this.createWorkReportModel(channelId, date, metadata, values);
+            const workReportModel = this.createWorkReportModel(channelId, date, metadata, values);
 
             // 最新シリアルを取得
             let partitionKey = workReportModel.partitionKey;
-            let latestSerial = await this.postDataRepository.queryWorkReportLatestSerial(partitionKey, date);
+            let latestSerial = await this.postDataRepository.getWorkReportCount(partitionKey, date) + 1;
             workReportModel.serial = latestSerial;
 
             // DB保存
@@ -83,10 +83,13 @@ class WorkReportService {
             
             // httpStatusCodeをチェックしてreturn
             const httpStatusCode = response.$metadata?.httpStatusCode;
-            return new PostMessage(
-                metadata.user_id,
-                this.checkHttpStatusCode(httpStatusCode, workReportModel)
-            );
+            return {
+                status: true,
+                slackRequest: new PostMessage(
+                    metadata.user_id,
+                    this.checkHttpStatusCode(httpStatusCode, workReportModel)
+                )
+            };
 
         } catch (error) {
             throw new Error(error.message, { cause: error });
