@@ -1,7 +1,7 @@
 // 作業予定入力時のBlockKit定義
 const { ModalConst } = require('../constants/ModalConst');
 
-exports.WorkPlanBlock = (userId, taskName, goal, selectedTime, memo) => ([
+exports.WorkPlanBlock = ({userId, taskName, goal, selectedTime, memo, serial}) => ([
     {
         type : "section",
         text : {
@@ -41,7 +41,7 @@ exports.WorkPlanBlock = (userId, taskName, goal, selectedTime, memo) => ([
                     text  : "更新"
                 },
                 style     : "primary",
-                value     : "update",
+                value     : serial,
                 action_id : ModalConst.ACTION_ID.WORKREPORT.UPDATE,
             },
             {
@@ -52,7 +52,7 @@ exports.WorkPlanBlock = (userId, taskName, goal, selectedTime, memo) => ([
                     text  : "完了"
                 },
                 style     : "danger",
-                value     : "finish",
+                value     : serial,
                 action_id : ModalConst.ACTION_ID.WORKREPORT.FINISH,
             }
         ]

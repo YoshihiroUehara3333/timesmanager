@@ -59,16 +59,22 @@ class WorkReportService {
     }
 
     // /makethread入力時のNewTaskモーダル入力値を取得し、Blocksを返す
-    async convertNewTaskSubmissionToBlock(view, userId) {
-        // モーダル入力値を取得
+    async setWorkPlanBlockParams(view, metadata) {
+        const workPlanBlockParams = {};
+
+        workPlanBlockParams.userId = metadata.userId;
+        
         const values        = view.state.values;
-        const taskName      = values.taskname.input.value || '';
-        const goal          = values.goal.input.value || '';
-        const targetTime    = values.targettime.input.selected_time;
-        const memo          = values.memo.input.value || '';
+        workPlanBlockParams.taskName      = values.taskname.input.value || '';
+        workPlanBlockParams.goal          = values.goal.input.value || '';
+        workPlanBlockParams.targetTime    = values.targettime.input.selected_time;
+        workPlanBlockParams.memo          = values.memo.input.value || '';
+
+        let stringWorkReportCount = await this.postDataRepository.getWorkReportCount(metadata.channelId, date);
+        workPlanBlockParams.serial = parseInt(stringWorkReportCount) + 1;
 
         // Blocksを生成してreturn
-        return WorkPlanBlock(userId, taskName, goal, targetTime, memo);
+        return workPlanBlockParams;
     }
 
     // NewTaskモーダル入力値からWorkReportModelを作成し、DBに保存する
