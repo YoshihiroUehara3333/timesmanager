@@ -13,9 +13,10 @@ class AppViewHandler extends HandlerBase {
         taskService, 
         slackApiAdaptor
     }) {
+        super({slackApiAdaptor});
+
         this.threadService      = threadService;
         this.taskService        = taskService;
-        this.slackApiAdaptor    = slackApiAdaptor;
 
         this.dispatcher = {
             [`${this.CALLBACK_ID.NEWTASK}`]  : this.handleNewTaskModalCallback.bind(this),

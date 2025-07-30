@@ -13,9 +13,10 @@ class AppActionHandler extends HandlerBase{
         taskService,
         slackApiAdaptor
     }) {
+        super({slackApiAdaptor});
+
         this.diaryService      = diaryService;
         this.taskService       = taskService;
-        this.slackApiAdaptor   = slackApiAdaptor;
 
         this.dispatcher = {
             [`${ModalConst.ACTION_ID.DIARY.MANAGE}`]        : this.handleDiaryManage.bind(this),
@@ -30,47 +31,24 @@ class AppActionHandler extends HandlerBase{
         const actions = body.actions[0];
         logger.info(`action_id:${actions.action_id}`);
         const handler = this.dispatcher[actions.action_id] || this.dispatcher['default'];
+        const userId = body.user_id;
 
-        const userId = message.user;
-        let slackRequest;
-        try {
-            slackRequest = await handler(body, logger);
-        }
-        catch (error) {
-            logger.error(error.stack);
-            slackRequest = new PostMessage(userId, error.toString());
-        }
-        finally {
-            if (slackRequest) {
-                await this.slackApiAdaptor.send(slackRequest);
-            }
-        }
+        logger.info(`${handler.name}を実行`);
+        await this.execute(handler, userId, body, logger);
     }
 
-    async handleDiaryManage(body, logger){
-        logger.info("handleDiaryManageが実行されました");
+    async handleDiaryManage(body){
         const form = this.diaryService.setDiaryManageFormData(body);
         return;
     }
-
-    async handleWorkReportCreate(body, logger){
-        logger.info("handleWorkReportCreateが実行されました");
-        return;
-    }
     
-    async handleWorkReportUpdate(body, logger){
-        logger.info("handleWorkReportUpdateが実行されました");
+    async handleWorkReportUpdate(body){
         const params = await this.taskService.updateTask(body);
 
         return new ViewsOpen(
-            command.trigger_id,
+            body.trigger_id,
             TaskInputModal(params)
         )
-    }
-
-    async handleWorkReportFinish(body, logger){
-        logger.info("handleWorkReportFinishが実行されました");
-        return;
     }
 }
 

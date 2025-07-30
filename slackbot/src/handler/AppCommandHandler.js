@@ -14,10 +14,11 @@ class AppCommandHandler extends HandlerBase{
         taskService, 
         slackApiAdaptor
     }){
+        super({slackApiAdaptor});
+
         this.diaryService      = diaryService;
         this.threadService     = threadService;
         this.taskService       = taskService;
-        this.slackApiAdaptor   = slackApiAdaptor;
 
         this.dispatcher = {
             [`${SlackConst.APPCOMMANDS.MAKETHREAD}`]   : this.handleMakethread.bind(this),
@@ -28,29 +29,18 @@ class AppCommandHandler extends HandlerBase{
         }
     }
 
-    async handle (command, logger) {
-        logger.info(`command:${command.command}`);
-        const handler = this.dispatcher[command.command];
-        
-        const userId = command.user_id;
-        let slackRequest;
-        try {
-            slackRequest = await handler(command, logger);
-        } 
-        catch (error) {
-            logger.error(error.stack);
-            slackRequest = new PostMessage(userId, error.toString());
-        } 
-        finally {
-            if (slackRequest) {
-                await this.slackApiAdaptor.send(slackRequest);
-            }
-        }
+    async handle(body, logger) {
+        const userId = body.command.user;
+        const handler = this.dispatcher[command.command] || this.dispatcher['default'];
+
+        logger.info(`${handler.name}を実行`);
+        await this.execute(handler, userId, body, logger);
     }
 
     // /makethread実行時
-    async handleMakethread (command, logger) {
-        logger.debug(`handleMakethreadを実行`);
+    async handleMakethread (body) {
+        const command = this.getCommandFromBody(body);
+
         const thread = await this.threadService.createNewThread(command);
         const params = await this.taskService.createTaskInputModalParams(command, thread);
         if (params) {
@@ -62,8 +52,9 @@ class AppCommandHandler extends HandlerBase{
     }
 
     // /newtask実行時
-    async handleNewTask (command, logger) {
-        logger.debug(`handleNewTaskを実行`);
+    async handleNewTask (body) {
+        const command = this.getCommandFromBody(body);
+
         const params = await this.taskService.createTaskInputModalParams(command, undefined);
         if (params) {
             return new ViewsOpen(
@@ -79,7 +70,9 @@ class AppCommandHandler extends HandlerBase{
     }
 
     // /warmup実行時
-    async handleWarmUp (command, logger) {
+    async handleWarmUp (body) {
+        const command = this.getCommandFromBody(body);
+
         return new PostMessage(
             command.user_id,
             'warmupが実行されました'
@@ -87,8 +80,12 @@ class AppCommandHandler extends HandlerBase{
     }
 
     // /managediary実行時
-    async handleManageDiary (command, logger) {
+    async handleManageDiary (body) {
         return undefined;
+    }
+
+    getCommandFromBody(body){
+        return body.command;
     }
 };
 

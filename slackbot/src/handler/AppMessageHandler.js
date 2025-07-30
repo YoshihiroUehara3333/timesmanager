@@ -7,10 +7,15 @@ const { RegexConst }  = require('../constants/RegexConst');
 const { PostMessage } = require('../slack/SlackApiRequest');
 
 class AppMessageHandler extends HandlerBase{
-    constructor ({diaryService, threadService, slackApiAdaptor}) {
+    constructor ({
+        diaryService,
+        threadService,
+        slackApiAdaptor
+    }) {
+        super({slackApiAdaptor});
+
         this.diaryService    = diaryService;
         this.threadService   = threadService;
-        this.slackApiAdaptor = slackApiAdaptor;
 
         this.dispatcher = {
             'handleEditedTopLevelMessage' : this.handleEditedTopLevelMessage.bind(this),
@@ -20,31 +25,16 @@ class AppMessageHandler extends HandlerBase{
         }
     }
 
-    async handle (message, logger) {
+    async handle (body, message, logger) {
         const handler = this.dispatcher[this.checkMessagetype(message)] || this.dispatcher['default'];
-
         const userId = message.user;
-        let slackRequest;
-        try {
-            slackRequest = await handler(message, logger);
-        }
-        catch (error) {
-            logger.error(error.stack);
-            slackRequest = new PostMessage(userId, error.toString());
-        }
-        finally {
-            if (slackRequest) {
-                await this.slackApiAdaptor.send(slackRequest);
-            }
-        }
+        logger.info(`${handler.name}を実行`);
+        await this.execute(handler, userId, body, logger);
     }
 
     // スレッド外部かつ、新規ポスト時
-    async handleNewTopLevelMessage (message, logger) {
-        logger.info("handleTopLevelNewMessageが実行されました");
-
+    async handleNewTopLevelMessage (message) {
         if (this.isDiary(message)) {
-            logger.info("diaryService.newDiaryEntryを実行");
             const result = await this.diaryService.processNewDiaryEntry(message);
             return new PostMessage(
                 message.user,
@@ -54,13 +44,11 @@ class AppMessageHandler extends HandlerBase{
     }
 
     // 投稿編集時
-    async handleEditedTopLevelMessage (messageRaw, logger) {
-        logger.info("handleEditedTopLevelMessageが実行されました");
+    async handleEditedTopLevelMessage (messageRaw) {
         const message = messageRaw.message;
         message.channel = messageRaw.channel;
         
         if (this.isDiary(message)) {
-            logger.info("diaryService.processUpdateDiaryを実行");
             const result = await this.diaryService.processUpdateDiary(message);
             return new PostMessage(
                 message.user,
@@ -72,7 +60,6 @@ class AppMessageHandler extends HandlerBase{
     async handleThreadCommand(message, logger) {
         // /AIフィードバック
         if (message.text.match(RegexConst.THREADCOMMANDS.AI_FEEDBACK)) {
-            logger.info("diaryService.aiFeedbackを実行");
             const result = await this.diaryService.generateFeedback(message);
             return new PostMessage(
                 message.channel,
