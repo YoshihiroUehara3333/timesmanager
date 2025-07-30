@@ -94,6 +94,14 @@ exports.DailyAttendanceInputModal = () => ({
 					{
 						text: {
 							type: "plain_text",
+							text: "自社",
+							emoji: true
+						},
+						value: "office"
+					},
+					{
+						text: {
+							type: "plain_text",
 							text: "休暇",
 							emoji: true
 						},
