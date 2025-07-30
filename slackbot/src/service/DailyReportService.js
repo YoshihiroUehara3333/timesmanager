@@ -5,7 +5,7 @@ const { POSTDATA }           = require('../constants/DynamoDB/PostData');
 const { PostMessage, GetPermalink } = require('../slack/SlackApiRequest');
 
 /**
- * Slackメッセージから日報を処理・保存・更新・フィードバック生成するためのサービスクラス
+ * 日報を処理・保存・更新・フィードバック生成するためのサービスクラス
  */
 class DailyReportService {
     constructor({

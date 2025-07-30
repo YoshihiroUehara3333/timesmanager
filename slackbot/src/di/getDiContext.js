@@ -16,7 +16,7 @@ exports.getDiContext = (boltAppClient) => {
         slackApiAdaptor,
     }
 
-    const dailyReportServiceService = new DailyReportService(serviceContext);
+    const dailyReportService        = new DailyReportService(serviceContext);
     const threadService             = new ThreadService(serviceContext);
     const taskService               = new TaskService(serviceContext);
 
