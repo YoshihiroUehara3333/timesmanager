@@ -3,8 +3,9 @@ exports.ModalConst = {
         NEWTASK  : "newTask_modal_callback",
     },
     ACTION_ID   :   {
-        DAILYREPORT   : {
-            MANAGE    : 'dailyreport_manage'
+        HOME   : {
+            DAILYREPORT : 'home_dailyreport',
+            ATTENDANCE  : 'home_attendance'
         },
         TASK    :  {
             CREATE    : 'workreport_create',
