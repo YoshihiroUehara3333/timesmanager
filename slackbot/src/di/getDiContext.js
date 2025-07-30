@@ -1,6 +1,6 @@
 const { OpenAiApiAdaptor }          = require('../openai/OpenAiApiAdaptor');
 const { SlackApiAdaptor }           = require('../slack/SlackApiAdaptor');
-const { DiaryService }              = require('../service/DiaryService');
+const { DailyReportService }        = require('../service/DailyReportService');
 const { ThreadService }             = require('../service/ThreadService');
 const { TaskService }               = require('../service/TaskService');
 const { DynamoPostDataRepository }  = require('../repository/DynamoPostDataRepository');
@@ -16,12 +16,12 @@ exports.getDiContext = (boltAppClient) => {
         slackApiAdaptor,
     }
 
-    const diaryService          = new DiaryService(serviceContext);
-    const threadService         = new ThreadService(serviceContext);
-    const taskService           = new TaskService(serviceContext);
+    const dailyReportServiceService = new DailyReportService(serviceContext);
+    const threadService             = new ThreadService(serviceContext);
+    const taskService               = new TaskService(serviceContext);
 
     const handlerContext = {
-        diaryService,
+        dailyReportService,
         threadService,
         taskService,
         slackApiAdaptor,

@@ -9,16 +9,16 @@ const { HandlerBase } = require('./HandlerBase');
 class AppCommandHandler extends HandlerBase{
     constructor
     ({
-        diaryService,
+        dailyReportService,
         threadService, 
         taskService, 
         slackApiAdaptor
     }){
         super({slackApiAdaptor});
 
-        this.diaryService      = diaryService;
-        this.threadService     = threadService;
-        this.taskService       = taskService;
+        this.dailyReportService = dailyReportService;
+        this.threadService      = threadService;
+        this.taskService        = taskService;
 
         this.dispatcher = {
             [`${SlackConst.APPCOMMANDS.MAKETHREAD}`]   : this.handleMakethread.bind(this),

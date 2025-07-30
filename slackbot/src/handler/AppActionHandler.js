@@ -6,20 +6,21 @@ const { ModalConst } = require('../constants/ModalConst');
 const { PostMessage, ViewsOpen } = require('../slack/SlackApiRequest');
 
 const { TaskInputModal } = require('../blockkit/TaskInputModal');
+const { DailyReportManageModal } = require('../blockkit/DailyReportManageModal');
 
 class AppActionHandler extends HandlerBase{
     constructor ({
-        diaryService,
+        dailyReportService,
         taskService,
         slackApiAdaptor
     }) {
         super({slackApiAdaptor});
 
-        this.diaryService      = diaryService;
+        this.dailyReportService= dailyReportService;
         this.taskService       = taskService;
 
         this.dispatcher = {
-            [`${ModalConst.ACTION_ID.DAILYREPORT.MANAGE}`] : this.handleDiaryManage.bind(this),
+            [`${ModalConst.ACTION_ID.DAILYREPORT.MANAGE}`] : this.handleDailyReportManage.bind(this),
             // [`${ModalConst.ACTION_ID.TASK.CREATE}`]        : this.handleWorkReportCreate.bind(this),
             [`${ModalConst.ACTION_ID.TASK.UPDATE}`]        : this.handleWorkReportUpdate.bind(this),
             // [`${ModalConst.ACTION_ID.TASK.FINISH}`]        : this.handleWorkReportFinish.bind(this),
@@ -30,6 +31,7 @@ class AppActionHandler extends HandlerBase{
     async handle (body, logger) {
         const actions = body.actions[0];
         logger.info(`action_id:${actions.action_id}`);
+        
         const handler = this.dispatcher[actions.action_id] || this.dispatcher['default'];
         const userId = body.user_id;
 
@@ -37,9 +39,11 @@ class AppActionHandler extends HandlerBase{
         await this.execute(handler, userId, body, logger);
     }
 
-    async handleDiaryManage(body){
-        const form = this.diaryService.setDiaryManageFormData(body);
-        return;
+    async handleDailyReportManage(body){
+        return new ViewsOpen(
+            body.trigger_id,
+            DailyReportManageModal()
+        )
     }
     
     async handleWorkReportUpdate(body){

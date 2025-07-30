@@ -8,14 +8,14 @@ const { PostMessage } = require('../slack/SlackApiRequest');
 
 class AppMessageHandler extends HandlerBase{
     constructor ({
-        diaryService,
+        dailyReportService,
         threadService,
         slackApiAdaptor
     }) {
         super({slackApiAdaptor});
 
-        this.diaryService    = diaryService;
-        this.threadService   = threadService;
+        this.dailyReportService = dailyReportService;
+        this.threadService      = threadService;
 
         this.dispatcher = {
             'handleEditedTopLevelMessage' : this.handleEditedTopLevelMessage.bind(this),
@@ -35,7 +35,7 @@ class AppMessageHandler extends HandlerBase{
     // スレッド外部かつ、新規ポスト時
     async handleNewTopLevelMessage (message) {
         if (this.isDiary(message)) {
-            const result = await this.diaryService.processNewDiaryEntry(message);
+            const result = await this.dailyReportService.processNewDiaryEntry(message);
             return new PostMessage(
                 message.user,
                 result.msg
@@ -49,7 +49,7 @@ class AppMessageHandler extends HandlerBase{
         message.channel = messageRaw.channel;
         
         if (this.isDiary(message)) {
-            const result = await this.diaryService.processUpdateDiary(message);
+            const result = await this.dailyReportService.processUpdateDiary(message);
             return new PostMessage(
                 message.user,
                 result.msg
@@ -60,7 +60,7 @@ class AppMessageHandler extends HandlerBase{
     async handleThreadCommand(message, logger) {
         // /AIフィードバック
         if (message.text.match(RegexConst.THREADCOMMANDS.AI_FEEDBACK)) {
-            const result = await this.diaryService.generateFeedback(message);
+            const result = await this.dailyReportService.generateFeedback(message);
             return new PostMessage(
                 message.channel,
                 result.msg,

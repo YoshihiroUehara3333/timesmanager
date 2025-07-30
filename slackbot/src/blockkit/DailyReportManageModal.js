@@ -1,6 +1,6 @@
 const { ModalConst } = require('../constants/ModalConst');
 
-exports.DiaryManageModal = () => ({
+exports.DailyReportManageModal = () => ({
 	type: "modal",
 	title: {
 		type: "plain_text",

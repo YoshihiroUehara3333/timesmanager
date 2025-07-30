@@ -7,7 +7,7 @@ const { PostMessage, GetPermalink } = require('../slack/SlackApiRequest');
 /**
  * Slackメッセージから日報を処理・保存・更新・フィードバック生成するためのサービスクラス
  */
-class DiaryService {
+class DailyReportService {
     constructor({
         postDataRepository, 
         aiApiAdaptor, 
@@ -87,7 +87,8 @@ class DiaryService {
 
     async getDiaryManageFormData(body){
         const date = new Date().toFormat('HH24:MI:SS');
-        this.postDataRepository.getDiaryByDate();
+        
+        this.postDataRepository.getDiaryByDate(channelId, date);
     }
 
     /**
@@ -129,4 +130,4 @@ class DiaryService {
     }
 }
 
-exports.DiaryService = DiaryService;
+exports.DailyReportService = DailyReportService;
