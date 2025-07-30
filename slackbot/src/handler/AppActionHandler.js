@@ -19,11 +19,11 @@ class AppActionHandler extends HandlerBase{
         this.taskService       = taskService;
 
         this.dispatcher = {
-            [`${ModalConst.ACTION_ID.DIARY.MANAGE}`]        : this.handleDiaryManage.bind(this),
-            [`${ModalConst.ACTION_ID.WORKREPORT.CREATE}`]   : this.handleWorkReportCreate.bind(this),
-            [`${ModalConst.ACTION_ID.WORKREPORT.UPDATE}`]   : this.handleWorkReportUpdate.bind(this),
-            [`${ModalConst.ACTION_ID.WORKREPORT.FINISH}`]   : this.handleWorkReportFinish.bind(this),
-            'default'                                       : this.handleDefault.bind(this)
+            [`${ModalConst.ACTION_ID.DAILYREPORT.MANAGE}`] : this.handleDiaryManage.bind(this),
+            [`${ModalConst.ACTION_ID.TASK.CREATE}`]        : this.handleWorkReportCreate.bind(this),
+            [`${ModalConst.ACTION_ID.TASK.UPDATE}`]        : this.handleWorkReportUpdate.bind(this),
+            [`${ModalConst.ACTION_ID.TASK.FINISH}`]        : this.handleWorkReportFinish.bind(this),
+            'default'                                      : this.handleDefault.bind(this)
         }
     }
 
