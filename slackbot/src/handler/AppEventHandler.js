@@ -5,11 +5,10 @@ const { ViewsPublish, PostMessage } = require("../slack/SlackApiRequest");
 const { HandlerBase } = require("./HandlerBase");
 
 class AppEventHandler extends HandlerBase{
-    constructor
-    ({
+    constructor({
         slackApiAdaptor
     }){
-        this.slackApiAdaptor   = slackApiAdaptor;
+        super({slackApiAdaptor});
 
         this.dispatcher = {
             'app_home_opened' : this.updateAppHome.bind(this),
@@ -18,12 +17,17 @@ class AppEventHandler extends HandlerBase{
     }
 
     async handle(body, event, logger) {
+        const userId = event.user;
         const handler = this.dispatcher[event.type] || this.dispatcher['default'];
 
-        const userId = command.user_id;
+        logger.info(`${handler.name}を実行`);
+        await this.execute(handler, userId, body, logger);
+    }
+
+    async execute(handler, userId, body, logger){
         let slackRequest;
-        try {    
-            slackRequest = await handler(event, logger);
+        try {
+            slackRequest = await handler(body);
         }
         catch (error) {
             logger.error(error.stack);
@@ -36,13 +40,16 @@ class AppEventHandler extends HandlerBase{
         }
     }
 
-    async updateAppHome(event, logger){
-        logger.info('updateAppHomeを実行');
-
+    async updateAppHome(body){
+        const event = this.getEventFromBody(body);
         return new ViewsPublish(
             event.user,
             AppHomeView()
         )
+    }
+
+    getEventFromBody(body){
+        return body.event;
     }
 };
 

@@ -1,56 +1,63 @@
 // ホームタブのBlockKit定義
 const { ModalConst } = require('../constants/ModalConst');
 
-exports.AppHomeView = () => ({
-    type : "home",
-    blocks: [
-		{
-			type: "header",
-			text: {
-				type: "plain_text",
-				text: "timesmanager"
-			}
-		},
-		{
-			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: "*日報管理*"
-			}
+function dailyReportSection(){
+	return [
+        {
+            type: "section",
+            text: { type: "mrkdwn", text: "*日報管理*" }
 		},
 		{
             type: "actions",
+            elements: [
+                {
+					type: "button",
+					text: { type: "plain_text", text: "本日の日報管理" },
+					style: "primary",
+					value: "dailyreport_manage",
+					action_id : ModalConst.ACTION_ID.DAILYREPORT.MANAGE,
+				}
+			]
+		}
+	]
+}
+
+function taskSection(){
+    return [
+        {
+            type: "section",
+            text: { type: "mrkdwn", text: "*タスク管理*" }
+		},
+		{
+			type: "actions",
 			elements: [
 				{
 					type: "button",
-					text: {
-						type: "plain_text",
-						text: "本日の日報管理",
-						emoji: true
-					},
+					text: { type: "plain_text", text: "タスク新規作成" },
 					style: "primary",
-					value: "edit_diary",
-					action_id : ModalConst.ACTION_ID.DIARY.MANAGE,
+					value: "create_task",
+					action_id : ModalConst.ACTION_ID.TASK.CREATE,
 				}
 			]
 		},
 		{
 			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: "*タスク管理*"
-			}
+			text: { type: "mrkdwn", text: "*タスク一覧*" }
 		},
+    ]
+}
+
+exports.AppHomeView = () => ({
+    type : "home",
+    blocks: [
 		{
-			type: "divider"
+			type: "header",
+			text: { type: "plain_text", text: "timesmanager" }
 		},
-		{
-			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: "*タスク一覧*"
-			}
-		},
+		{ type: "divider" },
+		...dailyReportSection(),
+		{ type: "divider" },
+		...taskSection(),
 		{
 			type: "section",
 			text: {
@@ -59,7 +66,7 @@ exports.AppHomeView = () => ({
 			},
 			accessory: {
 				type: "button",
-				action_id : ModalConst.ACTION_ID.WORKREPORT.UPDATE,
+				action_id : ModalConst.ACTION_ID.TASK.UPDATE,
 				text: {
 					type: "plain_text",
 					text: "Edit",
@@ -73,34 +80,18 @@ exports.AppHomeView = () => ({
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: "*タスク2*"
+				text: "*タスク1*"
 			},
 			accessory: {
 				type: "button",
-				
+				action_id : ModalConst.ACTION_ID.TASK.UPDATE,
 				text: {
 					type: "plain_text",
 					text: "Edit",
 					emoji: true
 				},
-				value: "task2"
+				value: "task1"
 			}
-		},
-		{ type: "divider" },
-		{
-			type: "actions",
-			elements: [
-				{
-					type: "button",
-					text: {
-						type: "plain_text",
-						text: "タスク新規作成",
-						emoji: true
-					},
-					style: "primary",
-					value: "create_task"
-				}
-			]
 		}
     ]
 });

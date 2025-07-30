@@ -28,44 +28,37 @@ const appEventHandler    = new AppEventHandler(diContext.handler);
 
 // スラッシュコマンド検知
 app.command(/.*/, async ({ack, command, context, logger}) => {
-    logger.info(`app.command\ncontext:${JSON.stringify(context)}\ncommand:${JSON.stringify(command)}\n`);
-
     ack();
     if(context.retryNum) return;
-
+    logger.info(`app.command\ncontext:${JSON.stringify(context)}\ncommand:${JSON.stringify(command)}\n`);
     await appCommandHandler.handle(command, logger);
 })
 
 // メッセージ検知
 app.message(async ({ack, message, context, logger}) => {
-    logger.info(`app.message\ncontext:${JSON.stringify(context)}\nmessage:${JSON.stringify(message)}\n`);
-
     ack();
     if(context.retryNum) return; // リトライ以降のリクエストは弾く
-
+    logger.info(`app.message\ncontext:${JSON.stringify(context)}\nmessage:${JSON.stringify(message)}\n`);
     await appMessageHandler.handle(message, logger);
 })
 
 // モーダルの「送信」押下時
 app.view({ type: 'view_submission' }, async ({ ack, body, view, logger}) => {
+    ack();
     logger.info(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`);
-
-    await ack();
     await appViewHandler.handle(view, logger);
 })
 
 // action受信
 app.action({ type: 'block_actions' }, async ({ack, body, logger}) => {
+    ack();
     logger.info(`app.action\nbody:${JSON.stringify(body)}`);
-    await ack();
-
     await appActionHandler.handle(body, logger);
 })
 
 // homeタブを開いたとき
 app.event({ type: 'app_home_opened' }, async ({ack, body, event, logger}) => {
     logger.info(`app.event\nevent:${JSON.stringify(event)}/nbody:${JSON.stringify(body)}\n`);
-
     await appEventHandler.handle(body, event, logger);
 })
 
