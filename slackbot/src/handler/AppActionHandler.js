@@ -10,11 +10,11 @@ const { TaskInputModal } = require('../blockkit/TaskInputModal');
 class AppActionHandler extends HandlerBase{
     constructor ({
         diaryService,
-        workReportService,
+        taskService,
         slackApiAdaptor
     }) {
         this.diaryService      = diaryService;
-        this.workReportService = workReportService;
+        this.taskService       = taskService;
         this.slackApiAdaptor   = slackApiAdaptor;
 
         this.dispatcher = {
@@ -29,10 +29,10 @@ class AppActionHandler extends HandlerBase{
     async handle (body, logger) {
         const actions = body.actions[0];
         logger.info(`action_id:${actions.action_id}`);
+        const handler = this.dispatcher[actions.action_id] || this.dispatcher['default'];
 
         let slackRequest;
         try {
-            const handler = this.dispatcher[actions.action_id] || this.dispatcher['default'];
             slackRequest = await handler(body, logger);
         }
         catch (error) {
@@ -59,7 +59,7 @@ class AppActionHandler extends HandlerBase{
     
     async handleWorkReportUpdate(body, logger){
         logger.info("handleWorkReportUpdateが実行されました");
-        const params = await this.workReportService.updateTask(body);
+        const params = await this.taskService.updateTask(body);
 
         return new ViewsOpen(
             command.trigger_id,

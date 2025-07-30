@@ -11,12 +11,12 @@ class AppCommandHandler extends HandlerBase{
     ({
         diaryService,
         threadService, 
-        workReportService, 
+        taskService, 
         slackApiAdaptor
     }){
         this.diaryService      = diaryService;
         this.threadService     = threadService;
-        this.workReportService = workReportService;
+        this.taskService       = taskService;
         this.slackApiAdaptor   = slackApiAdaptor;
 
         this.dispatcher = {
@@ -30,10 +30,10 @@ class AppCommandHandler extends HandlerBase{
 
     async handle (command, logger) {
         logger.info(`command:${command.command}`);
+        const handler = this.dispatcher[command.command];
         
         let slackRequest;
         try {
-            const handler = this.dispatcher[command.command];
             slackRequest = await handler(command, logger);
         } 
         catch (error) {
@@ -51,7 +51,7 @@ class AppCommandHandler extends HandlerBase{
     async handleMakethread (command, logger) {
         logger.debug(`handleMakethreadを実行`);
         const thread = await this.threadService.createNewThread(command);
-        const params = await this.workReportService.createTaskInputModalParams(command, thread);
+        const params = await this.taskService.createTaskInputModalParams(command, thread);
         if (params) {
             return new ViewsOpen(
                 command.trigger_id,
@@ -63,7 +63,7 @@ class AppCommandHandler extends HandlerBase{
     // /newtask実行時
     async handleNewTask (command, logger) {
         logger.debug(`handleNewTaskを実行`);
-        const params = await this.workReportService.createTaskInputModalParams(command, undefined);
+        const params = await this.taskService.createTaskInputModalParams(command, undefined);
         if (params) {
             return new ViewsOpen(
                 command.trigger_id,

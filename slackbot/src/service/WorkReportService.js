@@ -7,7 +7,7 @@ const { WorkReportModel } = require('../model/WorkReportModel');
 const { POSTDATA }        = require('../constants/DynamoDB/PostData');
 const { PostMessage }     = require('../slack/SlackApiRequest');
 
-class WorkReportService {
+class TaskService {
     constructor ({
         postDataRepository,
         slackApiAdaptor
@@ -24,6 +24,7 @@ class WorkReportService {
         const channelId = command.channel_id;
         try {
             if(!thread){
+                // GET to /api/threadに書き換え
                 thread = await this.postDataRepository.getThreadByDate(channelId, date);
                 if(!thread) return undefined;
             }
@@ -121,4 +122,4 @@ class WorkReportService {
     }
 }
 
-exports.WorkReportService = WorkReportService;
+exports.TaskService = TaskService;

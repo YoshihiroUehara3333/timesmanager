@@ -1,11 +1,11 @@
 // モジュール読み込み
-const { App, AwsLambdaReceiver }     = require('@slack/bolt');
-const { getDiContext }               = require('./di/getDiContext');
+const { App, AwsLambdaReceiver }  = require('@slack/bolt');
+const { getDiContext }            = require('./di/getDiContext');
 const { AppCommandHandler }       = require('./handler/AppCommandHandler');
 const { AppMessageHandler }       = require('./handler/AppMessageHandler');
 const { AppViewHandler }          = require('./handler/AppViewHandler');
 const { AppActionHandler }        = require('./handler/AppActionHandler');
-const { AppEventHandler }        = require('./handler/AppEventHandler');
+const { AppEventHandler }         = require('./handler/AppEventHandler');
 
 // アプリ初期化
 const awsLambdaReceiver = new AwsLambdaReceiver({

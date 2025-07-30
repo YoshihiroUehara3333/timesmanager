@@ -4,7 +4,7 @@
 const { PostdataModelBase } = require('./PostdataModelBase');
 const { POSTDATA }          = require('../constants/DynamoDB/PostData');
 
-class WorkReportModel extends PostdataModelBase {
+class TaskModel extends PostdataModelBase {
     constructor (channelId, date) {
         super(channelId, date);
         this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.WORKREPORT;
@@ -50,4 +50,4 @@ class WorkReportModel extends PostdataModelBase {
     }
 }
 
-exports.WorkReportModel = WorkReportModel;
+exports.TaskModel = TaskModel;
