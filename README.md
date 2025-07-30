@@ -42,20 +42,11 @@ AIによるフィードバックを生成し、スレッド内に返信する。
 <br>
 ## ディレクトリ構成
 ````
-/timesmanager
-├── src/
-│   ├── index.js      ← Lambda
-│   ├── constants/
-│   │   └──DynamoDB/
-│   ├── controller/
-│   ├── model/
-│   ├── repository/
-│   ├── service/
-│   └── utility/
-├── .github
-│   └── workflows
-├── package.json
-├── package-lock.json
-├── .env
-└── README.md
+timesmanager/
+├── .github/             # GitHub関連設定（Actionsなど）
+├── slackbot/            # SlackBotのLambdaソース（Node.js）
+├── springboot/          # Spring BootのバックエンドAPI（Java）
+├── .gitignore           # Git管理除外ファイル設定
+├── README.md            # プロジェクトの概要説明
+└── package.json         # Node.js依存管理ファイル（slackbot用）
 ````
