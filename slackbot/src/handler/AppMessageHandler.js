@@ -23,14 +23,16 @@ class AppMessageHandler extends HandlerBase{
     }
 
     async handle (message, logger) {
+        const handler = this.dispatcher[this.checkMessagetype(message)] || this.dispatcher['default'];
+
+        const userId = message.user;
         let slackRequest;
         try {
-            const handler = this.dispatcher[this.checkMessagetype(message)] || this.dispatcher['default'];
             slackRequest = await handler(message, logger);
         }
         catch (error) {
             logger.error(error.stack);
-            slackRequest = new PostMessage(message.user, error.toString());
+            slackRequest = new PostMessage(userId, error.toString());
         }
         finally {
             if (slackRequest) {

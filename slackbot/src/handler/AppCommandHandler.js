@@ -32,13 +32,14 @@ class AppCommandHandler extends HandlerBase{
         logger.info(`command:${command.command}`);
         const handler = this.dispatcher[command.command];
         
+        const userId = command.user_id;
         let slackRequest;
         try {
             slackRequest = await handler(command, logger);
         } 
         catch (error) {
             logger.error(error.stack);
-            slackRequest = new PostMessage(command.user_id, error.toString());
+            slackRequest = new PostMessage(userId, error.toString());
         } 
         finally {
             if (slackRequest) {

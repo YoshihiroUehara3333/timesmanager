@@ -31,13 +31,14 @@ class AppActionHandler extends HandlerBase{
         logger.info(`action_id:${actions.action_id}`);
         const handler = this.dispatcher[actions.action_id] || this.dispatcher['default'];
 
+        const userId = message.user;
         let slackRequest;
         try {
             slackRequest = await handler(body, logger);
         }
         catch (error) {
             logger.error(error.stack);
-            slackRequest = new PostMessage(message.user, error.toString());
+            slackRequest = new PostMessage(userId, error.toString());
         }
         finally {
             if (slackRequest) {

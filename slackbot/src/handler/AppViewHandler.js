@@ -10,11 +10,11 @@ class AppViewHandler extends HandlerBase {
 
     constructor ({
         threadService, 
-        workReportService, 
+        taskService, 
         slackApiAdaptor
     }) {
         this.threadService      = threadService;
-        this.workReportService  = workReportService;
+        this.taskService        = taskService;
         this.slackApiAdaptor    = slackApiAdaptor;
 
         this.dispatcher = {
@@ -26,18 +26,16 @@ class AppViewHandler extends HandlerBase {
     async handle(view, logger){
         const callbackId = view.callback_id;
         logger.info(`callbackId:${callbackId}`);
+        const handler = this.dispatcher[callbackId] || this.dispatcher['default'];
         
+        const userId = JSON.parse(view.private_metadata).user_id;
         let slackRequest;
         try {
-            const handler = this.dispatcher[callbackId] || this.dispatcher['default'];
             slackRequest = await handler(view, logger);
         } 
         catch (error) {
             logger.error(error.stack);
-            slackRequest = new PostMessage(
-                JSON.parse(view.private_metadata).user_id,
-                error.toString()
-            )
+            slackRequest = new PostMessage(userId, error.toString());
         }
         finally {
             if (slackRequest) {

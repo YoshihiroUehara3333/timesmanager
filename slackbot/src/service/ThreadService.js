@@ -7,7 +7,10 @@ const { PostModel }                = require('../model/PostModel');
 const { PostMessage, GetPermalink} = require('../slack/SlackApiRequest');
 
 class ThreadService {
-    constructor ({postDataRepository, slackApiAdaptor}) {
+    constructor ({
+        postDataRepository,
+        slackApiAdaptor
+    }) {
         this.postDataRepository = postDataRepository;
         this.slackApiAdaptor = slackApiAdaptor;
     }

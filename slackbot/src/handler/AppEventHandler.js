@@ -18,14 +18,16 @@ class AppEventHandler extends HandlerBase{
     }
 
     async handle(body, event, logger) {
+        const handler = this.dispatcher[event.type] || this.dispatcher['default'];
+
+        const userId = command.user_id;
         let slackRequest;
-        try {
-            const handler = this.dispatcher[event.type] || this.dispatcher['default'];
+        try {    
             slackRequest = await handler(event, logger);
         }
         catch (error) {
             logger.error(error.stack);
-            slackRequest = new PostMessage(command.user_id, error.toString());
+            slackRequest = new PostMessage(userId, error.toString());
         } 
         finally {
             if (slackRequest) {
