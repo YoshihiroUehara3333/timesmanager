@@ -1,10 +1,10 @@
 const { ModalConst } = require('../constants/ModalConst');
 
-exports.DailyReportManageModal = () => ({
+exports.DailyAttendanceInputModal = () => ({
 	type: "modal",
 	title: {
 		type: "plain_text",
-		text: "日報/勤怠管理",
+		text: "勤怠入力",
 		emoji: true
 	},
 	submit: {
@@ -22,7 +22,7 @@ exports.DailyReportManageModal = () => ({
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: "*本日の日報/勤怠状況を入力してください*"
+				text: "*本日の勤怠状況を入力してください*"
 			}
 		},
 		{ type: "divider" },

@@ -3,10 +3,11 @@
 //モジュール読み込み
 const { HandlerBase } = require('./HandlerBase');
 const { ModalConst } = require('../constants/ModalConst');
-const { PostMessage, ViewsOpen } = require('../slack/SlackApiRequest');
+const { ViewsOpen } = require('../slack/SlackApiRequest');
 
 const { TaskInputModal } = require('../blockkit/TaskInputModal');
-const { DailyReportManageModal } = require('../blockkit/DailyReportManageModal');
+const { DailyReportInputModal } = require('../blockkit/DailyReportInputModal');
+const { DailyAttendanceInputModal } = require('../blockkit/DailyAttendanceInputModal');
 
 class AppActionHandler extends HandlerBase{
     constructor ({
@@ -43,14 +44,14 @@ class AppActionHandler extends HandlerBase{
     async handleHomeToDailyReport(body){
         return new ViewsOpen(
             body.trigger_id,
-            DailyReportManageModal()
+            DailyReportInputModal()
         )
     }
 
     async handleHomeToAttendance(body){
         return new ViewsOpen(
             body.trigger_id,
-            DailyReportManageModal()
+            DailyAttendanceInputModal()
         )
     }
     
