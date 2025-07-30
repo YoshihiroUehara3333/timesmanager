@@ -1,7 +1,7 @@
 // app.event受け取り時
 
 const { AppHomeView } = require("../blockkit/AppHomeView");
-const { ViewsPublish, PostMessage } = require("../slack/SlackApiRequest");
+const { ViewsPublish } = require("../slack/SlackApiRequest");
 const { HandlerBase } = require("./HandlerBase");
 
 class AppEventHandler extends HandlerBase{

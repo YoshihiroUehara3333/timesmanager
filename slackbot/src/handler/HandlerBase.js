@@ -1,3 +1,5 @@
+const { PostMessage } = require("../slack/SlackApiRequest");
+
 class HandlerBase {
     constructor({
         slackApiAdaptor
@@ -5,7 +7,7 @@ class HandlerBase {
         this.slackApiAdaptor   = slackApiAdaptor;
     }
 
-    async handleDefault(message, logger){
+    async handleDefault(body){
         return undefined;
     }
 

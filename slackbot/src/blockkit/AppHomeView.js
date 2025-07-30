@@ -15,7 +15,7 @@ function dailyReportSection(){
 					text: { type: "plain_text", text: "日報管理" },
 					style: "primary",
 					value: "home_dailyreport",
-					action_id : ModalConst.ACTION_ID.DAILYREPORT.MANAGE,
+					action_id : ModalConst.ACTION_ID.HOME.DAILYREPORT,
 				}
 			]
 		},
@@ -27,7 +27,7 @@ function dailyReportSection(){
 					text: { type: "plain_text", text: "勤怠管理" },
 					style: "primary",
 					value: "home_attendance",
-					action_id : ModalConst.ACTION_ID.DAILYREPORT.MANAGE,
+					action_id : ModalConst.ACTION_ID.HOME.ATTENDANCE,
 				}
 			]
 		}
