@@ -2,16 +2,13 @@
 
 // モジュール読み込み
 require('date-utils');
-const { ThreadModel }              = require('../model/ThreadModel');
-const { PostModel }                = require('../model/PostModel');
+const axios = require('axios');
 const { PostMessage, GetPermalink} = require('../slack/SlackApiRequest');
 
 class ThreadService {
     constructor ({
-        postDataRepository,
         slackApiAdaptor
     }) {
-        this.postDataRepository = postDataRepository;
         this.slackApiAdaptor = slackApiAdaptor;
     }
 
@@ -33,14 +30,16 @@ class ThreadService {
                 channelId, 
                 postResult.ts
             ));
-            const threadModel = this.createThreadModel (channelId, date, postResult.ts, permalink);
 
-            // 投稿情報をDBに保存
-            const response = await this.postDataRepository.putItem(threadModel);
+            // Spring BootにPOST
+            const response = await axios.post("https://dev.slack-times-manager.com/api/thread", {
+                channelId,
+                date,
+                threadTs: postResult.ts,
+                permalink
+            });
 
-            // httpStatusCodeをチェックしてreturn
-            const httpStatusCode = response.$metadata?.httpStatusCode;
-            if (httpStatusCode === 200) {
+            if (response.status === 200) {
                 return postResult;
             } else {
                 throw new Error(
@@ -54,34 +53,6 @@ class ThreadService {
                 ,{ cause: error }
             )
         }
-    }
-
-    // スレッド内のリプライを扱う
-    async processNewThreadPost (message) {
-        const text = message.text;
-
-        const postModel = this.createPostModel(message);
-
-        await this.postDataRepository.putItem(postModel);
-    }
-
-
-    // ----------------------------------------------------------------------------
-    // ThreadModel生成
-    createThreadModel (channelId, date, threadTs, permalink) {
-        const threadModel = new ThreadModel(channelId, date);
-
-        threadModel.threadTs    = threadTs;
-        threadModel.slackUrl    = permalink;
-        threadModel.createdAt   = new Date().toFormat('HH24:MI:SS');
-
-        return threadModel;
-    }
-
-    // PostModel生成
-    createPostModel (channelId, date) {
-        const postModel = new PostModel(channelId, date);
-        return postModel;
     }
 }
 

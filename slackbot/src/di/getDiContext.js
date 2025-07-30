@@ -1,9 +1,9 @@
-const { OpenAiApiAdaptor }           = require('../openai/OpenAiApiAdaptor');
-const { SlackApiAdaptor }            = require('../slack/SlackApiAdaptor');
-const { DynamoPostDataRepository }   = require('../repository/DynamoPostDataRepository');
-const { DiaryService }               = require('../service/DiaryService');
-const { ThreadService }              = require('../service/ThreadService');
-const { TaskService }                = require('../service/TaskService');
+const { OpenAiApiAdaptor }          = require('../openai/OpenAiApiAdaptor');
+const { SlackApiAdaptor }           = require('../slack/SlackApiAdaptor');
+const { DiaryService }              = require('../service/DiaryService');
+const { ThreadService }             = require('../service/ThreadService');
+const { TaskService }               = require('../service/TaskService');
+const { DynamoPostDataRepository }  = require('../repository/DynamoPostDataRepository');
 
 exports.getDiContext = (boltAppClient) => {
     const postDataRepository = new DynamoPostDataRepository();
@@ -20,7 +20,6 @@ exports.getDiContext = (boltAppClient) => {
     const threadService         = new ThreadService(serviceContext);
     const taskService           = new TaskService(serviceContext);
 
-    
     const handlerContext = {
         diaryService,
         threadService,

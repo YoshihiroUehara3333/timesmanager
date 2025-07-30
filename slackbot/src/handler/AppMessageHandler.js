@@ -14,8 +14,6 @@ class AppMessageHandler extends HandlerBase{
 
         this.dispatcher = {
             'handleEditedTopLevelMessage' : this.handleEditedTopLevelMessage.bind(this),
-            // 'handleEditedThreadMessage'   : this.handleEditedThreadMessage.bind(this),
-            // 'handleNewThreadMessage'      : this.handleNewThreadMessage.bind(this),
             'handleNewTopLevelMessage'    : this.handleNewTopLevelMessage.bind(this),
             'handleThreadCommand'         : this.handleThreadCommand.bind(this),
             'default'                     : this.handleDefault.bind(this)
@@ -71,17 +69,6 @@ class AppMessageHandler extends HandlerBase{
         }
     }
 
-    // async handleEditedThreadMessage (message, logger) {
-    //     logger.info("handleEditedThreadMessageが実行されました");
-    // }
-
-    // // スレッド内部かつ、新規ポストかつ、ボットメンションではない
-    // async handleNewThreadMessage (message, logger) {
-    //     logger.info("handleNewThreadMessageが実行されました");
-    //     return this.threadService.processNewThreadPost(message, logger);
-    // }
-
-
     async handleThreadCommand(message, logger) {
         // /AIフィードバック
         if (message.text.match(RegexConst.THREADCOMMANDS.AI_FEEDBACK)) {
@@ -98,11 +85,11 @@ class AppMessageHandler extends HandlerBase{
     checkMessagetype(message) {
         if (message.subtype === 'message_changed') {
             if (this.isInThread(message)) {
-                return this.isBotMentioned(message) ? 'handleThreadCommand' : 'handleEditedThreadMessage';
+                return this.isBotMentioned(message) ? 'handleThreadCommand' : 'default';
             } 
             return 'handleEditedTopLevelMessage';
         } else {
-            return this.isInThread(message) ? 'handleNewThreadMessage' : 'handleNewTopLevelMessage';
+            return this.isInThread(message) ? 'default' : 'handleNewTopLevelMessage';
         }
     }
 
@@ -118,7 +105,6 @@ class AppMessageHandler extends HandlerBase{
     isDiary (message) {
         return message.text.match(RegexConst.DATE);
     }
-}
-;
+};
 
 exports.AppMessageHandler = AppMessageHandler;

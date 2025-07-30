@@ -3,7 +3,7 @@ require('date-utils');
 const { WorkReportUtils } = require('../utility/WorkReportUtils');
 
 const { WorkPlanBlock }   = require('../blockkit/WorkPlanBlock');
-const { WorkReportModel } = require('../model/WorkReportModel');
+const { TaskModel } = require('../model/TaskModel');
 const { POSTDATA }        = require('../constants/DynamoDB/PostData');
 const { PostMessage }     = require('../slack/SlackApiRequest');
 
