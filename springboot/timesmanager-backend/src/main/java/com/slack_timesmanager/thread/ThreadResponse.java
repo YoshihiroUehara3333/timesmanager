@@ -1,0 +1,33 @@
+package com.slack_timesmanager.thread;
+
+public class ThreadResponse {
+	private String channelId;
+	private String date;
+    private String threadTs;
+    private String permalink;
+    
+	public String getChannelId() {
+		return channelId;
+	}
+	public void setChannelId(String channelId) {
+		this.channelId = channelId;
+	}
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
+	}
+	public String getThreadTs() {
+		return threadTs;
+	}
+	public void setThreadTs(String threadTs) {
+		this.threadTs = threadTs;
+	}
+	public String getPermalink() {
+		return permalink;
+	}
+	public void setPermalink(String permalink) {
+		this.permalink = permalink;
+	}
+}
