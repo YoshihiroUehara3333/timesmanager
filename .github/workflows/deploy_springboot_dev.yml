@@ -69,10 +69,16 @@ jobs:
         script_stop: false
         script: |
           pkill -f 'java -jar' || true
-          nohup java -jar /home/${{ secrets.EC2_USER_DEV }}/app/*.jar > /home/${{ secrets.EC2_USER_DEV }}/app/app.log 2>&1 &
+          sudo systemctl restart timesmanager
 
     - name: edit security group
       run: |
         # SSHのセキュリティグループを閉じる
         aws ec2 revoke-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
+    - name: Notify to Slack
+      if: always()
+      run: |
+        curl -X POST -H 'Content-type: application/json' \
+        --data "{\"text\":\"✅ timesmanager デプロイ完了（branch: ${{ github.ref_name }}）\"}" \
+        ${{ secrets.SLACK_WEBHOOK }}
