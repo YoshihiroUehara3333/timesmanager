@@ -38,24 +38,6 @@ class AppViewHandler extends HandlerBase {
         await this.execute(handler, userId, body, logger);
     }
 
-    async handleNewTaskModalCallback(body) {
-        const view = body.view;
-        const metadata = JSON.parse(view.private_metadata);
-
-        // 入力データをBlocksとして返信
-        const params = await this.workReportService.setWorkPlanBlockParams(view);
-        const postResponse = await this.slackApiAdaptor.send(new PostMessage(
-            metadata.channel_id, 
-            'blocks送信',  
-            metadata.thread_ts, 
-            WorkPlanBlock(params)
-        ));
-        logger.info(`post結果:${JSON.stringify(postResponse)}`);
-
-        // 入力データをDBに保存
-        return await this.workReportService.processNewTaskSubmition(view);
-    }
-
     async handleDailyAttendanceInputCallback(body) {
         const view = body.view;
         const metadata = JSON.parse(view.private_metadata);
@@ -84,6 +66,24 @@ class AppViewHandler extends HandlerBase {
                 return e.response.data;
             }
         }
+    }
+
+    async handleNewTaskModalCallback(body) {
+        const view = body.view;
+        const metadata = JSON.parse(view.private_metadata);
+
+        // 入力データをBlocksとして返信
+        const params = await this.workReportService.setWorkPlanBlockParams(view);
+        const postResponse = await this.slackApiAdaptor.send(new PostMessage(
+            metadata.channel_id, 
+            'blocks送信',  
+            metadata.thread_ts, 
+            WorkPlanBlock(params)
+        ));
+        logger.info(`post結果:${JSON.stringify(postResponse)}`);
+
+        // 入力データをDBに保存
+        return await this.workReportService.processNewTaskSubmition(view);
     }
 }
 

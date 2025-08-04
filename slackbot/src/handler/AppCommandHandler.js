@@ -26,7 +26,6 @@ class AppCommandHandler extends HandlerBase{
             [`${SlackConst.APPCOMMANDS.MAKETHREAD}`]   : this.handleMakethread.bind(this),
             [`${SlackConst.APPCOMMANDS.NEWTASK}`]      : this.handleNewTask.bind(this),
             [`${SlackConst.APPCOMMANDS.WARMUP}`]       : this.handleWarmUp.bind(this),
-            [`${SlackConst.APPCOMMANDS.MANAGEDIARY}`]  : this.handleManageDiary.bind(this),
              'default'                                 : this.handleDefault.bind(this)
         }
     }
@@ -108,11 +107,6 @@ class AppCommandHandler extends HandlerBase{
             command.user_id,
             'warmupが実行されました'
         )
-    }
-
-    // /managediary実行時
-    async handleManageDiary (body) {
-        return undefined;
     }
 
     getCommandFromBody(body){
