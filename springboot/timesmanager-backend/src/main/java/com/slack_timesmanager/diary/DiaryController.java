@@ -18,6 +18,7 @@ public class DiaryController {
 	
 	@GetMapping("/{userId}")
 	public ResponseEntity<Void> getDiary(@PathVariable String userId){
+		
 		return ResponseEntity.ok().build();
 	}
 }
