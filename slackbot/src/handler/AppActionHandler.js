@@ -42,7 +42,7 @@ class AppActionHandler extends HandlerBase{
     }
 
     async handleHomeToDailyReport(body){
-        modalparams = {
+        const modalparams = {
             userId : body.user.id,
         };
 
@@ -53,7 +53,7 @@ class AppActionHandler extends HandlerBase{
     }
 
     async handleHomeToAttendance(body){
-        modalparams = {
+        const modalparams = {
             userId : body.user.id,
         };
 
