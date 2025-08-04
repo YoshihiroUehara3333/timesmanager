@@ -52,8 +52,11 @@ jobs:
     - name: Copy jar file to EC2
       uses: appleboy/scp-action@v0.1.7
       with:
+        host: ${{ secrets.EC2_HOST_DEV }}
+        username: ${{ secrets.EC2_USER_DEV }}
+        key: ${{ secrets.EC2_KEY_DEV }}
         source: springboot/timesmanager-backend/build/libs/*.jar
-        target: /home/ec2-user/app/
+        target: /home/${{ secrets.EC2_USER_DEV }}/app/
         overwrite: true
         strip_components: 4 
 
@@ -66,7 +69,7 @@ jobs:
         script_stop: false
         script: |
           pkill -f 'java -jar' || true
-          nohup java -jar /home/${{ secrets.EC2_USER_DEV }}/app/*.jar > /home/ec2-user/app/app.log 2>&1 &
+          nohup java -jar /home/${{ secrets.EC2_USER_DEV }}/app/*.jar > /home/${{ secrets.EC2_USER_DEV }}/app/app.log 2>&1 &
 
     - name: edit security group
       run: |
