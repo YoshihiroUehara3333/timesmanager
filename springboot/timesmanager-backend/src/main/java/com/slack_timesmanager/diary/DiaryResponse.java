@@ -2,11 +2,25 @@ package com.slack_timesmanager.diary;
 
 public class DiaryResponse {
 	private String userId;
+	private String date;
 	private String startTime;
     private String endTime;
     private String workplace;
     
-    
+	public DiaryResponse(String userId, String startTime, String endTime, String workplace) {
+		super();
+		this.userId = userId;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.workplace = workplace;
+	}
+	
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
+	}
 	public String getUserId() {
 		return userId;
 	}

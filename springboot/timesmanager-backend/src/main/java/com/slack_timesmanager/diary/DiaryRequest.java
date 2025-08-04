@@ -2,6 +2,7 @@ package com.slack_timesmanager.diary;
 
 public class DiaryRequest {
 	private String userId;
+	private String date;
 	private String startTime;
     private String endTime;
     private String workplace;
@@ -9,6 +10,12 @@ public class DiaryRequest {
     
 	public String getUserId() {
 		return userId;
+	}
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
 	}
 	public void setUserId(String userId) {
 		this.userId = userId;
