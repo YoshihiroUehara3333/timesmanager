@@ -63,6 +63,7 @@ class AppViewHandler extends HandlerBase {
         const values = view.state.values;
 
         const data = {
+            date      : new Date().toFormat('YYYY-MM-DD'),
             userId    : userId,
             startTime : values.starttime.start_time.selected_time,
             endTime   : values.endtime.end_time.selected_time,
