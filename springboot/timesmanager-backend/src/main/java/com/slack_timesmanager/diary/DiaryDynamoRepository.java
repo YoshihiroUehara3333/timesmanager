@@ -14,12 +14,12 @@ import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
 @Repository
 public class DiaryDynamoRepository {
-	private final DynamoDbClient dynamoDbClient;
+	private final String PARTITION_KEY_BASE = "/DIARY";
 	
     @Value("${aws.dynamodb.tableName}")
     private String tableName;
 	
-	private final String PARTITION_KEY_BASE = "/DIARY";
+	private final DynamoDbClient dynamoDbClient;
 	
 	public DiaryDynamoRepository(DynamoDbClient dynamoDbClient) {
 		this.dynamoDbClient = dynamoDbClient;

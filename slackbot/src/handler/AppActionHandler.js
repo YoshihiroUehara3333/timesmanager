@@ -23,7 +23,7 @@ class AppActionHandler extends HandlerBase{
         this.dispatcher = {
             [`${ModalConst.ACTION_ID.HOME.DAILYREPORT}`] : this.handleHomeToDailyReport.bind(this),
             [`${ModalConst.ACTION_ID.HOME.ATTENDANCE}`]  : this.handleHomeToAttendance.bind(this),
-            // [`${ModalConst.ACTION_ID.TASK.CREATE}`]        : this.handleWorkReportCreate.bind(this),
+            [`${ModalConst.ACTION_ID.TASK.CREATE}`]        : this.handleWorkReportCreate.bind(this),
             [`${ModalConst.ACTION_ID.TASK.UPDATE}`]        : this.handleWorkReportUpdate.bind(this),
             // [`${ModalConst.ACTION_ID.TASK.FINISH}`]        : this.handleWorkReportFinish.bind(this),
             'default'                                      : this.handleDefault.bind(this)
@@ -63,8 +63,29 @@ class AppActionHandler extends HandlerBase{
         )
     }
     
+    async handleWorkReportCreate(body){
+        const params = {
+            channel_id : "",
+            user_id    : "",
+            thread_ts  : "",
+            date       : "",
+            serial     : "",
+        };
+
+        return new ViewsOpen(
+            body.trigger_id,
+            TaskInputModal(params)
+        )
+    }
+
     async handleWorkReportUpdate(body){
-        const params = await this.taskService.updateTask(body);
+        const params = {
+            channel_id : "",
+            user_id    : "",
+            thread_ts  : "",
+            date       : "",
+            serial     : "",
+        };
 
         return new ViewsOpen(
             body.trigger_id,
