@@ -1,5 +1,6 @@
 //モジュール読み込み
 require('date-utils');
+const axios = require('axios');
 const { ModalConst } = require('../constants/ModalConst');
 const { PostMessage } = require('../slack/SlackApiRequest');
 const { HandlerBase } = require('./HandlerBase');
@@ -58,9 +59,20 @@ class AppViewHandler extends HandlerBase {
     async handleDailyAttendanceInputCallback(body) {
         const view = body.view;
         const metadata = JSON.parse(view.private_metadata);
+        const userId = metadata.user_id;
+        const values = view.state.values;
+
+        const data = {
+            userId    : userId,
+            startTime : values.start_time.selected_time,
+            endTime   : values.end_time.selected_time,
+            workplace : values.workplace.select_workplace.selected_option.value,
+        }
+
+        console.log(JSON.stringify(data));
 
         // バックエンドAPIにPOST送信
-        // await axios.post('/api/diary', transformedData);
+        await axios.post(process.env.BACKEND_API_BASE_URL + '/api/diary', transformedData);
         return null;
     }
 }
