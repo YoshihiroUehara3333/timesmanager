@@ -27,6 +27,7 @@ class AppViewHandler extends HandlerBase {
 
     async handle(body, logger){
         const view = body.view;
+        console.log(JSON.stringify(view));
 
         const callbackId = view.callback_id;
         logger.info(`callbackId:${callbackId}`);
@@ -56,7 +57,7 @@ class AppViewHandler extends HandlerBase {
 
     async handleDailyAttendanceInputCallback(body) {
         const view = body.view;
-        
+
         let metadata = JSON.parse(view.private_metadata);
         return null;
     }
