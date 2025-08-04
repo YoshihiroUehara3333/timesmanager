@@ -64,8 +64,8 @@ class AppViewHandler extends HandlerBase {
 
         const data = {
             userId    : userId,
-            startTime : values.start_time.selected_time,
-            endTime   : values.end_time.selected_time,
+            startTime : values.starttime.selected_time,
+            endTime   : values.endtime.selected_time,
             workplace : values.workplace.select_workplace.selected_option.value,
         }
 
