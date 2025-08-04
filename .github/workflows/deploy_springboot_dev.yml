@@ -67,6 +67,7 @@ jobs:
         username: ${{ secrets.EC2_USER_DEV }}
         key: ${{ secrets.EC2_KEY_DEV }}
         script_stop: false
+        continue-on-error: true
         script: |
           pkill -f 'java -jar' || true
           sudo systemctl restart timesmanager
