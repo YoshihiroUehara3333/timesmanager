@@ -16,20 +16,26 @@ public class DiaryService {
 		this.diaryDynamoRepository = diaryDynamoDbRepository;
 	}
 
-	public ResponseEntity<Void> save(DiaryRequest request) {
+	public ResponseEntity<Void> save(DiaryRequest request){
 		try {
 			diaryDynamoRepository.updateItem(request);
+			return ResponseEntity.ok().build();
 		}
 		catch(Exception e) {
 			return ResponseEntity.ok().build();
 		}
-		return ResponseEntity.ok().build();
 	}
 	
 	public DiaryResponse getDiary(String userId, String date) {
-		DiaryResponse response = diaryDynamoRepository.getDiary(userId, date);
-		response.setUserId(userId);
-		response.setStartTime(userId);
-		return response;
+		try {
+			DiaryResponse response = diaryDynamoRepository.getDiary(userId, date);
+			response.setUserId(userId);
+			response.setStartTime(userId);
+			return response;
+		}
+		catch(Exception e) {
+			return null;
+		}
+
 	}
 }

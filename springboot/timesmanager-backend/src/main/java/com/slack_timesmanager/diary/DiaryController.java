@@ -24,16 +24,26 @@ public class DiaryController {
 	@PostMapping
 	public ResponseEntity<Void> createDiary(@RequestBody DiaryRequest request){
 		log.info("📥 Received POST /api/diary: {}", request);
-		return diaryService.save(request);
+		try {
+			diaryService.save(request);
+			return ResponseEntity.ok().build();
+		}
+		catch(Exception e) {
+			return ResponseEntity.ok().build();
+		}
 	}
 	
 	@GetMapping("/{userId}{date}")
 	public DiaryResponse getDiary(
 			@PathVariable String userId,
 			@PathVariable String date){
-		
 		log.info("📥 Received GET /api/diary: {}", userId, date);
 		
-		return diaryService.getDiary(userId, date);
+		DiaryResponse res = diaryService.getDiary(userId, date);
+		if (res != null) {
+			return res;
+		} else {
+			return null;
+		}
 	}
 }
