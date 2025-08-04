@@ -6,6 +6,7 @@ public class DiaryRequest {
     private String endTime;
     private String workplace;
     
+    
 	public String getUserId() {
 		return userId;
 	}
