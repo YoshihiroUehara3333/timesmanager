@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
+import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
 @Repository
@@ -54,12 +55,27 @@ public class DiaryDynamoRepository {
     }
     
     public void putItem(DiaryRequest request) throws Exception {
-	    String partitionKey = request.getUserId() + PARTITION_KEY_BASE;
-	    String sortKey = request.getDate();
+        String partitionKey = request.getUserId() + PARTITION_KEY_BASE;
+        String sortKey = request.getDate();
 
-        Map<String, AttributeValue> key = new HashMap<>();
-        key.put("partition_key", AttributeValue.builder().s(partitionKey).build());
-        key.put("sort_key", AttributeValue.builder().s(sortKey).build());
+        Map<String, AttributeValue> item = new HashMap<>();
+        item.put("partition_key", AttributeValue.builder().s(partitionKey).build());
+        item.put("sort_key", AttributeValue.builder().s(sortKey).build());
+        item.put("userId", AttributeValue.builder().s(request.getUserId()).build());
+        item.put("startTime", AttributeValue.builder().s(request.getStartTime()).build());
+        item.put("endTime", AttributeValue.builder().s(request.getEndTime()).build());
+        item.put("workplace", AttributeValue.builder().s(request.getWorkplace()).build());
+
+        PutItemRequest putItemRequest = PutItemRequest.builder()
+            .tableName(tableName)
+            .item(item)
+            .build();
+
+        try {
+            dynamoDbClient.putItem(putItemRequest);
+        } catch (Exception e) {
+            throw new Exception("DynamoDB putItem failed", e);
+        }
     }
     
 	public void updateItem(DiaryRequest request) throws Exception {
