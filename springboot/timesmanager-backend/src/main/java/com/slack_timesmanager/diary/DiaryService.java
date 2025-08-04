@@ -22,6 +22,8 @@ public class DiaryService {
 			return ResponseEntity.ok().build();
 		}
 		catch(Exception e) {
+			e.printStackTrace();
+			log.info("DynamoDB処理中にエラー", e.getMessage());
 			return ResponseEntity.internalServerError().build();
 		}
 	}
@@ -34,6 +36,8 @@ public class DiaryService {
 			return response;
 		}
 		catch(Exception e) {
+			e.printStackTrace();
+			log.info("DynamoDB処理中にエラー", e.getMessage());
 			return null;
 		}
 
