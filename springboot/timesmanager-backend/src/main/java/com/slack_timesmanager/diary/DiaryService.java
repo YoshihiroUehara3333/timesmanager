@@ -24,7 +24,7 @@ public class DiaryService {
 				diaryDynamoRepository.updateItem(request);
 			}
 			else {
-				
+				diaryDynamoRepository.putItem(request);
 			}
 			return ResponseEntity.ok().build();
 		}

@@ -52,7 +52,16 @@ public class DiaryDynamoRepository {
             throw new Exception("DynamoDB getDiary failed", e);
         }
     }
-	
+    
+    public void putItem(DiaryRequest request) throws Exception {
+	    String partitionKey = request.getUserId() + PARTITION_KEY_BASE;
+	    String sortKey = request.getDate();
+
+        Map<String, AttributeValue> key = new HashMap<>();
+        key.put("partition_key", AttributeValue.builder().s(partitionKey).build());
+        key.put("sort_key", AttributeValue.builder().s(sortKey).build());
+    }
+    
 	public void updateItem(DiaryRequest request) throws Exception {
 	    String partitionKey = request.getUserId() + PARTITION_KEY_BASE;
 	    String sortKey = request.getDate();
