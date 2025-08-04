@@ -31,5 +31,4 @@ public class DiaryRequest {
 		this.workplace = workplace;
 	}
     
-
 }
