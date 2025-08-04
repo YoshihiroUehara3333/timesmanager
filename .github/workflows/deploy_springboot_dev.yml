@@ -23,7 +23,7 @@ jobs:
 
     - name: Build with Gradle
       run: ./gradlew clean build
-      working-directory: ./springboot
+      working-directory: ./springboot/timesmanager-backend
 
     - name: Copy jar file to EC2
       uses: appleboy/scp-action@v0.1.7
