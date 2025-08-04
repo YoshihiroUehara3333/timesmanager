@@ -18,7 +18,7 @@ public class DiaryService {
 
 	public ResponseEntity<Void> save(DiaryRequest request){
 		try {
-			DiaryResponse getRes = getDiary(request.getUserId(), request.getDate());
+			DiaryResponse getRes = diaryDynamoRepository.getDiary(request.getUserId(), request.getDate());
 			
 			if(getRes != null) {
 				diaryDynamoRepository.updateItem(request);
