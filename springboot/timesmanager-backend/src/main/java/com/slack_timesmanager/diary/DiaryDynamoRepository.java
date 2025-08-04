@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class DiaryDynamoRepository {
-	private final String PARTITION_KEY_BASE = "";
+	private final String PARTITION_KEY_BASE = "DIARY";
 	
 	public DiaryDynamoRepository() {
 		super();
@@ -20,24 +20,29 @@ public class DiaryDynamoRepository {
 		
 		return ResponseEntity.ok().build();
 	}
+	
     // dateからSortKeyを生成し、Diaryを1件取得する
     public DiaryResponse getDiaryByUserId (String userId) {
         String partitionKey = userId + PARTITION_KEY_BASE;
         String sortKey = "";
         try {
+        	
         } 
         catch (Exception e) {
+        	
         }
         return new DiaryResponse();
     }
     
     // dateからSortKeyを生成し、Diaryを1件取得する
-    public DiaryResponse getDiaryByDate (String userId, String date) {
+    public DiaryResponse getDiary (String userId, String date) {
         String partitionKey = userId + PARTITION_KEY_BASE;
         String sortKey = date;
         try {
+        	
         } 
         catch (Exception e) {
+        	
         }
         return new DiaryResponse();
     }

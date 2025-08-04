@@ -20,8 +20,8 @@ public class DiaryService {
 		return diaryDynamoRepository.updateItem(request);
 	}
 	
-	public DiaryResponse getByUserId(String userId) {
-		DiaryResponse response = diaryDynamoRepository.getDiaryByUserId(userId);
+	public DiaryResponse getDiary(String userId, String date) {
+		DiaryResponse response = diaryDynamoRepository.getDiary(userId, date);
 		response.setUserId(userId);
 		response.setStartTime(userId);
 		return response;

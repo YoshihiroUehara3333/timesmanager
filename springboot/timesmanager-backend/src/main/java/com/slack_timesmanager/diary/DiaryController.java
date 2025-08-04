@@ -27,11 +27,13 @@ public class DiaryController {
 		return diaryService.save(request);
 	}
 	
-	@GetMapping("/{userId}")
-	public DiaryResponse getDiary(@PathVariable String userId){
+	@GetMapping("/{userId}{date}")
+	public DiaryResponse getDiary(
+			@PathVariable String userId,
+			@PathVariable String date){
 		
-		log.info("📥 Received GET /api/diary: {}", userId);
+		log.info("📥 Received GET /api/diary: {}", userId, date);
 		
-		return diaryService.getByUserId(userId);
+		return diaryService.getDiary(userId, date);
 	}
 }
