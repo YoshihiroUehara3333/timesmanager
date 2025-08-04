@@ -36,3 +36,10 @@ jobs:
     - name: Deploy Lambda function
       run: |
         aws lambda update-function-code --function-name ${{ secrets.TEST_LAMBDA_FUNCTION_NAME }} --zip-file fileb://function.zip
+        
+    - name: Notify to Slack
+      if: always()
+      run: |
+        curl -X POST -H 'Content-type: application/json' \
+        --data "{\"text\":\"✅ timesmanager デプロイ完了（branch: ${{ github.ref_name }}）\"}" \
+        ${{ secrets.SLACK_WEBHOOK }}

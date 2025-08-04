@@ -79,6 +79,8 @@ class AppViewHandler extends HandlerBase {
                 }
             );
 
+            console.log(response);
+
             return response.data;
         } catch (e) {
             console.error(e);
@@ -86,7 +88,6 @@ class AppViewHandler extends HandlerBase {
                 return e.response.data;
             }
         }
-        return null;
     }
 }
 

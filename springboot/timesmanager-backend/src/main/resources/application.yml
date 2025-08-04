@@ -8,3 +8,6 @@ aws:
     secretKey: ${AWS_SECRET_ACCESS_KEY}
 server:
   port: 8080
+logging:
+  level:
+    root: DEBUG

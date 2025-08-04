@@ -1,5 +1,7 @@
 package com.slack_timesmanager.diary;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,13 +13,33 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/diary")
 public class DiaryController {
+	private static final Logger log = LoggerFactory.getLogger(DiaryController.class);
+	
+	DiaryService diaryService;
+	
+	public DiaryController(DiaryService diaryService) {
+	    this.diaryService = diaryService;
+	}
+	
 	@PostMapping
 	public ResponseEntity<Void> createDiary(@RequestBody DiaryRequest request){
+		log.info("📥 Received POST /api/diary: {}", request);
+		
+		try {
+			diaryService.save(request);
+		}
+		catch(Exception e) {
+			return ResponseEntity.internalServerError().build();
+		}
+		
 		return ResponseEntity.ok().build();
 	}
 	
 	@GetMapping("/{userId}")
-	public ResponseEntity<Void> getDiary(@PathVariable String userId){
-		return ResponseEntity.ok().build();
+	public DiaryResponse getDiary(@PathVariable String userId){
+		
+		log.info("📥 Received GET /api/diary: {}", userId);
+		
+		return diaryService.getByUserId(userId);
 	}
 }
