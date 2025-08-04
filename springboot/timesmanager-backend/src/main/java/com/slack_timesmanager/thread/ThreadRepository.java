@@ -1,5 +1,10 @@
 package com.slack_timesmanager.thread;
 
-public interface ThreadRepository {
+import org.springframework.stereotype.Repository;
 
+@Repository
+public class ThreadRepository {
+	ThreadRepository(){
+		
+	}
 }
