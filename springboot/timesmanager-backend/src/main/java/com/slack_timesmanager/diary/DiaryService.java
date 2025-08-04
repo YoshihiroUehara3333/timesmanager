@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DiaryService {
 	
-	private static final Logger log = LoggerFactory.getLogger(DiaryController.class);
+	private static final Logger log = LoggerFactory.getLogger(DiaryService.class);
 	
 	private DiaryDynamoRepository diaryDynamoRepository;
 
@@ -23,7 +23,7 @@ public class DiaryService {
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			log.info("DynamoDB処理中にエラー", e.getMessage());
+			log.error("DynamoDB処理中にエラー", e); 
 			return ResponseEntity.internalServerError().build();
 		}
 	}
@@ -37,9 +37,8 @@ public class DiaryService {
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			log.info("DynamoDB処理中にエラー", e.getMessage());
+			log.error("DynamoDB処理中にエラー", e); 
 			return null;
 		}
-
 	}
 }
