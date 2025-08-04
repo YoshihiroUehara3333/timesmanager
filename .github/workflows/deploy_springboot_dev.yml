@@ -62,19 +62,18 @@ jobs:
 
     - name: SSH and restart app
       uses: appleboy/ssh-action@v1.0.0
+      continue-on-error: true
       with:
         host: ${{ secrets.EC2_HOST_DEV }}
         username: ${{ secrets.EC2_USER_DEV }}
         key: ${{ secrets.EC2_KEY_DEV }}
         script_stop: false
-        continue-on-error: true
         script: |
           pkill -f 'java -jar' || true
           sudo systemctl restart timesmanager
 
     - name: edit security group
       run: |
-        # SSHのセキュリティグループを閉じる
         aws ec2 revoke-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
     - name: Notify to Slack
