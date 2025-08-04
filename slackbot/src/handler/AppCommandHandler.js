@@ -1,6 +1,8 @@
 // app.command受け取り時
 
 //モジュール読み込み
+require('date-utils');
+const axios = require('axios');
 const { SlackConst } = require('../constants/SlackConst');
 const { PostMessage, ViewsOpen } = require('../slack/SlackApiRequest');
 const { TaskInputModal } = require('../blockkit/TaskInputModal');
@@ -41,7 +43,36 @@ class AppCommandHandler extends HandlerBase{
     async handleMakethread (body) {
         const command = this.getCommandFromBody(body);
 
-        const thread = await this.threadService.createNewThread(command);
+        // timesチャンネルにスレッド作成
+        let text = `<@${userId}> \n*【壁】${date}*`;
+        const postResult = await this.slackApiAdaptor.send(new PostMessage(
+            channelId,
+            text
+        ));
+        let permalink = await this.slackApiAdaptor.send(new GetPermalink(
+            channelId, 
+            postResult.ts
+        ));
+
+        // バックエンドAPIにPOST送信
+        const data = {
+            date      : new Date().toFormat('YYYY-MM-DD'),
+            userId    : userId,
+            threadTs  : postResult.ts,
+            permalink : permalink
+        }
+        const ENDPOINT = `${process.env.BACKEND_API_BASE_URL}/api/thread`;
+        try {
+            const response = await axios.post(ENDPOINT, data);
+
+            console.log(response);
+        } catch (e) {
+            console.error(e);
+            if (e.response) {
+                return e.response.data;
+            }
+        }
+
         const params = await this.taskService.createTaskInputModalParams(command, thread);
         if (params) {
             return new ViewsOpen(

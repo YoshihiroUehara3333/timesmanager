@@ -4,8 +4,8 @@ public class DiaryRequest {
 	private String userId;
 	private String date;
 	private String startTime;
-    private String endTime;
-    private String workplace;
+	private String endTime;
+	private String workplace;
     
     
 	public String getUserId() {

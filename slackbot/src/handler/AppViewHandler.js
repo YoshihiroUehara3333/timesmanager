@@ -75,10 +75,7 @@ class AppViewHandler extends HandlerBase {
         // バックエンドAPIにPOST送信
         const ENDPOINT = `${process.env.BACKEND_API_BASE_URL}/api/diary`;
         try {
-            const response = await axios.post(ENDPOINT, data, {
-                    url: ENDPOINT,
-                }
-            );
+            const response = await axios.post(ENDPOINT, data);
 
             console.log(response);
         } catch (e) {

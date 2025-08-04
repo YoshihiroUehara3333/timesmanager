@@ -1,6 +1,8 @@
 package com.slack_timesmanager.diary;
 
-public class DiaryResponse {
+import com.slack_timesmanager.core.Response;
+
+public class DiaryResponse extends Response{
 	private String userId;
 	private String date;
 	private String startTime;

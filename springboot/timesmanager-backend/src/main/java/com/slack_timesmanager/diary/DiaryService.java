@@ -2,8 +2,9 @@ package com.slack_timesmanager.diary;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import com.slack_timesmanager.common.ServiceResult;
 
 @Service
 public class DiaryService {
@@ -16,7 +17,9 @@ public class DiaryService {
 		this.diaryDynamoRepository = diaryDynamoDbRepository;
 	}
 
-	public ResponseEntity<Void> save(DiaryRequest request){
+	public ServiceResult save(DiaryRequest request){
+		ServiceResult result = new ServiceResult();
+		
 		try {
 			DiaryResponse getRes = diaryDynamoRepository.getDiary(request.getUserId(), request.getDate());
 			
@@ -26,26 +29,29 @@ public class DiaryService {
 			else {
 				diaryDynamoRepository.putItem(request);
 			}
-			return ResponseEntity.ok().build();
+			return result;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			log.error("DynamoDB処理中にエラー", e); 
-			return ResponseEntity.internalServerError().build();
+			log.error("DynamoDB処理中にエラー", e);
+			result.setStatus(false);
+			return result;
 		}
 	}
 	
-	public DiaryResponse getDiary(String userId, String date) {
+	public ServiceResult getDiary(String userId, String date) {
+		ServiceResult result = new ServiceResult();
+		
 		try {
 			DiaryResponse response = diaryDynamoRepository.getDiary(userId, date);
-			response.setUserId(userId);
-			response.setStartTime(userId);
-			return response;
+			result.setResponse(response);
+			return result;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			log.error("DynamoDB処理中にエラー", e); 
-			return null;
+			log.error("DynamoDB処理中にエラー", e);
+			result.setStatus(false);
+			return result;
 		}
 	}
 }
