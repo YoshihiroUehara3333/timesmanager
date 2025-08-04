@@ -17,7 +17,13 @@ public class DiaryService {
 	}
 
 	public ResponseEntity<Void> save(DiaryRequest request) {
-		return diaryDynamoRepository.updateItem(request);
+		try {
+			diaryDynamoRepository.updateItem(request);
+		}
+		catch(Exception e) {
+			return ResponseEntity.ok().build();
+		}
+		return ResponseEntity.ok().build();
 	}
 	
 	public DiaryResponse getDiary(String userId, String date) {
