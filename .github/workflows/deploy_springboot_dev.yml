@@ -48,14 +48,14 @@ jobs:
       run: |
         # SSHのセキュリティグループを開放する
         aws ec2 authorize-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
     - name: Copy jar file to EC2
       uses: appleboy/scp-action@v0.1.7
       with:
-        host: ${{ secrets.EC2_HOST_DEV }}
-        username: ${{ secrets.EC2_USER_DEV }}
-        key: ${{ secrets.EC2_KEY_DEV }}
         source: springboot/timesmanager-backend/build/libs/*.jar
         target: /home/ec2-user/app/
+        overwrite: true
+        strip_components: 4 
 
     - name: SSH and restart app
       uses: appleboy/ssh-action@v1.0.0
@@ -66,7 +66,7 @@ jobs:
         script_stop: false
         script: |
           pkill -f 'java -jar' || true
-          nohup java -jar /home/ec2-user/app/*.jar > /home/ec2-user/app/app.log 2>&1 &
+          nohup java -jar /home/${{ secrets.EC2_USER_DEV }}/app/*.jar > /home/ec2-user/app/app.log 2>&1 &
 
     - name: edit security group
       run: |
