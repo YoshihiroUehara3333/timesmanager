@@ -32,7 +32,7 @@ class AppCommandHandler extends HandlerBase{
 
     async handle(body, logger) {
         const userId = body.command.user;
-        const handler = this.dispatcher[command.command] || this.dispatcher['default'];
+        const handler = this.dispatcher[body.command.command] || this.dispatcher['default'];
 
         logger.info(`${handler.name}を実行`);
         await this.execute(handler, userId, body, logger);
