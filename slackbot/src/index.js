@@ -46,7 +46,7 @@ app.message(async ({ack, message, context, logger}) => {
 app.view({ type: 'view_submission' }, async ({ ack, body, view, logger}) => {
     ack();
     logger.info(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`);
-    await appViewHandler.handle(view, logger);
+    await appViewHandler.handle(body, logger);
 })
 
 // action受信
