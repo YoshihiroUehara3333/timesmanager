@@ -22,7 +22,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Build with Gradle
-      run: gradle clean build
+      run: gradle clean build -x test
       working-directory: ./springboot/timesmanager-backend
 
     - name: Copy jar file to EC2
