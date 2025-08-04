@@ -4,10 +4,8 @@ on:
   push:
     branches:
       - feature
-    paths-ignore:
-      - 'README.md'
-      - 'docker-compose_local.yml'
-      - 'Dockerfile'
+    paths:
+      - 'slackbot/**'
 
 permissions:
   id-token: write
