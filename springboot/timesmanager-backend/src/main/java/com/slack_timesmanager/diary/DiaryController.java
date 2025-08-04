@@ -13,5 +13,4 @@ public class DiaryController {
 	public ResponseEntity<Void> createThread(@RequestBody DiaryRequest request){
 		return ResponseEntity.ok().build();
 	}
-	
 }
