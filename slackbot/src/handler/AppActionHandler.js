@@ -42,16 +42,24 @@ class AppActionHandler extends HandlerBase{
     }
 
     async handleHomeToDailyReport(body){
+        modalparams = {
+            userId : body.user.id,
+        };
+
         return new ViewsOpen(
             body.trigger_id,
-            DailyReportInputModal()
+            DailyReportInputModal(modalparams)
         )
     }
 
     async handleHomeToAttendance(body){
+        modalparams = {
+            userId : body.user.id,
+        };
+
         return new ViewsOpen(
             body.trigger_id,
-            DailyAttendanceInputModal()
+            DailyAttendanceInputModal(modalparams)
         )
     }
     

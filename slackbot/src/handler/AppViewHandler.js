@@ -19,8 +19,9 @@ class AppViewHandler extends HandlerBase {
         this.taskService        = taskService;
 
         this.dispatcher = {
-            [`${this.CALLBACK_ID.NEWTASK}`]  : this.handleNewTaskModalCallback.bind(this),
-            'default'                        : this.handleDefault.bind(this)
+            [`${this.CALLBACK_ID.NEWTASK}`]          : this.handleNewTaskModalCallback.bind(this),
+            [`${this.CALLBACK_ID.DAILYATTENDANCE}`]  : this.handleNewTaskModalCallback.bind(this),
+            'default'                                : this.handleDefault.bind(this)
         }
     }
 
