@@ -22,16 +22,16 @@ jobs:
         distribution: 'temurin'
 
     - name: Build with Gradle
-      run: ./gradlew clean build
+      run: gradle clean build
       working-directory: ./springboot
-
+      
     - name: Copy jar file to EC2
       uses: appleboy/scp-action@v0.1.7
       with:
         host: ${{ secrets.EC2_HOST_DEV }}
         username: ${{ secrets.EC2_USER_DEV }}
         key: ${{ secrets.EC2_KEY_DEV }}
-        source: build/libs/*.jar
+        source: springboot/build/libs/*.jar
         target: /home/ec2-user/app/
 
     - name: SSH and restart app
