@@ -3,7 +3,8 @@ spring:
     name: timesmanager
 aws:
   dynamodb:
-    endpoint: http://localhost:8000  # 本番では空かAWSのエンドポイント
     region: ap-northeast-1
-    accessKey: dummy-access-key      # 実際は環境変数 or IAMで管理
-    secretKey: dummy-secret-key
+    accessKey: ${AWS_ACCESS_KEY_ID}
+    secretKey: ${AWS_SECRET_ACCESS_KEY}
+server:
+  port: 8080
