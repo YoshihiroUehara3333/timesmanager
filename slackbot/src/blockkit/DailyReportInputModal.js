@@ -27,37 +27,27 @@ exports.DailyReportInputModal = () => ({
 		},
 		{ type: "divider" },
 		{
-			type: "input",
-			block_id: "starttime",
-			label: {
-				type: "plain_text",
-				text: "開始時間"
+			type     : "input",
+			block_id : "task",
+			label : {
+				type : "plain_text",
+				text : "タスク"
 			},
-			element: {
-				type: "timepicker",
-				initial_time: "10:00",
-				placeholder: {
-					type: "plain_text",
-					text: "開始時間を選択"
-				},
-				action_id: "start_time"
+			element : {
+				type      : "plain_text_input",
+				action_id : "input"
 			}
 		},
 		{
-			type: "input",
-			block_id: "endtime",
-			label: {
-				type: "plain_text",
-				text: "終了時間"
+			type     : "input",
+			block_id : "taskname",
+			label : {
+				type : "plain_text",
+				text : "タスク名"
 			},
-			element: {
-				type: "timepicker",
-				initial_time: "19:00",
-				placeholder: {
-					type: "plain_text",
-					text: "終了時間を選択"
-				},
-				action_id: "end_time"
+			element : {
+				type      : "plain_text_input",
+				action_id : "input"
 			}
 		},
 		{
