@@ -26,6 +26,7 @@ class AppViewHandler extends HandlerBase {
     }
 
     async handle(body, logger){
+        console.log(JSON.stringify(body));
         const view = body.view;
         console.log(JSON.stringify(view));
 
