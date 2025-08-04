@@ -1,17 +1,9 @@
 spring:
   application:
     name: timesmanager
-	datasource:
-	  url: jdbc:h2:mem:testdb
-	  driver-class-name: org.h2.Driver
-	  username: sa
-	  password:
-	h2:
-	  console:
-	    enabled: true
-	jpa:
-	  hibernate:
-	    ddl-auto: none
-	  properties:
-	    hibernate:
-	      dialect: org.hibernate.dialect.H2Dialect
+aws:
+  dynamodb:
+    endpoint: http://localhost:8000  # 本番では空かAWSのエンドポイント
+    region: ap-northeast-1
+    accessKey: dummy-access-key      # 実際は環境変数 or IAMで管理
+    secretKey: dummy-secret-key
