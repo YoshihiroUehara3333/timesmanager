@@ -19,7 +19,7 @@ public class DiaryDynamoRepository {
     @Value("${aws.dynamodb.tableName}")
     private String tableName;
 	
-	private final String PARTITION_KEY_BASE = "DIARY";
+	private final String PARTITION_KEY_BASE = "/DIARY";
 	
 	public DiaryDynamoRepository(DynamoDbClient dynamoDbClient) {
 		this.dynamoDbClient = dynamoDbClient;
