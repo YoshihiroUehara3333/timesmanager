@@ -20,34 +20,24 @@ class AppViewHandler extends HandlerBase {
 
         this.dispatcher = {
             [`${this.CALLBACK_ID.NEWTASK}`]          : this.handleNewTaskModalCallback.bind(this),
-            [`${this.CALLBACK_ID.DAILYATTENDANCE}`]  : this.handleNewTaskModalCallback.bind(this),
+            [`${this.CALLBACK_ID.DAILYATTENDANCE}`]  : this.handleDailyAttendanceInputCallback.bind(this),
             'default'                                : this.handleDefault.bind(this)
         }
     }
 
-    async handle(view, logger){
+    async handle(body, logger){
+        const view = body.view;
+
         const callbackId = view.callback_id;
         logger.info(`callbackId:${callbackId}`);
         const handler = this.dispatcher[callbackId] || this.dispatcher['default'];
-        
         const userId = JSON.parse(view.private_metadata).user_id;
-        let slackRequest;
-        try {
-            slackRequest = await handler(view, logger);
-        } 
-        catch (error) {
-            logger.error(error.stack);
-            slackRequest = new PostMessage(userId, error.toString());
-        }
-        finally {
-            if (slackRequest) {
-                await this.slackApiAdaptor.send(slackRequest);
-            }
-        }
+
+        logger.info(`${handler.name}を実行`);
+        await this.execute(handler, userId, body, logger);
     }
 
     async handleNewTaskModalCallback(view, logger) {
-        logger.info('handleNewTaskModalCallBackを実行');
         let metadata = JSON.parse(view.private_metadata);
 
         // 入力データをBlocksとして返信
@@ -62,6 +52,13 @@ class AppViewHandler extends HandlerBase {
 
         // 入力データをDBに保存
         return await this.workReportService.processNewTaskSubmition(view);
+    }
+
+    async handleDailyAttendanceInputCallback(body) {
+        const view = body.view;
+        
+        let metadata = JSON.parse(view.private_metadata);
+        return null;
     }
 }
 
