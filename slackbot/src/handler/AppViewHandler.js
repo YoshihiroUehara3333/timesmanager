@@ -72,9 +72,9 @@ class AppViewHandler extends HandlerBase {
         console.log(JSON.stringify(data));
 
         // バックエンドAPIにPOST送信
-        await axios.post(process.env.BACKEND_API_BASE_URL + '/api/diary', data);
+        await axios.post(`${process.env.BACKEND_API_BASE_URL}/api/diary`, data);
         return null;
     }
 }
 
-exports.AppViewHandler = AppViewHandler ;
+exports.AppViewHandler = AppViewHandler 
