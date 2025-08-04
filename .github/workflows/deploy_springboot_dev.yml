@@ -63,6 +63,7 @@ jobs:
         host: ${{ secrets.EC2_HOST_DEV }}
         username: ${{ secrets.EC2_USER_DEV }}
         key: ${{ secrets.EC2_KEY_DEV }}
+        script_stop: false
         script: |
           pkill -f 'java -jar' || true
           nohup java -jar /home/ec2-user/app/*.jar > /home/ec2-user/app/app.log 2>&1 &
