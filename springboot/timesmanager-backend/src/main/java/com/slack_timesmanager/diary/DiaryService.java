@@ -22,7 +22,7 @@ public class DiaryService {
 			return ResponseEntity.ok().build();
 		}
 		catch(Exception e) {
-			return ResponseEntity.ok().build();
+			return ResponseEntity.internalServerError().build();
 		}
 	}
 	
