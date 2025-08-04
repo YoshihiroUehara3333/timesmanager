@@ -22,7 +22,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Build with Gradle
-      run: ./gradlew clean build
+      run: gradle clean build
       working-directory: ./springboot/timesmanager-backend
 
     - name: Copy jar file to EC2
@@ -31,7 +31,7 @@ jobs:
         host: ${{ secrets.EC2_HOST_DEV }}
         username: ${{ secrets.EC2_USER_DEV }}
         key: ${{ secrets.EC2_KEY_DEV }}
-        source: build/libs/*.jar
+        source: springboot/timesmanager-backend/build/libs/*.jar
         target: /home/ec2-user/app/
 
     - name: SSH and restart app

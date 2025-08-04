@@ -30,5 +30,5 @@ public class DiaryRequest {
 	public void setWorkplace(String workplace) {
 		this.workplace = workplace;
 	}
-    
+  
 }
