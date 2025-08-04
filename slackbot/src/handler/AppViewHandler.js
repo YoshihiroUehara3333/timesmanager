@@ -26,9 +26,7 @@ class AppViewHandler extends HandlerBase {
     }
 
     async handle(body, logger){
-        console.log(JSON.stringify(body));
         const view = body.view;
-        console.log(JSON.stringify(view));
 
         const callbackId = view.callback_id;
         logger.info(`callbackId:${callbackId}`);
@@ -39,8 +37,9 @@ class AppViewHandler extends HandlerBase {
         await this.execute(handler, userId, body, logger);
     }
 
-    async handleNewTaskModalCallback(view, logger) {
-        let metadata = JSON.parse(view.private_metadata);
+    async handleNewTaskModalCallback(body) {
+        const view = body.view;
+        const metadata = JSON.parse(view.private_metadata);
 
         // 入力データをBlocksとして返信
         const params = await this.workReportService.setWorkPlanBlockParams(view);
@@ -58,8 +57,10 @@ class AppViewHandler extends HandlerBase {
 
     async handleDailyAttendanceInputCallback(body) {
         const view = body.view;
+        const metadata = JSON.parse(view.private_metadata);
 
-        let metadata = JSON.parse(view.private_metadata);
+        // バックエンドAPIにPOST送信
+        // await axios.post('/api/diary', transformedData);
         return null;
     }
 }
