@@ -35,7 +35,7 @@ exports.DailyReportInputModal = ({userId}) => ({
 			block_id : "task",
 			label : {
 				type : "plain_text",
-				text : "タスク"
+				text : "作業内容"
 			},
 			element : {
 				type      : "plain_text_input",
@@ -48,81 +48,13 @@ exports.DailyReportInputModal = ({userId}) => ({
 			block_id : "taskname",
 			label : {
 				type : "plain_text",
-				text : "タスク名"
+				text : "所感"
 			},
 			element : {
 				type      : "plain_text_input",
 				multiline : true,
 				action_id : "input"
 			}
-		},
-		{
-			type: "input",
-			block_id: "workplace",
-			label: {
-				type: "plain_text",
-				text: "作業場所"
-			},
-			element: {
-				type: "static_select",
-				placeholder: {
-					type: "plain_text",
-					text: "選択してください",
-					emoji: true
-				},
-				options: [
-					{
-						text: {
-							type: "plain_text",
-							text: "出社",
-							emoji: true
-						},
-						value: "onsite"
-					},
-					{
-						text: {
-							type: "plain_text",
-							text: "リモート",
-							emoji: true
-						},
-						value: "remote"
-					},
-					{
-						text: {
-							type: "plain_text",
-							text: "休暇",
-							emoji: true
-						},
-						value: "vacation"
-					}
-				],
-				action_id: "select_workplace"
-			}
-		},
-		{
-			type: "actions",
-			elements: [
-				{
-					type: "button",
-					text: {
-						type: "plain_text",
-						text: "フィードバックを送信",
-						emoji: true
-					},
-					value: "send_feedback",
-					action_id: "send_feedback"
-				},
-				{
-					type: "button",
-					text: {
-						type: "plain_text",
-						text: "よくある質問",
-						emoji: true
-					},
-					value: "show_faq",
-					action_id: "show_faq"
-				}
-			]
 		}
 	]
 });
