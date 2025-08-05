@@ -41,6 +41,7 @@ class AppCommandHandler extends HandlerBase{
     // /makethread実行時
     async handleMakethread (body) {
         const command = this.getCommandFromBody(body);
+        const channelId = body.channel_id || '';
 
         // timesチャンネルにスレッド作成
         let text = `<@${userId}> \n*【壁】${date}*`;
@@ -63,7 +64,6 @@ class AppCommandHandler extends HandlerBase{
         const ENDPOINT = `${process.env.BACKEND_API_BASE_URL}/api/thread`;
         try {
             const response = await axios.post(ENDPOINT, data);
-
             console.log(response);
         } catch (e) {
             console.error(e);
@@ -93,7 +93,7 @@ class AppCommandHandler extends HandlerBase{
             )
         } else {
             return new PostMessage(
-                command.user_id,
+                command.user,
                 '今日のスレッド情報を取得できませんでした。'
             )
         }
@@ -104,7 +104,7 @@ class AppCommandHandler extends HandlerBase{
         const command = this.getCommandFromBody(body);
 
         return new PostMessage(
-            command.user_id,
+            command.user,
             'warmupが実行されました'
         )
     }

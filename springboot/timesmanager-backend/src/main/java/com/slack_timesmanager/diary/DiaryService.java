@@ -8,9 +8,7 @@ import com.slack_timesmanager.common.ServiceResult;
 
 @Service
 public class DiaryService {
-	
 	private static final Logger log = LoggerFactory.getLogger(DiaryService.class);
-	
 	private DiaryDynamoRepository diaryDynamoRepository;
 
 	public DiaryService(DiaryDynamoRepository diaryDynamoDbRepository) {
@@ -18,40 +16,32 @@ public class DiaryService {
 	}
 
 	public ServiceResult save(DiaryRequest request){
-		ServiceResult result = new ServiceResult();
-		
 		try {
 			DiaryResponse getRes = diaryDynamoRepository.getDiary(request.getUserId(), request.getDate());
 			
 			if(getRes != null) {
 				diaryDynamoRepository.updateItem(request);
-			}
-			else {
+			} else {
 				diaryDynamoRepository.putItem(request);
 			}
-			return result;
+			return ServiceResult.success();
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			log.error("DynamoDB処理中にエラー", e);
-			result.setStatus(false);
-			return result;
+			return ServiceResult.failure();
 		}
 	}
 	
 	public ServiceResult getDiary(String userId, String date) {
-		ServiceResult result = new ServiceResult();
-		
 		try {
 			DiaryResponse response = diaryDynamoRepository.getDiary(userId, date);
-			result.setResponse(response);
-			return result;
+			return ServiceResult.success(response);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			log.error("DynamoDB処理中にエラー", e);
-			result.setStatus(false);
-			return result;
+			return ServiceResult.failure();
 		}
 	}
 }

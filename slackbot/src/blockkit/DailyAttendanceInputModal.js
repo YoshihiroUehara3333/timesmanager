@@ -8,7 +8,7 @@ exports.DailyAttendanceInputModal = ({userId}) => ({
     }),
 	title: {
 		type: "plain_text",
-		text: "勤怠入力",
+		text: "勤怠記録",
 		emoji: true
 	},
 	submit: {

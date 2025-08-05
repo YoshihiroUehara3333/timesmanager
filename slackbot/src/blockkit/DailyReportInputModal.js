@@ -1,7 +1,11 @@
 const { ModalConst } = require('../constants/ModalConst');
 
-exports.DailyReportInputModal = () => ({
+exports.DailyReportInputModal = ({userId}) => ({
 	type: "modal",
+	callback_id : ModalConst.CALLBACK_ID.DAILYREPORT,
+	private_metadata: JSON.stringify({
+		user_id    : userId,
+    }),
 	title: {
 		type: "plain_text",
 		text: "日報入力",

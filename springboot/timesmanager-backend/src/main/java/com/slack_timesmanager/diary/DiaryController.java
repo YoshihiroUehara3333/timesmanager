@@ -36,16 +36,17 @@ public class DiaryController {
 	}
 	
 	@GetMapping("/{userId}/{date}")
-	public DiaryResponse getDiary(
+	public ResponseEntity<DiaryResponse> getDiary(
 			@PathVariable String userId,
 			@PathVariable String date){
 		
 		log.info("📥 Received GET /api/diary: {}", userId, date);
 		ServiceResult result = diaryService.getDiary(userId, date);
 		if(result.getStatus()) {
-			return (DiaryResponse)result.getResponse();
+			DiaryResponse response = (DiaryResponse)result.getResponse();
+			return ResponseEntity.ok(response);
 		} else {
-			return null;
+			return ResponseEntity.notFound().build();
 		}
 	}
 }
