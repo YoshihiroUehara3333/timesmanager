@@ -2,13 +2,13 @@ package com.slack_timesmanager.diary;
 
 import com.slack_timesmanager.core.Response;
 
-public class DiaryResponse extends Response{
+public class DiaryResponse implements Response{
 	private String userId;
 	private String date;
 	private String startTime;
-    private String endTime;
-    private String workplace;
-    
+	private String endTime;
+	private String workplace;
+
 	public DiaryResponse(String userId, String startTime, String endTime, String workplace) {
 		super();
 		this.userId = userId;

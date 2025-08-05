@@ -1,11 +1,13 @@
 package com.slack_timesmanager.thread;
 
-public class ThreadResponse {
+import com.slack_timesmanager.core.Response;
+
+public class ThreadResponse implements Response{
 	private String channelId;
 	private String date;
-    private String threadTs;
-    private String permalink;
-    
+	private String threadTs;
+	private String permalink;
+
 	public String getChannelId() {
 		return channelId;
 	}

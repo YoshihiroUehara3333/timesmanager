@@ -24,7 +24,7 @@ public class DiaryController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Void> createDiary(@RequestBody DiaryRequest request){
+	public ResponseEntity<Void> post(@RequestBody DiaryRequest request){
 		
 		log.info("📥 Received POST /api/diary: {}", request);
 		ServiceResult result = diaryService.save(request);
@@ -36,7 +36,7 @@ public class DiaryController {
 	}
 	
 	@GetMapping("/{userId}/{date}")
-	public ResponseEntity<DiaryResponse> getDiary(
+	public ResponseEntity<DiaryResponse> get(
 			@PathVariable String userId,
 			@PathVariable String date){
 		
