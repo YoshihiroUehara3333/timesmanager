@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.slack_timesmanager.common.ServiceResult;
-import com.slack_timesmanager.diary.DiaryRequest;
 
 @RestController
 @RequestMapping("/api/thread")
@@ -27,7 +26,7 @@ public class ThreadController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Void> post(@RequestBody DiaryRequest request){
+	public ResponseEntity<Void> post(@RequestBody ThreadRequest request){
 		
 		log.info("📥 Received POST /api/diary: {}", request);
 		ServiceResult result = threadService.save(request);

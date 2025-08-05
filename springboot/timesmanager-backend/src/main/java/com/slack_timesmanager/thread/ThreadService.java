@@ -20,12 +20,6 @@ public class ThreadService {
 	public ServiceResult save(ThreadRequest request){
 		try {
 			ThreadResponse getRes = null;
-			
-			if(getRes != null) {
-
-			} else {
-
-			}
 			return ServiceResult.success();
 		}
 		catch(Exception e) {
@@ -35,7 +29,7 @@ public class ThreadService {
 		}
 	}
 	
-	public ServiceResult getDiary(String userId, String date) {
+	public ServiceResult getThread(String userId, String date) {
 		try {
 			ThreadResponse response = null;
 			return ServiceResult.success(response);
