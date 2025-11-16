@@ -5,7 +5,7 @@ function dailyReportSection(){
 	return [
         {
             type: "section",
-            text: { type: "mrkdwn", text: "*日報管理*" }
+            text: { type: "mrkdwn", text: "*勤怠/日報管理*" }
 		},
 		{
             type: "actions",
@@ -16,12 +16,7 @@ function dailyReportSection(){
 					style: "primary",
 					value: "home_dailyreport",
 					action_id : ModalConst.ACTION_ID.HOME.DAILYREPORT,
-				}
-			]
-		},
-		{
-            type: "actions",
-            elements: [
+				},
                 {
 					type: "button",
 					text: { type: "plain_text", text: "勤怠入力" },
@@ -59,7 +54,42 @@ function taskSection(){
     ]
 }
 
-exports.AppHomeView = () => ({
+function taskList(tasks = []) {
+	if (!tasks.length) {
+		return [
+			{
+				type: "section",
+				text: {
+				type: "mrkdwn",
+				text: "_現在表示できるタスクはありません_",
+				},
+			},
+		]
+	}
+
+	const blocks = tasks.map((task) => (
+		{
+			type: "section",
+			text: {
+				type: "mrkdwn",
+				text: task.name
+			},
+			accessory: {
+				type: "button",
+				action_id : ModalConst.ACTION_ID.TASK.UPDATE,
+				text: {
+					type: "plain_text",
+					text: "Edit",
+					emoji: true
+				},
+				value: task.name
+			}
+		}
+	))
+	return blocks;
+}
+
+exports.AppHomeView = ({tasks = []}) => ({
     type : "home",
     blocks: [
 		{
@@ -70,40 +100,6 @@ exports.AppHomeView = () => ({
 		...dailyReportSection(),
 		{ type: "divider" },
 		...taskSection(),
-		{
-			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: "*タスク1*"
-			},
-			accessory: {
-				type: "button",
-				action_id : ModalConst.ACTION_ID.TASK.UPDATE,
-				text: {
-					type: "plain_text",
-					text: "Edit",
-					emoji: true
-				},
-				value: "task1"
-			}
-		},
-		{ type: "divider" },
-		{
-			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: "*タスク1*"
-			},
-			accessory: {
-				type: "button",
-				action_id : ModalConst.ACTION_ID.TASK.UPDATE,
-				text: {
-					type: "plain_text",
-					text: "Edit",
-					emoji: true
-				},
-				value: "task1"
-			}
-		}
+		...taskList(tasks),
     ]
 });

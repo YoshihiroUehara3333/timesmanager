@@ -27,6 +27,7 @@ public class DiaryController {
 	public ResponseEntity<Void> post(@RequestBody DiaryRequest request){
 		
 		log.info("📥 Received POST /api/diary: {}", request);
+		
 		ServiceResult result = diaryService.save(request);
 		if(result.getStatus()) {
 			return ResponseEntity.ok().build();

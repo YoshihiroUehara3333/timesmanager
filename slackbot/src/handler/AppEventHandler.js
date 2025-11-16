@@ -26,9 +26,13 @@ class AppEventHandler extends HandlerBase{
 
     async updateAppHome(body){
         const event = this.getEventFromBody(body);
+
+        // タスクリストを取得する
+        const tasks = [];
+        
         return new ViewsPublish(
             event.user,
-            AppHomeView()
+            AppHomeView(tasks)
         )
     }
 
