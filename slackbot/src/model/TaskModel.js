@@ -5,8 +5,8 @@ const { PostdataModelBase } = require('./PostdataModelBase')
 const { POSTDATA } = require('../constants/DynamoDB/PostData')
 
 class TaskModel extends PostdataModelBase {
-  constructor(channelId, date) {
-    super(channelId, date)
+  constructor({channelId, date}) {
+    super({channelId, date})
     this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.WORKREPORT
 
     this._threadTs = ''

@@ -1,6 +1,6 @@
 // モジュール読み込み
 class PostdataModelBase {
-  constructor(channelId, date) {
+  constructor({channelId, date}) {
     this._channelId = channelId
     this._date = date
     this._serial = null

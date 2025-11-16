@@ -19,7 +19,7 @@ class DiaryModelFactory {
   static createDiaryModel ({ channelId, text, threadTs, permalink }) {
     const date = DiaryUtils.parseDate(text)
 
-    const diaryModel = new DiaryModel(channelId, date)
+    const diaryModel = new DiaryModel({channelId: channelId, date: date})
     diaryModel.workingPlaceCd = DiaryUtils.parseWorkingPlaceCd(text)
     diaryModel.content = DiaryUtils.parseContent(text)
     diaryModel.threadTs = threadTs
@@ -39,7 +39,7 @@ class DiaryModelFactory {
   static createDiaryModelFromMessage ({ channel, text, ts }) {
     const date = DiaryUtils.parseDate(text)
 
-    const model = new DiaryModel(channel, date)
+    const model = new DiaryModel({channelId: channel, date: date})
     model.workingPlaceCd = DiaryUtils.parseWorkingPlaceCd(text)
     model.content = DiaryUtils.parseContent(text)
     model.threadTs = ts
