@@ -5,7 +5,7 @@ const { PostdataModelBase } = require('./PostdataModelBase')
 const { POSTDATA } = require('../constants/DynamoDB/PostData')
 
 class TaskModel extends PostdataModelBase {
-  constructor (channelId, date) {
+  constructor(channelId, date) {
     super(channelId, date)
     this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.WORKREPORT
 
@@ -21,7 +21,7 @@ class TaskModel extends PostdataModelBase {
     }
   }
 
-  toItem () {
+  toItem() {
     const ATTR_NAMES = POSTDATA.ATTR_NAMES
     return {
       [ATTR_NAMES.PARTITION_KEY]: this.partitionKey,
@@ -33,19 +33,19 @@ class TaskModel extends PostdataModelBase {
     }
   }
 
-  get createdAt () {
+  get createdAt() {
     return this._createdAt
   }
 
-  set createdAt (createdAt) {
+  set createdAt(createdAt) {
     this._createdAt = createdAt
   }
 
-  get content () {
+  get content() {
     return this._content
   }
 
-  set content (content) {
+  set content(content) {
     this._content = content
   }
 }

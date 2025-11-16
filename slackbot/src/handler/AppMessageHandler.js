@@ -7,7 +7,7 @@ const { RegexConst } = require('../constants/RegexConst')
 const { PostMessage } = require('../slack/SlackApiRequest')
 
 class AppMessageHandler extends HandlerBase {
-  constructor ({
+  constructor({
     dailyReportService,
     threadService,
     slackApiAdaptor
@@ -25,7 +25,7 @@ class AppMessageHandler extends HandlerBase {
     }
   }
 
-  async handle (body, message, logger) {
+  async handle(body, message, logger) {
     const handler = this.dispatcher[this.checkMessagetype(message)] || this.dispatcher.default
     const userId = message.user
     logger.info(`${handler.name}を実行`)
@@ -33,7 +33,7 @@ class AppMessageHandler extends HandlerBase {
   }
 
   // スレッド外部かつ、新規ポスト時
-  async handleNewTopLevelMessage (message) {
+  async handleNewTopLevelMessage(message) {
     if (this.isDiary(message)) {
       const result = await this.dailyReportService.processNewDiaryEntry(message)
       return new PostMessage(
@@ -44,7 +44,7 @@ class AppMessageHandler extends HandlerBase {
   }
 
   // 投稿編集時
-  async handleEditedTopLevelMessage (messageRaw) {
+  async handleEditedTopLevelMessage(messageRaw) {
     const message = messageRaw.message
     message.channel = messageRaw.channel
 
@@ -57,7 +57,7 @@ class AppMessageHandler extends HandlerBase {
     }
   }
 
-  async handleThreadCommand (message, logger) {
+  async handleThreadCommand(message, logger) {
     // /AIフィードバック
     if (message.text.match(RegexConst.THREADCOMMANDS.AI_FEEDBACK)) {
       const result = await this.dailyReportService.generateFeedback(message)
@@ -69,7 +69,7 @@ class AppMessageHandler extends HandlerBase {
     }
   }
 
-  checkMessagetype (message) {
+  checkMessagetype(message) {
     if (message.subtype === 'message_changed') {
       if (this.isInThread(message)) {
         return this.isBotMentioned(message) ? 'handleThreadCommand' : 'default'
@@ -81,15 +81,15 @@ class AppMessageHandler extends HandlerBase {
   }
 
   // Helper Methods ---------------------------------------------------------------------
-  isBotMentioned (message) {
+  isBotMentioned(message) {
     return message.text.match(`<@${SlackConst.ID.botUserId}>`)
   }
 
-  isInThread (message) {
+  isInThread(message) {
     return !!message.thread_ts
   }
 
-  isDiary (message) {
+  isDiary(message) {
     return message.text.match(RegexConst.DATE)
   }
 }

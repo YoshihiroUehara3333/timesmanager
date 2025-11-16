@@ -8,7 +8,7 @@ const { HandlerBase } = require('./HandlerBase')
 class AppViewHandler extends HandlerBase {
   CALLBACK_ID = ModalConst.CALLBACK_ID;
 
-  constructor ({
+  constructor({
     threadService,
     taskService,
     slackApiAdaptor
@@ -25,7 +25,7 @@ class AppViewHandler extends HandlerBase {
     }
   }
 
-  async handle (body, logger) {
+  async handle(body, logger) {
     const view = body.view
 
     const callbackId = view.callback_id
@@ -37,7 +37,7 @@ class AppViewHandler extends HandlerBase {
     await this.execute(handler, userId, body, logger)
   }
 
-  async handleDailyAttendanceInputCallback (body) {
+  async handleDailyAttendanceInputCallback(body) {
     const view = body.view
     const metadata = JSON.parse(view.private_metadata)
     const userId = metadata.user_id
@@ -67,7 +67,7 @@ class AppViewHandler extends HandlerBase {
     }
   }
 
-  async handleNewTaskModalCallback (body) {
+  async handleNewTaskModalCallback(body) {
     const view = body.view
     const metadata = JSON.parse(view.private_metadata)
 

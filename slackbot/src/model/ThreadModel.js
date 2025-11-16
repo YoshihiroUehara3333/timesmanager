@@ -5,7 +5,7 @@ const { PostdataModelBase } = require('./PostdataModelBase')
 const { POSTDATA } = require('../constants/DynamoDB/PostData')
 
 class ThreadModel extends PostdataModelBase {
-  constructor (channelId, date) {
+  constructor(channelId, date) {
     super(channelId, date)
     this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.THREAD
 
@@ -14,7 +14,7 @@ class ThreadModel extends PostdataModelBase {
     this._createdAt = 'hh:mm'
   }
 
-  toItem () {
+  toItem() {
     const ATTR_NAMES = POSTDATA.ATTR_NAMES
     return {
       [ATTR_NAMES.PARTITION_KEY]: this.partitionKey,
@@ -25,27 +25,27 @@ class ThreadModel extends PostdataModelBase {
     }
   }
 
-  get slackUrl () {
+  get slackUrl() {
     return this._slackUrl
   }
 
-  set slackUrl (slackUrl) {
+  set slackUrl(slackUrl) {
     this._slackUrl = slackUrl
   }
 
-  get threadTs () {
+  get threadTs() {
     return this._threadTs
   }
 
-  set threadTs (threadTs) {
+  set threadTs(threadTs) {
     this._threadTs = threadTs
   }
 
-  get createdAt () {
+  get createdAt() {
     return this._createdAt
   }
 
-  set createdAt (createdAt) {
+  set createdAt(createdAt) {
     this._createdAt = createdAt
   }
 }

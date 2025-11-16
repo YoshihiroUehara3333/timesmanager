@@ -1,7 +1,7 @@
 // Slack Clientのラッパー
 
 class SlackApiAdaptor {
-  constructor (client) {
+  constructor(client) {
     this.client = client
 
     this.methodDispatcher = {
@@ -12,7 +12,7 @@ class SlackApiAdaptor {
     }
   }
 
-  async send (request) {
+  async send(request) {
     const method = this.methodDispatcher[request.constructor.name]
     if (!method) {
       throw new Error(`Unsupported request type: ${request.constructor.name}`)
@@ -20,7 +20,7 @@ class SlackApiAdaptor {
     return await method(request)
   }
 
-  async postMessage (request) {
+  async postMessage(request) {
     try {
       return await this.client.chat.postMessage(request.toPayload())
     } catch (error) {
@@ -28,7 +28,7 @@ class SlackApiAdaptor {
     }
   }
 
-  async getPermalink (request) {
+  async getPermalink(request) {
     try {
       const getResult = await this.client.chat.getPermalink(request.toPayload())
       return getResult.permalink
@@ -37,7 +37,7 @@ class SlackApiAdaptor {
     }
   }
 
-  async viewsOpen (request) {
+  async viewsOpen(request) {
     try {
       return await this.client.views.open(request.toPayload())
     } catch (error) {
@@ -45,7 +45,7 @@ class SlackApiAdaptor {
     }
   }
 
-  async viewsPublish (request) {
+  async viewsPublish(request) {
     try {
       return await this.client.views.publish(request.toPayload())
     } catch (error) {

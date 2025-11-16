@@ -11,7 +11,7 @@ const { Prompts } = require('./prompts/Prompts')
 
 class OpenAiApiAdaptor {
   // OpenAIのAIによる日報のフィードバックを生成し、returnする
-  async generateFeedback (diary) {
+  async generateFeedback(diary) {
     console.log('generateFeedback', JSON.stringify(diary))
     try {
       console.log(`prompt:${Prompts.feedback}`)

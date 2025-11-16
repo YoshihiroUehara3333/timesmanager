@@ -3,22 +3,22 @@ const { CdConst } = require('../constants/CdConst')
 
 class DiaryUtils {
   // JSONデータから日記フォーマットに変換してreturnする
-  static formatDiaryFromJson (diaryJson) {
+  static formatDiaryFromJson(diaryJson) {
     const content = diaryJson.content || {}
     const date = diaryJson.date || ''
 
     return (
-            `*【日記】* ${date}\n` +
-            `*【時間】* ${content.working_time.start || ''}-${content.working_time.end || ''}\n` +
-            `*【業務内容】*\n${content.work_report || ''}\n` +
-            `*【自己評価】*\n${content.evaluation || ''}\n` +
-            `*【翌日の計画】*\n${content.plan || ''}\n` +
-            `*【その他】*\n${content.other || ''}`
+      `*【日記】* ${date}\n` +
+      `*【時間】* ${content.working_time.start || ''}-${content.working_time.end || ''}\n` +
+      `*【業務内容】*\n${content.work_report || ''}\n` +
+      `*【自己評価】*\n${content.evaluation || ''}\n` +
+      `*【翌日の計画】*\n${content.plan || ''}\n` +
+      `*【その他】*\n${content.other || ''}`
     )
   }
 
   // Slack側から送信されたtextからcontentデータを抽出してreturnする
-  static parseContent (text) {
+  static parseContent(text) {
     const content = {
       working_time: {
         start: 'hh:mm',
@@ -58,7 +58,7 @@ class DiaryUtils {
 
   // Slack側から送信されたtextから日付を抽出してreturnする
   // 未入力の場合は空文字をreturn
-  static parseDate (text) {
+  static parseDate(text) {
     const dateMatch = text.match(RegexConst.DATE)
     if (dateMatch) {
       return dateMatch[1].trim()
@@ -68,7 +68,7 @@ class DiaryUtils {
   }
 
   // textからWorkingPlaceCdを取得する
-  static parseWorkingPlaceCd (text) {
+  static parseWorkingPlaceCd(text) {
     const WorkingPlace = CdConst.WORKING_PLACE
 
     const workingPlaceMatch = text.match(RegexConst.WORKING_PLACE)

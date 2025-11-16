@@ -5,7 +5,7 @@ const { ViewsPublish } = require('../slack/SlackApiRequest')
 const { HandlerBase } = require('./HandlerBase')
 
 class AppEventHandler extends HandlerBase {
-  constructor ({
+  constructor({
     slackApiAdaptor
   }) {
     super({ slackApiAdaptor })
@@ -16,7 +16,7 @@ class AppEventHandler extends HandlerBase {
     }
   }
 
-  async handle (body, event, logger) {
+  async handle(body, event, logger) {
     const userId = event.user
     const handler = this.dispatcher[event.type] || this.dispatcher.default
 
@@ -24,7 +24,7 @@ class AppEventHandler extends HandlerBase {
     await this.execute(handler, userId, body, logger)
   }
 
-  async updateAppHome (body) {
+  async updateAppHome(body) {
     const event = this.getEventFromBody(body)
 
     // タスクリストを取得する
@@ -36,7 +36,7 @@ class AppEventHandler extends HandlerBase {
     )
   }
 
-  getEventFromBody (body) {
+  getEventFromBody(body) {
     return body.event
   }
 }

@@ -1,5 +1,5 @@
 class WorkReportUtils {
-  static parseContent (values) {
+  static parseContent(values) {
     const content = {}
 
     content.taskName = values.taskname.input.value || ''

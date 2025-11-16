@@ -3,7 +3,7 @@
 // chat.postMessage
 // https://api.slack.com/methods/chat.postMessage
 class PostMessage {
-  constructor (
+  constructor(
     channelId,
     text,
     threadTs,
@@ -18,7 +18,7 @@ class PostMessage {
     this.validate()
   }
 
-  validate () {
+  validate() {
     if (!this._channelId || typeof this._channelId !== 'string') {
       throw new Error('SlackPostMessageRequest: channelId is required and must be a string.')
     }
@@ -27,7 +27,7 @@ class PostMessage {
     }
   }
 
-  toPayload () {
+  toPayload() {
     const payload = {}
     payload.channel = this._channelId
     payload.text = this._text
@@ -41,7 +41,7 @@ class PostMessage {
 // chat.getpermalink
 // https://api.slack.com/methods/chat.getpermalink
 class GetPermalink {
-  constructor (
+  constructor(
     channelId,
     messageTs,
   ) {
@@ -51,7 +51,7 @@ class GetPermalink {
     this.validate()
   }
 
-  validate () {
+  validate() {
     if (!this._channelId || typeof this._channelId !== 'string') {
       throw new Error('SlackGetPermaLinkRequest: channelId is required and must be a string.')
     }
@@ -60,7 +60,7 @@ class GetPermalink {
     }
   }
 
-  toPayload () {
+  toPayload() {
     const payload = {}
     payload.channel = this._channelId
     payload.message_ts = this._messageTs
@@ -71,7 +71,7 @@ class GetPermalink {
 // views.open
 // https://api.slack.com/methods/views.open
 class ViewsOpen {
-  constructor (
+  constructor(
     triggerId,
     view,
   ) {
@@ -81,7 +81,7 @@ class ViewsOpen {
     this.validate()
   }
 
-  validate () {
+  validate() {
     if (!this._triggerId || typeof this._triggerId !== 'string') {
       throw new Error('SlackViewsOpenRequest: triggerId is required and must be a string.')
     }
@@ -90,7 +90,7 @@ class ViewsOpen {
     }
   }
 
-  toPayload () {
+  toPayload() {
     const payload = {}
     payload.trigger_id = this._triggerId
     payload.view = this._view
@@ -101,7 +101,7 @@ class ViewsOpen {
 // views.publish
 // https://api.slack.com/methods/views.publish
 class ViewsPublish {
-  constructor (
+  constructor(
     userId,
     view,
   ) {
@@ -111,7 +111,7 @@ class ViewsPublish {
     this.validate()
   }
 
-  validate () {
+  validate() {
     if (!this._userId || typeof this._userId !== 'string') {
       throw new Error('SlackViewsPublishRequest: userId is required and must be a string.')
     }
@@ -120,7 +120,7 @@ class ViewsPublish {
     }
   }
 
-  toPayload () {
+  toPayload() {
     const payload = {}
     payload.user_id = this._userId
     payload.view = this._view

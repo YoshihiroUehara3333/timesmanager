@@ -5,7 +5,7 @@ const { PostdataModelBase } = require('./PostdataModelBase')
 const { POSTDATA } = require('../constants/DynamoDB/PostData')
 
 class DiaryModel extends PostdataModelBase {
-  constructor (channelId, date) {
+  constructor(channelId, date) {
     super(channelId, date)
     this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.DIARY
 
@@ -26,7 +26,7 @@ class DiaryModel extends PostdataModelBase {
     }
   }
 
-  toItem () {
+  toItem() {
     const ATTR_NAMES = POSTDATA.ATTR_NAMES
     return {
       [ATTR_NAMES.PARTITION_KEY]: this.partitionKey,
@@ -41,51 +41,51 @@ class DiaryModel extends PostdataModelBase {
     }
   }
 
-  get workingPlaceCd () {
+  get workingPlaceCd() {
     return this._workingPlaceCd
   }
 
-  set workingPlaceCd (workingPlaceCd) {
+  set workingPlaceCd(workingPlaceCd) {
     this._workingPlaceCd = workingPlaceCd
   }
 
-  get slackUrl () {
+  get slackUrl() {
     return this._slackUrl
   }
 
-  set slackUrl (slackUrl) {
+  set slackUrl(slackUrl) {
     this._slackUrl = slackUrl
   }
 
-  get threadTs () {
+  get threadTs() {
     return this._threadTs
   }
 
-  set threadTs (threadTs) {
+  set threadTs(threadTs) {
     this._threadTs = threadTs
   }
 
-  get postedAt () {
+  get postedAt() {
     return this._postedAt
   }
 
-  set postedAt (postedAt) {
+  set postedAt(postedAt) {
     this._postedAt = postedAt
   }
 
-  get editedAt () {
+  get editedAt() {
     return this._editedAt
   }
 
-  set editedAt (editedAt) {
+  set editedAt(editedAt) {
     this._editedAt = editedAt
   }
 
-  get content () {
+  get content() {
     return this._content
   }
 
-  set content (content) {
+  set content(content) {
     this._content = content
   }
 }
