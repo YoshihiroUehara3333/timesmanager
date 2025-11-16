@@ -1,93 +1,93 @@
 // 日記のデータ構造定義クラス
 
 // モジュール読み込み
-const { PostdataModelBase } = require('./PostdataModelBase');
-const { POSTDATA }          = require('../constants/DynamoDB/PostData');
+const { PostdataModelBase } = require('./PostdataModelBase')
+const { POSTDATA } = require('../constants/DynamoDB/PostData')
 
 class DiaryModel extends PostdataModelBase {
-    constructor (channelId, date) {
-        super(channelId, date);
-        this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.DIARY;
+  constructor (channelId, date) {
+    super(channelId, date)
+    this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.DIARY
 
-        this._workingPlaceCd   = 9;
-        this._threadTs         = '';
-        this._slackUrl         = '';
-        this._postedAt         = '';
-        this._editedAt         = '';
-        this._content = {
-            working_time : {
-                start : 'hh:mm',
-                end   : 'hh:mm',
-            },
-            work_report  : '',
-            evaluation   : '',
-            plan         : '',
-            other        : ''
-        }
+    this._workingPlaceCd = 9
+    this._threadTs = ''
+    this._slackUrl = ''
+    this._postedAt = ''
+    this._editedAt = ''
+    this._content = {
+      working_time: {
+        start: 'hh:mm',
+        end: 'hh:mm',
+      },
+      work_report: '',
+      evaluation: '',
+      plan: '',
+      other: ''
     }
+  }
 
-    toItem () {
-        const ATTR_NAMES = POSTDATA.ATTR_NAMES;
-        return {
-            [ATTR_NAMES.PARTITION_KEY]      : this.partitionKey,
-            [ATTR_NAMES.SORT_KEY]           : this.sortKey,
-            [ATTR_NAMES.DATE]               : this.date,
-            [ATTR_NAMES.THREAD_TS]          : this.threadTs,
-            [ATTR_NAMES.SLACK_URL]          : this.slackUrl,
-            [ATTR_NAMES.WORKING_PLACE_CD]   : this.workingPlaceCd,
-            [ATTR_NAMES.CONTENT]            : { ...this._content },
-            [ATTR_NAMES.POSTED_AT]          : this.postedAt,
-            [ATTR_NAMES.EDITED_AT]          : this.editedAt,
-        }
+  toItem () {
+    const ATTR_NAMES = POSTDATA.ATTR_NAMES
+    return {
+      [ATTR_NAMES.PARTITION_KEY]: this.partitionKey,
+      [ATTR_NAMES.SORT_KEY]: this.sortKey,
+      [ATTR_NAMES.DATE]: this.date,
+      [ATTR_NAMES.THREAD_TS]: this.threadTs,
+      [ATTR_NAMES.SLACK_URL]: this.slackUrl,
+      [ATTR_NAMES.WORKING_PLACE_CD]: this.workingPlaceCd,
+      [ATTR_NAMES.CONTENT]: { ...this._content },
+      [ATTR_NAMES.POSTED_AT]: this.postedAt,
+      [ATTR_NAMES.EDITED_AT]: this.editedAt,
     }
+  }
 
-    get workingPlaceCd () {
-        return this._workingPlaceCd;
-    }
-    
-    set workingPlaceCd (workingPlaceCd) {
-        this._workingPlaceCd = workingPlaceCd;
-    }
+  get workingPlaceCd () {
+    return this._workingPlaceCd
+  }
 
-    get slackUrl() {
-        return this._slackUrl;
-    }
+  set workingPlaceCd (workingPlaceCd) {
+    this._workingPlaceCd = workingPlaceCd
+  }
 
-    set slackUrl(slackUrl) {
-        this._slackUrl = slackUrl;
-    }
+  get slackUrl () {
+    return this._slackUrl
+  }
 
-    get threadTs() {
-        return this._threadTs;
-    }
+  set slackUrl (slackUrl) {
+    this._slackUrl = slackUrl
+  }
 
-    set threadTs(threadTs) {
-        this._threadTs = threadTs;
-    }
+  get threadTs () {
+    return this._threadTs
+  }
 
-    get postedAt () {
-        return this._postedAt;
-    }
+  set threadTs (threadTs) {
+    this._threadTs = threadTs
+  }
 
-    set postedAt (postedAt) {
-        this._postedAt = postedAt;
-    }
+  get postedAt () {
+    return this._postedAt
+  }
 
-    get editedAt () {
-        return this._editedAt;
-    }
+  set postedAt (postedAt) {
+    this._postedAt = postedAt
+  }
 
-    set editedAt (editedAt) {
-        this._editedAt = editedAt;
-    }
+  get editedAt () {
+    return this._editedAt
+  }
 
-    get content() {
-        return this._content;
-    }
+  set editedAt (editedAt) {
+    this._editedAt = editedAt
+  }
 
-    set content(content) {
-        this._content = content;
-    }
+  get content () {
+    return this._content
+  }
+
+  set content (content) {
+    this._content = content
+  }
 }
 
-exports.DiaryModel = DiaryModel;
+exports.DiaryModel = DiaryModel

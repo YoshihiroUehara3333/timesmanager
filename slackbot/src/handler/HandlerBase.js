@@ -3,15 +3,15 @@ const { PostMessage } = require("../slack/SlackApiRequest");
 class HandlerBase {
     constructor({
         slackApiAdaptor
-    }){
-        this.slackApiAdaptor   = slackApiAdaptor;
+    }) {
+        this.slackApiAdaptor = slackApiAdaptor;
     }
 
-    async handleDefault(body){
+    async handleDefault(body) {
         return undefined;
     }
 
-    async execute(handler, userId, body, logger){
+    async execute(handler, userId, body, logger) {
         let slackRequest;
         try {
             slackRequest = await handler(body);
@@ -19,7 +19,7 @@ class HandlerBase {
         catch (error) {
             logger.error(error.stack);
             slackRequest = new PostMessage(userId, error.toString());
-        } 
+        }
         finally {
             if (slackRequest) {
                 await this.slackApiAdaptor.send(slackRequest);

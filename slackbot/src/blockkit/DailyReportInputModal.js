@@ -1,11 +1,11 @@
 const { ModalConst } = require('../constants/ModalConst');
 
-exports.DailyReportInputModal = ({userId}) => ({
+exports.DailyReportInputModal = ({ userId }) => ({
 	type: "modal",
-	callback_id : ModalConst.CALLBACK_ID.DAILYREPORT,
+	callback_id: ModalConst.CALLBACK_ID.DAILYREPORT,
 	private_metadata: JSON.stringify({
-		user_id    : userId,
-    }),
+		user_id: userId,
+	}),
 	title: {
 		type: "plain_text",
 		text: "日報入力",
@@ -31,29 +31,29 @@ exports.DailyReportInputModal = ({userId}) => ({
 		},
 		{ type: "divider" },
 		{
-			type     : "input",
-			block_id : "task",
-			label : {
-				type : "plain_text",
-				text : "作業内容"
+			type: "input",
+			block_id: "task",
+			label: {
+				type: "plain_text",
+				text: "作業内容"
 			},
-			element : {
-				type      : "plain_text_input",
-				multiline : true,
-				action_id : "input"
+			element: {
+				type: "plain_text_input",
+				multiline: true,
+				action_id: "input"
 			}
 		},
 		{
-			type     : "input",
-			block_id : "taskname",
-			label : {
-				type : "plain_text",
-				text : "所感"
+			type: "input",
+			block_id: "taskname",
+			label: {
+				type: "plain_text",
+				text: "所感"
 			},
-			element : {
-				type      : "plain_text_input",
-				multiline : true,
-				action_id : "input"
+			element: {
+				type: "plain_text_input",
+				multiline: true,
+				action_id: "input"
 			}
 		}
 	]

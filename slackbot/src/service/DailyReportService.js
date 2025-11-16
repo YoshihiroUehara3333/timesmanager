@@ -1,133 +1,132 @@
 // モジュール読み込み
-require('date-utils');
-const { DiaryModelFactory }  = require('../model/factory/DiaryModelFactory');
-const { POSTDATA }           = require('../constants/DynamoDB/PostData');
-const { PostMessage, GetPermalink } = require('../slack/SlackApiRequest');
+require('date-utils')
+const { DiaryModelFactory } = require('../model/factory/DiaryModelFactory')
+const { POSTDATA } = require('../constants/DynamoDB/PostData')
+const { GetPermalink } = require('../slack/SlackApiRequest')
 
 /**
  * 日報を処理・保存・更新・フィードバック生成するためのサービスクラス
  */
 class DailyReportService {
-    constructor({
-        postDataRepository, 
-        aiApiAdaptor, 
-        slackApiAdaptor
-    }) {
-        this.postDataRepository = postDataRepository;
-        this.aiApiAdaptor = aiApiAdaptor;
-        this.slackApiAdaptor = slackApiAdaptor;
-    }
+  constructor ({
+    postDataRepository,
+    aiApiAdaptor,
+    slackApiAdaptor
+  }) {
+    this.postDataRepository = postDataRepository
+    this.aiApiAdaptor = aiApiAdaptor
+    this.slackApiAdaptor = slackApiAdaptor
+  }
 
-    /**
+  /**
      *  日報が新規投稿された際の処理を行う
      *  @param   {Object} message - Slack APIから受け取ったメッセージオブジェクト
      *  @returns {ServiceResult} object   - Service実行結果を格納したobject
      */
-    async processNewDiaryEntry (message) {
-        // DiaryModelを作成
-        const diaryModel = DiaryModelFactory.createDiaryModelFromMessage(message);
-        diaryModel.slackUrl = await this.slackApiAdaptor.send(new GetPermalink(message.channel, message.ts));
-        diaryModel.postedAt = new Date().toFormat('HH24:MI:SS');
+  async processNewDiaryEntry (message) {
+    // DiaryModelを作成
+    const diaryModel = DiaryModelFactory.createDiaryModelFromMessage(message)
+    diaryModel.slackUrl = await this.slackApiAdaptor.send(new GetPermalink(message.channel, message.ts))
+    diaryModel.postedAt = new Date().toFormat('HH24:MI:SS')
 
-        // DB登録
-        try {
-            let date = diaryModel.date;
+    // DB登録
+    try {
+      const date = diaryModel.date
 
-            // DB新規重複チェック
-            const result = await this.postDataRepository.getDiaryByDate(message.channel, date);
-            if (result) {
-                return { msg: `日付が重複しています。(${date})`}
-            }
+      // DB新規重複チェック
+      const result = await this.postDataRepository.getDiaryByDate(message.channel, date)
+      if (result) {
+        return { msg: `日付が重複しています。(${date})` }
+      }
 
-            // diaryModelをDBに登録
-            const response = await this.postDataRepository.putItem(diaryModel);
+      // diaryModelをDBに登録
+      const response = await this.postDataRepository.putItem(diaryModel)
 
-            // httpStatusCodeを判断しpostMessage用のtextを作成
-            const httpStatusCode = response?.$metadata.httpStatusCode;
-            const postText = this.checkHttpStatusCode(httpStatusCode, '登録', diaryModel);
-            return { msg: postText };
-
-        } catch (error) {
-            throw new Error(error.message, {cause: error});
-        }
+      // httpStatusCodeを判断しpostMessage用のtextを作成
+      const httpStatusCode = response?.$metadata.httpStatusCode
+      const postText = this.checkHttpStatusCode(httpStatusCode, '登録', diaryModel)
+      return { msg: postText }
+    } catch (error) {
+      throw new Error(error.message, { cause: error })
     }
+  }
 
-    /**
+  /**
      *  日報が編集された際の処理を行う
      *  @param   {Object} message - Slack APIから受け取ったメッセージオブジェクト
      *  @returns {PostMessage}    - postMessageに引き渡すrequest DTO
      */
-    async processUpdateDiary (message) {
-        // DiaryModelを作成
-        const diaryModel = DiaryModelFactory.createDiaryModelFromMessage(message);
-        diaryModel.editedAt = new Date().toFormat('HH24:MI:SS');
+  async processUpdateDiary (message) {
+    // DiaryModelを作成
+    const diaryModel = DiaryModelFactory.createDiaryModelFromMessage(message)
+    diaryModel.editedAt = new Date().toFormat('HH24:MI:SS')
 
-        // DB更新
-        try {
-            // 更新元情報を取得しdiaryModelの値をマージ
-            let partitionKey = diaryModel.partitionKey;
-            let date = diaryModel.date;
-            const getResult = await this.postDataRepository.getDiaryByDate(partitionKey, date);
-            if (getResult) {
-                diaryModel.postedAt = getResult.posted_at;
-                diaryModel.slackUrl = getResult.slack_url;
-            }
+    // DB更新
+    try {
+      // 更新元情報を取得しdiaryModelの値をマージ
+      const partitionKey = diaryModel.partitionKey
+      const date = diaryModel.date
+      const getResult = await this.postDataRepository.getDiaryByDate(partitionKey, date)
+      if (getResult) {
+        diaryModel.postedAt = getResult.posted_at
+        diaryModel.slackUrl = getResult.slack_url
+      }
 
-            // diaryModelをDBに登録
-            const response = await this.postDataRepository.putItem(diaryModel);
+      // diaryModelをDBに登録
+      const response = await this.postDataRepository.putItem(diaryModel)
 
-            // httpStatusCodeを判断しpostMessage用のtextを作成
-            const httpStatusCode = response?.$metadata.httpStatusCode;
-            const postText = this.checkHttpStatusCode(httpStatusCode, '登録', diaryModel);
-            return { msg: postText };
-        } catch (error) {
-            throw new Error(error.message, {cause: error});
-        }
+      // httpStatusCodeを判断しpostMessage用のtextを作成
+      const httpStatusCode = response?.$metadata.httpStatusCode
+      const postText = this.checkHttpStatusCode(httpStatusCode, '登録', diaryModel)
+      return { msg: postText }
+    } catch (error) {
+      throw new Error(error.message, { cause: error })
     }
+  }
 
-    async getDiaryManageFormData(body){
-        const date = new Date().toFormat('HH24:MI:SS');
-        
-        this.postDataRepository.getDiaryByDate(channelId, date);
-    }
+  async getDiaryManageFormData (body) {
+    const date = new Date().toFormat('HH24:MI:SS')
 
-    /**
+    this.postDataRepository.getDiaryByDate(channelId, date)
+  }
+
+  /**
      *  thread_tsを基にフィードバックを生成し、returnする
      *  @param   {Object} message - Slack APIから受け取ったメッセージオブジェクト
      *  @returns {PostMessage}    - postMessageに引き渡すrequest DTO
      */
-    async generateFeedback(message){
-        // messageから値を取得
-        const threadTs = message.thread_ts;
-        const channelId = message.channel;
+  async generateFeedback (message) {
+    // messageから値を取得
+    const threadTs = message.thread_ts
+    const channelId = message.channel
 
-        // DBから業務日誌情報を取得
-        try {
-            // 日報データをDBから取得
-            const partitionKey = `${channelId}#${POSTDATA.PK_POSTFIX.DIARY}`;
-            const queryResult = await this.postDataRepository.queryByPartitionKeyAndThreadTs(partitionKey, threadTs);
-            if (queryResult.length === 0) return `DBから日報データを取得できませんでした。`;
-            // たいていは1件のみ想定
-            const diary = queryResult[0];
+    // DBから業務日誌情報を取得
+    try {
+      // 日報データをDBから取得
+      const partitionKey = `${channelId}#${POSTDATA.PK_POSTFIX.DIARY}`
+      const queryResult = await this.postDataRepository.queryByPartitionKeyAndThreadTs(partitionKey, threadTs)
+      if (queryResult.length === 0) return 'DBから日報データを取得できませんでした。'
+      // たいていは1件のみ想定
+      const diary = queryResult[0]
 
-            // フィードバックを生成してreturn
-            const feedbackText = await this.aiApiAdaptor.generateFeedback(diary);
-            return { msg: feedbackText};
-        } catch (error) {
-            throw new Error(`フィードバック生成中にエラーが発生しました。${error.message}`, { cause: error });
-        }
+      // フィードバックを生成してreturn
+      const feedbackText = await this.aiApiAdaptor.generateFeedback(diary)
+      return { msg: feedbackText }
+    } catch (error) {
+      throw new Error(`フィードバック生成中にエラーが発生しました。${error.message}`, { cause: error })
     }
+  }
 
-    // -----------------------------------------------------------------------------------------
-    // DynamoDBへのPut成否をhttpStatusCodeから判断してreturnを作成する
-    checkHttpStatusCode (httpStatusCode, msg, diaryModel) {
-        if (httpStatusCode === 200) {
-            return `日記(${diaryModel.date})のDB${msg}に成功しました。\n${diaryModel.slackUrl}`;
-        } else {
-            return `日記(${diaryModel.date})のDB${msg}に失敗しました。\n`
-                + `httpStatusCode=${httpStatusCode}`
-        }
+  // -----------------------------------------------------------------------------------------
+  // DynamoDBへのPut成否をhttpStatusCodeから判断してreturnを作成する
+  checkHttpStatusCode (httpStatusCode, msg, diaryModel) {
+    if (httpStatusCode === 200) {
+      return `日記(${diaryModel.date})のDB${msg}に成功しました。\n${diaryModel.slackUrl}`
+    } else {
+      return `日記(${diaryModel.date})のDB${msg}に失敗しました。\n` +
+                `httpStatusCode=${httpStatusCode}`
     }
+  }
 }
 
-exports.DailyReportService = DailyReportService;
+exports.DailyReportService = DailyReportService

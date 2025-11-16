@@ -1,53 +1,53 @@
 // 作業経過のデータ構造定義クラス
 
 // モジュール読み込み
-const { PostdataModelBase } = require('./PostdataModelBase');
-const { POSTDATA }          = require('../constants/DynamoDB/PostData');
+const { PostdataModelBase } = require('./PostdataModelBase')
+const { POSTDATA } = require('../constants/DynamoDB/PostData')
 
 class TaskModel extends PostdataModelBase {
-    constructor (channelId, date) {
-        super(channelId, date);
-        this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.WORKREPORT;
+  constructor (channelId, date) {
+    super(channelId, date)
+    this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.WORKREPORT
 
-        this._threadTs      = '';
-        this._createdAt     = 'hh:mm';
-        this._content = {
-            taskName : '',
-            goal     : '',
-            progress: {
-                targetTime   : 'hh:mm',
-                memo         : '',
-            },
-        }
+    this._threadTs = ''
+    this._createdAt = 'hh:mm'
+    this._content = {
+      taskName: '',
+      goal: '',
+      progress: {
+        targetTime: 'hh:mm',
+        memo: '',
+      },
     }
+  }
 
-    toItem () {
-        const ATTR_NAMES = POSTDATA.ATTR_NAMES;
-        return {
-            [ATTR_NAMES.PARTITION_KEY]      : this.partitionKey,
-            [ATTR_NAMES.SORT_KEY]           : this.sortKey,
-            [ATTR_NAMES.SERIAL]             : this.serial,
-            [ATTR_NAMES.THREAD_TS]          : this.threadTs,
-            [ATTR_NAMES.CREATED_AT]         : this.createdAt,
-            [ATTR_NAMES.CONTENT]            : { ...this._content },
-        }
+  toItem () {
+    const ATTR_NAMES = POSTDATA.ATTR_NAMES
+    return {
+      [ATTR_NAMES.PARTITION_KEY]: this.partitionKey,
+      [ATTR_NAMES.SORT_KEY]: this.sortKey,
+      [ATTR_NAMES.SERIAL]: this.serial,
+      [ATTR_NAMES.THREAD_TS]: this.threadTs,
+      [ATTR_NAMES.CREATED_AT]: this.createdAt,
+      [ATTR_NAMES.CONTENT]: { ...this._content },
     }
+  }
 
-    get createdAt () {
-        return this._createdAt;
-    }
+  get createdAt () {
+    return this._createdAt
+  }
 
-    set createdAt (createdAt) {
-        this._createdAt = createdAt;
-    }
+  set createdAt (createdAt) {
+    this._createdAt = createdAt
+  }
 
-    get content() {
-        return this._content;
-    }
+  get content () {
+    return this._content
+  }
 
-    set content(content) {
-        this._content = content;
-    }
+  set content (content) {
+    this._content = content
+  }
 }
 
-exports.TaskModel = TaskModel;
+exports.TaskModel = TaskModel
