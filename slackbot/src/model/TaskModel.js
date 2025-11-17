@@ -10,8 +10,8 @@ class TaskModel extends PostdataModelBase {
       channelId: channelId,
       date: date
     })
-    this._partitionKeyPostfix = POSTDATA.PK_POSTFIX.WORKREPORT
 
+    this._userId = ''
     this._threadTs = ''
     this._createdAt = 'hh:mm'
     this._content = {

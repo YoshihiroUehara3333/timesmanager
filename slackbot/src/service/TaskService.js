@@ -9,15 +9,13 @@ const { PostMessage } = require('../slack/SlackApiRequest')
 
 class TaskService {
   constructor ({
-    postDataRepository,
     slackApiAdaptor
   }) {
-    this.postDataRepository = postDataRepository
     this.slackApiAdaptor = slackApiAdaptor
   }
 
   async getByUserId ({ userId }) {
-    const tasks = await axios.get(`https://dev.slack-times-manager.com/api/task?userId=${userId}`)
+    const tasks = await axios.get('https://dev.slack-times-manager.com/api/task' + `?userId=${userId}`)
       .then((status) => {
         console.log('getByUserId:', status)
       })

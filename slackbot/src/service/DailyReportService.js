@@ -9,11 +9,9 @@ const { GetPermalink } = require('../slack/SlackApiRequest')
  */
 class DailyReportService {
   constructor ({
-    postDataRepository,
     aiApiAdaptor,
     slackApiAdaptor
   }) {
-    this.postDataRepository = postDataRepository
     this.aiApiAdaptor = aiApiAdaptor
     this.slackApiAdaptor = slackApiAdaptor
   }

@@ -6,14 +6,14 @@ const axios = require('axios')
 const { PostMessage, GetPermalink } = require('../slack/SlackApiRequest')
 
 class ThreadService {
-  constructor({
+  constructor ({
     slackApiAdaptor
   }) {
     this.slackApiAdaptor = slackApiAdaptor
   }
 
   // 新規のスレッド文面を作成し投稿結果をDBに保存する
-  async createNewThread(command) {
+  async createNewThread (command) {
     // 値を取得
     const channelId = command.channel_id
     const userId = command.user_id

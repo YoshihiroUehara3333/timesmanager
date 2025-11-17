@@ -26,7 +26,15 @@ public class TaskService {
 		
 	};
 	
-	public ServiceResult save() {
-		return null;
+	public ServiceResult save(TaskRequest request) {
+		try {
+		    taskDynamoRepository.putItem(request);
+			return ServiceResult.success();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			log.error("DynamoDB処理中にエラー", e);
+			return ServiceResult.failure();
+		}
 	};
 }

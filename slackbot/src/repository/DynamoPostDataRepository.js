@@ -1,20 +1,12 @@
+/* eslint-disable no-undef */
 // DynamoDBのPostDataテーブルとデータのやり取りを行うクラス
 
 // モジュール読み込み
-const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
-const { DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb')
-const { POSTDATA } = require('../constants/DynamoDB/PostData')
-
 class DynamoPostDataRepository {
   TABLENAME = `timesmanager_postdata${process.env.TABLE_POSTFIX}`
 
-  constructor() {
-    const client = new DynamoDBClient({})
-    this.dynamoDb = DynamoDBDocumentClient.from(client)
-  }
-
   // modelデータをDBに登録する
-  async putItem(model) {
+  async putItem (model) {
     try {
       return await this.dynamoDb.send(new PutCommand({
         TableName: this.TABLENAME,
@@ -27,7 +19,7 @@ class DynamoPostDataRepository {
   }
 
   // dateからSortKeyを生成し、Diaryを1件取得する
-  async getDiaryByDate(channelId, date) {
+  async getDiaryByDate (channelId, date) {
     const partitionKey = `${channelId}#${POSTDATA.PK_POSTFIX.DIARY}`
     const sortKey = `${date}#`
     try {
@@ -40,7 +32,7 @@ class DynamoPostDataRepository {
   }
 
   // dateからSortKeyを生成し、Threadを1件取得する
-  async getThreadByDate(channelId, date) {
+  async getThreadByDate (channelId, date) {
     const partitionKey = `${channelId}#${POSTDATA.PK_POSTFIX.THREAD}`
     const sortKey = `${date}#`
 
@@ -55,7 +47,7 @@ class DynamoPostDataRepository {
   }
 
   // WorkReportの最新serialを取得
-  async getWorkReportCount(channelId, date) {
+  async getWorkReportCount (channelId, date) {
     const partitionKey = `${channelId}#${POSTDATA.PK_POSTFIX.WORKREPORT}`
     try {
       const queryResult = await this._queryByPartitionKeyAndSortKeyBeginsWithDate(partitionKey, date)
@@ -74,7 +66,7 @@ class DynamoPostDataRepository {
   // dateとsort_keyで絞り込みをかける
   // 絞り込みはServiceクラスで行う
   // GSI使用
-  async queryByDateAndSortKeyPostfix(date, postfix) {
+  async queryByDateAndSortKeyPostfix (date, postfix) {
     try {
       return await this._queryByPartitionKeyAndSortKey(NAME, PK, SK, date, prefix)
     } catch (error) {
@@ -86,7 +78,7 @@ class DynamoPostDataRepository {
   // 指定したsort_keyのprefixとthread_tsを条件にレコードを取得する
   // 絞り込みはServiceクラスで行う
   // GSI使用
-  async queryByPartitionKeyAndThreadTs(partitionKey, threadTs) {
+  async queryByPartitionKeyAndThreadTs (partitionKey, threadTs) {
     const { NAME, PK, SK } = POSTDATA.GSI.ByPartitionKeyAndThreadTs
 
     try {
@@ -107,7 +99,7 @@ class DynamoPostDataRepository {
      * @param {string} partitionKey - パーティションキー
      * @param {string} sortKey - ソートキー
      */
-  async _getItem(partitionKey, sortKey) {
+  async _getItem (partitionKey, sortKey) {
     const getResult = await this.dynamoDb.send(new GetCommand({
       TableName: this.TABLENAME,
       Key: {
@@ -124,7 +116,7 @@ class DynamoPostDataRepository {
      * @param {string} sortKey - 検索対象のソートキーの値
      * @returns {Promise<Object[]|null>} クエリ結果（0件ならnull）
      */
-  async _queryByPartitionKeyAndSortKey(partitionKey, sortKey) {
+  async _queryByPartitionKeyAndSortKey (partitionKey, sortKey) {
     const queryResult = await this.dynamoDb.send(new QueryCommand({
       TableName: this.TABLENAME,
       KeyConditionExpression: '#pk = :pk AND #sk = :sk', // 条件指定
@@ -153,7 +145,7 @@ class DynamoPostDataRepository {
      * @param {string} prefix - GSIソートキーのプレフィックス
      * @returns {Promise<Object[]} クエリ結果
      */
-  async _queryByPartitionKeyAndSortKeyBeginsWithDate(partitionKey, date) {
+  async _queryByPartitionKeyAndSortKeyBeginsWithDate (partitionKey, date) {
     const queryResult = await this.dynamoDb.send(new QueryCommand({
       TableName: this.TABLENAME,
       KeyConditionExpression: '#pk = :pk AND begins_with(#sk, :sk)', // 条件指定
@@ -179,7 +171,7 @@ class DynamoPostDataRepository {
      * @param {string} prefix - GSIソートキーのプレフィックス
      * @returns {Promise<Object[]|null>} クエリ結果（0件ならnull）
      */
-  async _queryByUsingIndex(indexName, pkAttrName, skAttrName, pkValue, skValue) {
+  async _queryByUsingIndex (indexName, pkAttrName, skAttrName, pkValue, skValue) {
     const queryResult = await this.dynamoDb.send(new QueryCommand({
       TableName: this.TABLENAME,
       IndexName: indexName, // GSI名
