@@ -57,7 +57,7 @@ app.action({ type: 'block_actions' }, async ({ ack, body, logger }) => {
 })
 
 // homeタブを開いたとき
-app.event({ type: 'app_home_opened' }, async ({ ack, body, event, logger }) => {
+app.event({ type: 'app_home_opened' }, async ({ body, event, logger }) => {
   logger.info(`app.event\nevent:${JSON.stringify(event)}/nbody:${JSON.stringify(body)}\n`)
   await appEventHandler.handle(body, event, logger)
 })

@@ -1,6 +1,6 @@
 // モジュール読み込み
 class PostdataModelBase {
-  constructor({channelId, date}) {
+  constructor ({ channelId, date }) {
     this._channelId = channelId
     this._date = date
     this._serial = null
@@ -8,26 +8,26 @@ class PostdataModelBase {
     this._partitionKeyPostfix = ''
   }
 
-  toItem() {
+  toItem () {
   }
 
-  get partitionKey() {
+  get partitionKey () {
     return `${this._channelId}#${this._partitionKeyPostfix}`
   }
 
-  get sortKey() {
+  get sortKey () {
     return `${this._date}#${this.serial}`
   }
 
-  get date() {
+  get date () {
     return this._date
   }
 
-  set date(date) {
+  set date (date) {
     this._date = date
   }
 
-  get serial() {
+  get serial () {
     if (this._serial) {
       return this._serial
     } else {
@@ -35,7 +35,7 @@ class PostdataModelBase {
     }
   }
 
-  set serial(serial) {
+  set serial (serial) {
     this._serial = serial
   }
 }

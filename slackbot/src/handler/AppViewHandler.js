@@ -6,14 +6,14 @@ const { PostMessage } = require('../slack/SlackApiRequest')
 const { HandlerBase } = require('./HandlerBase')
 
 class AppViewHandler extends HandlerBase {
-  CALLBACK_ID = ModalConst.CALLBACK_ID;
+  CALLBACK_ID = ModalConst.CALLBACK_ID
 
-  constructor({
+  constructor ({
     threadService,
     taskService,
     slackApiAdaptor
   }) {
-    super({ slackApiAdaptor:  slackApiAdaptor})
+    super({ slackApiAdaptor: slackApiAdaptor })
 
     this.threadService = threadService
     this.taskService = taskService
@@ -25,11 +25,11 @@ class AppViewHandler extends HandlerBase {
     }
   }
 
-  async handle(body, logger) {
+  async handle (body, logger) {
     const view = body.view
-
     const callbackId = view.callback_id
     logger.info(`callbackId:${callbackId}`)
+
     const handler = this.dispatcher[callbackId] || this.dispatcher.default
     const userId = JSON.parse(view.private_metadata).user_id
 
@@ -37,7 +37,7 @@ class AppViewHandler extends HandlerBase {
     await this.execute(handler, userId, body, logger)
   }
 
-  async handleDailyAttendanceInputCallback(body) {
+  async handleDailyAttendanceInputCallback (body) {
     const view = body.view
     const metadata = JSON.parse(view.private_metadata)
     const userId = metadata.user_id
@@ -67,7 +67,7 @@ class AppViewHandler extends HandlerBase {
     }
   }
 
-  async handleNewTaskModalCallback(body) {
+  async handleNewTaskModalCallback (body) {
     const view = body.view
     const metadata = JSON.parse(view.private_metadata)
 
