@@ -1,6 +1,8 @@
 package com.slack_timesmanager.diary;
 
-public class DiaryRequest {
+import com.slack_timesmanager.core.Request;
+
+public class DiaryRequest implements Request{
 	private String userId;
 	private String date;
 	private String startTime;

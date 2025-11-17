@@ -1,7 +1,7 @@
 // モジュール読み込み
 require('date-utils')
 const { WorkReportUtils } = require('../utility/WorkReportUtils')
-
+const { axios } = require('axios')
 const { WorkPlanBlock } = require('../blockkit/WorkPlanBlock')
 const { TaskModel } = require('../model/TaskModel')
 const { POSTDATA } = require('../constants/DynamoDB/PostData')
@@ -14,6 +14,17 @@ class TaskService {
   }) {
     this.postDataRepository = postDataRepository
     this.slackApiAdaptor = slackApiAdaptor
+  }
+
+  async getByUserId ({ userId }) {
+    const tasks = await axios.get(`https://dev.slack-times-manager.com/api/task?userId=${userId}`)
+      .then((status) => {
+        console.log('getByUserId:', status)
+      })
+      .catch(err => {
+        console.error('getByUserId:', err)
+      })
+    return tasks
   }
 
   // 新規タスク入力用モーダルのBlockkit作成用パラメータを取得し返却する
@@ -47,14 +58,6 @@ class TaskService {
   // タスク更新用モーダルのBlockkitを作成し返却する
   async updateTask () {
     // DBからタスク情報を取得
-
-    return {
-      channelId: channelId,
-      threadTs: thread.thread_ts,
-      date: date,
-      serial: latestSerial,
-      userId: command.user_id
-    }
   }
 
   // /makethread入力時のNewTaskモーダル入力値を取得し、Blocksを返す
@@ -117,7 +120,7 @@ class TaskService {
       return `進捗情報ののDB登録に成功しました serial=${workReportModel.serial}`
     } else {
       return '進捗情報ののDB登録に失敗しました/n' +
-                  `httpStatusCode=${httpStatusCode}`
+        `httpStatusCode=${httpStatusCode}`
     }
   }
 }

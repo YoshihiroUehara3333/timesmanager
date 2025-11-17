@@ -6,6 +6,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import com.slack_timesmanager.enums.DynamoPK;
+
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
@@ -13,11 +15,9 @@ import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
 @Repository
-public class DiaryDynamoRepository {
-	private final String PARTITION_KEY_BASE = "/DIARY";
-	
+public class DiaryDynamoRepository {	
     @Value("${aws.dynamodb.tableName}")
-    private String tableName;
+    private final String TABLENAME;
 	
 	private final DynamoDbClient dynamoDbClient;
 	
@@ -26,7 +26,7 @@ public class DiaryDynamoRepository {
 	}
 	
     public DiaryResponse getDiary(String userId, String date) throws Exception{
-        String partitionKey = userId + PARTITION_KEY_BASE;
+        String partitionKey = DynamoPK.DAILYREPORT.getPartitionKey(userId);
         String sortKey = date;
 
         Map<String, AttributeValue> key = new HashMap<>();
@@ -34,7 +34,7 @@ public class DiaryDynamoRepository {
         key.put("sort_key", AttributeValue.builder().s(sortKey).build());
 
         GetItemRequest request = GetItemRequest.builder()
-            .tableName(tableName)
+            .tableName(TABLENAME)
             .key(key)
             .build();
 
@@ -55,7 +55,8 @@ public class DiaryDynamoRepository {
     }
     
     public void putItem(DiaryRequest request) throws Exception {
-        String partitionKey = request.getUserId() + PARTITION_KEY_BASE;
+    	String userId = request.getUserId();
+		String partitionKey = DynamoPK.DAILYREPORT.getPartitionKey(userId);
         String sortKey = request.getDate();
 
         Map<String, AttributeValue> item = new HashMap<>();
@@ -67,7 +68,7 @@ public class DiaryDynamoRepository {
         item.put("workplace", AttributeValue.builder().s(request.getWorkplace()).build());
 
         PutItemRequest putItemRequest = PutItemRequest.builder()
-            .tableName(tableName)
+            .tableName(TABLENAME)
             .item(item)
             .build();
 
@@ -79,7 +80,8 @@ public class DiaryDynamoRepository {
     }
     
 	public void updateItem(DiaryRequest request) throws Exception {
-	    String partitionKey = request.getUserId() + PARTITION_KEY_BASE;
+		String userId = request.getUserId();
+		String partitionKey = DynamoPK.DAILYREPORT.getPartitionKey(userId);
 	    String sortKey = request.getDate();
 	    
         Map<String, AttributeValue> key = new HashMap<>();
@@ -97,7 +99,7 @@ public class DiaryDynamoRepository {
 	    expressionAttributeValues.put(":workplace", AttributeValue.builder().s(request.getWorkplace()).build());
 
 	    UpdateItemRequest updateRequest = UpdateItemRequest.builder()
-	        .tableName(tableName)
+	        .tableName(TABLENAME)
 	        .key(key)
 	        .updateExpression("SET #st = :startTime, #et = :endTime, #wp = :workplace")
 	        .expressionAttributeNames(expressionAttributeNames)

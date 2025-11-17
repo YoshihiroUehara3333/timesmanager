@@ -10,7 +10,7 @@ const { DailyReportInputModal } = require('../blockkit/DailyReportInputModal')
 const { DailyAttendanceInputModal } = require('../blockkit/DailyAttendanceInputModal')
 
 class AppActionHandler extends HandlerBase {
-  constructor({
+  constructor ({
     dailyReportService,
     taskService,
     slackApiAdaptor
@@ -30,7 +30,7 @@ class AppActionHandler extends HandlerBase {
     }
   }
 
-  async handle(body, logger) {
+  async handle (body, logger) {
     const actions = body.actions[0]
     logger.info(`action_id:${actions.action_id}`)
 
@@ -41,7 +41,7 @@ class AppActionHandler extends HandlerBase {
     await this.execute(handler, userId, body, logger)
   }
 
-  async handleHomeToDailyReport(body) {
+  async handleHomeToDailyReport (body) {
     const modalparams = {
       userId: body.user.id,
     }
@@ -52,7 +52,7 @@ class AppActionHandler extends HandlerBase {
     )
   }
 
-  async handleHomeToAttendance(body) {
+  async handleHomeToAttendance (body) {
     const modalparams = {
       userId: body.user.id,
     }
@@ -63,7 +63,7 @@ class AppActionHandler extends HandlerBase {
     )
   }
 
-  async handleWorkReportCreate(body) {
+  async handleWorkReportCreate (body) {
     const params = {
       channel_id: '',
       user_id: '',
@@ -78,7 +78,7 @@ class AppActionHandler extends HandlerBase {
     )
   }
 
-  async handleWorkReportUpdate(body) {
+  async handleWorkReportUpdate (body) {
     const params = {
       channel_id: '',
       user_id: '',
