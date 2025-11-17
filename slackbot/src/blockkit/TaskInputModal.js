@@ -38,18 +38,6 @@ exports.TaskInputModal = ({ channelId, threadTs, date, serial, userId }) => ({
     },
     {
       type: 'input',
-      block_id: 'goal',
-      label: {
-        type: 'plain_text',
-        text: '完了条件'
-      },
-      element: {
-        type: 'plain_text_input',
-        action_id: 'input'
-      }
-    },
-    {
-      type: 'input',
       block_id: 'targettime',
       label: {
         type: 'plain_text',

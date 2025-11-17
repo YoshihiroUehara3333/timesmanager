@@ -14,6 +14,7 @@ class TaskService {
     this.slackApiAdaptor = slackApiAdaptor
   }
 
+  // 引数で渡されたユーザIDを基にタスクを全件取得する
   async getByUserId ({ userId }) {
     const tasks = await axios.get('https://dev.slack-times-manager.com/api/task' + `?userId=${userId}`)
       .then((status) => {
