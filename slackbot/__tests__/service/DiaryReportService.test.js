@@ -1,11 +1,11 @@
-const { DailyReportService } = require('../src/service/DailyReportService')
-const { DiaryModelFactory } = require('../src/model/factory/DiaryModelFactory')
-const { DiaryModel } = require('../src/model/DiaryModel')
-const { GetPermalink } = require('../src/slack/SlackApiRequest')
+const { DailyReportService } = require('../../src/service/DailyReportService')
+const { DiaryModelFactory } = require('../../src/model/factory/DiaryModelFactory')
+const { DiaryModel } = require('../../src/model/DiaryModel')
+const { GetPermalink } = require('../../src/slack/SlackApiRequest')
 
 // --- モック作成 ---
-jest.mock('../src/model/factory/DiaryModelFactory')
-jest.mock('../src/slack/SlackApiRequest')
+jest.mock('../../src/model/factory/DiaryModelFactory')
+jest.mock('../../src/slack/SlackApiRequest')
 
 // Repository モック
 const mockPostDataRepository = {

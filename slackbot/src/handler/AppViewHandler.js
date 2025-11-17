@@ -13,7 +13,7 @@ class AppViewHandler extends HandlerBase {
     taskService,
     slackApiAdaptor
   }) {
-    super({ slackApiAdaptor })
+    super({ slackApiAdaptor:  slackApiAdaptor})
 
     this.threadService = threadService
     this.taskService = taskService

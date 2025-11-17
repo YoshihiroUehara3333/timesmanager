@@ -1,12 +1,12 @@
 // AppHomeView と ViewsPublish を先にモックする
-jest.mock('../src/blockkit/AppHomeView', () => ({
+jest.mock('../../src/blockkit/AppHomeView', () => ({
   AppHomeView: jest.fn().mockImplementation((tasks) => ({
     type: 'home',
     tasks,
   })),
 }))
 
-jest.mock('../src/slack/SlackApiRequest', () => ({
+jest.mock('../../src/slack/SlackApiRequest', () => ({
   ViewsPublish: jest.fn().mockImplementation((userId, view) => ({
     type: 'views.publish',
     userId,
@@ -14,9 +14,9 @@ jest.mock('../src/slack/SlackApiRequest', () => ({
   })),
 }))
 
-const { AppEventHandler } = require('../src/handler/AppEventHandler')
-const { AppHomeView } = require('../src/blockkit/AppHomeView')
-const { ViewsPublish } = require('../src/slack/SlackApiRequest')
+const { AppEventHandler } = require('../../src/handler/AppEventHandler')
+const { AppHomeView } = require('../../src/blockkit/AppHomeView')
+const { ViewsPublish } = require('../../src/slack/SlackApiRequest')
 
 describe('AppEventHandler', () => {
   let handler
@@ -52,8 +52,12 @@ describe('AppEventHandler', () => {
 
     // execute に handler, userId, body, logger が渡っていること
     expect(handler.execute).toHaveBeenCalledTimes(1)
-    const [passedHandler, passedUserId, passedBody, passedLogger] =
-      handler.execute.mock.calls[0]
+    const [
+      passedHandler,
+      passedUserId,
+      passedBody,
+      passedLogger
+    ] = handler.execute.mock.calls[0]
 
     expect(typeof passedHandler).toBe('function')
     expect(passedUserId).toBe('U123')
@@ -80,7 +84,10 @@ describe('AppEventHandler', () => {
 
     // ViewsPublish が userId と view で呼ばれている
     expect(ViewsPublish).toHaveBeenCalledTimes(1)
-    const [userIdArg, viewArg] = ViewsPublish.mock.calls[0]
+    const [
+      userIdArg,
+      viewArg
+    ] = ViewsPublish.mock.calls[0]
 
     expect(userIdArg).toBe('U999')
     // AppHomeView のモック戻り値がそのまま渡っているはず

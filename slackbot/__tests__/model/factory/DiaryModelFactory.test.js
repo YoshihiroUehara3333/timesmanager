@@ -1,8 +1,8 @@
-const { DiaryModelFactory } = require('../src/model/factory/DiaryModelFactory')
-const { DiaryModel } = require('../src/model/DiaryModel')
+const { DiaryModelFactory } = require('../../../src/model/factory/DiaryModelFactory')
+const { DiaryModel } = require('../../../src/model/DiaryModel')
 
 // DiaryUtils をモック
-jest.mock('../src/utility/DiaryUtils', () => ({
+jest.mock('../../../src/utility/DiaryUtils', () => ({
   DiaryUtils: {
     parseDate: jest.fn(),
     parseWorkingPlaceCd: jest.fn(),
@@ -10,7 +10,7 @@ jest.mock('../src/utility/DiaryUtils', () => ({
   },
 }))
 
-const { DiaryUtils } = require('../src/utility/DiaryUtils')
+const { DiaryUtils } = require('../../../src/utility/DiaryUtils')
 
 describe('DiaryModelFactory', () => {
   beforeEach(() => {

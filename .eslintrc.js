@@ -6,8 +6,7 @@ module.exports = {
   },
   extends: [
     'standard',
-    'eslint:recommended',
-    'plugin:prettier/recommended',
+    'eslint:recommended'
   ],
   plugins: [
     'prettier',

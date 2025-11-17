@@ -1,7 +1,7 @@
 // ホームタブのBlockKit定義
 const { ModalConst } = require('../constants/ModalConst')
 
-function dailyReportSection() {
+function dailyReportSection () {
   return [
     {
       type: 'section',
@@ -29,7 +29,7 @@ function dailyReportSection() {
   ]
 }
 
-function taskSection() {
+function taskSection () {
   return [
     {
       type: 'section',
@@ -54,7 +54,7 @@ function taskSection() {
   ]
 }
 
-function taskList(
+function taskList (
   { tasks = [] } = {}
 ) {
   if (!tasks.length) {
