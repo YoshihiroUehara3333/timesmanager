@@ -61,6 +61,7 @@ class AppCommandHandler extends HandlerBase {
 
     // チャンネルにスレッド作成
     const channelId = command.channel_id
+    console.log(channelId)
     const text = `<@${userId}> \n*【壁】${date}*`
     const threadPost = await this.slackApiAdaptor.send(new PostMessage({
       channelId: channelId,
