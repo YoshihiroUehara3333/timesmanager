@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,9 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
+import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
+import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
+import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
 @Repository
 public class AttendanceDynamoRepository {
@@ -69,10 +73,46 @@ public class AttendanceDynamoRepository {
     }
     
     /**
+     * 勤怠情報をアップデート
+     */
+	public void updateItem(AttendanceRequest request) throws Exception {
+		String partitionKey = DynamoPK.ATTENDANCE.getPartitionKey(request.getUserId());
+	    String sortKey = request.getDate();
+	    
+        Map<String, AttributeValue> key = new HashMap<>();
+        key.put(ATTR_PK, AttributeValue.builder().s(partitionKey).build());
+        key.put(ATTR_SK, AttributeValue.builder().s(sortKey).build());
+
+	    Map<String, String> expressionAttributeNames = new HashMap<>();
+	    expressionAttributeNames.put("#st", ATTR_START_TIME);
+	    expressionAttributeNames.put("#et", ATTR_END_TIME);
+	    expressionAttributeNames.put("#wp", ATTR_WORKPLACE);
+
+	    Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
+	    expressionAttributeValues.put(":startTime", AttributeValue.builder().s(request.getStartTime()).build());
+	    expressionAttributeValues.put(":endTime", AttributeValue.builder().s(request.getEndTime()).build());
+	    expressionAttributeValues.put(":workplace", AttributeValue.builder().s(request.getWorkplace()).build());
+
+	    UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+	        .tableName(tableName)
+	        .key(key)
+	        .updateExpression("SET #st = :startTime, #et = :endTime, #wp = :workplace")
+	        .expressionAttributeNames(expressionAttributeNames)
+	        .expressionAttributeValues(expressionAttributeValues)
+	        .build();
+
+	    try {
+	        dynamoDbClient.updateItem(updateRequest);
+	    } catch (Exception e) {
+	        throw new Exception("DynamoDB updateItem failed", e);
+	    }
+	}
+    
+    /**
      * 勤怠情報を1件取得（PK+SKでユニーク）
      * 返り値は既存互換のため List<AttendanceResponse> としている
      */
-    public List<AttendanceResponse> getAttendance(String userId, String date) throws DynamoDbException{
+    public List<AttendanceResponse> findByUserIdAndDate(String userId, String date) throws DynamoDbException{
         String partitionKey = DynamoPK.ATTENDANCE.getPartitionKey(userId);
         String sortKey = date;
 
@@ -98,6 +138,40 @@ public class AttendanceDynamoRepository {
             throw new RuntimeException("DynamoDB getDiary failed", e);
         }
     }
+    
+    /**
+     * ユーザIDに紐づく勤怠情報を全件取得する
+     */
+	public List<AttendanceResponse> findAllByUserId(String userId) {
+		String partitionKey = DynamoPK.ATTENDANCE.getPartitionKey(userId);
+
+	    Map<String, AttributeValue> eav = Map.of(
+	            ":pk", AttributeValue.builder().s(partitionKey).build()
+	    );
+
+	    QueryRequest queryRequest = QueryRequest.builder()
+	            .tableName(tableName)
+	            .keyConditionExpression(ATTR_PK + "= :pk")
+	            .expressionAttributeValues(eav)
+	            .build();
+
+	    try {
+	        QueryResponse response = dynamoDbClient.query(queryRequest);
+
+	        if (response.items() == null || response.items().isEmpty()) {
+	            // 「レコード0件」の時は null ではなく空Listを返す
+	            return Collections.emptyList();
+	        }
+
+	        return response.items().stream()
+	                .map(this::mapToAttendanceResponse)
+	                .collect(Collectors.toList());
+	    }
+	    catch (DynamoDbException e) {
+	        // チェック例外を表に出さず RuntimeException に包んで上位に任せる
+	        throw new RuntimeException("DynamoDB queryTaskList failed", e);
+	    }
+	}
     
 	/**
 	 * DynamoDB 1アイテム → AttendanceResponse 変換

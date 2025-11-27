@@ -28,8 +28,8 @@ public class AttendanceController {
 	
 	@PostMapping
 	public ResponseEntity<Void> post(
-			@RequestBody AttendanceRequest request)
-	{
+			@RequestBody AttendanceRequest request
+	){
 		log.info("📥 Received POST /api/attendance: {}", request);
 		
 		ServiceResult<Void> result = attendanceService.save(request);

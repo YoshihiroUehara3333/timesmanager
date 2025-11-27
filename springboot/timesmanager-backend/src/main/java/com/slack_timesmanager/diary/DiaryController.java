@@ -27,7 +27,6 @@ public class DiaryController {
 	
 	@PostMapping
 	public ResponseEntity<Void> post(@RequestBody DiaryRequest request){
-		
 		log.info("📥 Received POST /api/diary: {}", request);
 		
 		ServiceResult<Void> result = diaryService.save(request);
@@ -41,8 +40,8 @@ public class DiaryController {
 	@GetMapping("/{userId}/{date}")
 	public ResponseEntity<List<DiaryResponse>> get(
 			@PathVariable String userId,
-			@PathVariable String date){
-		
+			@PathVariable String date)
+	{
 		log.info("📥 Received GET /api/diary: {}", userId, date);
 		
 		ServiceResult<List<DiaryResponse>> result;

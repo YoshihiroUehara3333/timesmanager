@@ -27,8 +27,8 @@ public class TaskController {
 	
 	@PostMapping
 	public ResponseEntity<Void> post(
-			@RequestBody TaskRequest request)
-	{
+			@RequestBody TaskRequest request
+	){
 		log.info("📥 Received POST /api/task: {}", request);
 		
 		ServiceResult<Void> result = taskService.save(request);

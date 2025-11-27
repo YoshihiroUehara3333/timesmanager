@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.slack_timesmanager.common.ServiceResult;
-
 @RestController
 @RequestMapping("/api/thread")
 public class ThreadController {
@@ -26,29 +24,22 @@ public class ThreadController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Void> post(@RequestBody ThreadRequest request){
+	public ResponseEntity<Void> post(
+			@RequestBody ThreadRequest request
+	){
 		
 		log.info("📥 Received POST /api/diary: {}", request);
-		ServiceResult result = threadService.save(request);
-		if(result.getStatus()) {
-			return ResponseEntity.ok().build();
-		} else {
-			return ResponseEntity.internalServerError().build();
-		}
+		
+		return null;
 	}
 	
 	@GetMapping("/{userId}/{date}")
 	public ResponseEntity<ThreadResponse> get(
 			@PathVariable String userId,
-			@PathVariable String date){
-		
+			@PathVariable String date
+	){	
 		log.info("📥 Received GET /api/diary: {}", userId, date);
-		ServiceResult result = threadService.getThread(userId, date);
-		if(result.getStatus()) {
-			ThreadResponse response = (ThreadResponse)result.getResponse();
-			return ResponseEntity.ok(response);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+		
+		return null;
 	}
 }
