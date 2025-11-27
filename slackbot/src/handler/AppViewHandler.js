@@ -21,7 +21,7 @@ class AppViewHandler extends HandlerBase {
 
     this.dispatcher = {
       [`${this.CALLBACK_ID.NEWTASK}`]: this.handleNewTaskModalCallback.bind(this),
-      [`${this.CALLBACK_ID.ATTENDANCE_SUBMIT}`]: this.handleDailyAttendanceInputCallback.bind(this),
+      [`${this.CALLBACK_ID.ATTENDANCE_INPUT}`]: this.handleDailyAttendanceInputCallback.bind(this),
       default: this.handleDefault.bind(this)
     }
   }
@@ -42,20 +42,19 @@ class AppViewHandler extends HandlerBase {
     const metadata = JSON.parse(view.private_metadata)
     const values = view.state.values
 
-    const data = {
+    const postParams = {
       date: metadata.date,
       userId: metadata.user_id,
       startTime: values.starttime.start_time.selected_time,
       endTime: values.endtime.end_time.selected_time,
       workplace: values.workplace.select_workplace.selected_option.value,
     }
-
-    console.log(JSON.stringify(data))
+    console.log(JSON.stringify(postParams))
 
     // バックエンドAPIにPOST送信
     const url = `${process.env.BACKEND_API_BASE_URL}/api/attendance`
     try {
-      const response = await axios.post(url, data)
+      const response = await axios.post(url, postParams)
       console.log(response)
     } catch (e) {
       console.error(e)
