@@ -71,10 +71,10 @@ class GetPermalink {
 // views.open
 // https://api.slack.com/methods/views.open
 class ViewsOpen {
-  constructor (
+  constructor ({
     triggerId,
     view,
-  ) {
+  }) {
     this._triggerId = triggerId
     this._view = view
 

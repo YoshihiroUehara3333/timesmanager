@@ -62,17 +62,21 @@ class AppActionHandler extends HandlerBase {
     const getParams = `?userId=${userId}&date=${date}`
 
     const response = await axios.get(url + getParams)
-    console.log(response)
-    const attendance = response.data
+    console.log(response.data)
+    console.log(AttendanceInputModal({
+      userId: userId,
+      date: date,
+      attendance: response.data,
+    }))
 
-    return new ViewsOpen(
-      body.trigger_id,
-      AttendanceInputModal({
+    return new ViewsOpen({
+      triggerId: body.trigger_id,
+      view: AttendanceInputModal({
         userId: userId,
         date: date,
-        attendance: attendance,
+        attendance: response.data,
       })
-    )
+    })
   }
 
   async handleWorkReportCreate (body) {
