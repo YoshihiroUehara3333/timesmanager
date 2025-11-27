@@ -1,6 +1,72 @@
 const { ModalConst } = require('../constants/ModalConst')
 
-exports.AttendanceInputModal = ({ userId, date }) => ({
+const workplaceOptions = {
+  LIST: [
+    {
+      value: 'onsite',
+      text: '出社',
+    },
+    {
+      value: 'remote',
+      text: 'リモート',
+    },
+    {
+      value: 'office',
+      text: '自社',
+    },
+    {
+      value: 'vacation',
+      text: '休暇',
+    },
+  ],
+  getTextByValue (value) {
+    const item = this.LIST.find(i => i.value === value)
+    return item ? item.text : 'その他'
+  },
+
+  getValueByText (text) {
+    const item = this.LIST.find(i => i.text === text)
+    return item ? item.value : 'other'
+  }
+}
+
+function workplaceSection (attendance = {}) {
+  const options = workplaceOptions.LIST.map(option => (
+    {
+      text: { type: 'plain_text', text: option.text, emoji: true },
+      value: option.value,
+    }
+  ))
+
+  const initialOptions = [
+    {
+      text: {
+        type: 'plain_text',
+        text: workplaceOptions.getTextByValue(attendance.workplace),
+        emoji: true
+      },
+      value: attendance.workplace
+    }
+  ]
+
+  return {
+    type: 'input',
+    block_id: 'workplace',
+    label: {
+      type: 'plain_text',
+      text: '作業場所'
+    },
+    element: {
+      type: 'static_select',
+      placeholder: { type: 'plain_text', text: '選択してください', emoji: true },
+      options,
+      initial_options: initialOptions,
+      action_id: 'select_workplace'
+    }
+  }
+}
+
+exports.AttendanceInputModal = ({ userId, date, attendance }) => ({
   type: 'modal',
   callback_id: ModalConst.CALLBACK_ID.ATTENDANCE_INPUT,
   private_metadata: JSON.stringify({
@@ -36,7 +102,7 @@ exports.AttendanceInputModal = ({ userId, date }) => ({
       },
       element: {
         type: 'timepicker',
-        initial_time: '09:00',
+        initial_time: attendance.startTime || '09:00',
         placeholder: {
           type: 'plain_text',
           text: '開始時間を選択'
@@ -53,7 +119,7 @@ exports.AttendanceInputModal = ({ userId, date }) => ({
       },
       element: {
         type: 'timepicker',
-        initial_time: '19:00',
+        initial_time: attendance.endTime || '19:00',
         placeholder: {
           type: 'plain_text',
           text: '終了時間を選択'
@@ -61,57 +127,7 @@ exports.AttendanceInputModal = ({ userId, date }) => ({
         action_id: 'end_time'
       }
     },
-    {
-      type: 'input',
-      block_id: 'workplace',
-      label: {
-        type: 'plain_text',
-        text: '作業場所'
-      },
-      element: {
-        type: 'static_select',
-        placeholder: {
-          type: 'plain_text',
-          text: '選択してください',
-          emoji: true
-        },
-        options: [
-          {
-            text: {
-              type: 'plain_text',
-              text: '出社',
-              emoji: true
-            },
-            value: 'onsite'
-          },
-          {
-            text: {
-              type: 'plain_text',
-              text: 'リモート',
-              emoji: true
-            },
-            value: 'remote'
-          },
-          {
-            text: {
-              type: 'plain_text',
-              text: '自社',
-              emoji: true
-            },
-            value: 'office'
-          },
-          {
-            text: {
-              type: 'plain_text',
-              text: '休暇',
-              emoji: true
-            },
-            value: 'vacation'
-          }
-        ],
-        action_id: 'select_workplace'
-      }
-    },
+    workplaceSection(attendance),
     {
       type: 'actions',
       elements: [
