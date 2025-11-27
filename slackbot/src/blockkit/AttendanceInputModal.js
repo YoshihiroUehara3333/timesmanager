@@ -31,15 +31,21 @@ const workplaceOptions = {
 }
 
 function workplaceSection (attendance = {}) {
-  const options = workplaceOptions.LIST.map(option => (
+  const element = {
+    type: 'static_select',
+    placeholder: { type: 'plain_text', text: '選択してください', emoji: true },
+    action_id: 'select_workplace',
+  }
+
+  element.options = workplaceOptions.LIST.map(option => (
     {
       text: { type: 'plain_text', text: option.text, emoji: true },
       value: option.value,
     }
   ))
 
-  const initialOption = [
-    {
+  if (attendance.workplace) {
+    element.initial_option = {
       text: {
         type: 'plain_text',
         text: workplaceOptions.getTextByValue(attendance.workplace),
@@ -47,7 +53,7 @@ function workplaceSection (attendance = {}) {
       },
       value: attendance.workplace
     }
-  ]
+  }
 
   return {
     type: 'input',
@@ -56,17 +62,11 @@ function workplaceSection (attendance = {}) {
       type: 'plain_text',
       text: '作業場所'
     },
-    element: {
-      type: 'static_select',
-      placeholder: { type: 'plain_text', text: '選択してください', emoji: true },
-      options,
-      initial_option: initialOption,
-      action_id: 'select_workplace'
-    }
+    element: element,
   }
 }
 
-exports.AttendanceInputModal = ({ userId, date, attendance }) => ({
+exports.AttendanceInputModal = ({ userId, date, attendance = {} }) => ({
   type: 'modal',
   callback_id: ModalConst.CALLBACK_ID.ATTENDANCE_INPUT,
   private_metadata: JSON.stringify({

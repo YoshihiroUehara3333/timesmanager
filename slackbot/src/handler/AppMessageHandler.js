@@ -25,7 +25,7 @@ class AppMessageHandler extends HandlerBase {
     }
   }
 
-  async handle(body, message, logger) {
+  async handle (body, message, logger) {
     const handler = this.dispatcher[this.checkMessagetype(message)] || this.dispatcher.default
     const userId = message.user
     logger.info(`${handler.name}を実行`)
