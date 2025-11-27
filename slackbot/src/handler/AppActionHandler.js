@@ -61,8 +61,9 @@ class AppActionHandler extends HandlerBase {
     const url = `${process.env.BACKEND_API_BASE_URL}/api/attendance`
     const getParams = `?userId=${userId}&date=${date}`
 
-    const attendance = await axios.get(url + getParams)
-    console.log(attendance)
+    const response = await axios.get(url + getParams)
+    console.log(response)
+    const attendance = response.data
 
     return new ViewsOpen(
       body.trigger_id,
