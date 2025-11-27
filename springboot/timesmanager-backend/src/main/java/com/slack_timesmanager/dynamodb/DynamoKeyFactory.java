@@ -29,6 +29,7 @@ public final class DynamoKeyFactory {
         return new DynamoKey(pk, sk);
     }
 
+
     // ===== Diary 用 =====
     // partition_key:userId + "/DIARY"
     // sort_key: YYYY-MM_DD
@@ -48,6 +49,7 @@ public final class DynamoKeyFactory {
         return new DynamoKey(pk, sk);
     }
 
+
     // ===== Attendance 用 =====
     // partition_key:userId + "/ATTENDANCE"
     // sort_key: YYYY-MM_DD
@@ -66,6 +68,7 @@ public final class DynamoKeyFactory {
         String sk = date;
         return new DynamoKey(pk, sk);
     }
+
 
     // ===== Thread 用 =====
     // partition_key:userId + "/ATTENDANCE"
