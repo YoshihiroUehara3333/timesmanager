@@ -39,38 +39,33 @@ class AppCommandHandler extends HandlerBase {
   }
 
   // /makethread実行時
-  async handleMakethread (body) {
-    const command = this.getCommandFromBody(body)
-    const channelId = body.channel_id || ''
+  async handleMakethread ({ command }) {
+    const channelId = command.channel_id
+    const userId = command.user_id
+    const date = new Date().toFormat('YYYY-MM-DD')
 
     // timesチャンネルにスレッド作成
     const text = `<@${userId}> \n*【壁】${date}*`
-    const postResult = await this.slackApiAdaptor.send(new PostMessage(
-      channelId,
-      text
-    ))
-    const permalink = await this.slackApiAdaptor.send(new GetPermalink(
-      channelId,
-      postResult.ts
-    ))
+    const thread = await this.slackApiAdaptor.send(new PostMessage({
+      channelId: channelId,
+      text: text,
+    }))
+    const permalink = await this.slackApiAdaptor.send(new GetPermalink({
+      channelId: channelId,
+      messageTs: thread.ts
+    }))
 
     // バックエンドAPIにPOST送信
     const data = {
-      date: new Date().toFormat('YYYY-MM-DD'),
+      channelId: channelId,
+      date: date,
       userId: userId,
-      threadTs: postResult.ts,
-      permalink: permalink
+      threadTs: thread.ts,
+      permalink: permalink,
     }
-    const ENDPOINT = `${process.env.BACKEND_API_BASE_URL}/api/thread`
-    try {
-      const response = await axios.post(ENDPOINT, data)
-      console.log(response)
-    } catch (e) {
-      console.error(e)
-      if (e.response) {
-        return e.response.data
-      }
-    }
+
+    const url = `${process.env.BACKEND_API_BASE_URL}/api/thread`
+    const response = await axios.post(url, data)
 
     const params = await this.taskService.createTaskInputModalParams(command, thread)
     if (params) {

@@ -3,12 +3,12 @@
 // chat.postMessage
 // https://api.slack.com/methods/chat.postMessage
 class PostMessage {
-  constructor (
+  constructor ({
     channelId,
     text,
     threadTs,
     blocks,
-  ) {
+  }) {
     this._channelId = channelId || null
     this._text = text || null
     this._threadTs = threadTs || null
@@ -41,10 +41,10 @@ class PostMessage {
 // chat.getpermalink
 // https://api.slack.com/methods/chat.getpermalink
 class GetPermalink {
-  constructor (
+  constructor ({
     channelId,
     messageTs,
-  ) {
+  }) {
     this._channelId = channelId || null
     this._messageTs = messageTs || null
 

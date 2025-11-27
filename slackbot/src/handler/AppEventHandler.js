@@ -30,6 +30,8 @@ class AppEventHandler extends HandlerBase {
     const userId = event.user
 
     const tasks = this.taskService.getByUserId({ userId: userId })
+    console.log(tasks)
+
     return new ViewsPublish({
       userId: userId,
       view: AppHomeView(tasks)

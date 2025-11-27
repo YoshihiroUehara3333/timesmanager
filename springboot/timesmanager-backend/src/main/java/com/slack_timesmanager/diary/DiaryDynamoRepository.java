@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import com.slack_timesmanager.base.DynamoRepositoryBase;
 import com.slack_timesmanager.enums.DynamoPK;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
@@ -18,24 +19,17 @@ import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
 @Repository
-public class DiaryDynamoRepository {
+public class DiaryDynamoRepository extends DynamoRepositoryBase{
 	
     // ===== 属性名の定数 =====
-    private static final String ATTR_PK         = "partition_key";
-    private static final String ATTR_SK         = "sort_key";
     private static final String ATTR_USER_ID    = "userId";
     private static final String ATTR_CHANNEL_ID = "channelId";
-	
-    
-    private final String tableName;
-	private final DynamoDbClient dynamoDbClient;
 	
 	public DiaryDynamoRepository(
 			DynamoDbClient dynamoDbClient,
 			@Value("${aws.dynamodb.tableName}") String tableName
 	) {
-		this.dynamoDbClient = dynamoDbClient;
-		this.tableName = tableName;
+		super(dynamoDbClient,tableName);
 	}
 	
     /**
@@ -50,9 +44,6 @@ public class DiaryDynamoRepository {
         item.put(ATTR_SK, AttributeValue.builder().s(sortKey).build());
         item.put(ATTR_USER_ID, AttributeValue.builder().s(request.getUserId()).build());
         item.put(ATTR_CHANNEL_ID, AttributeValue.builder().s(request.getChannelId()).build());
-        item.put("startTime", AttributeValue.builder().s(request.getStartTime()).build());
-        item.put("endTime", AttributeValue.builder().s(request.getEndTime()).build());
-        item.put("workplace", AttributeValue.builder().s(request.getWorkplace()).build());
 
         PutItemRequest putItemRequest = PutItemRequest.builder()
             .tableName(tableName)

@@ -5,14 +5,21 @@ import com.slack_timesmanager.core.Response;
 public class ThreadResponse implements Response{
 	private String channelId;
 	private String date;
-	private String threadTs;
-	private String permalink;
+	private String userId;
+    private String threadTs;
+    private String permalink;
 
 	public String getChannelId() {
 		return channelId;
 	}
 	public void setChannelId(String channelId) {
 		this.channelId = channelId;
+	}
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	public String getDate() {
 		return date;

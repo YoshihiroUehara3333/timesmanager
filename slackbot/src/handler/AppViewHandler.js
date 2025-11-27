@@ -4,7 +4,8 @@ const axios = require('axios')
 const { ModalConst } = require('../constants/ModalConst')
 const { PostMessage } = require('../slack/SlackApiRequest')
 const { HandlerBase } = require('./HandlerBase')
-const { WorkPlanBlock } = require('../blockkit/WorkPlanBlock')
+const { TaskBlock } = require('../blockkit/TaskBlock')
+const { meta } = require('eslint-plugin-prettier')
 
 class AppViewHandler extends HandlerBase {
   CALLBACK_ID = ModalConst.CALLBACK_ID
@@ -20,7 +21,7 @@ class AppViewHandler extends HandlerBase {
     this.taskService = taskService
 
     this.dispatcher = {
-      [`${this.CALLBACK_ID.NEWTASK}`]: this.handleNewTaskModalCallback.bind(this),
+      [`${this.CALLBACK_ID.TASK_INPUT}`]: this.handleNewTaskModalCallback.bind(this),
       [`${this.CALLBACK_ID.ATTENDANCE_INPUT}`]: this.handleDailyAttendanceInputCallback.bind(this),
       default: this.handleDefault.bind(this)
     }
@@ -38,6 +39,7 @@ class AppViewHandler extends HandlerBase {
     await this.execute(handler, userId, body, logger)
   }
 
+  // 勤怠情報入力送信
   async handleDailyAttendanceInputCallback ({ view }) {
     const metadata = JSON.parse(view.private_metadata)
     const values = view.state.values
@@ -49,33 +51,54 @@ class AppViewHandler extends HandlerBase {
       endTime: values.endtime.end_time.selected_time,
       workplace: values.workplace.select_workplace.selected_option.value,
     }
-    console.log(JSON.stringify(postParams))
 
     // バックエンドAPIにPOST送信
     const url = `${process.env.BACKEND_API_BASE_URL}/api/attendance`
-    try {
-      const response = await axios.post(url, postParams)
-      console.log(response)
-    } catch (e) {
-      console.error(e)
+    const response = await axios.post(url, postParams)
+
+    if (response.status === 200) {
+      console.log('handleDailyAttendanceInputCallback完了')
     }
   }
 
+  // タスク新規作成送信
   async handleNewTaskModalCallback ({ view }) {
     const metadata = JSON.parse(view.private_metadata)
+    const values = view.state.values
 
     // 入力データをBlocksとして返信
-    const params = await this.workReportService.setWorkPlanBlockParams(view)
+    const params = {
+      userId: metadata.user_id,
+      taskName: values.taskName.input.value,
+      targetTime: values.targetTime.input.value,
+      memo: values.memo.input.value,
+      serial: metadata.memo,
+    }
+
     const postResponse = await this.slackApiAdaptor.send(new PostMessage(
       metadata.channel_id,
-      'blocks送信',
+      '新規タスクが入力されました',
       metadata.thread_ts,
-      WorkPlanBlock(params)
+      TaskBlock(params)
     ))
     console.log(`post結果:${JSON.stringify(postResponse)}`)
 
-    // 入力データをDBに保存
-    return await this.workReportService.processNewTaskSubmition(view)
+    // バックエンドAPIにPOST送信
+    const url = `${process.env.BACKEND_API_BASE_URL}/api/task`
+    const postParams = {
+      channelId: metadata.channel_id,
+      threadTs: metadata.thread_ts,
+      serial: metadata.serial,
+      status: metadata.status,
+    }
+    const response = await axios.post(url, postParams)
+    if (response.status === 200) {
+      return new PostMessage(
+        metadata.user_id,
+        'タスク情報ののDB登録に成功しました'
+      )
+    }
+    return await this.TaskService.processNewTaskSubmition(view)
   }
 }
 

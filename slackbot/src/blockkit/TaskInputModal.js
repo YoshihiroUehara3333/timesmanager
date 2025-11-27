@@ -1,19 +1,19 @@
 // /makethread or /newtask実行時のモーダルBlockKit定義定義
 const { ModalConst } = require('../constants/ModalConst')
 
-exports.TaskInputModal = ({ channelId, threadTs, date, serial, userId }) => ({
+exports.TaskInputModal = ({ threadTs, date, serial, userId, status }) => ({
   type: 'modal',
-  callback_id: ModalConst.CALLBACK_ID.NEWTASK,
+  callback_id: ModalConst.CALLBACK_ID.TASK_INPUT,
   private_metadata: JSON.stringify({
-    channel_id: channelId,
-    user_id: userId,
-    thread_ts: threadTs,
+    userId: userId,
+    threadTs: threadTs,
     date: date,
-    serial: serial
+    serial: serial,
+    status: status,
   }),
   title: {
     type: 'plain_text',
-    text: '進捗整理'
+    text: 'タスク入力'
   },
   submit: {
     type: 'plain_text',
@@ -26,7 +26,7 @@ exports.TaskInputModal = ({ channelId, threadTs, date, serial, userId }) => ({
   blocks: [
     {
       type: 'input',
-      block_id: 'taskname',
+      block_id: 'taskName',
       label: {
         type: 'plain_text',
         text: 'タスク名'
@@ -38,7 +38,7 @@ exports.TaskInputModal = ({ channelId, threadTs, date, serial, userId }) => ({
     },
     {
       type: 'input',
-      block_id: 'targettime',
+      block_id: 'targetTime',
       label: {
         type: 'plain_text',
         text: '完了目標',

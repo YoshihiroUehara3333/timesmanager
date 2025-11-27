@@ -119,7 +119,7 @@ exports.AttendanceInputModal = ({ userId, date, attendance = {} }) => ({
       },
       element: {
         type: 'timepicker',
-        initial_time: attendance.endTime || '19:00',
+        initial_time: attendance.endTime || '18:00',
         placeholder: {
           type: 'plain_text',
           text: '終了時間を選択'

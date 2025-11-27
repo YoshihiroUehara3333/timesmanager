@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import com.slack_timesmanager.base.DynamoRepositoryBase;
 import com.slack_timesmanager.enums.DynamoPK;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
@@ -18,11 +19,9 @@ import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
 
 @Repository
-public class TaskDynamoRepository {
+public class TaskDynamoRepository extends DynamoRepositoryBase{
 	
     // ===== 属性名の定数 =====
-    private static final String ATTR_PK         = "partition_key";
-    private static final String ATTR_SK         = "sort_key";
     private static final String ATTR_USER_ID    = "userId";
     private static final String ATTR_DATE       = "date";
     private static final String ATTR_TASK_NAME  = "taskName";
@@ -30,16 +29,12 @@ public class TaskDynamoRepository {
     private static final String ATTR_STATUS     = "status";
     private static final String ATTR_SERIAL     = "serial";
     
-    
-    private final String tableName;
-	private final DynamoDbClient dynamoDbClient;
 	
 	public TaskDynamoRepository(
 			DynamoDbClient dynamoDbClient,
 			@Value("${aws.dynamodb.tableName}") String tableName
 	) {
-		this.dynamoDbClient = dynamoDbClient;
-		this.tableName = tableName;
+		super(dynamoDbClient,tableName);
 	}
 
     /**

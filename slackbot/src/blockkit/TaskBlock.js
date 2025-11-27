@@ -1,7 +1,7 @@
 // 作業予定入力時のBlockKit定義
 const { ModalConst } = require('../constants/ModalConst')
 
-exports.WorkPlanBlock = ({ userId, taskName, goal, selectedTime, memo, serial }) => ([
+exports.TaskBlock = ({ userId, taskName, targetTime, memo, serial }) => ([
   {
     type: 'section',
     text: {
@@ -18,11 +18,7 @@ exports.WorkPlanBlock = ({ userId, taskName, goal, selectedTime, memo, serial })
       },
       {
         type: 'mrkdwn',
-        text: `*完了目標*\n${goal}`
-      },
-      {
-        type: 'mrkdwn',
-        text: `*目標時間*\n${selectedTime}`
+        text: `*完了目標*\n${targetTime}`
       },
       {
         type: 'mrkdwn',
@@ -42,7 +38,7 @@ exports.WorkPlanBlock = ({ userId, taskName, goal, selectedTime, memo, serial })
         },
         style: 'primary',
         value: serial,
-        action_id: ModalConst.ACTION_ID.WORKREPORT.UPDATE,
+        action_id: ModalConst.ACTION_ID.TASK.UPDATE,
       },
       {
         type: 'button',
@@ -53,7 +49,7 @@ exports.WorkPlanBlock = ({ userId, taskName, goal, selectedTime, memo, serial })
         },
         style: 'danger',
         value: serial,
-        action_id: ModalConst.ACTION_ID.WORKREPORT.FINISH,
+        action_id: ModalConst.ACTION_ID.TASK.FINISH,
       }
     ]
   }

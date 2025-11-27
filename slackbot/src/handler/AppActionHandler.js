@@ -25,8 +25,8 @@ class AppActionHandler extends HandlerBase {
     this.dispatcher = {
       [`${ModalConst.ACTION_ID.HOME.DAILYREPORT}`]: this.handleHomeToDailyReport.bind(this),
       [`${ModalConst.ACTION_ID.HOME.ATTENDANCE}`]: this.handleHomeToAttendance.bind(this),
-      [`${ModalConst.ACTION_ID.TASK.CREATE}`]: this.handleWorkReportCreate.bind(this),
-      [`${ModalConst.ACTION_ID.TASK.UPDATE}`]: this.handleWorkReportUpdate.bind(this),
+      [`${ModalConst.ACTION_ID.TASK.CREATE}`]: this.handleTaskCreate.bind(this),
+      [`${ModalConst.ACTION_ID.TASK.UPDATE}`]: this.handleTaskUpdate.bind(this),
       // [`${ModalConst.ACTION_ID.TASK.FINISH}`]        : this.handleWorkReportFinish.bind(this),
       default: this.handleDefault.bind(this)
     }
@@ -62,7 +62,6 @@ class AppActionHandler extends HandlerBase {
     const getParams = `?userId=${userId}&date=${date}`
 
     const response = await axios.get(url + getParams)
-    console.log(response.data[0])
 
     return new ViewsOpen({
       triggerId: body.trigger_id,
@@ -74,22 +73,23 @@ class AppActionHandler extends HandlerBase {
     })
   }
 
-  async handleWorkReportCreate (body) {
+  // タスク新規作成モーダル表示
+  async handleTaskCreate (body) {
     const params = {
-      channel_id: '',
-      user_id: '',
-      thread_ts: '',
-      date: '',
+      userId: body.user.id,
+      threadTs: '',
+      date: new Date().toFormat('YYYY-MM-DD'),
       serial: '',
+      status: 'active',
     }
 
-    return new ViewsOpen(
-      body.trigger_id,
-      TaskInputModal(params)
-    )
+    return new ViewsOpen({
+      triggerId: body.trigger_id,
+      view: TaskInputModal(params)
+    })
   }
 
-  async handleWorkReportUpdate (body) {
+  async handleTaskUpdate (body) {
     const params = {
       channel_id: '',
       user_id: '',

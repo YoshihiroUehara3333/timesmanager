@@ -1,4 +1,4 @@
-package com.slack_timesmanager.attendance;
+package com.slack_timesmanager.thread;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,44 +19,39 @@ import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
-import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
 @Repository
-public class AttendanceDynamoRepository extends DynamoRepositoryBase{
-
+public class ThreadDynamoRepository extends DynamoRepositoryBase{
     // ===== 属性名の定数 =====
-    private static final String ATTR_PK         = "partition_key";
-    private static final String ATTR_SK         = "sort_key";
-    private static final String ATTR_USER_ID    = "user_id";
+    private static final String ATTR_USER_ID    = "userId";
+    private static final String ATTR_CHANNEL_ID = "channelId";
     private static final String ATTR_DATE       = "date";
-    private static final String ATTR_START_TIME  = "start_time";
-    private static final String ATTR_END_TIME    = "end_time";
-    private static final String ATTR_WORKPLACE  = "work_place";
+    private static final String ATTR_PERMALINK = "permalink";
+    private static final String ATTR_THREADTS = "threadTs";
+
     
-	
-	public AttendanceDynamoRepository(
+	public ThreadDynamoRepository(
 			DynamoDbClient dynamoDbClient,
 			@Value("${aws.dynamodb.tableName}") String tableName
 	) {
 		super(dynamoDbClient,tableName);
 	}
-
+	
 	
     /**
-     * 勤怠情報を保存
+     * スレッド情報を1件保存
      */
-    public boolean putItem(AttendanceRequest request) throws Exception {
-		String partitionKey = DynamoPK.ATTENDANCE.getPartitionKey(request.getUserId());
+    public boolean putItem(ThreadRequest request) throws Exception {
+		String partitionKey = DynamoPK.THREAD.getPartitionKey(request.getChannelId());
         String sortKey = request.getDate();
 
         Map<String, AttributeValue> item = new HashMap<>();
         item.put(ATTR_PK, AttributeValue.builder().s(partitionKey).build());
         item.put(ATTR_SK, AttributeValue.builder().s(sortKey).build());
+        item.put(ATTR_CHANNEL_ID, AttributeValue.builder().s(request.getChannelId()).build());
         item.put(ATTR_USER_ID, AttributeValue.builder().s(request.getUserId()).build());
-        item.put(ATTR_DATE, AttributeValue.builder().s(request.getDate()).build());
-        item.put(ATTR_START_TIME, AttributeValue.builder().s(request.getStartTime()).build());
-        item.put(ATTR_END_TIME, AttributeValue.builder().s(request.getEndTime()).build());
-        item.put(ATTR_WORKPLACE, AttributeValue.builder().s(request.getWorkplace()).build());
+        item.put(ATTR_PERMALINK, AttributeValue.builder().s(request.getPermalink()).build());
+        item.put(ATTR_THREADTS, AttributeValue.builder().s(request.getThreadTs()).build());
 
         PutItemRequest putItemRequest = PutItemRequest.builder()
             .tableName(tableName)
@@ -70,49 +65,13 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
             throw new Exception("DynamoDB putItem failed", e);
         }
     }
-    
+	
     /**
-     * 勤怠情報をアップデート
+     * スレッド情報を1件取得（PK+SKでユニーク）
+     * 返り値は既存互換のため List<ThreadResponse> としている
      */
-	public void updateItem(AttendanceRequest request) throws Exception {
-		String partitionKey = DynamoPK.ATTENDANCE.getPartitionKey(request.getUserId());
-	    String sortKey = request.getDate();
-	    
-        Map<String, AttributeValue> key = new HashMap<>();
-        key.put(ATTR_PK, AttributeValue.builder().s(partitionKey).build());
-        key.put(ATTR_SK, AttributeValue.builder().s(sortKey).build());
-
-	    Map<String, String> expressionAttributeNames = new HashMap<>();
-	    expressionAttributeNames.put("#st", ATTR_START_TIME);
-	    expressionAttributeNames.put("#et", ATTR_END_TIME);
-	    expressionAttributeNames.put("#wp", ATTR_WORKPLACE);
-
-	    Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
-	    expressionAttributeValues.put(":startTime", AttributeValue.builder().s(request.getStartTime()).build());
-	    expressionAttributeValues.put(":endTime", AttributeValue.builder().s(request.getEndTime()).build());
-	    expressionAttributeValues.put(":workplace", AttributeValue.builder().s(request.getWorkplace()).build());
-
-	    UpdateItemRequest updateRequest = UpdateItemRequest.builder()
-	        .tableName(tableName)
-	        .key(key)
-	        .updateExpression("SET #st = :startTime, #et = :endTime, #wp = :workplace")
-	        .expressionAttributeNames(expressionAttributeNames)
-	        .expressionAttributeValues(expressionAttributeValues)
-	        .build();
-
-	    try {
-	        dynamoDbClient.updateItem(updateRequest);
-	    } catch (Exception e) {
-	        throw new Exception("DynamoDB updateItem failed", e);
-	    }
-	}
-    
-    /**
-     * 勤怠情報を1件取得（PK+SKでユニーク）
-     * 返り値は既存互換のため List<AttendanceResponse> としている
-     */
-    public List<AttendanceResponse> findByUserIdAndDate(String userId, String date) throws DynamoDbException{
-        String partitionKey = DynamoPK.ATTENDANCE.getPartitionKey(userId);
+    public List<ThreadResponse> findByChannelIdAndDate(String channelId, String date) throws DynamoDbException{
+        String partitionKey = DynamoPK.THREAD.getPartitionKey(channelId);
         String sortKey = date;
 
         Map<String, AttributeValue> key = new HashMap<>();
@@ -131,7 +90,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	            return Collections.emptyList();
             }
 
-            return List.of(mapToAttendanceResponse(item));
+            return List.of(mapToThreadResponse(item));
 
         } catch (DynamoDbException e) {
             throw new RuntimeException("DynamoDB getDiary failed", e);
@@ -139,10 +98,10 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
     }
     
     /**
-     * ユーザIDに紐づく勤怠情報を全件取得する
+     * チャンネルIDに紐づくスレッド情報を全件取得する
      */
-	public List<AttendanceResponse> findAllByUserId(String userId) {
-		String partitionKey = DynamoPK.ATTENDANCE.getPartitionKey(userId);
+	public List<ThreadResponse> findAllByUserId(String channelId) {
+		String partitionKey = DynamoPK.THREAD.getPartitionKey(channelId);
 
 	    Map<String, AttributeValue> eav = Map.of(
 	            ":pk", AttributeValue.builder().s(partitionKey).build()
@@ -163,7 +122,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	        }
 
 	        return response.items().stream()
-	                .map(this::mapToAttendanceResponse)
+	                .map(this::mapToThreadResponse)
 	                .collect(Collectors.toList());
 	    }
 	    catch (DynamoDbException e) {
@@ -175,14 +134,14 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	/**
 	 * DynamoDB 1アイテム → AttendanceResponse 変換
 	 */
-	private AttendanceResponse mapToAttendanceResponse(Map<String, AttributeValue> item) {
-		AttendanceResponse response = new AttendanceResponse();
+	private ThreadResponse mapToThreadResponse(Map<String, AttributeValue> item) {
+		ThreadResponse response = new ThreadResponse();
 		
 		response.setUserId(item.get(ATTR_USER_ID).s());
 		response.setDate(item.get(ATTR_SK).s());
-		response.setStartTime(item.get(ATTR_START_TIME).s());
-		response.setEndTime(item.get(ATTR_END_TIME).s());
-		response.setWorkplace(item.get(ATTR_WORKPLACE).s());
+		response.setChannelId(item.get(ATTR_CHANNEL_ID).s());
+		response.setPermalink(item.get(ATTR_PERMALINK).s());
+		response.setThreadTs(item.get(ATTR_THREADTS).s());
 		
 	    return response;
 	}

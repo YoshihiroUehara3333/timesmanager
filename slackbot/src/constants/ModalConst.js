@@ -1,6 +1,6 @@
 exports.ModalConst = {
   CALLBACK_ID: {
-    NEWTASK: 'newTask_modal_callback',
+    TASK_INPUT: 'task_input_callback',
     ATTENDANCE_INPUT: 'attendance_input_callback',
     DAILYREPORT: 'home_dailyreport_callback',
   },
@@ -10,10 +10,10 @@ exports.ModalConst = {
       ATTENDANCE: 'home_attendance'
     },
     TASK: {
-      CREATE: 'workreport_create',
-      UPDATE: 'workreport_update',
-      PROGRESS: 'workreport_progress',
-      FINISH: 'workreport_finish',
+      CREATE: 'task_create',
+      UPDATE: 'task_update',
+      PROGRESS: 'task_progress',
+      FINISH: 'task_finish',
     }
   }
 }

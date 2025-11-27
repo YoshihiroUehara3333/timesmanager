@@ -57,7 +57,6 @@ public class TaskController {
 		
 		if(result.isSuccess()) {
 			return ResponseEntity.ok(result.getBody());
-			
 		} else {
 			return ResponseEntity.internalServerError().build();
 		}
