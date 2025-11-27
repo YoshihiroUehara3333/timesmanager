@@ -1,4 +1,4 @@
-name: Deploy Spring Boot App to EC2_Dev
+name: Deploy Spring Boot App to EC2_Prod
 
 on:
   push:
