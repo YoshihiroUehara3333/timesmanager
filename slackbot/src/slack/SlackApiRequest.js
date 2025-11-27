@@ -19,11 +19,11 @@ class PostMessage {
   }
 
   validate () {
-    if (!this._channelId || typeof this._channelId !== 'string') {
-      throw new Error('SlackPostMessageRequest: channelId is required and must be a string.')
+    if (!this._channelId) {
+      throw new Error('SlackPostMessageRequest: channelId is required.')
     }
-    if (!this._text || typeof this._text !== 'string') {
-      throw new Error('SlackPostMessageRequest: text is required and must be a string.')
+    if (!this._text) {
+      throw new Error('SlackPostMessageRequest: text is required.')
     }
   }
 
