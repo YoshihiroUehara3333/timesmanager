@@ -11,6 +11,7 @@ const { ViewsOpen } = require('../slack/SlackApiRequest')
 const { TaskInputModal } = require('../blockkit/TaskInputModal')
 const { DailyReportInputModal } = require('../blockkit/DailyReportInputModal')
 const { AttendanceInputModal } = require('../blockkit/AttendanceInputModal')
+const { BackendRouting } = require('../constants/BackendRouting')
 
 class AppActionHandler extends HandlerBase {
   constructor ({
@@ -64,7 +65,7 @@ class AppActionHandler extends HandlerBase {
     const date = new Date().toFormat('YYYY-MM-DD')
     const userId = body.user.id
 
-    const url = `${process.env.BACKEND_API_BASE_URL}/api/attendance`
+    const url = `${process.env.BACKEND_API_BASE_URL}${BackendRouting.ATTENDANCE.ROOT}`
     const getParams = `?userId=${userId}&date=${date}`
     const response = await axios.get(url + getParams)
 
@@ -91,7 +92,7 @@ class AppActionHandler extends HandlerBase {
       userId: userId,
       threadTs: '',
       date: date,
-      serial: await this.taskService.issueLatestSerial({userId: userId, date: date}),
+      serial: await this.taskService.issueLatestSerial({ userId: userId, date: date }),
       status: TaskConst.STATUS.ACTIVE,
     }
 

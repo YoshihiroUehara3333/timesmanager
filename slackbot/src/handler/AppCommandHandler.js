@@ -7,6 +7,7 @@ const { SlackConst } = require('../constants/SlackConst')
 const { PostMessage, ViewsOpen, GetPermalink } = require('../slack/SlackApiRequest')
 const { TaskInputModal } = require('../blockkit/TaskInputModal')
 const { HandlerBase } = require('./HandlerBase')
+const { BackendRouting } = require('../constants/BackendRouting')
 
 class AppCommandHandler extends HandlerBase {
   constructor
@@ -48,18 +49,15 @@ class AppCommandHandler extends HandlerBase {
     const userId = command.user_id
     const date = new Date().toFormat('YYYY-MM-DD')
 
-    const url = `${process.env.BACKEND_API_BASE_URL}/api/thread`
-    const getParams = `?userId=${userId}&date=${date}`
-    const response = await axios.get(url + getParams)
-
-    if (response.data[0]) {
+    const checkResult = await this.threadService.checkIsAlreadyExcecuted({ userId: userId, date: date })
+    if (checkResult) {
       return new PostMessage({
         channelId: command.user_id,
-        text: `本日のスレッドはすでに作成済です。\n${response.data[0].permalink}`
+        text: `本日のスレッドはすでに作成済です。\n${checkResult.permalink}`
       })
     }
 
-    // チャンネルにスレッド作成
+    // チャンネルにスレッド投稿
     const channelId = command.channel_id
     const text = `<@${userId}> \n*【壁】${date}*`
     const threadPost = await this.slackApiAdaptor.send(new PostMessage({
@@ -80,7 +78,7 @@ class AppCommandHandler extends HandlerBase {
       threadTs: threadPost.ts,
       permalink: permalink,
     }
-    await axios.post(url, data)
+    await axios.post(`${process.env.BACKEND_API_BASE_URL}${BackendRouting.THREAD.ROOT}`, data)
   }
 
   /**

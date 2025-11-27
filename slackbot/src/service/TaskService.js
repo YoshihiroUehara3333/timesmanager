@@ -3,6 +3,7 @@ require('date-utils')
 const axios = require('axios')
 const { WorkReportUtils } = require('../utility/WorkReportUtils')
 const { PostMessage } = require('../slack/SlackApiRequest')
+const { BackendRouting } = require('../constants/BackendRouting')
 
 class TaskService {
   constructor ({
@@ -17,7 +18,8 @@ class TaskService {
    * @returns tasks: 取得結果
    */
   async getByUserId ({ userId }) {
-    const tasks = await axios.get(`${process.env.BACKEND_API_BASE_URL}/api/task?userId=${userId}`)
+    const getParams = `?userId=${userId}`
+    const tasks = await axios.get(`${process.env.BACKEND_API_BASE_URL}${BackendRouting.TASK.ROOT}${getParams}`)
       .then((status) => {
         console.log('getByUserId:', status)
       })
@@ -34,7 +36,7 @@ class TaskService {
    * @returns latestSerial: 最新の識別番号
    */
   async issueLatestSerial ({ userId, date }) {
-    const url = `${process.env.BACKEND_API_BASE_URL}/api/task/serial`
+    const url = `${process.env.BACKEND_API_BASE_URL}${BackendRouting.TASK.SERIAL}`
     const getParams = `?userId=${userId}&date=${date}`
     const latestSerial = await axios.get(url + getParams)
     return latestSerial
