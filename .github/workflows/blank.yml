@@ -9,6 +9,17 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
+        
+      - name: Copy jar file to EC2
+        uses: appleboy/scp-action@v0.1.7
+          with:
+            host: ${{ secrets.EC2_HOST_PROD }}
+            username: ${{ secrets.EC2_USER_PROD }}
+            key: ${{ secrets.EC2_KEY_PROD }}
+            source: springboot/timesmanager-backend/build/libs/*.jar
+            target: /home/${{ secrets.EC2_USER_PROD }}/app/
+            overwrite: true
+            strip_components: 4 
 
       - name: Test SSH from GitHub Actions
         uses: appleboy/ssh-action@v1.0.0
