@@ -40,7 +40,7 @@ class AppEventHandler extends HandlerBase {
     let tasks = []
     if (thread.exists) {
       // タスクリストを取得
-      tasks = this.taskService.getByUserId({ userId: userId })
+      tasks = await this.taskService.getByUserId({ userId: userId })
       console.log(tasks)
       // activeなもので絞り込む
       tasks = tasks.filter((task) => task.status === TaskConst.STATUS.ACTIVE)
