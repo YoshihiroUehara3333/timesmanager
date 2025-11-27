@@ -93,7 +93,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
 
         try {
             Map<String, AttributeValue> item = dynamoDbClient.getItem(request).item();
-            log.info("raw response item = {}", item); // 0件のとき {} か null か確認
+            log.debug("raw response item = {}", item); // 0件のとき {} か null か確認
             if (item == null || item.isEmpty()) {
 	            // 「レコード0件」の時は null ではなく空Listを返す
 	            return Collections.emptyList();
