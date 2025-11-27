@@ -1,7 +1,7 @@
 exports.ModalConst = {
   CALLBACK_ID: {
     NEWTASK: 'newTask_modal_callback',
-    DAILYATTENDANCE: 'home_attendance_callback',
+    ATTENDANCE_INPUT: 'attendance_input_callback',
     DAILYREPORT: 'home_dailyreport_callback',
   },
   ACTION_ID: {

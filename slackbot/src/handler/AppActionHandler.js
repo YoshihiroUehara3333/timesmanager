@@ -2,6 +2,7 @@
 
 // モジュール読み込み
 require('date-utils')
+const axios = require('axios')
 const { HandlerBase } = require('./HandlerBase')
 const { ModalConst } = require('../constants/ModalConst')
 const { ViewsOpen } = require('../slack/SlackApiRequest')
@@ -54,14 +55,18 @@ class AppActionHandler extends HandlerBase {
   }
 
   async handleHomeToAttendance (body) {
-    const modalparams = {
-      userId: body.user.id,
-      date: new Date().toFormat('YYYY-MM-DD')
-    }
+    const date = new Date().toFormat('YYYY-MM-DD')
+    const userId = body.user.id
+
+    const attendance = await axios.get(`${process.env.BACKEND_API_BASE_URL}/api/task?userId=${userId}?date=${date}`)
+    console.log(JSON.stringify(attendance))
 
     return new ViewsOpen(
       body.trigger_id,
-      AttendanceInputModal(modalparams)
+      AttendanceInputModal({
+        userId: userId,
+        date: date,
+      })
     )
   }
 

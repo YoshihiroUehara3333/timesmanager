@@ -16,7 +16,7 @@ class TaskService {
 
   // 引数で渡されたユーザIDを基にタスクを全件取得する
   async getByUserId ({ userId }) {
-    const tasks = await axios.get('https://dev.slack-times-manager.com/api/task' + `?userId=${userId}`)
+    const tasks = await axios.get(`${process.env.BACKEND_API_BASE_URL}/api/task?userId=${userId}`)
       .then((status) => {
         console.log('getByUserId:', status)
       })

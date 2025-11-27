@@ -2,7 +2,7 @@ const { ModalConst } = require('../constants/ModalConst')
 
 exports.AttendanceInputModal = ({ userId, date }) => ({
   type: 'modal',
-  callback_id: ModalConst.CALLBACK_ID.DAILYATTENDANCE,
+  callback_id: ModalConst.CALLBACK_ID.ATTENDANCE_INPUT,
   private_metadata: JSON.stringify({
     user_id: userId,
     date: date,
