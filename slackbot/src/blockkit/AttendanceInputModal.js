@@ -38,7 +38,7 @@ function workplaceSection (attendance = {}) {
     }
   ))
 
-  const initialOptions = [
+  const initialOption = [
     {
       text: {
         type: 'plain_text',
@@ -60,7 +60,7 @@ function workplaceSection (attendance = {}) {
       type: 'static_select',
       placeholder: { type: 'plain_text', text: '選択してください', emoji: true },
       options,
-      initial_options: initialOptions,
+      initial_option: initialOption,
       action_id: 'select_workplace'
     }
   }
