@@ -1,9 +1,9 @@
-name: Deploy Spring Boot App to EC2_Dev
+name: Deploy Spring Boot App to EC2_Prod
 
 on:
   push:
     branches:
-      - feature
+      - develop
     paths:
       - 'springboot/**'
 
@@ -47,16 +47,16 @@ jobs:
     - name: edit security group
       run: |
         # SSHのセキュリティグループを開放する
-        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID_PROD }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
     - name: Copy jar file to EC2
-      uses: appleboy/scp-action@v0.1.7
+      uses: appleboy/scp-action@latest
       with:
-        host: ${{ secrets.EC2_HOST_DEV }}
-        username: ${{ secrets.EC2_USER_DEV }}
-        key: ${{ secrets.EC2_KEY_DEV }}
+        host: ${{ secrets.EC2_HOST_PROD }}
+        username: ${{ secrets.EC2_USER_PROD }}
+        key: ${{ secrets.EC2_KEY_PROD }}
         source: springboot/timesmanager-backend/build/libs/*.jar
-        target: /home/${{ secrets.EC2_USER_DEV }}/app/
+        target: /home/${{ secrets.EC2_USER_PROD }}/app/
         overwrite: true
         strip_components: 4 
 
@@ -64,9 +64,9 @@ jobs:
       uses: appleboy/ssh-action@v1.0.0
       continue-on-error: true
       with:
-        host: ${{ secrets.EC2_HOST_DEV }}
-        username: ${{ secrets.EC2_USER_DEV }}
-        key: ${{ secrets.EC2_KEY_DEV }}
+        host: ${{ secrets.EC2_HOST_PROD }}
+        username: ${{ secrets.EC2_USER_PROD }}
+        key: ${{ secrets.EC2_KEY_PROD }}
         script_stop: false
         script: |
           pkill -f 'java -jar' || true
@@ -74,7 +74,7 @@ jobs:
 
     - name: edit security group
       run: |
-        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID_PROD }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
     - name: Notify to Slack
       if: always()
