@@ -26,6 +26,9 @@ class AppEventHandler extends HandlerBase {
     await this.execute(handler, userId, body, logger)
   }
 
+  /**
+   * ホーム画面を開いたときの処理
+   */
   async updateAppHome ({ event }) {
     const userId = event.user
 

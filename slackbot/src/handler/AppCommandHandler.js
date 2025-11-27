@@ -39,8 +39,10 @@ class AppCommandHandler extends HandlerBase {
   }
 
   /**
-   *  スラッシュコマンド/makethread実行時
-   **/
+   * スラッシュコマンド/makethread実行時
+   * @param {*} body
+   * @returns SlackRequest
+   */
   async handleMakethread ({ command }) {
     const channelId = command.channel_id
     const userId = command.user_id
@@ -80,8 +82,10 @@ class AppCommandHandler extends HandlerBase {
   }
 
   /**
-   *  スラッシュコマンド/newtask実行時
-   **/
+   * スラッシュコマンド/newtask実行時
+   * @param {*} body
+   * @returns SlackRequest
+   */
   async handleNewTask (body) {
     const command = body.command
 
@@ -100,8 +104,10 @@ class AppCommandHandler extends HandlerBase {
   }
 
   /**
-   *  スラッシュコマンド/warmup実行時
-   **/
+   * スラッシュコマンド/warmup実行時
+   * @param {*} body
+   * @returns SlackRequest
+   */
   async handleWarmUp (body) {
     const command = body.command
 
