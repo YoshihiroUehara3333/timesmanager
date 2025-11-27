@@ -59,7 +59,7 @@ class AppActionHandler extends HandlerBase {
     const userId = body.user.id
 
     const attendance = await axios.get(`${process.env.BACKEND_API_BASE_URL}/api/task?userId=${userId}?date=${date}`)
-    console.log(JSON.stringify(attendance))
+    console.log(attendance)
 
     return new ViewsOpen(
       body.trigger_id,
