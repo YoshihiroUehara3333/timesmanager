@@ -34,6 +34,7 @@ class AppCommandHandler extends HandlerBase {
     const userId = command.user_id
     const handler = this.dispatcher[command.command] || this.dispatcher.default
 
+    logger.info(`command:${command.command}`)
     logger.info(`${handler.name}を実行`)
     await this.execute(handler, userId, command, logger)
   }

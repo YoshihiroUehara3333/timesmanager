@@ -30,7 +30,7 @@ const appEventHandler = new AppEventHandler(diContext.handler)
 app.command(/.*/, async ({ ack, command, context, logger }) => {
   ack()
   if (context.retryNum) return
-  logger.info(`app.command\ncontext:${JSON.stringify(context)}\nbody:${JSON.stringify(body)}\n`)
+  logger.info(`app.command\ncontext:${JSON.stringify(context)}\ncommand:${JSON.stringify(command)}\n`)
   await appCommandHandler.handle(command, logger)
 })
 
