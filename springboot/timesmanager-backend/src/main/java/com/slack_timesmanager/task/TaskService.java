@@ -60,4 +60,16 @@ public class TaskService {
 	        return ServiceResult.failure("DynamoDB error");
 		}
 	};
+	
+	public ServiceResult<TaskSerialResponse> issueSerial(String userId, String date){
+        try {
+            String serial = taskDynamoRepository.getNextSerial(userId, date);
+            TaskSerialResponse body = new TaskSerialResponse(serial);
+            return ServiceResult.success(body);
+        } 
+        catch (Exception e) {
+            log.error("DynamoDB処理中にエラー: issueSerial userId={}, date={}", userId, date, e);
+            return ServiceResult.failure("DynamoDB error");
+        }
+	}
 }

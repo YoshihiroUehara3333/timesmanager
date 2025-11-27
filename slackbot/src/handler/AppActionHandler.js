@@ -5,6 +5,7 @@ require('date-utils')
 const axios = require('axios')
 const { HandlerBase } = require('./HandlerBase')
 const { ModalConst } = require('../constants/ModalConst')
+const { TaskConst } = require('../constants/TaskConst')
 const { ViewsOpen } = require('../slack/SlackApiRequest')
 
 const { TaskInputModal } = require('../blockkit/TaskInputModal')
@@ -79,7 +80,7 @@ class AppActionHandler extends HandlerBase {
       threadTs: '',
       date: new Date().toFormat('YYYY-MM-DD'),
       serial: '',
-      status: 'active',
+      status: TaskConst.STATUS.ACTIVE,
     }
 
     return new ViewsOpen({

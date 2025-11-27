@@ -140,6 +140,58 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	}
 	
 
+    /**
+     * 指定ユーザ + 日付の「次の連番」を発行する
+     * - その日付のタスクが1件もなければ "001"
+     * - 既にあれば最大serial + 1 をゼロ埋めで返す
+     */
+    public String getNextSerial(String userId, String date) {
+        String partitionKey = DynamoPK.TASK.getPartitionKey(userId);
+
+        Map<String, AttributeValue> eav = Map.of(
+                ":pk", AttributeValue.builder().s(partitionKey).build(),
+                ":skPrefix", AttributeValue.builder().s(date).build()
+        );
+
+        QueryRequest queryRequest = QueryRequest.builder()
+                .tableName(tableName)
+                .keyConditionExpression(ATTR_PK + " = :pk AND begins_with(" + ATTR_SK + ", :skPrefix)")
+                .expressionAttributeValues(eav)
+                // sort_key 降順（最新が先頭）
+                .scanIndexForward(false)
+                .limit(1)
+                .build();
+
+        try {
+            QueryResponse response = dynamoDbClient.query(queryRequest);
+
+            if (response.items() == null || response.items().isEmpty()) {
+                // まだその日付のタスクがない → "001" からスタート
+                return "001";
+            }
+
+            Map<String, AttributeValue> latestItem = response.items().get(0);
+            String currentSerial = latestItem.get(ATTR_SERIAL).s();
+
+            int current = 0;
+            try {
+                current = Integer.parseInt(currentSerial);
+            } catch (NumberFormatException e) {
+                // 想定外の値が入っていた場合は 0 とみなして 001 から再スタート
+                current = 0;
+            }
+
+            int next = current + 1;
+            // 3桁ゼロ埋め
+            return String.format("%03d", next);
+
+        } catch (DynamoDbException e) {
+            throw new RuntimeException("DynamoDB getNextSerial failed", e);
+        }
+    }
+
+	
+
 	/**
 	 * DynamoDB 1アイテム → TaskResponse 変換
 	 */

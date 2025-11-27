@@ -61,4 +61,20 @@ public class TaskController {
 			return ResponseEntity.internalServerError().build();
 		}
 	}
+	
+	@GetMapping("/serial")
+    public ResponseEntity<TaskSerialResponse> getSerial(
+            @RequestParam String userId,
+            @RequestParam String date
+    ) {
+        log.info("📥 GET /api/task/serial: userId={}, date={}", userId, date);
+
+        ServiceResult<TaskSerialResponse> result = taskService.issueSerial(userId, date);
+
+        if (!result.isSuccess()) {
+            return ResponseEntity.internalServerError().build();
+        }
+
+        return ResponseEntity.ok(result.getBody());
+    }
 }

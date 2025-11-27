@@ -22,7 +22,6 @@ public class ThreadController {
 	private final ThreadService threadService;
 
 	public ThreadController(ThreadService threadService) {
-		super();
 		this.threadService = threadService;
 	}
 
@@ -36,9 +35,9 @@ public class ThreadController {
 		
 		if(result.isSuccess()) {
 			return ResponseEntity.ok().build();
-		} else {
-			return ResponseEntity.internalServerError().build();
 		}
+		
+		return ResponseEntity.internalServerError().build();
 	}
 	
 	@GetMapping
@@ -58,8 +57,9 @@ public class ThreadController {
 		
 		if(result.isSuccess()) {
 			return ResponseEntity.ok(result.getBody());
-		} else {
-			return ResponseEntity.internalServerError().build();
 		}
+		
+		return ResponseEntity.internalServerError().build();
 	}
+
 }

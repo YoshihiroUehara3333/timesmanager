@@ -14,7 +14,11 @@ class TaskService {
     this.slackApiAdaptor = slackApiAdaptor
   }
 
-  // 引数で渡されたユーザIDを基にタスクを全件取得する
+  /**
+   * 引数で渡されたユーザIDを基にタスクを全件取得する
+   * @param {*} param0
+   * @returns tasks: 取得結果
+   */
   async getByUserId ({ userId }) {
     const tasks = await axios.get(`${process.env.BACKEND_API_BASE_URL}/api/task?userId=${userId}`)
       .then((status) => {
@@ -24,6 +28,18 @@ class TaskService {
         console.error('getByUserId:', err)
       })
     return tasks
+  }
+
+  /**
+   * 最新のタスク識別番号を発行する
+   * @param {} userId, date
+   * @returns latestSerial: 最新の識別番号
+   */
+  async issueLatestSerial ({ userId, date }) {
+    const url = `${process.env.BACKEND_API_BASE_URL}/api/task/serial`
+    const getParams = `?userId=${userId}&date=${date}`
+    const latestSerial = await axios.get(url + getParams)
+    return latestSerial
   }
 
   // 新規タスク入力用モーダルのBlockkit作成用パラメータを取得し返却する
