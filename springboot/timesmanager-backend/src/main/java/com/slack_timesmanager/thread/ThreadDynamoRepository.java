@@ -100,7 +100,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
     /**
      * チャンネルIDに紐づくスレッド情報を全件取得する
      */
-	public List<ThreadResponse> findAllByUserId(String channelId) {
+	public List<ThreadResponse> findAllByChannelId(String channelId) {
 		String partitionKey = DynamoPK.THREAD.getPartitionKey(channelId);
 
 	    Map<String, AttributeValue> eav = Map.of(

@@ -16,7 +16,7 @@ public class TaskResponse implements Response{
 	private String updatedAt;
 	private String finishedAt;
 	
-	public TaskRequest() {
+	public TaskResponse() {
 	}
 
 	public String getUserId() {
