@@ -48,16 +48,22 @@ class AppCommandHandler extends HandlerBase {
     const userId = command.user_id
     const date = new Date().toFormat('YYYY-MM-DD')
 
+    const url = `${process.env.BACKEND_API_BASE_URL}/api/thread`
+    const getParams = `?userId=${userId}&date=${date}`
+    const response = await axios.get(url + getParams)
+
+    console.log(response)
+
     // timesチャンネルにスレッド作成
     const text = `<@${userId}> \n*【壁】${date}*`
-    const thread = await this.slackApiAdaptor.send(new PostMessage({
+    const threadPost = await this.slackApiAdaptor.send(new PostMessage({
       channelId: channelId,
       text: text,
     }))
     // permalink取得
     const permalink = await this.slackApiAdaptor.send(new GetPermalink({
       channelId: channelId,
-      messageTs: thread.ts
+      messageTs: threadPost.ts
     }))
 
     // バックエンドAPIにPOST送信
@@ -65,20 +71,10 @@ class AppCommandHandler extends HandlerBase {
       channelId: channelId,
       date: date,
       userId: userId,
-      threadTs: thread.ts,
+      threadTs: threadPost.ts,
       permalink: permalink,
     }
-    const url = `${process.env.BACKEND_API_BASE_URL}/api/thread`
     await axios.post(url, data)
-
-    // タスク入力モーダルを開く
-    const params = await this.taskService.createTaskInputModalParams(command, thread)
-    if (params) {
-      return new ViewsOpen({
-        triggerId: command.trigger_id,
-        view: TaskInputModal(params),
-      })
-    }
   }
 
   /**

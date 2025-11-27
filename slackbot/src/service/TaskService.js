@@ -2,9 +2,6 @@
 require('date-utils')
 const { WorkReportUtils } = require('../utility/WorkReportUtils')
 const axios = require('axios')
-const { WorkPlanBlock } = require('../blockkit/WorkPlanBlock')
-const { TaskModel } = require('../model/TaskModel')
-const { POSTDATA } = require('../constants/DynamoDB/PostData')
 const { PostMessage } = require('../slack/SlackApiRequest')
 
 class TaskService {
@@ -32,7 +29,8 @@ class TaskService {
 
   /**
    * 最新のタスク識別番号を発行する
-   * @param {} userId, date
+   * @param {userId}ユーザID
+   * @param {date}日付
    * @returns latestSerial: 最新の識別番号
    */
   async issueLatestSerial ({ userId, date }) {

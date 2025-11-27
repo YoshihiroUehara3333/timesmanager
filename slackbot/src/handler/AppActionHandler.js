@@ -55,6 +55,11 @@ class AppActionHandler extends HandlerBase {
     )
   }
 
+  /**
+   * ホーム画面から勤怠入力モーダルを開く
+   * @param {*} body
+   * @returns SlackRequest
+   */
   async handleHomeToAttendance (body) {
     const date = new Date().toFormat('YYYY-MM-DD')
     const userId = body.user.id
@@ -73,13 +78,20 @@ class AppActionHandler extends HandlerBase {
     })
   }
 
-  // タスク新規作成モーダル表示
+  /**
+   * ホーム画面からタスク新規作成モーダルを開く
+   * @param {*} body
+   * @returns SlackRequest
+   */
   async handleTaskCreate (body) {
+    const userId = body.user.id
+    const date = new Date().toFormat('YYYY-MM-DD')
+
     const params = {
-      userId: body.user.id,
+      userId: userId,
       threadTs: '',
-      date: new Date().toFormat('YYYY-MM-DD'),
-      serial: '',
+      date: date,
+      serial: await this.taskService.issueLatestSerial({userId: userId, date: date}),
       status: TaskConst.STATUS.ACTIVE,
     }
 
