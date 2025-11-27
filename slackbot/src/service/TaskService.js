@@ -13,7 +13,7 @@ class TaskService {
   /**
    * 引数で渡されたユーザIDを基にタスクを全件取得する
    * @param {*} userId: ユーザID
-   * @returns tasks: 取得結果リスト
+   * @returns response.data: 取得結果リスト
    */
   async getByUserId ({ userId }) {
     const url = `${process.env.BACKEND_API_BASE_URL}${BackendRouting.TASK.ROOT}`

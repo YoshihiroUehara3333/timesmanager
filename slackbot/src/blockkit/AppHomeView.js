@@ -61,7 +61,7 @@ function taskSection (threadExists) {
       },
       {
         type: 'section',
-        text: { type: 'mrkdwn', text: '_スレッドが未作成です_' }
+        text: { type: 'mrkdwn', text: '_本日のスレッドが未作成です_' }
       },
     ]
   }
