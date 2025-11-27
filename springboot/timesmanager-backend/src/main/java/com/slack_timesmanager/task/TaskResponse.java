@@ -5,9 +5,13 @@ import com.slack_timesmanager.core.Response;
 public class TaskResponse implements Response{
 	private String userId;
 	private String date;
-	private String name;
+	private String taskName;
 	private String channelId;
+	private String status;
+	private String serial;
 	
+	public TaskResponse() {
+	}
 	
 	public String getUserId() {
 		return userId;
@@ -21,16 +25,28 @@ public class TaskResponse implements Response{
 	public void setDate(String date) {
 		this.date = date;
 	}
-	public String getName() {
-		return name;
+	public String getTaskName() {
+		return taskName;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
 	}
 	public String getChannelId() {
 		return channelId;
 	}
 	public void setChannelId(String channelId) {
 		this.channelId = channelId;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getSerial() {
+		return serial;
+	}
+	public void setSerial(String serial) {
+		this.serial = serial;
 	}
 }

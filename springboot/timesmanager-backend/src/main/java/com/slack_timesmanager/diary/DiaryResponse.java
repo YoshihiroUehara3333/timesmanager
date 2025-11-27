@@ -9,14 +9,10 @@ public class DiaryResponse implements Response{
 	private String endTime;
 	private String workplace;
 
-	public DiaryResponse(String userId, String startTime, String endTime, String workplace) {
-		super();
-		this.userId = userId;
-		this.startTime = startTime;
-		this.endTime = endTime;
-		this.workplace = workplace;
-	}
 	
+	public DiaryResponse() {
+	}
+
 	public String getDate() {
 		return date;
 	}

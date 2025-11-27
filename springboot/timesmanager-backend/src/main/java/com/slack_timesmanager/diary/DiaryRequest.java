@@ -13,7 +13,7 @@ public class DiaryRequest implements Request{
 	public String getUserId() {
 		return userId;
 	}
-	public String getDate() {
+	public String ATTR_USER_ID() {
 		return date;
 	}
 	public void setDate(String date) {

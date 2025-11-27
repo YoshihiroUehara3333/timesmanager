@@ -1,40 +1,63 @@
 package com.slack_timesmanager.task;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.slack_timesmanager.common.ServiceResult;
 
+@Service
 public class TaskService {
+	
 	private static final Logger log = LoggerFactory.getLogger(TaskService.class);
-	private TaskDynamoRepository taskDynamoRepository;
+	
+	private final TaskDynamoRepository taskDynamoRepository;
 
 	public TaskService(TaskDynamoRepository taskDynamoRepository) {
 		this.taskDynamoRepository = taskDynamoRepository;
 	}
-	
-	public ServiceResult getAll() {
-		return null;
+
+    /**
+     * ユーザIDに紐づくタスクを全件取得
+     */
+	public ServiceResult<List<TaskResponse>> getAllByUserId(String userId) {
+		try {
+			List<TaskResponse> response = taskDynamoRepository.findAllByUserId(userId);
+			return ServiceResult.success(response);
+		}
+		catch(Exception e) {
+	        log.error("DynamoDB処理中にエラー: getAllByUserId userId={}", userId, e);
+	        return ServiceResult.failure("DynamoDB error");
+		}
 	};
 	
-	public ServiceResult getAllByUserId(String userId) {
-		return null;
+    /**
+     * ユーザID + 日付でタスクを取得
+     */
+	public ServiceResult<List<TaskResponse>> getByUserIdAndDate(String userId, String date) {
+		try {
+			List<TaskResponse> response = taskDynamoRepository.findByUserIdAndDate(userId, date);
+			return ServiceResult.success(response);
+		}
+		catch(Exception e) {
+            log.error("DynamoDB処理中にエラー: getByUserIdAndDate userId={}, date={}", userId, date, e);
+            return ServiceResult.failure("DynamoDB error");
+		}
 	};
 	
-	public ServiceResult getByUserIdAndDate(String userId, String date) {
-		return null;
-		
-	};
-	
-	public ServiceResult save(TaskRequest request) {
+    /**
+     * タスク登録
+     */
+	public ServiceResult<Void> save(TaskRequest request) {
 		try {
 		    taskDynamoRepository.putItem(request);
 			return ServiceResult.success();
 		}
 		catch(Exception e) {
-			e.printStackTrace();
-			log.error("DynamoDB処理中にエラー", e);
-			return ServiceResult.failure();
+	        log.error("DynamoDB処理中にエラー: save request={}", request, e);
+	        return ServiceResult.failure("DynamoDB error");
 		}
 	};
 }

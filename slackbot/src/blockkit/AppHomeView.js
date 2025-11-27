@@ -61,10 +61,7 @@ function taskList (
     return [
       {
         type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: '_現在表示できるタスクはありません_',
-        },
+        text: { type: 'mrkdwn', text: '_現在表示できるタスクはありません_'}
       },
     ]
   }

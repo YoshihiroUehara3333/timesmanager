@@ -20,7 +20,7 @@ class TaskService {
       .then((status) => {
         console.log('getByUserId:', status)
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('getByUserId:', err)
       })
     return tasks

@@ -1,5 +1,7 @@
 package com.slack_timesmanager.task;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -24,33 +26,25 @@ public class TaskController {
 	}
 
 	@GetMapping
-	public ResponseEntity<TaskResponse> get(
-			@RequestParam(required = false) String userId,
+	public ResponseEntity<List<TaskResponse>> get(
+			@RequestParam(required = true) String userId,
 	        @RequestParam(required = false) String date
     ){
 		log.info("📥 GET /api/task called. userId={}, date={}", userId, date);
 		
-		ServiceResult result;
+		ServiceResult<List<TaskResponse>> result;
 		
-		if (userId == null && date == null) {
-			result = taskService.getAll();
-			
-		} else if (userId != null && date == null) {
+		if (date == null) {
 			result = taskService.getAllByUserId(userId);
-			
-		} else if (userId != null && date != null){
-			result = taskService.getByUserIdAndDate(userId, date);
-			
 		} else {
-            return ResponseEntity.badRequest().build();
+			result = taskService.getByUserIdAndDate(userId, date);
         }
 		
-		if(result.getStatus()) {
-			TaskResponse response = (TaskResponse)result.getResponse();
-			return ResponseEntity.ok(response);
+		if(result.isSuccess()) {
+			return ResponseEntity.ok(result.getBody());
 			
 		} else {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.internalServerError().build();
 		}
 	}
 	
@@ -60,8 +54,9 @@ public class TaskController {
 	{
 		log.info("📥 Received POST /api/task: {}", request);
 		
-		ServiceResult result = taskService.save(request);
-		if(result.getStatus()) {
+		ServiceResult<Void> result = taskService.save(request);
+		
+		if(result.isSuccess()) {
 			return ResponseEntity.ok().build();
 		} else {
 			return ResponseEntity.internalServerError().build();

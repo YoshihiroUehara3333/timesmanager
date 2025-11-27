@@ -15,26 +15,69 @@ import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
 @Repository
-public class DiaryDynamoRepository {	
-    @Value("${aws.dynamodb.tableName}")
-    private final String TABLENAME;
+public class DiaryDynamoRepository {
 	
+    // ===== 属性名の定数 =====
+    private static final String ATTR_PK         = "partition_key";
+    private static final String ATTR_SK         = "sort_key";
+    private static final String ATTR_USER_ID    = "userId";
+    private static final String ATTR_DATE       = "date";
+    private static final String ATTR_CHANNEL_ID = "channelId";
+	
+    
+    private final String tableName;
 	private final DynamoDbClient dynamoDbClient;
 	
-	public DiaryDynamoRepository(DynamoDbClient dynamoDbClient) {
+	public DiaryDynamoRepository(
+			DynamoDbClient dynamoDbClient,
+			@Value("${aws.dynamodb.tableName}") String tableName
+	) {
 		this.dynamoDbClient = dynamoDbClient;
+		this.tableName = tableName;
 	}
 	
+    /**
+     * 日報を1件保存
+     */
+    public boolean putItem(DiaryRequest request) throws Exception {
+    	String userId = request.getUserId();
+		String partitionKey = DynamoPK.DAILYREPORT.getPartitionKey(userId);
+        String sortKey = request.getDate();
+
+        Map<String, AttributeValue> item = new HashMap<>();
+        item.put(ATTR_PK, AttributeValue.builder().s(partitionKey).build());
+        item.put(ATTR_SK, AttributeValue.builder().s(sortKey).build());
+        item.put(ATTR_USER_ID, AttributeValue.builder().s(request.getUserId()).build());
+        item.put("startTime", AttributeValue.builder().s(request.getStartTime()).build());
+        item.put("endTime", AttributeValue.builder().s(request.getEndTime()).build());
+        item.put("workplace", AttributeValue.builder().s(request.getWorkplace()).build());
+
+        PutItemRequest putItemRequest = PutItemRequest.builder()
+            .tableName(tableName)
+            .item(item)
+            .build();
+
+        try {
+            dynamoDbClient.putItem(putItemRequest);
+            return true;
+        } catch (Exception e) {
+            throw new Exception("DynamoDB putItem failed", e);
+        }
+    }
+	
+    /**
+     * 日記を1件取得
+     */
     public DiaryResponse getDiary(String userId, String date) throws Exception{
         String partitionKey = DynamoPK.DAILYREPORT.getPartitionKey(userId);
         String sortKey = date;
 
         Map<String, AttributeValue> key = new HashMap<>();
-        key.put("partition_key", AttributeValue.builder().s(partitionKey).build());
-        key.put("sort_key", AttributeValue.builder().s(sortKey).build());
+        key.put(ATTR_PK, AttributeValue.builder().s(partitionKey).build());
+        key.put(ATTR_SK, AttributeValue.builder().s(sortKey).build());
 
         GetItemRequest request = GetItemRequest.builder()
-            .tableName(TABLENAME)
+            .tableName(tableName)
             .key(key)
             .build();
 
@@ -42,42 +85,14 @@ public class DiaryDynamoRepository {
             Map<String, AttributeValue> item = dynamoDbClient.getItem(request).item();
             if (item == null || item.isEmpty()) return null;
 
-            return new DiaryResponse(
-                item.get("userId").s(),
-                item.get("startTime").s(),
-                item.get("endTime").s(),
-                item.get("workplace").s()
-            );
+            return this.mapToDiaryResponse(item);
 
         } catch (Exception e) {
             throw new Exception("DynamoDB getDiary failed", e);
         }
     }
     
-    public void putItem(DiaryRequest request) throws Exception {
-    	String userId = request.getUserId();
-		String partitionKey = DynamoPK.DAILYREPORT.getPartitionKey(userId);
-        String sortKey = request.getDate();
 
-        Map<String, AttributeValue> item = new HashMap<>();
-        item.put("partition_key", AttributeValue.builder().s(partitionKey).build());
-        item.put("sort_key", AttributeValue.builder().s(sortKey).build());
-        item.put("userId", AttributeValue.builder().s(request.getUserId()).build());
-        item.put("startTime", AttributeValue.builder().s(request.getStartTime()).build());
-        item.put("endTime", AttributeValue.builder().s(request.getEndTime()).build());
-        item.put("workplace", AttributeValue.builder().s(request.getWorkplace()).build());
-
-        PutItemRequest putItemRequest = PutItemRequest.builder()
-            .tableName(TABLENAME)
-            .item(item)
-            .build();
-
-        try {
-            dynamoDbClient.putItem(putItemRequest);
-        } catch (Exception e) {
-            throw new Exception("DynamoDB putItem failed", e);
-        }
-    }
     
 	public void updateItem(DiaryRequest request) throws Exception {
 		String userId = request.getUserId();
@@ -99,7 +114,7 @@ public class DiaryDynamoRepository {
 	    expressionAttributeValues.put(":workplace", AttributeValue.builder().s(request.getWorkplace()).build());
 
 	    UpdateItemRequest updateRequest = UpdateItemRequest.builder()
-	        .tableName(TABLENAME)
+	        .tableName(tableName)
 	        .key(key)
 	        .updateExpression("SET #st = :startTime, #et = :endTime, #wp = :workplace")
 	        .expressionAttributeNames(expressionAttributeNames)
@@ -111,5 +126,14 @@ public class DiaryDynamoRepository {
 	    } catch (Exception e) {
 	        throw new Exception("DynamoDB updateItem failed", e);
 	    }
+	}
+	
+	/**
+	 * DynamoDB 1アイテム → TaskResponse 変換
+	 */
+	private DiaryResponse mapToDiaryResponse(Map<String, AttributeValue> item) {
+		DiaryResponse response = new DiaryResponse();
+		
+	    return response;
 	}
 }
