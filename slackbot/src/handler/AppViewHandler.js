@@ -4,6 +4,7 @@ const axios = require('axios')
 const { ModalConst } = require('../constants/ModalConst')
 const { PostMessage } = require('../slack/SlackApiRequest')
 const { HandlerBase } = require('./HandlerBase')
+const { WorkPlanBlock} = require('../blockkit/WorkPlanBlock')
 
 class AppViewHandler extends HandlerBase {
   CALLBACK_ID = ModalConst.CALLBACK_ID
@@ -37,15 +38,13 @@ class AppViewHandler extends HandlerBase {
     await this.execute(handler, userId, body, logger)
   }
 
-  async handleDailyAttendanceInputCallback (body) {
-    const view = body.view
+  async handleDailyAttendanceInputCallback ({ view }) {
     const metadata = JSON.parse(view.private_metadata)
-    const userId = metadata.user_id
     const values = view.state.values
 
     const data = {
-      date: new Date().toFormat('YYYY-MM-DD'),
-      userId: userId,
+      date: metadata.date,
+      userId: metadata.user_id,
       startTime: values.starttime.start_time.selected_time,
       endTime: values.endtime.end_time.selected_time,
       workplace: values.workplace.select_workplace.selected_option.value,
@@ -54,21 +53,16 @@ class AppViewHandler extends HandlerBase {
     console.log(JSON.stringify(data))
 
     // バックエンドAPIにPOST送信
-    const ENDPOINT = `${process.env.BACKEND_API_BASE_URL}/api/diary`
+    const url = `${process.env.BACKEND_API_BASE_URL}/api/attendance`
     try {
-      const response = await axios.post(ENDPOINT, data)
-
+      const response = await axios.post(url, data)
       console.log(response)
     } catch (e) {
       console.error(e)
-      if (e.response) {
-        return e.response.data
-      }
     }
   }
 
-  async handleNewTaskModalCallback (body) {
-    const view = body.view
+  async handleNewTaskModalCallback ({ view }) {
     const metadata = JSON.parse(view.private_metadata)
 
     // 入力データをBlocksとして返信
@@ -79,7 +73,7 @@ class AppViewHandler extends HandlerBase {
       metadata.thread_ts,
       WorkPlanBlock(params)
     ))
-    logger.info(`post結果:${JSON.stringify(postResponse)}`)
+    console.log(`post結果:${JSON.stringify(postResponse)}`)
 
     // 入力データをDBに保存
     return await this.workReportService.processNewTaskSubmition(view)

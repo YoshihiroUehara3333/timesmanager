@@ -1,13 +1,14 @@
 // app.action用Controllerクラス
 
 // モジュール読み込み
+require('date-utils')
 const { HandlerBase } = require('./HandlerBase')
 const { ModalConst } = require('../constants/ModalConst')
 const { ViewsOpen } = require('../slack/SlackApiRequest')
 
 const { TaskInputModal } = require('../blockkit/TaskInputModal')
 const { DailyReportInputModal } = require('../blockkit/DailyReportInputModal')
-const { DailyAttendanceInputModal } = require('../blockkit/DailyAttendanceInputModal')
+const { AttendanceInputModal } = require('../blockkit/AttendanceInputModal')
 
 class AppActionHandler extends HandlerBase {
   constructor ({
@@ -55,11 +56,12 @@ class AppActionHandler extends HandlerBase {
   async handleHomeToAttendance (body) {
     const modalparams = {
       userId: body.user.id,
+      date: new Date().toFormat('YYYY-MM-DD')
     }
 
     return new ViewsOpen(
       body.trigger_id,
-      DailyAttendanceInputModal(modalparams)
+      AttendanceInputModal(modalparams)
     )
   }
 

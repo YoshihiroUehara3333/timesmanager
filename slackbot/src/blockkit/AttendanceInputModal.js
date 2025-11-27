@@ -1,16 +1,13 @@
 const { ModalConst } = require('../constants/ModalConst')
 
-exports.DailyAttendanceInputModal = ({ userId }) => ({
+exports.AttendanceInputModal = ({ userId, date }) => ({
   type: 'modal',
   callback_id: ModalConst.CALLBACK_ID.DAILYATTENDANCE,
   private_metadata: JSON.stringify({
     user_id: userId,
+    date: date,
   }),
-  title: {
-    type: 'plain_text',
-    text: '勤怠記録',
-    emoji: true
-  },
+  title: { type: 'plain_text', text: '勤怠記録', emoji: true },
   submit: {
     type: 'plain_text',
     text: 'Submit',
@@ -39,7 +36,7 @@ exports.DailyAttendanceInputModal = ({ userId }) => ({
       },
       element: {
         type: 'timepicker',
-        initial_time: '10:00',
+        initial_time: '09:00',
         placeholder: {
           type: 'plain_text',
           text: '開始時間を選択'
