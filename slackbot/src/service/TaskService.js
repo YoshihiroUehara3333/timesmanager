@@ -23,7 +23,6 @@ class TaskService {
       }
     })
 
-    console.log(response)
     return response.data
   }
 
