@@ -74,14 +74,14 @@ public final class DynamoKeyFactory {
      * Thread: PK
      */
     public static String threadPartitionKey(String userId) {
-        return DynamoPK.ATTENDANCE.getPartitionKey(userId);
+        return DynamoPK.THREAD.getPartitionKey(userId);
     }
 
     /**
      * Thread:  PK/SK
      */
     public static DynamoKey threadItemKey(String userId, String date) {
-        String pk = attendancePartitionKey(userId);
+        String pk = threadPartitionKey(userId);
         String sk = date;
         return new DynamoKey(pk, sk);
     }
