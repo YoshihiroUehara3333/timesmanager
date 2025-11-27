@@ -50,7 +50,7 @@ jobs:
         aws ec2 authorize-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID_PROD }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
     - name: Copy jar file to EC2
-      uses: appleboy/scp-action@v0.1.7
+      uses: appleboy/scp-action@latest
       with:
         host: ${{ secrets.EC2_HOST_PROD }}
         username: ${{ secrets.EC2_USER_PROD }}
