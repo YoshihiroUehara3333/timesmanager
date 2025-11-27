@@ -1,7 +1,7 @@
 // モジュール読み込み
 require('date-utils')
-const { WorkReportUtils } = require('../utility/WorkReportUtils')
 const axios = require('axios')
+const { WorkReportUtils } = require('../utility/WorkReportUtils')
 const { PostMessage } = require('../slack/SlackApiRequest')
 
 class TaskService {

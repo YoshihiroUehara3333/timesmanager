@@ -1,5 +1,4 @@
 const { RegexConst } = require('../constants/RegexConst')
-const { CdConst } = require('../constants/CdConst')
 
 class DiaryUtils {
   // JSONデータから日記フォーマットに変換してreturnする

@@ -5,7 +5,6 @@ const { ModalConst } = require('../constants/ModalConst')
 const { PostMessage } = require('../slack/SlackApiRequest')
 const { HandlerBase } = require('./HandlerBase')
 const { TaskBlock } = require('../blockkit/TaskBlock')
-const { meta } = require('eslint-plugin-prettier')
 
 class AppViewHandler extends HandlerBase {
   CALLBACK_ID = ModalConst.CALLBACK_ID

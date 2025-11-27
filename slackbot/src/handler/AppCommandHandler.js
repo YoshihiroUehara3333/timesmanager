@@ -40,8 +40,8 @@ class AppCommandHandler extends HandlerBase {
 
   /**
    * スラッシュコマンド/makethread実行時
-   * @param {*} body
-   * @returns SlackRequest
+   * @param {*} command body.command
+   * @returns SlackApiRequest
    */
   async handleMakethread ({ command }) {
     const channelId = command.channel_id
@@ -79,12 +79,10 @@ class AppCommandHandler extends HandlerBase {
 
   /**
    * スラッシュコマンド/newtask実行時
-   * @param {*} body
-   * @returns SlackRequest
+   * @param {*} command body.command
+   * @returns SlackApiRequest
    */
-  async handleNewTask (body) {
-    const command = body.command
-
+  async handleNewTask ({ command }) {
     const params = await this.taskService.createTaskInputModalParams(command, undefined)
     if (params) {
       return new ViewsOpen({
@@ -101,12 +99,10 @@ class AppCommandHandler extends HandlerBase {
 
   /**
    * スラッシュコマンド/warmup実行時
-   * @param {*} body
-   * @returns SlackRequest
+   * @param {*} command body.command
+   * @returns SlackApiRequest
    */
-  async handleWarmUp (body) {
-    const command = body.command
-
+  async handleWarmUp ({ command }) {
     return new PostMessage({
       channelId: command.user,
       text: 'warmupが実行されました'

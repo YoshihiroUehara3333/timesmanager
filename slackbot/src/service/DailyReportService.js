@@ -1,7 +1,5 @@
 // モジュール読み込み
 require('date-utils')
-const { DiaryModelFactory } = require('../model/factory/DiaryModelFactory')
-const { POSTDATA } = require('../constants/DynamoDB/PostData')
 const { GetPermalink } = require('../slack/SlackApiRequest')
 
 /**
