@@ -69,7 +69,7 @@ class AppActionHandler extends HandlerBase {
       view: AttendanceInputModal({
         userId: userId,
         date: date,
-        attendance: response.data,
+        attendance: response.data[0],
       })
     })
   }
