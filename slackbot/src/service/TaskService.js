@@ -1,8 +1,6 @@
 // モジュール読み込み
 require('date-utils')
 const axios = require('axios')
-const { WorkReportUtils } = require('../utility/WorkReportUtils')
-const { PostMessage } = require('../slack/SlackApiRequest')
 const { BackendRouting } = require('../constants/BackendRouting')
 
 class TaskService {
@@ -24,12 +22,6 @@ class TaskService {
         userId: userId,
       }
     })
-      .then((status) => {
-        console.log('getByUserId:', status)
-      })
-      .catch((err) => {
-        console.error('getByUserId:', err)
-      })
 
     console.log(response)
     return response.data
@@ -97,41 +89,6 @@ class TaskService {
 
     // Blocksを生成してreturn
     return workPlanBlockParams
-  }
-
-  // NewTaskモーダル入力値からWorkReportModelを作成し、DBに保存する
-  async processNewTaskSubmition (view) {
-    const date = new Date().toFormat('YYYY-MM-DD')
-    const values = view.state.values
-    const metadata = JSON.parse(view.private_metadata)
-    const channelId = metadata.channel_id
-
-    try {
-      // WorkReportModelを生成
-      const workReportModel = this.createWorkReportModel(channelId, date, metadata, values)
-
-      // DB保存
-      const response = await this.postDataRepository.putItem(workReportModel)
-
-      // httpStatusCodeをチェックしてreturn
-      const httpStatusCode = response.$metadata?.httpStatusCode
-      return new PostMessage(
-        metadata.user_id,
-        this.checkHttpStatusCode(httpStatusCode, workReportModel)
-      )
-    } catch (error) {
-      throw new Error(error.message, { cause: error })
-    }
-  }
-
-  // WorkReportModelを生成してreturn
-  createWorkReportModel (channelId, date, metadata, values) {
-    const workReportModel = new WorkReportModel(channelId, date)
-    workReportModel.threadTs = metadata.thread_ts
-    workReportModel.createdAt = new Date().toFormat('HH24:MI:SS')
-    workReportModel.content = WorkReportUtils.parseContent(values)
-    workReportModel.serial = metadata.serial
-    return workReportModel
   }
 
   // -----------------------------------------------------------------------------------
