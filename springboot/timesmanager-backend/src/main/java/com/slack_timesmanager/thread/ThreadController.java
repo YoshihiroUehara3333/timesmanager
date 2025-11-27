@@ -37,7 +37,11 @@ public class ThreadController {
 			return ResponseEntity.ok().build();
 		}
 		
-		return ResponseEntity.internalServerError().build();
+		if(result.getErrorCode() == "400") {
+			return ResponseEntity.badRequest().build();
+		} else {
+			return ResponseEntity.internalServerError().build();
+		}
 	}
 	
 	@GetMapping

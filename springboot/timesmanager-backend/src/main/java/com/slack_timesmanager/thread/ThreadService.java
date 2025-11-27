@@ -25,7 +25,7 @@ public class ThreadService {
 			if(getRes.isEmpty()) {
 				threadDynamoRepository.putItem(request);
 			} else {
-				return ServiceResult.failure("今日のスレッドは既に作成済です");
+				return ServiceResult.failure("400", "本日のスレッドは既に作成済です");
 			}
 			
 			return ServiceResult.success();
@@ -50,6 +50,12 @@ public class ThreadService {
 		}
 	};
 	
+	/**
+	 * 
+	 * @param userId
+	 * @param date
+	 * @return
+	 */
 	public ServiceResult<List<ThreadResponse>> getByUserIdAndDate(String userId, String date) {
 		try {
 			List<ThreadResponse> response = threadDynamoRepository.findByUserIdAndDate(userId, date);

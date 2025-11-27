@@ -52,9 +52,14 @@ class AppCommandHandler extends HandlerBase {
     const getParams = `?userId=${userId}&date=${date}`
     const response = await axios.get(url + getParams)
 
-    console.log(response.data)
+    if (response.data[0]) {
+      return new PostMessage({
+        channelId: command.user,
+        text: '本日のスレッドはすでに作成済です。'
+      })
+    }
 
-    // timesチャンネルにスレッド作成
+    // チャンネルにスレッド作成
     const channelId = command.channel_id
     const text = `<@${userId}> \n*【壁】${date}*`
     const threadPost = await this.slackApiAdaptor.send(new PostMessage({
