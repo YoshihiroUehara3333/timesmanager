@@ -170,7 +170,6 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
             QueryResponse response = dynamoDbClient.query(queryRequest);
 
             if (response.items() == null || response.items().isEmpty()) {
-                // まだその日付のタスクがない → "001" からスタート
                 return "001";
             }
 

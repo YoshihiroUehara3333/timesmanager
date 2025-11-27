@@ -66,8 +66,12 @@ class AppActionHandler extends HandlerBase {
     const userId = body.user.id
 
     const url = `${process.env.BACKEND_API_BASE_URL}${BackendRouting.ATTENDANCE.ROOT}`
-    const getParams = `?userId=${userId}&date=${date}`
-    const response = await axios.get(url + getParams)
+    const response = await axios.get(url, {
+      params: {
+        userId: userId,
+        date: date,
+      },
+    })
 
     return new ViewsOpen({
       triggerId: body.trigger_id,

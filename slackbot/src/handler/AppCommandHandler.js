@@ -49,8 +49,8 @@ class AppCommandHandler extends HandlerBase {
     const userId = command.user_id
     const date = new Date().toFormat('YYYY-MM-DD')
 
-    const checkResult = await this.threadService.checkIsAlreadyExcecuted({ userId: userId, date: date })
-    if (checkResult) {
+    const checkResult = await this.threadService.checkIsAlreadyExecuted({ userId: userId, date: date })
+    if (checkResult.exists) {
       return new PostMessage({
         channelId: command.user_id,
         text: `本日のスレッドはすでに作成済です。\n${checkResult.permalink}`

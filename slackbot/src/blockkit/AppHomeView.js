@@ -29,29 +29,42 @@ function dailyReportSection () {
   ]
 }
 
-function taskSection () {
-  return [
-    {
-      type: 'section',
-      text: { type: 'mrkdwn', text: '*タスク管理*' }
-    },
-    {
-      type: 'actions',
-      elements: [
-        {
-          type: 'button',
-          text: { type: 'plain_text', text: 'タスク新規作成' },
-          style: 'primary',
-          value: 'create_task',
-          action_id: ModalConst.ACTION_ID.TASK.CREATE,
-        }
-      ]
-    },
-    {
-      type: 'section',
-      text: { type: 'mrkdwn', text: '*タスク一覧*' }
-    },
-  ]
+function taskSection (threadExists) {
+  if (threadExists) {
+    return [
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '*タスク管理*' }
+      },
+      {
+        type: 'actions',
+        elements: [
+          {
+            type: 'button',
+            text: { type: 'plain_text', text: 'タスク新規作成' },
+            style: 'primary',
+            value: 'create_task',
+            action_id: ModalConst.ACTION_ID.TASK.CREATE,
+          }
+        ]
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '*タスク一覧*' }
+      },
+    ]
+  } else {
+    return [
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '*タスク管理*' }
+      },
+      {
+        type: 'section',
+        text: { type: 'mrkdwn', text: '_スレッドが未作成です_' }
+      },
+    ]
+  }
 }
 
 function taskList (
@@ -61,7 +74,7 @@ function taskList (
     return [
       {
         type: 'section',
-        text: { type: 'mrkdwn', text: '_現在表示できるタスクはありません_'}
+        text: { type: 'mrkdwn', text: '_現在表示できるタスクはありません_' }
       },
     ]
   }
@@ -87,9 +100,8 @@ function taskList (
   ))
 }
 
-exports.AppHomeView = ({ tasks = [] }) => ({
-  type: 'home',
-  blocks: [
+exports.AppHomeView = ({ tasks = [], threadExists = false }) => {
+  const blocks = [
     {
       type: 'header',
       text: { type: 'plain_text', text: 'timesmanager' }
@@ -97,7 +109,15 @@ exports.AppHomeView = ({ tasks = [] }) => ({
     { type: 'divider' },
     ...dailyReportSection(),
     { type: 'divider' },
-    ...taskSection(),
-    ...taskList(tasks),
+    ...taskSection(threadExists),
   ]
-})
+
+  if (threadExists) {
+    blocks.push(...taskList({ tasks }))
+  }
+
+  return {
+    type: 'home',
+    blocks,
+  }
+}

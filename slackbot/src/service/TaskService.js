@@ -18,8 +18,12 @@ class TaskService {
    * @returns tasks: 取得結果
    */
   async getByUserId ({ userId }) {
-    const getParams = `?userId=${userId}`
-    const tasks = await axios.get(`${process.env.BACKEND_API_BASE_URL}${BackendRouting.TASK.ROOT}${getParams}`)
+    const url = `${process.env.BACKEND_API_BASE_URL}${BackendRouting.TASK.ROOT}`
+    const tasks = await axios.get(url, {
+      params: {
+        userId: userId,
+      }
+    })
       .then((status) => {
         console.log('getByUserId:', status)
       })
@@ -37,9 +41,14 @@ class TaskService {
    */
   async issueLatestSerial ({ userId, date }) {
     const url = `${process.env.BACKEND_API_BASE_URL}${BackendRouting.TASK.SERIAL}`
-    const getParams = `?userId=${userId}&date=${date}`
-    const latestSerial = await axios.get(url + getParams)
-    return latestSerial
+    const response = await axios.get(url, {
+      params: {
+        userId: userId,
+        date: date,
+      }
+    })
+    console.log(`issueLatestSerial response:${response}`)
+    return response.data[0].serial
   }
 
   // 新規タスク入力用モーダルのBlockkit作成用パラメータを取得し返却する
@@ -68,11 +77,6 @@ class TaskService {
     } catch (error) {
       throw new Error(error.message, { cause: error })
     }
-  }
-
-  // タスク更新用モーダルのBlockkitを作成し返却する
-  async updateTask () {
-    // DBからタスク情報を取得
   }
 
   // /makethread入力時のNewTaskモーダル入力値を取得し、Blocksを返す
