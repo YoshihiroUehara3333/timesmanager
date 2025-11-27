@@ -1,0 +1,11 @@
+    - name: Test SSH from GitHub Actions
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_HOST_PROD }}
+        username: ${{ secrets.EC2_USER_PROD }}
+        key: ${{ secrets.EC2_KEY_PROD }}
+        script_stop: true
+        debug: true
+        script: |
+          whoami
+          hostname
