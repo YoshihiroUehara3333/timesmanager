@@ -10,12 +10,12 @@ const { HandlerBase } = require('./HandlerBase')
 
 class AppCommandHandler extends HandlerBase {
   constructor
-    ({
-      dailyReportService,
-      threadService,
-      taskService,
-      slackApiAdaptor
-    }) {
+  ({
+    dailyReportService,
+    threadService,
+    taskService,
+    slackApiAdaptor
+  }) {
     super({ slackApiAdaptor })
 
     this.dailyReportService = dailyReportService
@@ -30,7 +30,7 @@ class AppCommandHandler extends HandlerBase {
     }
   }
 
-  async handle(body, logger) {
+  async handle (body, logger) {
     const userId = body.command.user
     const handler = this.dispatcher[body.command.command] || this.dispatcher.default
 
@@ -39,7 +39,7 @@ class AppCommandHandler extends HandlerBase {
   }
 
   // /makethread実行時
-  async handleMakethread(body) {
+  async handleMakethread (body) {
     const command = this.getCommandFromBody(body)
     const channelId = body.channel_id || ''
 
@@ -82,7 +82,7 @@ class AppCommandHandler extends HandlerBase {
   }
 
   // /newtask実行時
-  async handleNewTask(body) {
+  async handleNewTask (body) {
     const command = this.getCommandFromBody(body)
 
     const params = await this.taskService.createTaskInputModalParams(command, undefined)
@@ -100,7 +100,7 @@ class AppCommandHandler extends HandlerBase {
   }
 
   // /warmup実行時
-  async handleWarmUp(body) {
+  async handleWarmUp (body) {
     const command = this.getCommandFromBody(body)
 
     return new PostMessage(
@@ -109,7 +109,7 @@ class AppCommandHandler extends HandlerBase {
     )
   }
 
-  getCommandFromBody(body) {
+  getCommandFromBody (body) {
     return body.command
   }
 }

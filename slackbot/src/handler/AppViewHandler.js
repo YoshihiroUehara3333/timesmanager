@@ -1,6 +1,6 @@
 // モジュール読み込み
 require('date-utils')
-const axios = require('axios')
+const { axios } = require('axios')
 const { ModalConst } = require('../constants/ModalConst')
 const { PostMessage } = require('../slack/SlackApiRequest')
 const { HandlerBase } = require('./HandlerBase')
@@ -21,7 +21,7 @@ class AppViewHandler extends HandlerBase {
 
     this.dispatcher = {
       [`${this.CALLBACK_ID.NEWTASK}`]: this.handleNewTaskModalCallback.bind(this),
-      [`${this.CALLBACK_ID.DAILYATTENDANCE}`]: this.handleDailyAttendanceInputCallback.bind(this),
+      [`${this.CALLBACK_ID.ATTENDANCE_SUBMIT}`]: this.handleDailyAttendanceInputCallback.bind(this),
       default: this.handleDefault.bind(this)
     }
   }
