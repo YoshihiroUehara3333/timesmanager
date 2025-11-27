@@ -1,0 +1,84 @@
+name: Deploy Spring Boot App to EC2_Prod
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'springboot/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v3
+
+    - name: Public IP Install
+      id: ip
+      uses: haythem/public-ip@v1.3
+
+    - name: AWS CLI install
+      run: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install --update
+        aws --version
+
+    # AWS CLIにキーを設定をする
+    - name: AWS set Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-1
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Build with Gradle
+      run: gradle clean build -x test
+      working-directory: ./springboot/timesmanager-backend
+
+    - name: edit security group
+      run: |
+        # SSHのセキュリティグループを開放する
+        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
+    - name: Copy jar file to EC2
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST_PROD }}
+        username: ${{ secrets.EC2_USER_PROD }}
+        key: ${{ secrets.EC2_KEY_DEV }}
+        source: springboot/timesmanager-backend/build/libs/*.jar
+        target: /home/${{ secrets.EC2_USER_PROD }}/app/
+        overwrite: true
+        strip_components: 4 
+
+    - name: SSH and restart app
+      uses: appleboy/ssh-action@v1.0.0
+      continue-on-error: true
+      with:
+        host: ${{ secrets.EC2_HOST_PROD }}
+        username: ${{ secrets.EC2_USER_PROD }}
+        key: ${{ secrets.EC2_KEY_PROD }}
+        script_stop: false
+        script: |
+          pkill -f 'java -jar' || true
+          sudo systemctl restart timesmanager
+
+    - name: edit security group
+      run: |
+        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
+    - name: Notify to Slack
+      if: always()
+      run: |
+        curl -X POST -H 'Content-type: application/json' \
+        --data "{\"text\":\"✅ timesmanager-backend デプロイ完了（branch: ${{ github.ref_name }}）\"}" \
+        ${{ secrets.SLACK_WEBHOOK }}
