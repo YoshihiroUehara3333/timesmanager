@@ -20,7 +20,7 @@ public class ThreadService {
 
 	public ServiceResult<Void> save(ThreadRequest request){
 		try {
-			List<ThreadResponse> getRes = threadDynamoRepository.findByChannelIdAndDate(request.getChannelId(), request.getDate());
+			List<ThreadResponse> getRes = threadDynamoRepository.findByUserIdAndDate(request.getUserId(), request.getDate());
 			
 			if(getRes.isEmpty()) {
 				threadDynamoRepository.putItem(request);
@@ -39,24 +39,24 @@ public class ThreadService {
     /**
      * チャンネルIDに紐づくスレッド情報を全件取得
      */
-	public ServiceResult<List<ThreadResponse>> getAllByChannelId(String channelId) {
+	public ServiceResult<List<ThreadResponse>> getAllByUserId(String userId) {
 		try {
-			List<ThreadResponse> response = threadDynamoRepository.findAllByChannelId(channelId);
+			List<ThreadResponse> response = threadDynamoRepository.findAllByUserId(userId);
 			return ServiceResult.success(response);
 		}
 		catch(Exception e) {
-	        log.error("DynamoDB処理中にエラー: getAllByChannelId channelId={}", channelId, e);
+	        log.error("DynamoDB処理中にエラー: getAllByUserId userId={}", userId, e);
 	        return ServiceResult.failure("DynamoDB error");
 		}
 	};
 	
-	public ServiceResult<List<ThreadResponse>> getByChannelIdAndDate(String channelId, String date) {
+	public ServiceResult<List<ThreadResponse>> getByUserIdAndDate(String userId, String date) {
 		try {
-			List<ThreadResponse> response = threadDynamoRepository.findByChannelIdAndDate(channelId, date);
+			List<ThreadResponse> response = threadDynamoRepository.findByUserIdAndDate(userId, date);
 			return ServiceResult.success(response);
 		}
 		catch(Exception e) {            
-			log.error("DynamoDB処理中にエラー: getByChannelIdAndDate channelId={}, date={}", channelId, date, e);
+			log.error("DynamoDB処理中にエラー: getByUserIdAndDate userId={}, date={}", userId, date, e);
 			return ServiceResult.failure("DynamoDB error");
 		}
 	}

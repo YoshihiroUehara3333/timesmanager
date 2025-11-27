@@ -42,17 +42,17 @@ public class ThreadController {
 	
 	@GetMapping
 	public ResponseEntity<List<ThreadResponse>> get(
-			@RequestParam(required = true) String channelId,
+			@RequestParam(required = true) String userId,
 	        @RequestParam(required = false) String date
 	){	
-		log.info("📥 Received GET /api/thread: {}", channelId, date);
+		log.info("📥 Received GET /api/thread: userId={}, date={}", userId, date);
 		
 		ServiceResult<List<ThreadResponse>> result;
 		
 		if (date == null) {
-			result = threadService.getAllByChannelId(channelId);
+			result = threadService.getAllByUserId(userId);
 		} else {
-			result = threadService.getByChannelIdAndDate(channelId, date);
+			result = threadService.getByUserIdAndDate(userId, date);
         }
 		
 		if(result.isSuccess()) {

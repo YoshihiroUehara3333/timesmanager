@@ -70,8 +70,8 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
      * スレッド情報を1件取得（PK+SKでユニーク）
      * 返り値は既存互換のため List<ThreadResponse> としている
      */
-    public List<ThreadResponse> findByChannelIdAndDate(String channelId, String date) throws DynamoDbException{
-        String partitionKey = DynamoPK.THREAD.getPartitionKey(channelId);
+    public List<ThreadResponse> findByUserIdAndDate(String userId, String date) throws DynamoDbException{
+        String partitionKey = DynamoPK.THREAD.getPartitionKey(userId);
         String sortKey = date;
 
         Map<String, AttributeValue> key = new HashMap<>();
@@ -100,8 +100,8 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
     /**
      * チャンネルIDに紐づくスレッド情報を全件取得する
      */
-	public List<ThreadResponse> findAllByChannelId(String channelId) {
-		String partitionKey = DynamoPK.THREAD.getPartitionKey(channelId);
+	public List<ThreadResponse> findAllByUserId(String userId) {
+		String partitionKey = DynamoPK.THREAD.getPartitionKey(userId);
 
 	    Map<String, AttributeValue> eav = Map.of(
 	            ":pk", AttributeValue.builder().s(partitionKey).build()

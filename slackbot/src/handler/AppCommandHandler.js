@@ -52,7 +52,7 @@ class AppCommandHandler extends HandlerBase {
     const getParams = `?channelId=${channelId}&date=${date}`
     const response = await axios.get(url + getParams)
 
-    console.log(response)
+    console.log(response.data[0])
 
     // timesチャンネルにスレッド作成
     const userId = command.user_id
