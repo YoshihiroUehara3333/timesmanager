@@ -17,6 +17,7 @@ import com.slack_timesmanager.common.ServiceResult;
 @RestController
 @RequestMapping("/api/diary")
 public class DiaryController {
+	/** Logger */
 	private static final Logger log = LoggerFactory.getLogger(DiaryController.class);
 	
 	private final DiaryService diaryService;
