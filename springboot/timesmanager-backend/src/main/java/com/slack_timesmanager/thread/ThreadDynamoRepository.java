@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -30,6 +32,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
     private static final String ATTR_PERMALINK = "permalink";
     private static final String ATTR_THREADTS = "thread_ts";
 
+    private static final Logger log = LoggerFactory.getLogger(ThreadDynamoRepository.class);
     
 	public ThreadDynamoRepository(
 			DynamoDbClient dynamoDbClient,
@@ -90,6 +93,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
 
         try {
             Map<String, AttributeValue> item = dynamoDbClient.getItem(request).item();
+            log.info("raw response item = {}", item); // 0件のとき {} か null か確認
             if (item == null || item.isEmpty()) {
 	            // 「レコード0件」の時は null ではなく空Listを返す
 	            return Collections.emptyList();
