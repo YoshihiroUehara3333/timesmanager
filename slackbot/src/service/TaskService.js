@@ -30,6 +30,8 @@ class TaskService {
       .catch((err) => {
         console.error('getByUserId:', err)
       })
+
+    console.log(response)
     return response.data
   }
 
