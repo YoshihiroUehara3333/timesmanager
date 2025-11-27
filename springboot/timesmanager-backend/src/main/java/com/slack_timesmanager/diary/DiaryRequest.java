@@ -4,6 +4,7 @@ import com.slack_timesmanager.core.Request;
 
 public class DiaryRequest implements Request{
 	private String userId;
+	private String channelId;
 	private String date;
 	private String startTime;
 	private String endTime;
@@ -13,14 +14,20 @@ public class DiaryRequest implements Request{
 	public String getUserId() {
 		return userId;
 	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getChannelId() {
+		return channelId;
+	}
+	public void setChannelId(String channelId) {
+		this.channelId = channelId;
+	}
 	public String getDate() {
 		return date;
 	}
 	public void setDate(String date) {
 		this.date = date;
-	}
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 	public String getStartTime() {
 		return startTime;

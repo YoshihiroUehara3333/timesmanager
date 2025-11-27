@@ -19,15 +19,19 @@ public class DiaryService {
 		this.diaryDynamoRepository = diaryDynamoDbRepository;
 	}
 
+    /**
+     * 日報の新規登録 or 更新（同一 userId + date があれば更新、それ以外は登録）
+     */
 	public ServiceResult<Void> save(DiaryRequest request){
 		try {
-			DiaryResponse getRes = diaryDynamoRepository.getDiary(request.getUserId(), request.getDate());
+			List<DiaryResponse> getRes = diaryDynamoRepository.getDiary(request.getUserId(), request.getDate());
 			
-			if(getRes != null) {
-				diaryDynamoRepository.updateItem(request);
-			} else {
+			if(getRes.isEmpty()) {
 				diaryDynamoRepository.putItem(request);
+			} else {
+				diaryDynamoRepository.updateItem(request);
 			}
+			
 			return ServiceResult.success();
 		}
 		catch(Exception e) {
@@ -36,15 +40,17 @@ public class DiaryService {
 		}
 	}
 	
+    /**
+     * 日報取得（userId + date）
+     */
 	public ServiceResult<List<DiaryResponse>> getDiary(String userId, String date) {
 		try {
 			List<DiaryResponse> response = diaryDynamoRepository.getDiary(userId, date);
 			return ServiceResult.success(response);
 		}
-		catch(Exception e) {
-			e.printStackTrace();
-			log.error("DynamoDB処理中にエラー", e);
-			return ServiceResult.failure();
+		catch(Exception e) {            
+			log.error("DynamoDB処理中にエラー: getDiary userId={}, date={}", userId, date, e);
+			return ServiceResult.failure("DynamoDB error");
 		}
 	}
 }

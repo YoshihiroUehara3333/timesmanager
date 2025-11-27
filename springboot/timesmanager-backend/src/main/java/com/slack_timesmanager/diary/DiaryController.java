@@ -1,5 +1,7 @@
 package com.slack_timesmanager.diary;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +30,8 @@ public class DiaryController {
 		
 		log.info("📥 Received POST /api/diary: {}", request);
 		
-		ServiceResult result = diaryService.save(request);
-		if(result.getStatus()) {
+		ServiceResult<Void> result = diaryService.save(request);
+		if(result.isSuccess()) {
 			return ResponseEntity.ok().build();
 		} else {
 			return ResponseEntity.internalServerError().build();
@@ -37,17 +39,21 @@ public class DiaryController {
 	}
 	
 	@GetMapping("/{userId}/{date}")
-	public ResponseEntity<DiaryResponse> get(
+	public ResponseEntity<List<DiaryResponse>> get(
 			@PathVariable String userId,
 			@PathVariable String date){
 		
 		log.info("📥 Received GET /api/diary: {}", userId, date);
-		ServiceResult result = diaryService.getDiary(userId, date);
-		if(result.getStatus()) {
-			DiaryResponse response = (DiaryResponse)result.getResponse();
-			return ResponseEntity.ok(response);
+		
+		ServiceResult<List<DiaryResponse>> result;
+		
+		result = diaryService.getDiary(userId, date);
+		
+		if(result.isSuccess()) {
+			return ResponseEntity.ok(result.getBody());
+			
 		} else {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.internalServerError().build();
 		}
 	}
 }

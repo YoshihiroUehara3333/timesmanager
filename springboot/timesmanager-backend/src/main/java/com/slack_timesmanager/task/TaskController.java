@@ -24,6 +24,21 @@ public class TaskController {
 	public TaskController(TaskService taskService) {
 		this.taskService = taskService;
 	}
+	
+	@PostMapping
+	public ResponseEntity<Void> post(
+			@RequestBody TaskRequest request)
+	{
+		log.info("📥 Received POST /api/task: {}", request);
+		
+		ServiceResult<Void> result = taskService.save(request);
+		
+		if(result.isSuccess()) {
+			return ResponseEntity.ok().build();
+		} else {
+			return ResponseEntity.internalServerError().build();
+		}
+	}
 
 	@GetMapping
 	public ResponseEntity<List<TaskResponse>> get(
@@ -48,18 +63,5 @@ public class TaskController {
 		}
 	}
 	
-	@PostMapping
-	public ResponseEntity<Void> post(
-			@RequestBody TaskRequest request)
-	{
-		log.info("📥 Received POST /api/task: {}", request);
-		
-		ServiceResult<Void> result = taskService.save(request);
-		
-		if(result.isSuccess()) {
-			return ResponseEntity.ok().build();
-		} else {
-			return ResponseEntity.internalServerError().build();
-		}
-	}
+
 }
