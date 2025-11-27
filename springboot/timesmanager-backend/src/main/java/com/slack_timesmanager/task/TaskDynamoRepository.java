@@ -1,6 +1,7 @@
 package com.slack_timesmanager.task;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -9,7 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.slack_timesmanager.base.DynamoRepositoryBase;
-import com.slack_timesmanager.enums.DynamoPK;
+import com.slack_timesmanager.dynamodb.DynamoKey;
+import com.slack_timesmanager.dynamodb.DynamoKeyFactory;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -41,19 +43,21 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
      * タスクを1件保存
      */
     public boolean putItem(TaskRequest request) {
-        String partitionKey = DynamoPK.TASK.getPartitionKey(request.getUserId());
-        String sortKey = request.getDate() + request.getSerial();
-
-        Map<String, AttributeValue> item = Map.of(
-                ATTR_PK,         AttributeValue.builder().s(partitionKey).build(),
-                ATTR_SK,         AttributeValue.builder().s(sortKey).build(),
-                ATTR_USER_ID,    AttributeValue.builder().s(request.getUserId()).build(),
-                ATTR_DATE,       AttributeValue.builder().s(request.getDate()).build(),
-                ATTR_TASK_NAME,  AttributeValue.builder().s(request.getTaskName()).build(),
-                ATTR_CHANNEL_ID, AttributeValue.builder().s(request.getChannelId()).build(),
-                ATTR_STATUS,     AttributeValue.builder().s(request.getStatus()).build(),
-                ATTR_SERIAL,     AttributeValue.builder().s(request.getSerial()).build()
+    	DynamoKey itemKey = DynamoKeyFactory.taskItemKey(
+                request.getUserId(),
+                request.getDate(),
+                request.getSerial()
         );
+
+    	Map<String, AttributeValue> item = new HashMap<>();
+        item.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
+        item.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
+        item.put(ATTR_USER_ID,    AttributeValue.builder().s(request.getUserId()).build());
+        item.put(ATTR_DATE,       AttributeValue.builder().s(request.getDate()).build());
+        item.put(ATTR_TASK_NAME,  AttributeValue.builder().s(request.getTaskName()).build());
+        item.put(ATTR_CHANNEL_ID, AttributeValue.builder().s(request.getChannelId()).build());
+        item.put(ATTR_STATUS,     AttributeValue.builder().s(request.getStatus()).build());
+        item.put(ATTR_SERIAL,     AttributeValue.builder().s(request.getSerial()).build());
 
         PutItemRequest putRequest = PutItemRequest.builder()
                 .tableName(tableName)
@@ -72,7 +76,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
      * ユーザIDに紐づくタスクを全件取得する
      */
 	public List<TaskResponse> findAllByUserId(String userId) {
-	    String partitionKey = DynamoPK.TASK.getPartitionKey(userId);
+	    String partitionKey = DynamoKeyFactory.taskPartitionKey(userId);
 
 	    // :pk プレースホルダーにパーティションキーをバインド
 	    Map<String, AttributeValue> eav = Map.of(
@@ -107,7 +111,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
      * ユーザIDと日付からタスク情報を取得する
      */
 	public List<TaskResponse> findByUserIdAndDate(String userId, String date) {
-	    String partitionKey = DynamoPK.TASK.getPartitionKey(userId);
+		String partitionKey = DynamoKeyFactory.taskPartitionKey(userId);
 
 	    // プレースホルダーにバインド
 	    Map<String, AttributeValue> eav = Map.of(
@@ -146,7 +150,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
      * - 既にあれば最大serial + 1 をゼロ埋めで返す
      */
     public String getNextSerial(String userId, String date) {
-        String partitionKey = DynamoPK.TASK.getPartitionKey(userId);
+    	String partitionKey = DynamoKeyFactory.taskPartitionKey(userId);
 
         Map<String, AttributeValue> eav = Map.of(
                 ":pk", AttributeValue.builder().s(partitionKey).build(),

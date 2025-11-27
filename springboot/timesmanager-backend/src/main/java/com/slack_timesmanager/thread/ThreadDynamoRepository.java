@@ -10,7 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.slack_timesmanager.base.DynamoRepositoryBase;
-import com.slack_timesmanager.enums.DynamoPK;
+import com.slack_timesmanager.dynamodb.DynamoKey;
+import com.slack_timesmanager.dynamodb.DynamoKeyFactory;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -42,12 +43,14 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
      * スレッド情報を1件保存
      */
     public boolean putItem(ThreadRequest request) throws Exception {
-		String partitionKey = DynamoPK.THREAD.getPartitionKey(request.getChannelId());
-        String sortKey = request.getDate();
+    	DynamoKey itemKey = DynamoKeyFactory.threadItemKey(
+                request.getUserId(),
+                request.getDate()
+        );
 
         Map<String, AttributeValue> item = new HashMap<>();
-        item.put(ATTR_PK, AttributeValue.builder().s(partitionKey).build());
-        item.put(ATTR_SK, AttributeValue.builder().s(sortKey).build());
+        item.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
+        item.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
         item.put(ATTR_CHANNEL_ID, AttributeValue.builder().s(request.getChannelId()).build());
         item.put(ATTR_USER_ID, AttributeValue.builder().s(request.getUserId()).build());
         item.put(ATTR_PERMALINK, AttributeValue.builder().s(request.getPermalink()).build());
@@ -71,12 +74,14 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
      * 返り値は既存互換のため List<ThreadResponse> としている
      */
     public List<ThreadResponse> findByUserIdAndDate(String userId, String date) throws DynamoDbException{
-        String partitionKey = DynamoPK.THREAD.getPartitionKey(userId);
-        String sortKey = date;
+    	DynamoKey itemKey = DynamoKeyFactory.threadItemKey(
+                userId,
+                date
+        );
 
         Map<String, AttributeValue> key = new HashMap<>();
-        key.put(ATTR_PK, AttributeValue.builder().s(partitionKey).build());
-        key.put(ATTR_SK, AttributeValue.builder().s(sortKey).build());
+        key.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
+        key.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
 
         GetItemRequest request = GetItemRequest.builder()
             .tableName(tableName)
@@ -101,7 +106,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
      * チャンネルIDに紐づくスレッド情報を全件取得する
      */
 	public List<ThreadResponse> findAllByUserId(String userId) {
-		String partitionKey = DynamoPK.THREAD.getPartitionKey(userId);
+		String partitionKey = DynamoKeyFactory.threadPartitionKey(userId);
 
 	    Map<String, AttributeValue> eav = Map.of(
 	            ":pk", AttributeValue.builder().s(partitionKey).build()

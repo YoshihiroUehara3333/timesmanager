@@ -10,7 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.slack_timesmanager.base.DynamoRepositoryBase;
-import com.slack_timesmanager.enums.DynamoPK;
+import com.slack_timesmanager.dynamodb.DynamoKey;
+import com.slack_timesmanager.dynamodb.DynamoKeyFactory;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -44,12 +45,14 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
      * 勤怠情報を保存
      */
     public boolean putItem(AttendanceRequest request) throws Exception {
-		String partitionKey = DynamoPK.ATTENDANCE.getPartitionKey(request.getUserId());
-        String sortKey = request.getDate();
+    	DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
+                request.getUserId(),
+                request.getDate()
+        );
 
         Map<String, AttributeValue> item = new HashMap<>();
-        item.put(ATTR_PK, AttributeValue.builder().s(partitionKey).build());
-        item.put(ATTR_SK, AttributeValue.builder().s(sortKey).build());
+        item.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
+        item.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
         item.put(ATTR_USER_ID, AttributeValue.builder().s(request.getUserId()).build());
         item.put(ATTR_DATE, AttributeValue.builder().s(request.getDate()).build());
         item.put(ATTR_START_TIME, AttributeValue.builder().s(request.getStartTime()).build());
@@ -73,12 +76,14 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
      * 勤怠情報をアップデート
      */
 	public void updateItem(AttendanceRequest request) throws Exception {
-		String partitionKey = DynamoPK.ATTENDANCE.getPartitionKey(request.getUserId());
-	    String sortKey = request.getDate();
+    	DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
+                request.getUserId(),
+                request.getDate()
+        );
 	    
         Map<String, AttributeValue> key = new HashMap<>();
-        key.put(ATTR_PK, AttributeValue.builder().s(partitionKey).build());
-        key.put(ATTR_SK, AttributeValue.builder().s(sortKey).build());
+        key.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
+        key.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
 
 	    Map<String, String> expressionAttributeNames = new HashMap<>();
 	    expressionAttributeNames.put("#st", ATTR_START_TIME);
@@ -110,12 +115,14 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
      * 返り値は既存互換のため List<AttendanceResponse> としている
      */
     public List<AttendanceResponse> findByUserIdAndDate(String userId, String date) throws DynamoDbException{
-        String partitionKey = DynamoPK.ATTENDANCE.getPartitionKey(userId);
-        String sortKey = date;
+    	DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
+                userId,
+                date
+        );
 
         Map<String, AttributeValue> key = new HashMap<>();
-        key.put(ATTR_PK, AttributeValue.builder().s(partitionKey).build());
-        key.put(ATTR_SK, AttributeValue.builder().s(sortKey).build());
+        key.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
+        key.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
 
         GetItemRequest request = GetItemRequest.builder()
             .tableName(tableName)
@@ -140,7 +147,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
      * ユーザIDに紐づく勤怠情報を全件取得する
      */
 	public List<AttendanceResponse> findAllByUserId(String userId) {
-		String partitionKey = DynamoPK.ATTENDANCE.getPartitionKey(userId);
+		String partitionKey = DynamoKeyFactory.attendancePartitionKey(userId);
 
 	    Map<String, AttributeValue> eav = Map.of(
 	            ":pk", AttributeValue.builder().s(partitionKey).build()
