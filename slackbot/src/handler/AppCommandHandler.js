@@ -38,7 +38,9 @@ class AppCommandHandler extends HandlerBase {
     await this.execute(handler, userId, body, logger)
   }
 
-  // /makethread実行時
+  /**
+   *  スラッシュコマンド/makethread実行時
+   **/
   async handleMakethread ({ command }) {
     const channelId = command.channel_id
     const userId = command.user_id
@@ -50,6 +52,7 @@ class AppCommandHandler extends HandlerBase {
       channelId: channelId,
       text: text,
     }))
+    // permalink取得
     const permalink = await this.slackApiAdaptor.send(new GetPermalink({
       channelId: channelId,
       messageTs: thread.ts
@@ -63,49 +66,49 @@ class AppCommandHandler extends HandlerBase {
       threadTs: thread.ts,
       permalink: permalink,
     }
-
     const url = `${process.env.BACKEND_API_BASE_URL}/api/thread`
-    const response = await axios.post(url, data)
+    await axios.post(url, data)
 
+    // タスク入力モーダルを開く
     const params = await this.taskService.createTaskInputModalParams(command, thread)
     if (params) {
-      return new ViewsOpen(
-        command.trigger_id,
-        TaskInputModal(params)
-      )
+      return new ViewsOpen({
+        triggerId: command.trigger_id,
+        view: TaskInputModal(params),
+      })
     }
   }
 
-  // /newtask実行時
+  /**
+   *  スラッシュコマンド/newtask実行時
+   **/
   async handleNewTask (body) {
-    const command = this.getCommandFromBody(body)
+    const command = body.command
 
     const params = await this.taskService.createTaskInputModalParams(command, undefined)
     if (params) {
-      return new ViewsOpen(
-        command.trigger_id,
-        TaskInputModal(params)
-      )
+      return new ViewsOpen({
+        triggerId: command.trigger_id,
+        view: TaskInputModal(params)
+      })
     } else {
-      return new PostMessage(
-        command.user,
-        '今日のスレッド情報を取得できませんでした。'
-      )
+      return new PostMessage({
+        channelId: command.user,
+        text: '今日のスレッド情報を取得できませんでした。'
+      })
     }
   }
 
-  // /warmup実行時
+  /**
+   *  スラッシュコマンド/warmup実行時
+   **/
   async handleWarmUp (body) {
-    const command = this.getCommandFromBody(body)
+    const command = body.command
 
-    return new PostMessage(
-      command.user,
-      'warmupが実行されました'
-    )
-  }
-
-  getCommandFromBody (body) {
-    return body.command
+    return new PostMessage({
+      channelId: command.user,
+      text: 'warmupが実行されました'
+    })
   }
 }
 

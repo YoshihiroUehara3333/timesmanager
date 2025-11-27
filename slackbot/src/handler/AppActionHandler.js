@@ -60,7 +60,6 @@ class AppActionHandler extends HandlerBase {
 
     const url = `${process.env.BACKEND_API_BASE_URL}/api/attendance`
     const getParams = `?userId=${userId}&date=${date}`
-
     const response = await axios.get(url + getParams)
 
     return new ViewsOpen({
@@ -98,10 +97,10 @@ class AppActionHandler extends HandlerBase {
       serial: '',
     }
 
-    return new ViewsOpen(
-      body.trigger_id,
-      TaskInputModal(params)
-    )
+    return new ViewsOpen({
+      triggerId: body.trigger_id,
+      view: TaskInputModal(params)
+    })
   }
 }
 

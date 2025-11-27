@@ -6,7 +6,7 @@ exports.TaskBlock = ({ userId, taskName, targetTime, memo, serial }) => ([
     type: 'section',
     text: {
       type: 'mrkdwn',
-      text: `<@${userId}>\n📝*作業記録*`,
+      text: `<@${userId}>\n📝*タスク記録*`,
     }
   },
   {
