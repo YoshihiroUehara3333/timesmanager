@@ -41,14 +41,15 @@ class AppEventHandler extends HandlerBase {
     if (thread.exists) {
       // タスクリストを取得
       tasks = await this.taskService.getByUserId({ userId: userId })
-      console.log(tasks)
-      // activeなもので絞り込む
-      tasks = tasks.filter((task) => task.status === TaskConst.STATUS.ACTIVE)
+      if (tasks.length) {
+        // activeなもので絞り込む
+        tasks = tasks.filter((task) => task.status === TaskConst.STATUS.ACTIVE)
+      }
     }
 
     return new ViewsPublish({
       userId: userId,
-      view: AppHomeView({tasks: tasks, threadExists: thread.exists })
+      view: AppHomeView({ tasks: tasks, threadExists: thread.exists })
     })
   }
 }

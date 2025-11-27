@@ -16,7 +16,7 @@ class ThreadService {
    * 指定された日付とユーザIDで既にスレッドが作られているか確認する
    * @param {*} userId
    * @param {*} date
-   * @returns checkResult
+   * @returns result.exists = レコードが存在した場合true
    */
   async checkIsAlreadyExecuted ({ userId, date }) {
     const url = `${process.env.BACKEND_API_BASE_URL}${BackendRouting.THREAD.ROOT}`
