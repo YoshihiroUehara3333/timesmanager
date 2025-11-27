@@ -30,20 +30,20 @@ class AppCommandHandler extends HandlerBase {
     }
   }
 
-  async handle (body, logger) {
-    const userId = body.command.user
-    const handler = this.dispatcher[body.command.command] || this.dispatcher.default
+  async handle (command, logger) {
+    const userId = command.user_id
+    const handler = this.dispatcher[command.command] || this.dispatcher.default
 
     logger.info(`${handler.name}を実行`)
-    await this.execute(handler, userId, body, logger)
+    await this.execute(handler, userId, command, logger)
   }
 
   /**
    * スラッシュコマンド/makethread実行時
-   * @param {*} command body.command
+   * @param {*} command
    * @returns SlackApiRequest
    */
-  async handleMakethread ({ command }) {
+  async handleMakethread (command) {
     const channelId = command.channel_id
     const userId = command.user_id
     const date = new Date().toFormat('YYYY-MM-DD')
@@ -79,10 +79,10 @@ class AppCommandHandler extends HandlerBase {
 
   /**
    * スラッシュコマンド/newtask実行時
-   * @param {*} command body.command
+   * @param {*} command
    * @returns SlackApiRequest
    */
-  async handleNewTask ({ command }) {
+  async handleNewTask (command) {
     const params = await this.taskService.createTaskInputModalParams(command, undefined)
     if (params) {
       return new ViewsOpen({
@@ -99,12 +99,12 @@ class AppCommandHandler extends HandlerBase {
 
   /**
    * スラッシュコマンド/warmup実行時
-   * @param {*} command body.command
+   * @param {*} command
    * @returns SlackApiRequest
    */
-  async handleWarmUp ({ command }) {
+  async handleWarmUp (command) {
     return new PostMessage({
-      channelId: command.user,
+      channelId: command.user_id,
       text: 'warmupが実行されました'
     })
   }

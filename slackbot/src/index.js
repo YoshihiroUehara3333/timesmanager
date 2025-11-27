@@ -27,11 +27,11 @@ const appActionHandler = new AppActionHandler(diContext.handler)
 const appEventHandler = new AppEventHandler(diContext.handler)
 
 // スラッシュコマンド検知
-app.command(/.*/, async ({ ack, command, body, context, logger }) => {
+app.command(/.*/, async ({ ack, command, context, logger }) => {
   ack()
   if (context.retryNum) return
   logger.info(`app.command\ncontext:${JSON.stringify(context)}\nbody:${JSON.stringify(body)}\n`)
-  await appCommandHandler.handle(body, logger)
+  await appCommandHandler.handle(command, logger)
 })
 
 // メッセージ検知
