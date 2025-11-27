@@ -6,8 +6,8 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 public class DynamoRepositoryBase {
     // ===== 属性名の定数 =====
-    protected static final String ATTR_PK         = "partitionKey";
-    protected static final String ATTR_SK         = "sortKey";
+    protected static final String ATTR_PK         = "partition_key";
+    protected static final String ATTR_SK         = "sort_key";
     
     protected final String tableName;
 	protected final DynamoDbClient dynamoDbClient;

@@ -22,8 +22,8 @@ import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 public class DiaryDynamoRepository extends DynamoRepositoryBase{
 	
     // ===== 属性名の定数 =====
-    private static final String ATTR_USER_ID    = "userId";
-    private static final String ATTR_CHANNEL_ID = "channelId";
+    private static final String ATTR_USER_ID    = "user_id";
+    private static final String ATTR_CHANNEL_ID = "channel_id";
 	
 	public DiaryDynamoRepository(
 			DynamoDbClient dynamoDbClient,

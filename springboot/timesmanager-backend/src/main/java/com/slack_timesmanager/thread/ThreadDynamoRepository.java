@@ -23,11 +23,11 @@ import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
 @Repository
 public class ThreadDynamoRepository extends DynamoRepositoryBase{
     // ===== 属性名の定数 =====
-    private static final String ATTR_USER_ID    = "userId";
-    private static final String ATTR_CHANNEL_ID = "channelId";
+    private static final String ATTR_USER_ID    = "user_id";
+    private static final String ATTR_CHANNEL_ID = "channel_id";
     private static final String ATTR_DATE       = "date";
     private static final String ATTR_PERMALINK = "permalink";
-    private static final String ATTR_THREADTS = "threadTs";
+    private static final String ATTR_THREADTS = "thread_ts";
 
     
 	public ThreadDynamoRepository(

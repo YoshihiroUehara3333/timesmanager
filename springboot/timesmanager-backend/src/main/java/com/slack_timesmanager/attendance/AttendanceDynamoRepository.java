@@ -25,13 +25,11 @@ import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 
     // ===== 属性名の定数 =====
-    private static final String ATTR_PK         = "partition_key";
-    private static final String ATTR_SK         = "sort_key";
     private static final String ATTR_USER_ID    = "user_id";
     private static final String ATTR_DATE       = "date";
     private static final String ATTR_START_TIME  = "start_time";
     private static final String ATTR_END_TIME    = "end_time";
-    private static final String ATTR_WORKPLACE  = "work_place";
+    private static final String ATTR_WORKPLACE  = "workplace";
     
 	
 	public AttendanceDynamoRepository(
