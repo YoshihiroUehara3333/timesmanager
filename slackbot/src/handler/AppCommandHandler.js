@@ -45,17 +45,17 @@ class AppCommandHandler extends HandlerBase {
    * @returns SlackApiRequest
    */
   async handleMakethread (command) {
-    const channelId = command.channel_id
+    const userId = command.user_id
     const date = new Date().toFormat('YYYY-MM-DD')
 
     const url = `${process.env.BACKEND_API_BASE_URL}/api/thread`
-    const getParams = `?channelId=${channelId}&date=${date}`
+    const getParams = `?userId=${userId}&date=${date}`
     const response = await axios.get(url + getParams)
 
     console.log(response.data[0])
 
     // timesチャンネルにスレッド作成
-    const userId = command.user_id
+    const channelId = command.channel_id
     const text = `<@${userId}> \n*【壁】${date}*`
     const threadPost = await this.slackApiAdaptor.send(new PostMessage({
       channelId: channelId,
