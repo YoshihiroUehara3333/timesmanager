@@ -35,8 +35,7 @@ app.command(/.*/, async ({ ack, command, context, logger }) => {
 })
 
 // メッセージ検知
-app.message(async ({ ack, message, context, logger }) => {
-  ack()
+app.message(async ({ message, context, logger }) => {
   if (context.retryNum) return // リトライ以降のリクエストは弾く
   logger.info(`app.message\ncontext:${JSON.stringify(context)}\nmessage:${JSON.stringify(message)}\n`)
   await appMessageHandler.handle(message, logger)

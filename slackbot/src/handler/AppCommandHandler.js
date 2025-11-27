@@ -54,14 +54,13 @@ class AppCommandHandler extends HandlerBase {
 
     if (response.data[0]) {
       return new PostMessage({
-        channelId: command.user,
-        text: '本日のスレッドはすでに作成済です。'
+        channelId: command.user_id,
+        text: `本日のスレッドはすでに作成済です。\n${response.data[0].permalink}`
       })
     }
 
     // チャンネルにスレッド作成
     const channelId = command.channel_id
-    console.log(`channelId:${channelId}`)
     const text = `<@${userId}> \n*【壁】${date}*`
     const threadPost = await this.slackApiAdaptor.send(new PostMessage({
       channelId: channelId,
