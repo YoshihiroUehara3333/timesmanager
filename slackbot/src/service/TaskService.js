@@ -14,12 +14,12 @@ class TaskService {
 
   /**
    * 引数で渡されたユーザIDを基にタスクを全件取得する
-   * @param {*} param0
-   * @returns tasks: 取得結果
+   * @param {*} userId: ユーザID
+   * @returns tasks: 取得結果リスト
    */
   async getByUserId ({ userId }) {
     const url = `${process.env.BACKEND_API_BASE_URL}${BackendRouting.TASK.ROOT}`
-    const tasks = await axios.get(url, {
+    const response = await axios.get(url, {
       params: {
         userId: userId,
       }
@@ -30,7 +30,7 @@ class TaskService {
       .catch((err) => {
         console.error('getByUserId:', err)
       })
-    return tasks
+    return response.data
   }
 
   /**

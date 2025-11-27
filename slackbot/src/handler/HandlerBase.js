@@ -17,7 +17,10 @@ class HandlerBase {
       slackRequest = await handler(body)
     } catch (error) {
       logger.error(error.stack)
-      slackRequest = new PostMessage(userId, error.toString())
+      slackRequest = new PostMessage({
+        channelId: userId,
+        text: error.toString()
+      })
     } finally {
       if (slackRequest) {
         await this.slackApiAdaptor.send(slackRequest)
