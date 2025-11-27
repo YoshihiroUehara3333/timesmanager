@@ -1,7 +1,7 @@
 // モジュール読み込み
 require('date-utils')
 const { WorkReportUtils } = require('../utility/WorkReportUtils')
-const { axios } = require('axios')
+const axios = require('axios')
 const { WorkPlanBlock } = require('../blockkit/WorkPlanBlock')
 const { TaskModel } = require('../model/TaskModel')
 const { POSTDATA } = require('../constants/DynamoDB/PostData')

@@ -1,10 +1,10 @@
 // モジュール読み込み
 require('date-utils')
-const { axios } = require('axios')
+const axios = require('axios')
 const { ModalConst } = require('../constants/ModalConst')
 const { PostMessage } = require('../slack/SlackApiRequest')
 const { HandlerBase } = require('./HandlerBase')
-const { WorkPlanBlock} = require('../blockkit/WorkPlanBlock')
+const { WorkPlanBlock } = require('../blockkit/WorkPlanBlock')
 
 class AppViewHandler extends HandlerBase {
   CALLBACK_ID = ModalConst.CALLBACK_ID

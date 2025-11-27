@@ -2,7 +2,7 @@
 
 // モジュール読み込み
 require('date-utils')
-const { axios } = require('axios')
+const axios = require('axios')
 const { HandlerBase } = require('./HandlerBase')
 const { ModalConst } = require('../constants/ModalConst')
 const { ViewsOpen } = require('../slack/SlackApiRequest')
@@ -58,8 +58,10 @@ class AppActionHandler extends HandlerBase {
     const date = new Date().toFormat('YYYY-MM-DD')
     const userId = body.user.id
 
-    const url = `${process.env.BACKEND_API_BASE_URL}/api/attendance?userId=${userId}?date=${date}`
-    const attendance = await axios.get(url)
+    const url = `${process.env.BACKEND_API_BASE_URL}/api/attendance`
+    const getParams = `?userId=${userId}&date=${date}`
+
+    const attendance = await axios.get(url + getParams)
     console.log(attendance)
 
     return new ViewsOpen(
