@@ -100,13 +100,12 @@ public class DiaryDynamoRepository {
     
     
 	public void updateItem(DiaryRequest request) throws Exception {
-		String userId = request.getUserId();
-		String partitionKey = DynamoPK.DAILYREPORT.getPartitionKey(userId);
+		String partitionKey = DynamoPK.DAILYREPORT.getPartitionKey(request.getUserId());
 	    String sortKey = request.getDate();
 	    
         Map<String, AttributeValue> key = new HashMap<>();
         key.put(ATTR_PK, AttributeValue.builder().s(partitionKey).build());
-        key.put("sort_key", AttributeValue.builder().s(sortKey).build());
+        key.put(ATTR_SK, AttributeValue.builder().s(sortKey).build());
 
 	    Map<String, String> expressionAttributeNames = new HashMap<>();
 	    expressionAttributeNames.put("#st", "startTime");

@@ -2,7 +2,8 @@ package com.slack_timesmanager.enums;
 
 public enum DynamoPK {
 	DAILYREPORT("/DAILYREPORT"),
-	TASK("/TASK");
+	TASK("/TASK"),
+	ATTENDANCE("/ATTENDANCE");
 	
 	private String suffix;
 	
