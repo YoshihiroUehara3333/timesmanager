@@ -18,6 +18,7 @@ import com.slack_timesmanager.common.ServiceResult;
 @RequestMapping("/api/attendance")
 public class AttendanceController {
 	
+	/** Logger */
 	private static final Logger log = LoggerFactory.getLogger(AttendanceController.class);
 	
 	private final AttendanceService attendanceService;
