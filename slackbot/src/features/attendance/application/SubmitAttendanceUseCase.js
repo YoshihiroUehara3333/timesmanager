@@ -30,6 +30,8 @@ class SubmitAttendanceUseCase {
 
         // Slackメッセージを送信
     }
+
+    
 }
 
 module.exports = { SubmitAttendanceUseCase }

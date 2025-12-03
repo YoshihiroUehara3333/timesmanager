@@ -29,4 +29,4 @@ module.exports = {
   modalButtons,
   modalSubmit,
   modalClose,
-};
+}
