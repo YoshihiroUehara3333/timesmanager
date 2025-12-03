@@ -11,8 +11,8 @@ class HomeOpenUseCase {
     }
 
     async execute({ userId }) {
-        console.log(`HomeOpenUseCase.excecute:`)
-        
+        console.log(`HomeOpenUseCase.excecute userId:${userId}`)
+
         const date = getDate('YYYY-MM-DD')
         
         // スレッド存在確認

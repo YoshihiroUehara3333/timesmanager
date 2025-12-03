@@ -28,6 +28,8 @@ class ThreadBackendGateway extends BackendGatewayBase {
    * @returns 
    */
   async getThread({ userId, date }) {
+    console.log(`ThreadBackendGateway.getThread userId:${userId} date:${date}`)
+
     const response = await this.backendHttpClient.request({
       routing: BackendRouting.THREAD.GET,
       config: {
@@ -38,7 +40,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
       }
     })
 
-    console.log(JSON.stringify(response))
+    console.log(`response:${JSON.stringify(response)}`)
     if (response[0]) {
       return {
         channelId: response[0].channelId,
@@ -46,7 +48,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
         threadTs: response[0].threadTs,
       }
     } else {
-      return null
+      return undefined
     }
   }
 }

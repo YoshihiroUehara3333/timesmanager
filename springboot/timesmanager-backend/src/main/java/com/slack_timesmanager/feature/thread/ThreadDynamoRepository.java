@@ -80,6 +80,8 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
      * 返り値は既存互換のため List<ThreadResponse> としている
      */
     public List<ThreadResponse> findByUserIdAndDate(String userId, String date) throws DynamoDbException{
+    	log.info("ThreadDynamoRepository.getByUserIdAndDate: userId={}, date={}", userId, date);
+    	
     	DynamoKey itemKey = DynamoKeyFactory.threadItemKey(
                 userId,
                 date
