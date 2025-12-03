@@ -11,6 +11,8 @@ class HomeOpenUseCase {
     }
 
     async execute({ userId }) {
+        console.log(`HomeOpenUseCase.excecute:`)
+        
         const date = getDate('YYYY-MM-DD')
         
         // スレッド存在確認
@@ -18,7 +20,7 @@ class HomeOpenUseCase {
         let thread = await this.threadBackendGateway.getThread({userId, date})
         if (thread) {
             // タスクリスト取得
-            tasks = await this.taskBackendGateway.getTasks({userId})
+            tasks = await this.taskBackendGateway.getTasks({ userId })
             if (tasks.length) {
                 // activeなもので絞り込む
                 tasks = tasks.filter((task) => task.status === TaskConst.STATUS.ACTIVE)

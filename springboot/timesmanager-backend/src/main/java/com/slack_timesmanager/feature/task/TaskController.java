@@ -42,7 +42,7 @@ public class TaskController {
 
 	@GetMapping
 	public ResponseEntity<List<TaskResponse>> get(
-			@RequestParam(required = true) String userId,
+			@RequestParam(required = false) String userId,
 	        @RequestParam(required = false) String date
     ){
 		log.info("📥 GET /api/task called. userId={}, date={}", userId, date);

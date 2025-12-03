@@ -7,6 +7,17 @@ class TaskBackendGateway {
     this.backendHttpClient = backendHttpClient
   }
 
+  async getTasks({ userId }){
+    await this.backendHttpClient.request({
+      routing: BackendRouting.TASK.GET,
+      config: {
+        params: {
+          userId: userId
+        }
+      }
+    })
+  }
+  
   /**
    * 
    * @param {userId}ユーザID
