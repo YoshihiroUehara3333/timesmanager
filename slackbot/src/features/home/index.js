@@ -22,9 +22,9 @@ function registerHomeFeature({ app, slackApiAdaptor, backendHttpClient }) {
   // Bolt登録
   // ホーム画面オープン時
   app.event(
-    { type: 'app_home_opened' },
+    'app_home_opened',
     async ({ body, event, logger }) => {
-      logger.info(`app.event\nevent:${JSON.stringify(event)}/nbody:${JSON.stringify(body)}\n`)
+      logger.info(`app.event\nevent:${JSON.stringify(event)}\nbody:${JSON.stringify(body)}\n`)
       await homeOpenUseCase.execute({
         userId: body.event.user,
       })

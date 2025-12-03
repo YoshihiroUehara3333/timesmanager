@@ -27,7 +27,7 @@ function registerAttendanceFeature({ app, slackApiAdaptor, backendHttpClient }) 
   // ホームタブの「勤怠入力」ボタン押下
   app.action(
     ModalConst.ACTION_ID.HOME.ATTENDANCE,
-    async ({ body, ack }) => {
+    async ({ body, ack, logger }) => {
       await ack()
       logger.info(`app.action\nbody:${JSON.stringify(body)}`)
       await startUseCase.execute({
@@ -40,9 +40,9 @@ function registerAttendanceFeature({ app, slackApiAdaptor, backendHttpClient }) 
   // 勤怠入力モーダルの submit
   app.view(
     { type: 'view_submission', callback_id: ModalConst.CALLBACK_ID.ATTENDANCE_INPUT},
-    async ({ body, ack, view, logger }) => {
+    async ({ body, ack, view}) => {
       await ack()
-      logger.info(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`)
+      console.log(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`)
       await submitUseCase.execute({ 
         view: body.view, 
         userId: body.user.id 
