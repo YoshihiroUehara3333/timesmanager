@@ -56,7 +56,7 @@ function taskSection (thread) {
 }
 
 function taskList (
-  { tasks = [] } = {}
+  { tasks = [] }
 ) {
   if (!tasks.length) {
     return [
@@ -81,7 +81,7 @@ function taskList (
   ))
 }
 
-exports.HomeBlocks = ({ tasks = [], thread = undefined }) => {
+exports.HomeBlocks = ({ tasks = [], thread}) => {
   const blocks = [
     {
       type: 'header',
