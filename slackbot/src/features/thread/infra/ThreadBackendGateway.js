@@ -50,7 +50,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
 
     console.log(`ThreadBackendGateway.getThread response:${JSON.stringify(response)}`)
     if (response) {
-      return response
+      return response[0]
     } else {
       return undefined
     }
