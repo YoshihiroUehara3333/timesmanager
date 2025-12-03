@@ -20,7 +20,7 @@ function registerTaskFeature({ app, slackApiAdaptor, backendHttpClient }) {
     threadBackendGateway,
   })
   const submitUseCase = new SubmitTaskUseCase({
-    backendGateway,
+    slackGateway,
     taskBackendGateway,
     threadBackendGateway,
   })

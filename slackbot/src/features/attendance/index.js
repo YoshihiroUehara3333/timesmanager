@@ -19,8 +19,8 @@ function registerAttendanceFeature({ app, slackApiAdaptor, backendHttpClient }) 
     attendanceBackendGateway,
   })
   const submitUseCase = new SubmitAttendanceUseCase({
-    attendanceBackendGateway,
     slackGateway,
+    attendanceBackendGateway,
   })
 
   // Bolt登録
