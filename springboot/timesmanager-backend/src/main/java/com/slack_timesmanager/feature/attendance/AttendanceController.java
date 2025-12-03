@@ -1,4 +1,4 @@
-package com.slack_timesmanager.attendance;
+package com.slack_timesmanager.feature.attendance;
 
 import java.util.List;
 

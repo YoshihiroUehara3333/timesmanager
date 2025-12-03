@@ -1,13 +1,13 @@
-package com.slack_timesmanager.task;
+package com.slack_timesmanager.feature.task;
 
-import com.slack_timesmanager.common.core.Response;
+import com.slack_timesmanager.common.core.Request;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskResponse implements Response{
+public class TaskRequest implements Request{
 	private String userId;
 	private String date;
 	private String taskName;
@@ -21,6 +21,6 @@ public class TaskResponse implements Response{
 	private String updatedAt;
 	private String finishedAt;
 	
-	public TaskResponse() {
+	public TaskRequest() {
 	}
 }

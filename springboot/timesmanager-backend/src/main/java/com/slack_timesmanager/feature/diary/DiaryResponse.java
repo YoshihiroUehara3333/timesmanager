@@ -1,4 +1,4 @@
-package com.slack_timesmanager.attendance;
+package com.slack_timesmanager.feature.diary;
 
 import com.slack_timesmanager.common.core.Response;
 
@@ -7,13 +7,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AttendanceResponse implements Response{
+public class DiaryResponse implements Response{
 	private String userId;
+	private String channelId;
 	private String date;
 	private String startTime;
 	private String endTime;
 	private String workplace;
 	
-	public AttendanceResponse() {
+	public DiaryResponse() {
 	}
 }

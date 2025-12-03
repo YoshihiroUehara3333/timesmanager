@@ -1,4 +1,4 @@
-package com.slack_timesmanager.thread;
+package com.slack_timesmanager.feature.thread;
 
 import java.util.List;
 

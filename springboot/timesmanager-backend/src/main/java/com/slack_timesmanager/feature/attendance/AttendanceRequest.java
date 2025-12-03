@@ -1,20 +1,18 @@
-package com.slack_timesmanager.diary;
+package com.slack_timesmanager.feature.attendance;
 
-import com.slack_timesmanager.common.core.Response;
+import com.slack_timesmanager.common.core.Request;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class DiaryResponse implements Response{
+public class AttendanceRequest implements Request{
 	private String userId;
 	private String channelId;
 	private String date;
 	private String startTime;
 	private String endTime;
 	private String workplace;
-	
-	public DiaryResponse() {
-	}
+  
 }

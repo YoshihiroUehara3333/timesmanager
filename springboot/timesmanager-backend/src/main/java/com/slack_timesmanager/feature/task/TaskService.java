@@ -1,4 +1,4 @@
-package com.slack_timesmanager.task;
+package com.slack_timesmanager.feature.task;
 
 import java.util.List;
 

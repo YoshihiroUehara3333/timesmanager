@@ -1,4 +1,4 @@
-package com.slack_timesmanager.diary;
+package com.slack_timesmanager.feature.diary;
 
 import java.util.Collections;
 import java.util.HashMap;

@@ -1,13 +1,13 @@
-package com.slack_timesmanager.thread;
+package com.slack_timesmanager.feature.thread;
 
-import com.slack_timesmanager.common.core.Request;
+import com.slack_timesmanager.common.core.Response;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ThreadRequest implements Request{
+public class ThreadResponse implements Response{
 	private String channelId;
 	private String date;
 	private String userId;

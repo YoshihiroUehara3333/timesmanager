@@ -1,4 +1,4 @@
-package com.slack_timesmanager.diary;
+package com.slack_timesmanager.feature.diary;
 
 import com.slack_timesmanager.common.core.Request;
 
