@@ -1,19 +1,23 @@
 // src/features/makethread/index.js
 
 const { MakeThreadUseCase } = require('./MakeThreadUseCase')
-const { MakeThreadSlackGateway } = require('./MakeThreadSlackGateway')
-const { MakeThreadBackendGateway } = require('./MakeThreadBackendGateway')
+const { ThreadSlackGateway } = require('./ThreadSlackGateway')
+
+const { TaskBackendGateway } = require('../../core/backend/TaskBackendGateway')
+const { ThreadBackendGateway } = require('../../core/backend/ThreadBackendGateway')
+
 const { SlackConst } = require('../../constants/SlackConst')
 
 function registerMakeThreadFeature({ app, slackApiAdaptor, backendHttpClient }) {
   // Gateway
-  const slackGateway = new MakeThreadSlackGateway(slackApiAdaptor)
-  const backendGateway = new MakeThreadBackendGateway(backendHttpClient)
+  const slackGateway = new ThreadSlackGateway(slackApiAdaptor)
+  const taskBackendGateway = new TaskBackendGateway(backendHttpClient)
+  const threadBackendGateway = new ThreadBackendGateway(backendHttpClient)
 
   // UseCase
   const makeThreadUseCase = new MakeThreadUseCase({
     slackGateway,
-    backendGateway,
+    threadBackendGateway,
   })
 
   // Bolt登録

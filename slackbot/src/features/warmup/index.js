@@ -11,7 +11,6 @@ function registerWarmUpFeature({ app, slackApiAdaptor }) {
   // UseCase
   const useCase = new WarmUpUseCase({
     slackGateway,
-    backendGateway,
   })
 
   // Handler

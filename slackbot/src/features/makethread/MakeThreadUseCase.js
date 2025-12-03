@@ -1,9 +1,11 @@
+// src/features/makethread/MakeThreadUseCase.js
+
 const { buildThreadInitialText, buildReplyText } = require('./MakeThreadMessageFactory.')
 
 class MakeThreadUseCase {
-    constructor({ slackGateway, backendGateway }) {
+    constructor({ slackGateway, threadBackendGateway }) {
         this.slackGateway = slackGateway
-        this.backendGateway = backendGateway
+        this.threadBackendGateway = threadBackendGateway
     }
 
     /**
@@ -15,7 +17,7 @@ class MakeThreadUseCase {
      */
     async execute({ userId, channelId, text, respond }) {
         // スレッド存在確認
-        let thread = await this.backendGateway.getThread({ userId, date });
+        let thread = await this.threadBackendGateway.getThread({ userId, date });
 
         if (!thread) {
             // スレッド用メッセージ本文を作る
@@ -28,7 +30,7 @@ class MakeThreadUseCase {
             })
 
             // バックエンドにスレッド情報を保存
-            await this.backendGateway.saveThread({
+            await this.threadBackendGateway.saveThread({
                 channelId: thread.channelId,
                 threadTs: thread.threadTs,
                 permalink: thread.permalink,

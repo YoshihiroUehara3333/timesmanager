@@ -3,9 +3,9 @@
 const { AttendanceInputModal } = require('./AttendanceInputModal')
 
 class StartAttendanceInputUseCase {
-  constructor({ slackGateway, backendGateway }) {
+  constructor({ slackGateway, attendanceBackendGateway }) {
     this.slackGateway = slackGateway
-    this.backendGateway = backendGateway
+    this.attendanceBackendGateway = attendanceBackendGateway
   }
 
   /**
@@ -16,7 +16,7 @@ class StartAttendanceInputUseCase {
     const date = getDate('YYYY-MM-DD')
 
     // 勤怠を取得する
-    const attendance = await this.backendGateway.getAttendance({ userId, date })
+    const attendance = await this.attendanceBackendGateway.getAttendance({ userId, date })
 
     // BlockKit作成
     const modalView = AttendanceInputModal({

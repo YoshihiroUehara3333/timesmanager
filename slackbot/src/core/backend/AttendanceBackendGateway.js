@@ -1,4 +1,4 @@
-// src/features/attendance/AttendanceBackendGateway.js
+// src/core/backend/AttendanceBackendGateway.js
 
 const { BackendRouting } = require('../../constants/BackendRouting')
 
@@ -19,15 +19,15 @@ class AttendanceBackendGateway {
     }
 
     /**
- * 勤怠の登録/更新
- * @param {Object} attendance
- * @param {string} attendance.userId
- * @param {string} attendance.date
- * @param {string} attendance.startTime
- * @param {string} attendance.endTime
- * @param {string} attendance.workplace
- * @returns 
- */
+     * 勤怠の登録/更新
+     * @param {Object} attendance
+     * @param {string} attendance.userId
+     * @param {string} attendance.date
+     * @param {string} attendance.startTime
+     * @param {string} attendance.endTime
+     * @param {string} attendance.workplace
+     * @returns 
+     */
     async saveAttendance({ userId, date, startTime, endTime, workplace }) {
         await this.backendHttpClient.post(BackendRouting.ATTENDANCE.SAVE, {
             date: params.date,

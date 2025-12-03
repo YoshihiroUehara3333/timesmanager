@@ -7,7 +7,8 @@ exports.ModalConst = {
   ACTION_ID: {
     HOME: {
       DAILYREPORT: 'home_dailyreport',
-      ATTENDANCE: 'home_attendance'
+      ATTENDANCE: 'home_attendance_input',
+      TASK_INPUT: 'home_task_input'
     },
     TASK: {
       CREATE: 'task_create',

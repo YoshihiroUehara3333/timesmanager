@@ -1,6 +1,6 @@
-// src/features/makethread/MakeThreadSlackGateway.js
+// src/features/makethread/ThreadSlackGateway.js
 
-class MakeThreadSlackGateway {
+class ThreadSlackGateway {
   constructor(slackApiAdaptor) {
     this.slackApiAdaptor = slackApiAdaptor
   }
@@ -27,4 +27,4 @@ class MakeThreadSlackGateway {
   }
 }
 
-module.exports = { MakeThreadSlackGateway }
+module.exports = { ThreadSlackGateway }

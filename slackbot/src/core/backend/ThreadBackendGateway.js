@@ -1,8 +1,8 @@
-// src/features/makethread/MakeThreadBackendGateway.js
+// src/core/backend/ThreadBackendGateway.js
 
 const { BackendRouting } = require('../../constants/BackendRouting')
 
-class MakeThreadBackendGateway {
+class ThreadBackendGateway {
   constructor(backendHttpClient) {
     this.backendHttpClient = backendHttpClient
   }
@@ -36,4 +36,4 @@ class MakeThreadBackendGateway {
   }
 }
 
-module.exports = { MakeThreadBackendGateway }
+module.exports = { ThreadBackendGateway }

@@ -7,7 +7,8 @@ const { BackendHttpClient } = require('./core/backend/BackendHttpClient')
 const { registerMakeThreadFeature } = require('./features/makethread')
 const { registerHomeFeature } = require('./features/home')
 const { registerAttendanceFeature } = require('./features/attendance')
-// const { registerTaskFeature } = require('./features/task')
+const { registerTaskFeature } = require('./features/task')
+const { registerWarmUpFeature } = require('./features/warmup')
 // const { registerDailyReportFeature } = require('./features/daily-report')
 
 /**
@@ -32,7 +33,8 @@ function createBoltApp() {
   registerMakeThreadFeature({ app, slackApiAdaptor, backendHttpClient })
   registerHomeFeature({ app, slackApiAdaptor, backendHttpClient })
   registerAttendanceFeature({ app, slackApiAdaptor, backendHttpClient })
-  // registerTaskFeature({ app, slackApiAdaptor, backendHttpClient })
+  registerTaskFeature({ app, slackApiAdaptor, backendHttpClient })
+  registerWarmUpFeature({ app, slackApiAdaptor })
   // registerDailyReportFeature({ app, slackApiAdaptor, backendHttpClient })
 
   return app

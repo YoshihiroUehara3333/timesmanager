@@ -2,17 +2,21 @@
 
 const { HomeOpenUseCase } = require('./HomeOpenUseCase')
 const { HomeSlackGateway } = require('./HomeOpenSlackGateway')
-const { HomeBackendGateway } = require('./HomeBackendGateway')
+
+const { TaskBackendGateway } = require('../../core/backend/TaskBackendGateway')
+const { ThreadBackendGateway } = require('../../core/backend/ThreadBackendGateway')
 
 function registerHomeFeature({ app, slackApiAdaptor }) {
   // Gateway
   const slackGateway = new HomeSlackGateway(slackApiAdaptor)
-  const backendGateway = new HomeBackendGateway(backendHttpClient)
+  const taskBackendGateway = new TaskBackendGateway(backendHttpClient)
+  const threadBackendGateway = new ThreadBackendGateway(backendHttpClient)
 
   // UseCase
   const homeOpenUseCase = new HomeOpenUseCase({
     slackGateway,
-    backendGateway,
+    taskBackendGateway,
+    threadBackendGateway,
   })
 
 

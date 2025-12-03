@@ -7,7 +7,7 @@ function buildThreadInitialText({ userId, text }) {
 }
 
 function buildReplyText({ permalink }) {
-  return `スレッドを作成しました。\n${permalink}`
+  return `スレッド作成済\n${permalink}`
 }
 
 module.exports = {

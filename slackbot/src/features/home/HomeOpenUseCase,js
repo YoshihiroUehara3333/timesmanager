@@ -4,20 +4,21 @@ const { HomeBlocks } = require('./HomeBlocks')
 const { getDate } = require('../../utility/DateUtils')
 
 class HomeOpenUseCase {
-    constructor({ slackGateway, backendGateway }) {
+    constructor({ slackGateway, taskBackendGateway, threadBackendGateway }) {
         this.slackGateway = slackGateway
-        this.backendGateway = backendGateway
+        this.taskBackendGateway = taskBackendGateway
+        this.threadBackendGateway = threadBackendGateway
     }
 
     async execute({ userId }) {
-        // スレッド存在確認
         const date = getDate('YYYY-MM-DD')
-        let thread = await this.backendGateway.getThread({userId, date})
-
+        
+        // スレッド存在確認
         let tasks = []
+        let thread = await this.threadBackendGateway.getThread({userId, date})
         if (thread) {
             // タスクリスト取得
-            tasks = await this.backendGateway.getTasks({userId})
+            tasks = await this.taskBackendGateway.getTasks({userId})
             if (tasks.length) {
                 // activeなもので絞り込む
                 tasks = tasks.filter((task) => task.status === TaskConst.STATUS.ACTIVE)
