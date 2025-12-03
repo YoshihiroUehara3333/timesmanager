@@ -8,7 +8,7 @@ const awsLambdaReceiver = new AwsLambdaReceiver({
   processBeforeResponse: true,
 })
 
-const app = createBoltApp(awsLambdaReceiver)
+const app = createBoltApp({receiver: awsLambdaReceiver})
 const handler = awsLambdaReceiver.toHandler()
 
 // ハンドラー生成
