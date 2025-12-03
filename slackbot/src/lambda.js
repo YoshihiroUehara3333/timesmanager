@@ -1,4 +1,5 @@
 // src/lambda.js
+
 const { AwsLambdaReceiver } = require('@slack/bolt')
 const { createBoltApp } = require('./app')
 

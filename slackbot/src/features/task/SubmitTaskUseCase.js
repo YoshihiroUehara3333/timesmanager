@@ -1,5 +1,7 @@
 // src/features/task/SubmitTaskUseCase.js
 
+const { TaskBlock } = require('./TaskBlock')
+
 class SubmitTaskUseCase {
     constructor({ slackGateway, taskBackendGateway }) {
         this.slackGateway = slackGateway
@@ -16,19 +18,26 @@ class SubmitTaskUseCase {
         // 入力値を取得
         const metadata = JSON.parse(view.private_metadata)
         const values = view.state.values
-        
-        const attendance = {
-            date: metadata.date,
+
+        const task = {
             userId: metadata.user_id,
-            startTime: values.starttime.start_time.selected_time,
-            endTime: values.endtime.end_time.selected_time,
-            workplace: values.workplace.select_workplace.selected_option.value,
+            taskName: values.taskName.input.value,
+            targetTime: values.targetTime.input.value,
+            memo: values.memo.input.value,
+            serial: metadata.serial,
         }
 
-        // バックエンドにリクエスト送信
-        await this.taskBackendGateway.saveTask(attendance)
+        // SlackにBlocksを送信
+        const blocks = TaskBlock(task)
+        await this.slackGateway.postTaskBlock({
+            channelId: metadata.channel_id,
+            text: 'タスク送信',
+            threadTs: metadata.threadTs,
+            blocks: blocks,
+        })
 
-        // Slackメッセージを送信
+        // バックエンドにリクエスト送信
+        await this.taskBackendGateway.saveTask(task)
     }
 }
 

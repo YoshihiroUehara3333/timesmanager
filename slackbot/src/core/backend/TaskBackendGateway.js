@@ -6,16 +6,34 @@ class TaskBackendGateway {
   constructor(backendHttpClient) {
     this.backendHttpClient = backendHttpClient
   }
-  
+
+  /**
+   * 
+   * @param {userId}ユーザID
+   * @param {taskName}
+   * @param {targetTime}
+   * @param {memo}
+   * @param {serial}
+   * @returns 
+   */
+  async saveTask({ userId, taskName, targetTime, memo, serial }) {
+    await this.backendHttpClient.post(BackendRouting.TASK.SAVE, {
+      userId: userId,
+      taskName: taskName,
+      targetTime: targetTime,
+      memo: memo,
+      serial: serial,
+    })
+  }
+
   /**
    * 最新のタスク識別番号を発行する
    * @param {userId}ユーザID
    * @param {date}日付
    * @returns latestSerial: 最新の識別番号
    */
-  async issueLatestSerial ({ userId, date }) {
-    const url = `${process.env.BACKEND_API_BASE_URL}${BackendRouting.TASK.SERIAL}`
-    const response = await axios.get(url, {
+  async issueLatestSerial({ userId, date }) {
+    const response = await this.backendHttpClient.get(BackendRouting.TASK.SERIAL, {
       params: {
         userId: userId,
         date: date,

@@ -1,4 +1,5 @@
-// 作業予定入力時のBlockKit定義
+// src/features/task/TaskBlock.js
+
 const { ModalConst } = require('../constants/ModalConst')
 
 exports.TaskBlock = ({ userId, taskName, targetTime, memo, serial }) => ([

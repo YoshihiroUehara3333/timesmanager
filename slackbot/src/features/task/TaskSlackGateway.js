@@ -21,6 +21,16 @@ class TaskSlackGateway {
         view,
     })
   }
+
+  async postTaskBlock ({channelId, text, threadTs, blocks}) {
+    const message = await this.slackApiAdaptor.postMessage({
+      channel: channelId,
+      text: text,
+      threadTs: threadTs,
+      blocks: blocks,
+    })
+    return message
+  }
 }
 
 module.exports = { TaskSlackGateway }
