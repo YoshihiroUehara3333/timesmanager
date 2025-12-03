@@ -4,7 +4,7 @@ const { WarmUpUseCase } = require('./application/WarmUpUseCase')
 
 const { SlackConst } = require('../../shared/constants/SlackConst')
 
-function registerWarmUpFeature({ app, slackApiAdaptor }) {
+function registerWarmUpFeature ({ app, slackApiAdaptor }) {
   // UseCase
   const useCase = new WarmUpUseCase()
 

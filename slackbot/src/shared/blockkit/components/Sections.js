@@ -1,6 +1,6 @@
 // src/shared/blockkit/components/Sections.js
 
-function mrkdwnSection(
+function mrkdwnSection (
   text = 'デフォルトテキスト',
 ) {
   return {

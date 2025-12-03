@@ -5,14 +5,14 @@ const { BackendGatewayBase } = require('../../../core/backend/BackendGatewayBase
 
 class ThreadBackendGateway extends BackendGatewayBase {
   /**
-   * 
+   *
    * @param {Object} params
    * @param {string} params.userId
    * @param {string} params.channelId
    * @param {string} params.permalink
    * @param {string} params.threadTs
    */
-  async saveThread({ channelId, threadTs, permalink, userId }) {
+  async saveThread ({ channelId, threadTs, permalink, userId }) {
     console.log(`ThreadBackendGateway.saveThread channelId:${channelId} threadTs:${threadTs} permalink:${permalink} userId:${userId}`)
 
     const response = await this.backendHttpClient.request({
@@ -30,11 +30,11 @@ class ThreadBackendGateway extends BackendGatewayBase {
   }
 
   /**
-   * 
-   * @param {*} param0 
-   * @returns 
+   *
+   * @param {*} param0
+   * @returns
    */
-  async getThread({ userId, date }) {
+  async getThread ({ userId, date }) {
     console.log(`ThreadBackendGateway.getThread userId:${userId} date:${date}`)
 
     const response = await this.backendHttpClient.request({

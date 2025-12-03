@@ -10,7 +10,7 @@ const { ThreadBackendGateway } = require('../thread/infra/ThreadBackendGateway')
 const { ModalConst } = require('../../shared/constants/ModalConst')
 const { SlackConst } = require('../../shared/constants/SlackConst')
 
-function registerTaskFeature({ app, slackApiAdaptor, backendHttpClient }) {
+function registerTaskFeature ({ app, slackApiAdaptor, backendHttpClient }) {
   // Gateway
   const slackGateway = new TaskSlackGateway(slackApiAdaptor)
   const taskBackendGateway = new TaskBackendGateway(backendHttpClient)
@@ -62,9 +62,9 @@ function registerTaskFeature({ app, slackApiAdaptor, backendHttpClient }) {
     async ({ body, ack, logger, view }) => {
       await ack()
       logger.info(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`)
-      await submitUseCase.execute({ 
-        view: body.view, 
-        userId: body.user.id 
+      await submitUseCase.execute({
+        view: body.view,
+        userId: body.user.id
       })
     },
   )

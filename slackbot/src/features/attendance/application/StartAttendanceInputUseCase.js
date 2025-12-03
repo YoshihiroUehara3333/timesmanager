@@ -4,7 +4,7 @@ const { AttendanceInputModal } = require('../blockkit/AttendanceInputModal')
 const { getDate } = require('../../../shared/utils/DateUtils')
 
 class StartAttendanceInputUseCase {
-  constructor({ slackGateway, attendanceBackendGateway }) {
+  constructor ({ slackGateway, attendanceBackendGateway }) {
     this.slackGateway = slackGateway
     this.attendanceBackendGateway = attendanceBackendGateway
   }
@@ -13,7 +13,7 @@ class StartAttendanceInputUseCase {
    * ホームタブなどから「勤怠入力」を開始するユースケース
    * - 当日分の勤怠があれば取得し、モーダルを初期表示
    */
-  async execute({ userId, triggerId }) {
+  async execute ({ userId, triggerId }) {
     console.log(`HomeOpenUseCase.excecute userId:${userId} triggerId:${triggerId}`)
 
     const date = getDate('YYYY-MM-DD')

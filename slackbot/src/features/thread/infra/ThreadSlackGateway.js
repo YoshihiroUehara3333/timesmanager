@@ -1,12 +1,12 @@
 // src/features/thread/infra/ThreadSlackGateway.js
 
-const { SlackGatewayBase } = require("../../../core/slack/SlackGatewayBase")
+const { SlackGatewayBase } = require('../../../core/slack/SlackGatewayBase')
 
-class ThreadSlackGateway extends SlackGatewayBase{
+class ThreadSlackGateway extends SlackGatewayBase {
   /**
    * スレッドの「親」メッセージを投稿し、permalinkまで取得して返す
    */
-  async postThread({ channelId, text }) {
+  async postThread ({ channelId, text }) {
     const message = await this.slackApiAdaptor.postMessage({
       channel: channelId,
       text,

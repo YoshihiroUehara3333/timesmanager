@@ -1,22 +1,24 @@
 // src/features/attendance/infra/AttendanceSlackGateway.js
 
-const { SlackGatewayBase } = require("../../../core/slack/SlackGatewayBase")
+const { SlackGatewayBase } = require('../../../core/slack/SlackGatewayBase')
 
-class AttendanceSlackGateway extends SlackGatewayBase{
+class AttendanceSlackGateway extends SlackGatewayBase {
   /**
    * メッセージを送信する
    */
-  async postMessage({ channelId, text }) {
+  async postMessage ({ channelId, text }) {
     const message = await this.slackApiAdaptor.postMessage({
       channel: channelId,
       text,
     })
+
+    return message
   }
 
   async openModal ({ triggerId, view }) {
     await this.slackApiAdaptor.viewsOpen({
-        triggerId,
-        view,
+      triggerId,
+      view,
     })
   }
 }

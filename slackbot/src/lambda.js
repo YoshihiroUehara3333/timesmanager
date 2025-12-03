@@ -8,7 +8,8 @@ const awsLambdaReceiver = new AwsLambdaReceiver({
   processBeforeResponse: true,
 })
 
-const app = createBoltApp({receiver: awsLambdaReceiver})
+// eslint-disable-next-line no-unused-vars
+const app = createBoltApp({ receiver: awsLambdaReceiver })
 const handler = awsLambdaReceiver.toHandler()
 
 // ハンドラー生成

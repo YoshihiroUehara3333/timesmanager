@@ -1,7 +1,7 @@
 // src/features/warmup/blockkit/WarmUpMessageFactory.js
 
-function buildReplyText({ }) {
-  return `/warmupが実行されました`
+function buildReplyText () {
+  return '/warmupが実行されました'
 }
 
 module.exports = {

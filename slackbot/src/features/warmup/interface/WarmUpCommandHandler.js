@@ -1,14 +1,14 @@
 // src/features/warmup/interface/WarmUpCommandHandler.js
 
 class WarmUpCommandHandler {
-  constructor({ useCase }) {
+  constructor ({ useCase }) {
     this.useCase = useCase
   }
 
   /**
    * /warmup で呼ばれる
    */
-  async handle({ command, ack, respond }) {
+  async handle ({ command, ack, respond }) {
     await ack()
 
     await this.useCase.execute({

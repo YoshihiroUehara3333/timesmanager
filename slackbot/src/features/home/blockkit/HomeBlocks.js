@@ -48,7 +48,6 @@ function taskSection (thread) {
       ]
     })
     blocks.push(mrkdwnSection('*タスク一覧*'))
-
   } else {
     blocks.push(mrkdwnSection('_本日のスレッドが未作成です_'))
   }
@@ -61,7 +60,7 @@ function taskList (
 ) {
   if (!tasks.length) {
     return [
-      mrkdwnSection( '_現在表示できるタスクはありません_'),
+      mrkdwnSection('_現在表示できるタスクはありません_'),
     ]
   }
 

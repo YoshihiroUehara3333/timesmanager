@@ -8,7 +8,7 @@ const { AttendanceBackendGateway } = require('./infra/AttendanceBackendGateway')
 
 const { ModalConst } = require('../../shared/constants/ModalConst')
 
-function registerAttendanceFeature({ app, slackApiAdaptor, backendHttpClient }) {
+function registerAttendanceFeature ({ app, slackApiAdaptor, backendHttpClient }) {
   // Gateway
   const slackGateway = new AttendanceSlackGateway(slackApiAdaptor)
   const attendanceBackendGateway = new AttendanceBackendGateway(backendHttpClient)
@@ -39,13 +39,13 @@ function registerAttendanceFeature({ app, slackApiAdaptor, backendHttpClient }) 
 
   // 勤怠入力モーダルの submit
   app.view(
-    { type: 'view_submission', callback_id: ModalConst.CALLBACK_ID.ATTENDANCE_INPUT},
-    async ({ body, ack, view}) => {
+    { type: 'view_submission', callback_id: ModalConst.CALLBACK_ID.ATTENDANCE_INPUT },
+    async ({ body, ack, view }) => {
       await ack()
       console.log(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`)
-      await submitUseCase.execute({ 
-        view: body.view, 
-        userId: body.user.id 
+      await submitUseCase.execute({
+        view: body.view,
+        userId: body.user.id
       })
     },
   )

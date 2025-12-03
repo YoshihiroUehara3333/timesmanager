@@ -9,7 +9,7 @@ class BackendHttpClient {
    * @param {number} [params.timeoutMs=5000] - タイムアウト(ms)
    * @param {Object} [params.logger=console] - logger.info / logger.error を持つロガー
    */
-  constructor({ baseUrl, timeoutMs = 5000, logger = console }) {
+  constructor ({ baseUrl, timeoutMs = 5000, logger = console }) {
     if (!baseUrl) {
       throw new Error('BackendHttpClient: baseUrl is required')
     }
@@ -28,7 +28,7 @@ class BackendHttpClient {
       DELETE: this.delete.bind(this),
     }
   }
-  
+
   /**
    * 汎用 request
    * 呼び出し側で BackendRouting 的なオブジェクトを渡す想定
@@ -38,12 +38,12 @@ class BackendHttpClient {
    * @param {any} [params.data]
    * @param {Object} [params.config]
    */
-  async request({routing, data, config}){
+  async request ({ routing, data, config }) {
     if (!routing) {
       throw new Error('BackendHttpClient.request: routing is required')
     }
     const method = this.methodSelector[routing.method]
-    
+
     return method({
       path: routing.path,
       data: data,
@@ -57,7 +57,7 @@ class BackendHttpClient {
    * @param {Object} [config]  - axios の config (params, headers など)
    * @returns {Promise<any>}   - response.data を返す
    */
-  async get({path, config = {}}) {
+  async get ({ path, config = {} }) {
     try {
       const res = await this.axios.get(path, config)
       return res.data
@@ -74,7 +74,7 @@ class BackendHttpClient {
    * @param {Object} [config]
    * @returns {Promise<any>}   - response.data を返す
    */
-  async post({path, data, config = {}}) {
+  async post ({ path, data, config = {} }) {
     try {
       const res = await this.axios.post(path, data, config)
       return res.data
@@ -84,7 +84,7 @@ class BackendHttpClient {
     }
   }
 
-  async put({path, data, config = {}}) {
+  async put ({ path, data, config = {} }) {
     try {
       const res = await this.axios.put(path, data, config)
       return res.data
@@ -94,7 +94,7 @@ class BackendHttpClient {
     }
   }
 
-  async delete({path, config = {}}) {
+  async delete ({ path, config = {} }) {
     try {
       const res = await this.axios.delete(path, config)
       return res.data
@@ -104,7 +104,7 @@ class BackendHttpClient {
     }
   }
 
-  _logError(method, path, error, data) {
+  _logError (method, path, error, data) {
     const status = error.response?.status
     const msg = error.message
     this.logger.error(
@@ -119,7 +119,7 @@ class BackendHttpClient {
     )
   }
 
-  _wrapError(error) {
+  _wrapError (error) {
     // ひとまず元の error をそのまま投げ直す
     return error
   }

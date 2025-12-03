@@ -5,14 +5,11 @@ const { MakeThreadUseCase } = require('./application/MakeThreadUseCase')
 const { ThreadSlackGateway } = require('./infra/ThreadSlackGateway')
 const { ThreadBackendGateway } = require('./infra/ThreadBackendGateway')
 
-const { TaskBackendGateway } = require('../task/infra/TaskBackendGateway')
-
 const { SlackConst } = require('../../shared/constants/SlackConst')
 
-function registerThreadFeature({ app, slackApiAdaptor, backendHttpClient }) {
+function registerThreadFeature ({ app, slackApiAdaptor, backendHttpClient }) {
   // Gateway
   const slackGateway = new ThreadSlackGateway(slackApiAdaptor)
-  const taskBackendGateway = new TaskBackendGateway(backendHttpClient)
   const threadBackendGateway = new ThreadBackendGateway(backendHttpClient)
 
   // UseCase

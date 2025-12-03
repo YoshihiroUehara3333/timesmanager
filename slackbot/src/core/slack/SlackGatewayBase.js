@@ -1,7 +1,7 @@
 // src/core/slack/SlackGatewayBase.js
 
 class SlackGatewayBase {
-  constructor(slackApiAdaptor) {
+  constructor (slackApiAdaptor) {
     this.slackApiAdaptor = slackApiAdaptor
   }
 }
