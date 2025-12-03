@@ -1,6 +1,6 @@
-// src/features/warmup/WarmUpUseCase.js
+// src/features/warmup/application/WarmUpUseCase.js
 
-const { buildReplyText } = require('./WarmUpMessageFactory')
+const { buildReplyText } = require('../blockkit/WarmUpMessageFactory')
 
 class WarmUpUseCase {
     constructor({ slackGateway }) {

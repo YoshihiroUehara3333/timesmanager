@@ -1,14 +1,10 @@
 // src/features/warmup/index.js
-const { WarmUpCommandHandler } = require('./WarmUpCommandHandler')
-const { WarmUpUseCase } = require('./WarmUpUseCase')
-const { WarmUpSlackGateway } = require('./WarmUpSlackGateway')
+const { WarmUpCommandHandler } = require('./interface/WarmUpCommandHandler')
+const { WarmUpUseCase } = require('./application/WarmUpUseCase')
 
 const { SlackConst } = require('../../shared/constants/SlackConst')
 
 function registerWarmUpFeature({ app, slackApiAdaptor }) {
-  // Gateway
-  const slackGateway = new WarmUpSlackGateway(slackApiAdaptor)
-
   // UseCase
   const useCase = new WarmUpUseCase({
     slackGateway,

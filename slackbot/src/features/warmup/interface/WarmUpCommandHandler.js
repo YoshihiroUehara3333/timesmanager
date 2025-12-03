@@ -1,4 +1,4 @@
-// src/features/warmup/WarmUpCommandHandler.js
+// src/features/warmup/interface/WarmUpCommandHandler.js
 
 class WarmUpCommandHandler {
   constructor({ useCase }) {
