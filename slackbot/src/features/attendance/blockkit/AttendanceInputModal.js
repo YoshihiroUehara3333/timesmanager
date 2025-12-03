@@ -1,6 +1,6 @@
 // src/features/attendance/blockkit/AttendanceInputModal.js
 
-const { ModalConst } = require('../constants/ModalConst')
+const { ModalConst } = require('../../../shared/constants/ModalConst')
 const { modalButtons } = require('../../../shared/blockkit/components/Buttons')
 const { divider } = require('../../../shared/blockkit/components/Divider')
 const { mrkdwnSection } = require('../../../shared/blockkit/components/Sections')

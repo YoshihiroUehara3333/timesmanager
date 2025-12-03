@@ -1,15 +1,10 @@
-// src/features/task/TaskBlock.js
+// src/features/task/blockkit/TaskBlock.js
 
-const { ModalConst } = require('../constants/ModalConst')
+const { ModalConst } = require('../../../shared/constants/ModalConst')
+const { mrkdwnSection } = require('../../../shared/blockkit/components/Sections')
 
 exports.TaskBlock = ({ userId, taskName, targetTime, memo, serial }) => ([
-  {
-    type: 'section',
-    text: {
-      type: 'mrkdwn',
-      text: `<@${userId}>\n📝*タスク記録*`,
-    }
-  },
+  mrkdwnSection(`<@${userId}>\n📝*タスク記録*`),
   {
     type: 'section',
     fields: [
