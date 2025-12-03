@@ -15,7 +15,7 @@ class ThreadSlackGateway extends SlackGatewayBase {
     })
 
     const permalink = await this.slackApiAdaptor.getPermalink({
-      channeId: message.channel,
+      channelId: message.channel,
       messageTs: message.ts,
     })
 
