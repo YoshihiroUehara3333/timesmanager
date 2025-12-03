@@ -6,7 +6,7 @@ const { HomeSlackGateway } = require('./infra/HomeSlackGateway')
 const { TaskBackendGateway } = require('../task/infra/TaskBackendGateway')
 const { ThreadBackendGateway } = require('../thread/infra/ThreadBackendGateway')
 
-function registerHomeFeature({ app, slackApiAdaptor }) {
+function registerHomeFeature({ app, slackApiAdaptor, backendHttpClient }) {
   // Gateway
   const slackGateway = new HomeSlackGateway(slackApiAdaptor)
   const taskBackendGateway = new TaskBackendGateway(backendHttpClient)
