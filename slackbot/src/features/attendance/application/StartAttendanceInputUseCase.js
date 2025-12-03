@@ -1,6 +1,6 @@
 // src/features/attendance/StartAttendanceInputUseCase.js
 
-const { AttendanceInputModal } = require('./AttendanceInputModal')
+const { AttendanceInputModal } = require('../blockkit/AttendanceInputModal')
 
 class StartAttendanceInputUseCase {
   constructor({ slackGateway, attendanceBackendGateway }) {
