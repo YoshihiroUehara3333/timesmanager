@@ -38,6 +38,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
       }
     })
 
+    console.log(JSON.stringify(response))
     if (response[0]) {
       return {
         channelId: response[0].channelId,

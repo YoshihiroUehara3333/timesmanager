@@ -47,10 +47,10 @@ public class AttendanceController {
 
 	@GetMapping
 	public ResponseEntity<List<AttendanceResponse>> get(
-			@RequestParam(required = true) String userId,
+			@RequestParam(required = false) String userId,
 	        @RequestParam(required = false) String date
     ){
-		log.info("📥 GET /api/attendance called. userId={}, date={}", userId, date);
+		log.info("📥 GET /api/attendance userId={}, date={}", userId, date);
 		
 		List<AttendanceResponse> responseBody = null;
 		
