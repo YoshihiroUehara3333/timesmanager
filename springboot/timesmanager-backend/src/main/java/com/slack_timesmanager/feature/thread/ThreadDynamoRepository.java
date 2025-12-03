@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 import com.slack_timesmanager.common.base.DynamoRepositoryBase;
 import com.slack_timesmanager.dynamodb.DynamoKey;
 import com.slack_timesmanager.dynamodb.DynamoKeyFactory;
+import com.slack_timesmanager.feature.thread.dto.ThreadRequest;
+import com.slack_timesmanager.feature.thread.dto.ThreadResponse;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;

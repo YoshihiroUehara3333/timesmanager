@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.slack_timesmanager.feature.diary.dto.DiaryRequest;
+import com.slack_timesmanager.feature.diary.dto.DiaryResponse;
+
 @RestController
 @RequestMapping("/api/diary")
 public class DiaryController {

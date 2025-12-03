@@ -1,4 +1,4 @@
-// src/features/make-thread/MakeThreadCommandHandler.js
+// src/features/warmup/WarmUpCommandHandler.js
 
 class WarmUpCommandHandler {
   constructor({ useCase }) {

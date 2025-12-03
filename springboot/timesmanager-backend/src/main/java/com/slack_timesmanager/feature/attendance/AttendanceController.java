@@ -2,6 +2,8 @@ package com.slack_timesmanager.feature.attendance;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.slack_timesmanager.feature.attendance.dto.AttendanceRequest;
+import com.slack_timesmanager.feature.attendance.dto.AttendanceResponse;
 
 @RestController
 @RequestMapping("/api/attendance")
@@ -28,7 +33,7 @@ public class AttendanceController {
 	
 	@PostMapping
 	public ResponseEntity<Void> post(
-			@RequestBody AttendanceRequest request
+			@RequestBody @Valid AttendanceRequest request
 	){
 		log.info("📥 Received POST /api/attendance: {}", request);
 		
@@ -36,7 +41,7 @@ public class AttendanceController {
 		if(created) {
 			return ResponseEntity.status(HttpStatus.CREATED).build();
 		} else {
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+			return ResponseEntity.status(HttpStatus.OK).build();
 		}
 	}
 

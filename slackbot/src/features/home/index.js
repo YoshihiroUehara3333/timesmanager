@@ -1,10 +1,10 @@
 // src/features/home/index.js
 
-const { HomeOpenUseCase } = require('./HomeOpenUseCase')
-const { HomeSlackGateway } = require('./HomeOpenSlackGateway')
+const { HomeOpenUseCase } = require('./application/HomeOpenUseCase')
+const { HomeSlackGateway } = require('./infra/HomeSlackGateway')
 
-const { TaskBackendGateway } = require('../../core/backend/TaskBackendGateway')
-const { ThreadBackendGateway } = require('../../core/backend/ThreadBackendGateway')
+const { TaskBackendGateway } = require('../task/infra/TaskBackendGateway')
+const { ThreadBackendGateway } = require('../thread/infra/ThreadBackendGateway')
 
 function registerHomeFeature({ app, slackApiAdaptor }) {
   // Gateway

@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.slack_timesmanager.common.exception.InfrastructureException;
+import com.slack_timesmanager.feature.attendance.dto.AttendanceRequest;
+import com.slack_timesmanager.feature.attendance.dto.AttendanceResponse;
 
 @Service
 public class AttendanceService {

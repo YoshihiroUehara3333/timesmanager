@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.slack_timesmanager.feature.thread.dto.ThreadRequest;
+import com.slack_timesmanager.feature.thread.dto.ThreadResponse;
+
 @RestController
 @RequestMapping("/api/thread")
 public class ThreadController {

@@ -4,7 +4,7 @@ const { SlackApiAdaptor } = require('./core/slack/SlackApiAdaptor')
 const { BackendHttpClient } = require('./core/backend/BackendHttpClient')
 
 // featureごとの登録関数
-const { registerMakeThreadFeature } = require('./features/makethread')
+const { registerThreadFeature } = require('./features/thread')
 const { registerHomeFeature } = require('./features/home')
 const { registerAttendanceFeature } = require('./features/attendance')
 const { registerTaskFeature } = require('./features/task')

@@ -1,4 +1,5 @@
 // src/core/backend/BackendHttpClient.js
+
 const axios = require('axios')
 
 class BackendHttpClient {
@@ -19,6 +20,35 @@ class BackendHttpClient {
       baseURL: baseUrl,
       timeout: timeoutMs,
     })
+
+    this.methodSelecter = {
+      GET: this.get.bind(this),
+      POST: this.post.bind(this),
+      PUT: this.put.bind(this),
+      DELETE: this.delete.bind(this),
+    }
+  }
+  
+  /**
+   * 汎用 request
+   * 呼び出し側で BackendRouting 的なオブジェクトを渡す想定
+   *
+   * @param {Object} params
+   * @param {{ method: string, path: string }} params.routing
+   * @param {any} [params.data]
+   * @param {Object} [params.config]
+   */
+  async request({routing, data, config}){
+    if (!routing) {
+      throw new Error('BackendHttpClient.request: routing is required')
+    }
+    const method = this.methodSelector[routing.method]
+    
+    return method({
+      path: routing.path,
+      data: data,
+      config: config,
+    })
   }
 
   /**
@@ -27,7 +57,7 @@ class BackendHttpClient {
    * @param {Object} [config]  - axios の config (params, headers など)
    * @returns {Promise<any>}   - response.data を返す
    */
-  async get(path, config = {}) {
+  async get({path, config = {}}) {
     try {
       const res = await this.axios.get(path, config)
       return res.data
@@ -44,7 +74,7 @@ class BackendHttpClient {
    * @param {Object} [config]
    * @returns {Promise<any>}   - response.data を返す
    */
-  async post(path, data, config = {}) {
+  async post({path, data, config = {}}) {
     try {
       const res = await this.axios.post(path, data, config)
       return res.data
@@ -54,7 +84,7 @@ class BackendHttpClient {
     }
   }
 
-  async put(path, data, config = {}) {
+  async put({path, data, config = {}}) {
     try {
       const res = await this.axios.put(path, data, config)
       return res.data
@@ -64,7 +94,7 @@ class BackendHttpClient {
     }
   }
 
-  async delete(path, config = {}) {
+  async delete({path, config = {}}) {
     try {
       const res = await this.axios.delete(path, config)
       return res.data

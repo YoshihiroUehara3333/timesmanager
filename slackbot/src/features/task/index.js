@@ -1,12 +1,11 @@
 // src/features/task/index.js
 
-const { StartTaskInputUseCase } = require('./StartTaskInputUseCase')
-const { SubmitTaskUseCase } = require('./SubmitTaskUseCase')
+const { StartTaskInputUseCase } = require('./application/StartTaskInputUseCase')
+const { SubmitTaskUseCase } = require('./application/SubmitTaskUseCase')
 
-const { TaskBackendGateway } = require('../../core/backend/TaskBackendGateway')
-const { ThreadBackendGateway } = require('../../core/backend/ThreadBackendGateway')
-
-const { TaskSlackGateway } = require('./TaskSlackGateway')
+const { TaskSlackGateway } = require('./infra/TaskSlackGateway')
+const { TaskBackendGateway } = require('./infra/TaskBackendGateway')
+const { ThreadBackendGateway } = require('../thread/infra/ThreadBackendGateway')
 
 function registerTaskFeature({ app, slackApiAdaptor, backendHttpClient }) {
   // Gateway

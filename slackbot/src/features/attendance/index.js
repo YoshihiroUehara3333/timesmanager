@@ -1,21 +1,17 @@
 // src/features/attendance/index.js
 
-const { StartAttendanceInputUseCase } = require('./StartAttendanceInputUseCase')
-const { SubmitAttendanceUseCase } = require('./SubmitAttendanceUseCase')
-const { AttendanceSlackGateway } = require('./AttendanceSlackGateway')
+const { StartAttendanceInputUseCase } = require('./application/StartAttendanceInputUseCase')
+const { SubmitAttendanceUseCase } = require('./application/SubmitAttendanceUseCase')
 
-const { AttendanceBackendGateway } = require('../../core/backend/AttendanceBackendGateway')
-const { TaskBackendGateway } = require('../../core/backend/TaskBackendGateway')
-const { ThreadBackendGateway } = require('../../core/backend/ThreadBackendGateway')
+const { AttendanceSlackGateway } = require('./infra/AttendanceSlackGateway')
+const { AttendanceBackendGateway } = require('./infra/AttendanceBackendGateway')
 
-const { ModalConst } = require('../../constants/ModalConst')
+const { ModalConst } = require('../../shared/constants/ModalConst')
 
 function registerAttendanceFeature({ app, slackApiAdaptor, backendHttpClient }) {
   // Gateway
   const slackGateway = new AttendanceSlackGateway(slackApiAdaptor)
   const attendanceBackendGateway = new AttendanceBackendGateway(backendHttpClient)
-  const taskBackendGateway = new TaskBackendGateway(backendHttpClient)
-  const threadBackendGateway = new ThreadBackendGateway(backendHttpClient)
 
   // UseCase
   const startUseCase = new StartAttendanceInputUseCase({
