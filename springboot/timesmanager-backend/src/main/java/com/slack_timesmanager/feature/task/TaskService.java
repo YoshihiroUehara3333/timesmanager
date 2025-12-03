@@ -29,6 +29,8 @@ public class TaskService {
 	 * @return
      */
 	public List<TaskResponse> getAllByUserId(String userId) {
+		log.info("TaskService.getAllByUserId: userId={}", userId);
+		
         validateUserId(userId);
         
 		try {
@@ -47,6 +49,8 @@ public class TaskService {
 	 * @return
      */
 	public List<TaskResponse> getByUserIdAndDate(String userId, String date) {
+		log.info("TaskService.getByUserIdAndDate: userId={}, date={}", userId, date);
+		
         validateUserId(userId);
         validateDate(date);
         
@@ -65,6 +69,8 @@ public class TaskService {
 	 * @return
      */
 	public void save(TaskRequest request) {
+		log.info("TaskService.save: request = {}", request);
+		
 		try {
 		    taskDynamoRepository.putItem(request);
 		}
@@ -81,6 +87,8 @@ public class TaskService {
 	 * @return
 	 */
 	public TaskSerialResponse issueSerial(String userId, String date){
+		log.info("TaskService.issueSerial: userId={}, date={}", userId, date);
+		
         validateUserId(userId);
         validateDate(date);
         

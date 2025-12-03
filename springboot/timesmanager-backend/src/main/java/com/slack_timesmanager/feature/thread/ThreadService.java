@@ -46,6 +46,8 @@ public class ThreadService {
 	
     /**
      * チャンネルIDに紐づくスレッド情報を全件取得
+     * @param userId
+     * @return
      */
 	public List<ThreadResponse> getAllByUserId(String userId) {
 		log.info("ThreadService.getAllByUserId: userId={}", userId);
