@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.slack_timesmanager.common.ServiceResult;
+import com.slack_timesmanager.common.exception.InfrastructureException;
 
 @Service
 public class AttendanceService {
@@ -23,7 +23,7 @@ public class AttendanceService {
     /**
      * 勤怠の新規登録 or 更新（同一 userId + date があれば更新、それ以外は登録）
      */
-	public ServiceResult<Void> save(AttendanceRequest request){
+	public boolean save(AttendanceRequest request){
 		try {
 			List<AttendanceResponse> getRes = attendanceDynamoRepository.findByUserIdAndDate(request.getUserId(), request.getDate());
 			
@@ -32,40 +32,37 @@ public class AttendanceService {
 			} else {
 				attendanceDynamoRepository.updateItem(request);
 			}
-			
-			return ServiceResult.success();
+			return true;
 		}
 		catch(Exception e) {
 	        log.error("DynamoDB処理中にエラー: save request={}", request, e);
-	        return ServiceResult.failure("DynamoDB error");
+	        throw new InfrastructureException("DynamoDB error");
 		}
 	}
 	
     /**
      * 勤怠情報取得（userId）
      */
-	public ServiceResult<List<AttendanceResponse>> getAllByUserId(String userId) {
+	public List<AttendanceResponse> getAllByUserId(String userId) {
 		try {
-			List<AttendanceResponse> response = attendanceDynamoRepository.findAllByUserId(userId);
-			return ServiceResult.success(response);
+			return attendanceDynamoRepository.findAllByUserId(userId);
 		}
 		catch(Exception e) {            
 			log.error("DynamoDB処理中にエラー: getAttendanceResponse userId={}", userId,  e);
-			return ServiceResult.failure("DynamoDB error");
+			throw new InfrastructureException("DynamoDB error");
 		}
 	}
 	
     /**
      * 勤怠情報取得（userId + date）
      */
-	public ServiceResult<List<AttendanceResponse>> getByUserIdAndDate(String userId, String date) {
+	public List<AttendanceResponse> getByUserIdAndDate(String userId, String date) {
 		try {
-			List<AttendanceResponse> response = attendanceDynamoRepository.findByUserIdAndDate(userId, date);
-			return ServiceResult.success(response);
+			return attendanceDynamoRepository.findByUserIdAndDate(userId, date);
 		}
 		catch(Exception e) {            
 			log.error("DynamoDB処理中にエラー: getAttendanceResponse userId={}, date={}", userId, date, e);
-			return ServiceResult.failure("DynamoDB error");
+			throw new InfrastructureException("DynamoDB error");
 		}
 	}
 }

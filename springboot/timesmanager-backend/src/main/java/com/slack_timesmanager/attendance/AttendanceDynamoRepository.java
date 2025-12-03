@@ -44,7 +44,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
     /**
      * 勤怠情報を保存
      */
-    public boolean putItem(AttendanceRequest request) throws Exception {
+    public boolean putItem(AttendanceRequest request){
     	DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
                 request.getUserId(),
                 request.getDate()
@@ -68,7 +68,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
             dynamoDbClient.putItem(putItemRequest);
             return true;
         } catch (Exception e) {
-            throw new Exception("DynamoDB putItem failed", e);
+            throw new RuntimeException("DynamoDB putItem failed", e);
         }
     }
     
@@ -172,7 +172,6 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	                .collect(Collectors.toList());
 	    }
 	    catch (DynamoDbException e) {
-	        // チェック例外を表に出さず RuntimeException に包んで上位に任せる
 	        throw new RuntimeException("DynamoDB queryTaskList failed", e);
 	    }
 	}
