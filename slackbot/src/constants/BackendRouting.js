@@ -1,6 +1,7 @@
 exports.BackendRouting = {
   THREAD: {
     ROOT: '/api/thread',
+    SAVE: '/api/thread',
   },
   TASK: {
     ROOT: '/api/task',
