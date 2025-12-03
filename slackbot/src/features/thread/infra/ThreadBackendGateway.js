@@ -12,8 +12,8 @@ class ThreadBackendGateway extends BackendGatewayBase {
    * @param {string} params.permalink
    * @param {string} params.threadTs
    */
-  async saveThread ({ channelId, threadTs, permalink, userId }) {
-    console.log(`ThreadBackendGateway.saveThread channelId:${channelId} threadTs:${threadTs} permalink:${permalink} userId:${userId}`)
+  async saveThread ({ channelId, threadTs, permalink, userId, date }) {
+    console.log(`ThreadBackendGateway.saveThread\nchannelId:${channelId} threadTs:${threadTs} permalink:${permalink} userId:${userId} date:${date}`)
 
     const response = await this.backendHttpClient.request({
       routing: BackendRouting.THREAD.SAVE,
@@ -22,6 +22,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
         threadTs: threadTs,
         permalink: permalink,
         userId: userId,
+        date: date,
       }
     })
 

@@ -29,7 +29,7 @@ public final class DynamoKeyFactory {
         return new DynamoKey(pk, sk);
     }
 
-    // ===== Diary 用 =====
+    // ===== Dailyreport 用 =====
     // partition_key:userId + "/DIARY"
     // sort_key: YYYY-MM_DD
     /**

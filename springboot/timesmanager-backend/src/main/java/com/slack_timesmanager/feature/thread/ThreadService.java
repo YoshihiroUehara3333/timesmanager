@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.slack_timesmanager.common.exception.InfrastructureException;
+import com.slack_timesmanager.common.utils.Validator;
 import com.slack_timesmanager.feature.thread.dto.ThreadRequest;
 import com.slack_timesmanager.feature.thread.dto.ThreadResponse;
 
@@ -52,7 +53,7 @@ public class ThreadService {
 	public List<ThreadResponse> getAllByUserId(String userId) {
 		log.info("ThreadService.getAllByUserId: userId={}", userId);
 		
-		validateUserId(userId);
+		Validator.validateUserId(userId);
 		
 		try {
 			return threadDynamoRepository.findAllByUserId(userId);
@@ -72,8 +73,8 @@ public class ThreadService {
 	public List<ThreadResponse> getByUserIdAndDate(String userId, String date) {
 		log.info("ThreadService.getByUserIdAndDate: userId={}, date={}", userId, date);
 		
-        validateUserId(userId);
-        validateDate(date);
+		Validator.validateUserId(userId);
+		Validator.validateDate(date);
         
 		try {
 			return threadDynamoRepository.findByUserIdAndDate(userId, date);
@@ -84,16 +85,5 @@ public class ThreadService {
 		}
 	}
 	
-    // ===== helpers =====
-    private void validateUserId(String userId) {
-        if (userId == null || userId.isBlank()) {
-            throw new IllegalArgumentException("userId は必須です");
-        }
-    }
 
-    private void validateDate(String date) {
-        if (date == null || date.isBlank()) {
-            throw new IllegalArgumentException("date は必須です");
-        }
-    }
 }

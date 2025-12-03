@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.slack_timesmanager.common.exception.InfrastructureException;
+import com.slack_timesmanager.common.utils.Validator;
 import com.slack_timesmanager.feature.attendance.dto.AttendanceRequest;
 import com.slack_timesmanager.feature.attendance.dto.AttendanceResponse;
 
@@ -46,6 +47,8 @@ public class AttendanceService {
      * 勤怠情報取得（userId）
      */
 	public List<AttendanceResponse> getAllByUserId(String userId) {
+		Validator.validateUserId(userId);
+		
 		try {
 			return attendanceDynamoRepository.findAllByUserId(userId);
 		}
@@ -59,6 +62,9 @@ public class AttendanceService {
      * 勤怠情報取得（userId + date）
      */
 	public List<AttendanceResponse> getByUserIdAndDate(String userId, String date) {
+		Validator.validateUserId(userId);
+		Validator.validateDate(date);
+		
 		try {
 			return attendanceDynamoRepository.findByUserIdAndDate(userId, date);
 		}

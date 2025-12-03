@@ -79,7 +79,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
      * スレッド情報を1件取得（PK+SKでユニーク）
      * 返り値は既存互換のため List<ThreadResponse> としている
      */
-    public List<ThreadResponse> findByUserIdAndDate(String userId, String date) throws DynamoDbException{
+    public List<ThreadResponse> findByUserIdAndDate(String userId, String date){
     	log.info("ThreadDynamoRepository.getByUserIdAndDate: userId={}, date={}", userId, date);
     	
     	DynamoKey itemKey = DynamoKeyFactory.threadItemKey(
@@ -107,7 +107,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
             return List.of(mapToThreadResponse(item));
 
         } catch (DynamoDbException e) {
-            throw new RuntimeException("DynamoDB getDiary failed", e);
+            throw new RuntimeException("findByUserIdAndDate", e);
         }
     }
     

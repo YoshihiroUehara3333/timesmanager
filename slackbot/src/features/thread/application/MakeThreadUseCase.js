@@ -17,7 +17,7 @@ class MakeThreadUseCase {
      * @param {Function} params.respond - コマンドへの返信
      */
   async execute ({ userId, channelId, respond }) {
-    console.log(`HomeOpenUseCase.excecute userId:${userId} channelId:${channelId}`)
+    console.log(`MakeThreadUseCase.excecute userId:${userId} channelId:${channelId}`)
 
     const date = getDate('YYYY-MM-DD')
 
@@ -38,6 +38,7 @@ class MakeThreadUseCase {
         threadTs: thread.threadTs,
         permalink: thread.permalink,
         userId: userId,
+        date: date,
       })
     }
 

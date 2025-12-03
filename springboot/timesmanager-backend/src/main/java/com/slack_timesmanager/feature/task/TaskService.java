@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.slack_timesmanager.common.exception.InfrastructureException;
+import com.slack_timesmanager.common.utils.Validator;
 import com.slack_timesmanager.feature.task.dto.TaskRequest;
 import com.slack_timesmanager.feature.task.dto.TaskResponse;
 import com.slack_timesmanager.feature.task.dto.TaskSerialResponse;
@@ -31,7 +32,7 @@ public class TaskService {
 	public List<TaskResponse> getAllByUserId(String userId) {
 		log.info("TaskService.getAllByUserId: userId={}", userId);
 		
-        validateUserId(userId);
+		Validator.validateUserId(userId);
         
 		try {
 			return taskDynamoRepository.findAllByUserId(userId);
@@ -51,8 +52,8 @@ public class TaskService {
 	public List<TaskResponse> getByUserIdAndDate(String userId, String date) {
 		log.info("TaskService.getByUserIdAndDate: userId={}, date={}", userId, date);
 		
-        validateUserId(userId);
-        validateDate(date);
+		Validator.validateUserId(userId);
+		Validator.validateDate(date);
         
 		try {
 			return taskDynamoRepository.findByUserIdAndDate(userId, date);
@@ -89,8 +90,8 @@ public class TaskService {
 	public TaskSerialResponse issueSerial(String userId, String date){
 		log.info("TaskService.issueSerial: userId={}, date={}", userId, date);
 		
-        validateUserId(userId);
-        validateDate(date);
+		Validator.validateUserId(userId);
+		Validator.validateDate(date);
         
         try {
             String serial = taskDynamoRepository.getNextSerial(userId, date);
@@ -101,18 +102,4 @@ public class TaskService {
             throw new InfrastructureException("新規シリアルの発行に失敗しました", e);
         }
 	}
-	
-	
-    // ===== helpers =====
-    private void validateUserId(String userId) {
-        if (userId == null || userId.isBlank()) {
-            throw new IllegalArgumentException("userId は必須です");
-        }
-    }
-
-    private void validateDate(String date) {
-        if (date == null || date.isBlank()) {
-            throw new IllegalArgumentException("date は必須です");
-        }
-    }
 }
