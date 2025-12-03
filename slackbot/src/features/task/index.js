@@ -7,6 +7,8 @@ const { TaskSlackGateway } = require('./infra/TaskSlackGateway')
 const { TaskBackendGateway } = require('./infra/TaskBackendGateway')
 const { ThreadBackendGateway } = require('../thread/infra/ThreadBackendGateway')
 
+const { ModalConst } = require('../../shared/constants/ModalConst')
+
 function registerTaskFeature({ app, slackApiAdaptor, backendHttpClient }) {
   // Gateway
   const slackGateway = new TaskSlackGateway(slackApiAdaptor)
