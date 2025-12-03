@@ -6,7 +6,7 @@ class SlackApiAdaptor {
   }
 
   // chat.postMessage
-  // https://api.slack.com/methods/chat.postMessage
+  // https://docs.slack.dev/reference/methods/chat.postmessage
   async postMessage ({ channelId, text, threadTs, blocks }) {
     try {
       return await this.client.chat.postMessage({
@@ -21,7 +21,7 @@ class SlackApiAdaptor {
   }
 
   // chat.getpermalink
-  // https://api.slack.com/methods/chat.getpermalink
+  // https://docs.slack.dev/reference/methods/chat.getpermalink
   async getPermalink ({ channelId, messageTs }) {
     try {
       const getResult = await this.client.chat.getPermalink({

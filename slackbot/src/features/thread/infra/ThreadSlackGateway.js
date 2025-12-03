@@ -8,12 +8,12 @@ class ThreadSlackGateway extends SlackGatewayBase {
    */
   async postThread ({ channelId, text }) {
     const message = await this.slackApiAdaptor.postMessage({
-      channel: channelId,
+      channelId: channelId,
       text,
     })
 
     const permalink = await this.slackApiAdaptor.getPermalink({
-      channel: message.channel,
+      channeIdl: message.channel,
       messageTs: message.ts,
     })
 
