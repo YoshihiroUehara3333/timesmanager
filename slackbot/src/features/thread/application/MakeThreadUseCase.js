@@ -25,7 +25,7 @@ class MakeThreadUseCase {
         let thread = await this.threadBackendGateway.getThread({ userId, date });
         if (!thread) {
             // スレッド用メッセージ本文を作る
-            const threadText = buildThreadInitialText({ userId, text })
+            const threadText = buildThreadInitialText({ userId })
 
             // Slackにスレッドを投稿
             thread = await this.slackGateway.postThread({
