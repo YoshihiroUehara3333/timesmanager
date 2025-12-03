@@ -50,7 +50,7 @@ exports.TaskInputModal = ({ threadTs, date, serial, userId, status }) => ({
         action_id: 'input'
       }
     },
-    ...divider(),
+    divider(),
     {
       type: 'input',
       block_id: 'memo',

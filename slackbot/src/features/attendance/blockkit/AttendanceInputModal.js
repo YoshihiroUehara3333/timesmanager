@@ -81,8 +81,8 @@ exports.AttendanceInputModal = ({ userId, date, attendance = {} }) => ({
   title: { type: 'plain_text', text: '勤怠記録', emoji: true },
   ...modalButtons(),
   blocks: [
-    ...mrkdwnSection('*本日の勤怠状況を入力してください*'),
-    ...divider(),
+    mrkdwnSection('*本日の勤怠状況を入力してください*'),
+    divider(),
     {
       type: 'input',
       block_id: 'starttime',

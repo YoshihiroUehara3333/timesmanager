@@ -88,9 +88,9 @@ exports.HomeBlocks = ({ tasks = [], thread = undefined }) => {
       type: 'header',
       text: { type: 'plain_text', text: 'timesmanager' }
     },
-    ...divider(),
+    divider(),
     ...dailyReportSection(),
-    ...divider(),
+    divider(),
     ...taskSection(thread),
   ]
 
