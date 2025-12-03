@@ -43,7 +43,7 @@ function taskSection (thread) {
           text: { type: 'plain_text', text: 'タスク新規作成' },
           style: 'primary',
           value: 'create_task',
-          action_id: ModalConst.ACTION_ID.TASK.CREATE,
+          action_id: ModalConst.ACTION_ID.HOME.TASK_INPUT,
         }
       ]
     })
@@ -81,7 +81,7 @@ function taskList (
   ))
 }
 
-exports.HomeBlocks = ({ tasks = [], thread}) => {
+exports.HomeBlocks = ({ tasks = [], thread }) => {
   const blocks = [
     {
       type: 'header',

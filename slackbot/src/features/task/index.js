@@ -32,7 +32,7 @@ function registerTaskFeature ({ app, slackApiAdaptor, backendHttpClient }) {
   // ホームタブの「タスク入力」ボタン押下
   app.action(
     ModalConst.ACTION_ID.HOME.TASK_INPUT,
-    async ({ body, ack }) => {
+    async ({ body, ack, logger }) => {
       await ack()
       await startInputUseCase.execute({
         userId: body.user.id,
