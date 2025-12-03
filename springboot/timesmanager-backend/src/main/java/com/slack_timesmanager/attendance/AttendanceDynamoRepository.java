@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import com.slack_timesmanager.base.DynamoRepositoryBase;
+import com.slack_timesmanager.common.base.DynamoRepositoryBase;
 import com.slack_timesmanager.dynamodb.DynamoKey;
 import com.slack_timesmanager.dynamodb.DynamoKeyFactory;
 

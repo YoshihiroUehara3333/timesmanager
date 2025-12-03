@@ -1,6 +1,6 @@
 package com.slack_timesmanager.attendance;
 
-import com.slack_timesmanager.core.Request;
+import com.slack_timesmanager.common.core.Request;
 
 public class AttendanceRequest implements Request{
 	private String userId;

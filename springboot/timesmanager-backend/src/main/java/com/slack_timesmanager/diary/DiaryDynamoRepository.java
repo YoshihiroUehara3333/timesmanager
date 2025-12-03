@@ -8,7 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import com.slack_timesmanager.base.DynamoRepositoryBase;
+import com.slack_timesmanager.common.base.DynamoRepositoryBase;
 import com.slack_timesmanager.dynamodb.DynamoKey;
 import com.slack_timesmanager.dynamodb.DynamoKeyFactory;
 
@@ -36,7 +36,7 @@ public class DiaryDynamoRepository extends DynamoRepositoryBase{
     /**
      * 日報を1件保存
      */
-    public boolean putItem(DiaryRequest request) throws Exception {
+    public void putItem(DiaryRequest request) {
     	DynamoKey itemKey = DynamoKeyFactory.diaryItemKey(
                 request.getUserId(),
                 request.getDate()
@@ -55,9 +55,8 @@ public class DiaryDynamoRepository extends DynamoRepositoryBase{
 
         try {
             dynamoDbClient.putItem(putItemRequest);
-            return true;
-        } catch (Exception e) {
-            throw new Exception("DynamoDB putItem failed", e);
+        } catch (DynamoDbException e) {
+            throw new RuntimeException("DynamoDB putItem failed", e);
         }
     }
 	
@@ -65,7 +64,7 @@ public class DiaryDynamoRepository extends DynamoRepositoryBase{
      * 日報を1件取得（PK+SKでユニーク）
      * 返り値は既存互換のため List<DiaryResponse> としている
      */
-    public List<DiaryResponse> getDiary(String userId, String date) throws DynamoDbException{
+    public List<DiaryResponse> getDiary(String userId, String date){
     	DynamoKey itemKey = DynamoKeyFactory.diaryItemKey(
                 userId,
                 date
@@ -95,7 +94,7 @@ public class DiaryDynamoRepository extends DynamoRepositoryBase{
     }
     
     
-	public void updateItem(DiaryRequest request) throws Exception {
+	public void updateItem(DiaryRequest request){
     	DynamoKey itemKey = DynamoKeyFactory.diaryItemKey(
                 request.getUserId(),
                 request.getDate()
@@ -125,8 +124,8 @@ public class DiaryDynamoRepository extends DynamoRepositoryBase{
 
 	    try {
 	        dynamoDbClient.updateItem(updateRequest);
-	    } catch (Exception e) {
-	        throw new Exception("DynamoDB updateItem failed", e);
+	    } catch (DynamoDbException e) {
+            throw new RuntimeException("DynamoDB updateItem failed", e);
 	    }
 	}
 	

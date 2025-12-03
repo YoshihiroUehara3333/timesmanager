@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.slack_timesmanager.common.ServiceResult;
+import com.slack_timesmanager.common.exception.InfrastructureException;
 
 @Service
 public class DiaryService {
@@ -22,7 +22,7 @@ public class DiaryService {
     /**
      * 日報の新規登録 or 更新（同一 userId + date があれば更新、それ以外は登録）
      */
-	public ServiceResult<Void> save(DiaryRequest request){
+	public void save(DiaryRequest request){
 		try {
 			List<DiaryResponse> getRes = diaryDynamoRepository.getDiary(request.getUserId(), request.getDate());
 			
@@ -31,26 +31,23 @@ public class DiaryService {
 			} else {
 				diaryDynamoRepository.updateItem(request);
 			}
-			
-			return ServiceResult.success();
 		}
-		catch(Exception e) {
+		catch(RuntimeException e) {
 	        log.error("DynamoDB処理中にエラー: save request={}", request, e);
-	        return ServiceResult.failure("DynamoDB error");
+	        throw new InfrastructureException("日記のDB更新に失敗しました", e);
 		}
 	}
 	
     /**
      * 日報取得（userId + date）
      */
-	public ServiceResult<List<DiaryResponse>> getDiary(String userId, String date) {
+	public List<DiaryResponse> getDiary(String userId, String date) {
 		try {
-			List<DiaryResponse> response = diaryDynamoRepository.getDiary(userId, date);
-			return ServiceResult.success(response);
+			return diaryDynamoRepository.getDiary(userId, date);
 		}
-		catch(Exception e) {            
+		catch(RuntimeException e) {          
 			log.error("DynamoDB処理中にエラー: getDiary userId={}, date={}", userId, date, e);
-			return ServiceResult.failure("DynamoDB error");
+			throw new InfrastructureException("タスク一覧の取得に失敗しました", e);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package com.slack_timesmanager.base;
+package com.slack_timesmanager.common.base;
 
 import org.springframework.beans.factory.annotation.Value;
 

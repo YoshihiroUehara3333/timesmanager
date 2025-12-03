@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.slack_timesmanager.common.ServiceResult;
+import com.slack_timesmanager.common.exception.InfrastructureException;
 
 @Service
 public class ThreadService {
@@ -18,35 +18,35 @@ public class ThreadService {
 		this.threadDynamoRepository = threadDynamoRepository;
 	}
 
-	public ServiceResult<Void> save(ThreadRequest request){
+	public boolean save(ThreadRequest request){
 		try {
 			List<ThreadResponse> getRes = threadDynamoRepository.findByUserIdAndDate(request.getUserId(), request.getDate());
 			
 			if(getRes.isEmpty()) {
 				threadDynamoRepository.putItem(request);
+				return true;
 			} else {
-				return ServiceResult.failure("400", "本日のスレッドは既に作成済です");
+				return false;
 			}
-			
-			return ServiceResult.success();
 		}
-		catch(Exception e) {
+		catch(RuntimeException e) {
 	        log.error("DynamoDB処理中にエラー: save request={}", request, e);
-	        return ServiceResult.failure("DynamoDB error");
+	        throw new InfrastructureException("DynamoDB error");
 		}
 	}
 	
     /**
      * チャンネルIDに紐づくスレッド情報を全件取得
      */
-	public ServiceResult<List<ThreadResponse>> getAllByUserId(String userId) {
+	public List<ThreadResponse> getAllByUserId(String userId) {
+		validateUserId(userId);
+		
 		try {
-			List<ThreadResponse> response = threadDynamoRepository.findAllByUserId(userId);
-			return ServiceResult.success(response);
+			return threadDynamoRepository.findAllByUserId(userId);
 		}
-		catch(Exception e) {
+		catch(RuntimeException e) {
 	        log.error("DynamoDB処理中にエラー: getAllByUserId userId={}", userId, e);
-	        return ServiceResult.failure("DynamoDB error");
+	        throw new InfrastructureException("DynamoDB error");
 		}
 	};
 	
@@ -56,14 +56,29 @@ public class ThreadService {
 	 * @param date
 	 * @return
 	 */
-	public ServiceResult<List<ThreadResponse>> getByUserIdAndDate(String userId, String date) {
+	public List<ThreadResponse> getByUserIdAndDate(String userId, String date) {
+        validateUserId(userId);
+        validateDate(date);
+        
 		try {
-			List<ThreadResponse> response = threadDynamoRepository.findByUserIdAndDate(userId, date);
-			return ServiceResult.success(response);
+			return threadDynamoRepository.findByUserIdAndDate(userId, date);
 		}
-		catch(Exception e) {            
+		catch(RuntimeException e) {            
 			log.error("DynamoDB処理中にエラー: getByUserIdAndDate userId={}, date={}", userId, date, e);
-			return ServiceResult.failure("DynamoDB error");
+			throw new InfrastructureException("DynamoDB error");
 		}
 	}
+	
+    // ===== helpers =====
+    private void validateUserId(String userId) {
+        if (userId == null || userId.isBlank()) {
+            throw new IllegalArgumentException("userId は必須です");
+        }
+    }
+
+    private void validateDate(String date) {
+        if (date == null || date.isBlank()) {
+            throw new IllegalArgumentException("date は必須です");
+        }
+    }
 }

@@ -1,47 +1,20 @@
 package com.slack_timesmanager.diary;
 
-import com.slack_timesmanager.core.Response;
+import com.slack_timesmanager.common.core.Response;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class DiaryResponse implements Response{
 	private String userId;
+	private String channelId;
 	private String date;
 	private String startTime;
 	private String endTime;
 	private String workplace;
-
 	
 	public DiaryResponse() {
 	}
-
-	public String getDate() {
-		return date;
-	}
-	public void setDate(String date) {
-		this.date = date;
-	}
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-	public String getStartTime() {
-		return startTime;
-	}
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
-	}
-	public String getEndTime() {
-		return endTime;
-	}
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
-	}
-	public String getWorkplace() {
-		return workplace;
-	}
-	public void setWorkplace(String workplace) {
-		this.workplace = workplace;
-	}
-
 }

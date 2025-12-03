@@ -1,6 +1,6 @@
 package com.slack_timesmanager.dynamodb;
 
-import com.slack_timesmanager.enums.DynamoPK;
+import com.slack_timesmanager.common.enums.DynamoPK;
 
 /**
  * DynamoDB の PK/SK を一元的に生成する Factory

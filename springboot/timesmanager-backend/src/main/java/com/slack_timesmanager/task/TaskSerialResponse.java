@@ -1,6 +1,6 @@
 package com.slack_timesmanager.task;
 
-import com.slack_timesmanager.core.Response;
+import com.slack_timesmanager.common.core.Response;
 
 public class TaskSerialResponse implements Response{
 

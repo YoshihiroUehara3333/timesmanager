@@ -1,7 +1,12 @@
 package com.slack_timesmanager.diary;
 
-import com.slack_timesmanager.core.Request;
+import com.slack_timesmanager.common.core.Request;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class DiaryRequest implements Request{
 	private String userId;
 	private String channelId;
@@ -9,43 +14,5 @@ public class DiaryRequest implements Request{
 	private String startTime;
 	private String endTime;
 	private String workplace;
-    
-    
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-	public String getChannelId() {
-		return channelId;
-	}
-	public void setChannelId(String channelId) {
-		this.channelId = channelId;
-	}
-	public String getDate() {
-		return date;
-	}
-	public void setDate(String date) {
-		this.date = date;
-	}
-	public String getStartTime() {
-		return startTime;
-	}
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
-	}
-	public String getEndTime() {
-		return endTime;
-	}
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
-	}
-	public String getWorkplace() {
-		return workplace;
-	}
-	public void setWorkplace(String workplace) {
-		this.workplace = workplace;
-	}
-  
+ 
 }

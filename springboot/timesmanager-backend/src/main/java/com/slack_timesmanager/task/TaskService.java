@@ -6,11 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.slack_timesmanager.common.ServiceResult;
+import com.slack_timesmanager.common.exception.InfrastructureException;
 
 @Service
 public class TaskService {
 	
+	/* Logger */
 	private static final Logger log = LoggerFactory.getLogger(TaskService.class);
 	
 	private final TaskDynamoRepository taskDynamoRepository;
@@ -21,55 +22,86 @@ public class TaskService {
 
     /**
      * ユーザIDに紐づくタスクを全件取得
+     * @param userId
+	 * @return
      */
-	public ServiceResult<List<TaskResponse>> getAllByUserId(String userId) {
+	public List<TaskResponse> getAllByUserId(String userId) {
+        validateUserId(userId);
+        
 		try {
-			List<TaskResponse> response = taskDynamoRepository.findAllByUserId(userId);
-			return ServiceResult.success(response);
+			return taskDynamoRepository.findAllByUserId(userId);
 		}
-		catch(Exception e) {
+		catch(RuntimeException e) {
 	        log.error("DynamoDB処理中にエラー: getAllByUserId userId={}", userId, e);
-	        return ServiceResult.failure("DynamoDB error");
+	        throw new InfrastructureException("タスク一覧の取得に失敗しました", e);
 		}
 	};
 	
     /**
      * ユーザID + 日付でタスクを取得
+     * @param userId
+	 * @param date
+	 * @return
      */
-	public ServiceResult<List<TaskResponse>> getByUserIdAndDate(String userId, String date) {
+	public List<TaskResponse> getByUserIdAndDate(String userId, String date) {
+        validateUserId(userId);
+        validateDate(date);
+        
 		try {
-			List<TaskResponse> response = taskDynamoRepository.findByUserIdAndDate(userId, date);
-			return ServiceResult.success(response);
+			return taskDynamoRepository.findByUserIdAndDate(userId, date);
 		}
-		catch(Exception e) {
+		catch(RuntimeException e) {
             log.error("DynamoDB処理中にエラー: getByUserIdAndDate userId={}, date={}", userId, date, e);
-            return ServiceResult.failure("DynamoDB error");
+            throw new InfrastructureException("タスク一覧の取得に失敗しました", e);
 		}
 	};
 	
     /**
      * タスク登録
+     * @param request
+	 * @return
      */
-	public ServiceResult<Void> save(TaskRequest request) {
+	public void save(TaskRequest request) {
 		try {
 		    taskDynamoRepository.putItem(request);
-			return ServiceResult.success();
 		}
-		catch(Exception e) {
+		catch(RuntimeException e) {
 	        log.error("DynamoDB処理中にエラー: save request={}", request, e);
-	        return ServiceResult.failure("DynamoDB error");
+	        throw new InfrastructureException("タスクのDB登録に失敗しました", e);
 		}
 	};
 	
-	public ServiceResult<TaskSerialResponse> issueSerial(String userId, String date){
+	/**
+	 * シリアル発行
+	 * @param userId
+	 * @param date
+	 * @return
+	 */
+	public TaskSerialResponse issueSerial(String userId, String date){
+        validateUserId(userId);
+        validateDate(date);
+        
         try {
             String serial = taskDynamoRepository.getNextSerial(userId, date);
-            TaskSerialResponse body = new TaskSerialResponse(serial);
-            return ServiceResult.success(body);
+            return new TaskSerialResponse(serial);
         } 
-        catch (Exception e) {
+        catch (RuntimeException e) {
             log.error("DynamoDB処理中にエラー: issueSerial userId={}, date={}", userId, date, e);
-            return ServiceResult.failure("DynamoDB error");
+            throw new InfrastructureException("新規シリアルの発行に失敗しました", e);
         }
 	}
+	
+	
+    // ===== helpers =====
+    private void validateUserId(String userId) {
+        if (userId == null || userId.isBlank()) {
+            throw new IllegalArgumentException("userId は必須です");
+        }
+    }
+
+    private void validateDate(String date) {
+        if (date == null || date.isBlank()) {
+            throw new IllegalArgumentException("date は必須です");
+        }
+    }
 }

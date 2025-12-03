@@ -1,4 +1,4 @@
-package com.slack_timesmanager.enums;
+package com.slack_timesmanager.common.enums;
 
 public enum DynamoPK {
 	DIARY("/DAILYREPORT"),

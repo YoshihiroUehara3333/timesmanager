@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.slack_timesmanager.common.ServiceResult;
-
 @RestController
 @RequestMapping("/api/task")
 public class TaskController {
+	
+	/* Logger */
 	private static final Logger log = LoggerFactory.getLogger(TaskController.class);
 	
 	private final TaskService taskService;
@@ -25,19 +25,15 @@ public class TaskController {
 		this.taskService = taskService;
 	}
 	
+	
 	@PostMapping
 	public ResponseEntity<Void> post(
 			@RequestBody TaskRequest request
 	){
 		log.info("📥 Received POST /api/task: {}", request);
 		
-		ServiceResult<Void> result = taskService.save(request);
-		
-		if(result.isSuccess()) {
-			return ResponseEntity.ok().build();
-		} else {
-			return ResponseEntity.internalServerError().build();
-		}
+		taskService.save(request);
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping
@@ -47,19 +43,14 @@ public class TaskController {
     ){
 		log.info("📥 GET /api/task called. userId={}, date={}", userId, date);
 		
-		ServiceResult<List<TaskResponse>> result;
+		List<TaskResponse> responseBody = null;
 		
-		if (date == null) {
-			result = taskService.getAllByUserId(userId);
+		if (date == null || date.isBlank()) {
+			responseBody = taskService.getAllByUserId(userId);
 		} else {
-			result = taskService.getByUserIdAndDate(userId, date);
+			responseBody = taskService.getByUserIdAndDate(userId, date);
         }
-		
-		if(result.isSuccess()) {
-			return ResponseEntity.ok(result.getBody());
-		} else {
-			return ResponseEntity.internalServerError().build();
-		}
+		return ResponseEntity.ok(responseBody);
 	}
 	
 	@GetMapping("/serial")
@@ -69,12 +60,7 @@ public class TaskController {
     ) {
         log.info("📥 GET /api/task/serial: userId={}, date={}", userId, date);
 
-        ServiceResult<TaskSerialResponse> result = taskService.issueSerial(userId, date);
-
-        if (!result.isSuccess()) {
-            return ResponseEntity.internalServerError().build();
-        }
-
-        return ResponseEntity.ok(result.getBody());
+        TaskSerialResponse responseBody = taskService.issueSerial(userId, date);
+        return ResponseEntity.ok(responseBody);
     }
 }

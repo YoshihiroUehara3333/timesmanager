@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import com.slack_timesmanager.base.DynamoRepositoryBase;
+import com.slack_timesmanager.common.base.DynamoRepositoryBase;
 import com.slack_timesmanager.dynamodb.DynamoKey;
 import com.slack_timesmanager.dynamodb.DynamoKeyFactory;
 
@@ -32,6 +32,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
     private static final String ATTR_PERMALINK = "permalink";
     private static final String ATTR_THREADTS = "thread_ts";
 
+    /* Logger */
     private static final Logger log = LoggerFactory.getLogger(ThreadDynamoRepository.class);
     
 	public ThreadDynamoRepository(
@@ -45,7 +46,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
     /**
      * スレッド情報を1件保存
      */
-    public boolean putItem(ThreadRequest request) throws Exception {
+    public boolean putItem(ThreadRequest request) {
     	DynamoKey itemKey = DynamoKeyFactory.threadItemKey(
                 request.getUserId(),
                 request.getDate()
@@ -67,8 +68,8 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
         try {
             dynamoDbClient.putItem(putItemRequest);
             return true;
-        } catch (Exception e) {
-            throw new Exception("DynamoDB putItem failed", e);
+        } catch (DynamoDbException e) {
+        	throw new RuntimeException("DynamoDB putItem failed", e);
         }
     }
 	
@@ -135,7 +136,6 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
 	                .collect(Collectors.toList());
 	    }
 	    catch (DynamoDbException e) {
-	        // チェック例外を表に出さず RuntimeException に包んで上位に任せる
 	        throw new RuntimeException("DynamoDB queryTaskList failed", e);
 	    }
 	}

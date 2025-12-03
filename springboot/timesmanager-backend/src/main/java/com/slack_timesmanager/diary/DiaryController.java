@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.slack_timesmanager.common.ServiceResult;
-
 @RestController
 @RequestMapping("/api/diary")
 public class DiaryController {
@@ -29,12 +27,8 @@ public class DiaryController {
 	public ResponseEntity<Void> post(@RequestBody DiaryRequest request){
 		log.info("📥 Received POST /api/diary: {}", request);
 		
-		ServiceResult<Void> result = diaryService.save(request);
-		if(result.isSuccess()) {
-			return ResponseEntity.ok().build();
-		} else {
-			return ResponseEntity.internalServerError().build();
-		}
+		diaryService.save(request);
+		return ResponseEntity.ok().build();
 	}
 	
 	@GetMapping("/{userId}/{date}")
@@ -44,15 +38,9 @@ public class DiaryController {
 	{
 		log.info("📥 Received GET /api/diary: {}", userId, date);
 		
-		ServiceResult<List<DiaryResponse>> result;
+		List<DiaryResponse> responseBody = null;
 		
-		result = diaryService.getDiary(userId, date);
-		
-		if(result.isSuccess()) {
-			return ResponseEntity.ok(result.getBody());
-			
-		} else {
-			return ResponseEntity.internalServerError().build();
-		}
+		responseBody = diaryService.getDiary(userId, date);
+		return ResponseEntity.ok(responseBody);
 	}
 }
