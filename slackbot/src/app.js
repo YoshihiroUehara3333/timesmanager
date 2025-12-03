@@ -15,10 +15,11 @@ const { registerWarmUpFeature } = require('./features/warmup')
  * Bolt App を組み立てて返すファクトリ関数
  * - ローカル起動でも Lambda でも共通で使えるようにしておく
  */
-function createBoltApp() {
+function createBoltApp({ receiver }) {
   const app = new App({
     token: process.env.SLACK_BOT_USER_ACCESS_TOKEN,
     logLevel: LogLevel.INFO,
+    receiver
   })
 
   // 共通インフラ
