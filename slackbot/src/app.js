@@ -31,7 +31,7 @@ function createBoltApp({ receiver }) {
   })
 
   // --- featureごとの登録 ---
-  registerMakeThreadFeature({ app, slackApiAdaptor, backendHttpClient })
+  registerThreadFeature({ app, slackApiAdaptor, backendHttpClient })
   registerHomeFeature({ app, slackApiAdaptor, backendHttpClient })
   registerAttendanceFeature({ app, slackApiAdaptor, backendHttpClient })
   registerTaskFeature({ app, slackApiAdaptor, backendHttpClient })
