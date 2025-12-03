@@ -21,7 +21,7 @@ class BackendHttpClient {
       timeout: timeoutMs,
     })
 
-    this.methodSelecter = {
+    this.methodSelector = {
       GET: this.get.bind(this),
       POST: this.post.bind(this),
       PUT: this.put.bind(this),
