@@ -33,7 +33,7 @@ public class ThreadController {
      * スレッド登録
      * 
      * @param request スレッド登録リクエスト
-     * @return 新規作成: 201 Created, 既存あり: 409 Conflict
+     * @return 新規作成: 201 Created, 既存あり: 200 OK
      */
 	@PostMapping
 	public ResponseEntity<Void> post(
@@ -45,7 +45,7 @@ public class ThreadController {
 		if(created) {
 			return ResponseEntity.status(HttpStatus.CREATED).build();
 		} else {
-			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+			return ResponseEntity.status(HttpStatus.OK).build();
 		}
 	}
 	
