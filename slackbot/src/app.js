@@ -26,7 +26,7 @@ function createBoltApp({ receiver }) {
   const slackApiAdaptor = new SlackApiAdaptor(app.client)
 
   const backendHttpClient = new BackendHttpClient({
-    baseUrl: process.env.BACKEND_BASE_URL,
+    baseUrl: process.env.BACKEND_API_BASE_URL,
     timeoutMs: 5000,
   })
 
