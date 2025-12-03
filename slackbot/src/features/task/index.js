@@ -58,7 +58,7 @@ function registerTaskFeature ({ app, slackApiAdaptor, backendHttpClient }) {
 
   // 勤怠入力モーダルの submit
   app.view(
-    ModalConst.CALLBACK_ID.TASK_INPUT,
+    { type: 'view_submission', callback_id: ModalConst.CALLBACK_ID.TASK_INPUT },
     async ({ body, ack, logger, view }) => {
       await ack()
       logger.info(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`)

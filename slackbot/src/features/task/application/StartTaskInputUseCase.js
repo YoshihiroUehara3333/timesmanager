@@ -15,6 +15,8 @@ class StartTaskInputUseCase {
      * 「タスク新規入力」を開始するユースケース
      */
   async execute ({ userId, triggerId }) {
+    console.log(`StartTaskInputUseCase.execute userId:${userId} triggerId:${triggerId}`)
+
     const date = getDate('YYYY-MM-DD')
 
     // スレッド存在チェック

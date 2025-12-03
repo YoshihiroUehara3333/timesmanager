@@ -15,6 +15,8 @@ class SubmitTaskUseCase {
      * @param {Object} params.view  - Slack view payload
      */
   async execute ({ view }) {
+    console.log(`SubmitTaskUseCase.execute view:${view}`)
+
     // 入力値を取得
     const metadata = JSON.parse(view.private_metadata)
     const values = view.state.values

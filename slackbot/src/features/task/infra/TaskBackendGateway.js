@@ -71,7 +71,7 @@ class TaskBackendGateway {
       }
     })
 
-    console.log(`TaskBackendGateway.issueLatestSerial response:${data}`)
+    console.log(`TaskBackendGateway.issueLatestSerial response:${JSON.stringify(data)}`)
     return data.serial
   }
 }
