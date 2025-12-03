@@ -11,6 +11,8 @@ class AttendanceBackendGateway extends BackendGatewayBase {
      * @returns 
      */
     async getAttendance({ userId, date }) {
+        console.log(`AttendanceBackendGateway.getAttendance userId:${userId} triggerId:${triggerId}`)
+
         const response = await this.backendHttpClient.request({
             routing: BackendRouting.ATTENDANCE.GET,
             config: {
@@ -21,7 +23,7 @@ class AttendanceBackendGateway extends BackendGatewayBase {
             }
         })
 
-        console.log(JSON.stringify(response))
+        console.log(`AttendanceBackendGateway.getAttendance response:${JSON.stringify(response)}`)
         return response
     }
 
@@ -36,6 +38,8 @@ class AttendanceBackendGateway extends BackendGatewayBase {
      * @returns 
      */
     async saveAttendance({ userId, date, startTime, endTime, workplace }) {
+        console.log(`AttendanceBackendGateway.saveAttendance userId:${userId} date:${date}`)
+
         const response = await this.backendHttpClient.request({
             routing: BackendRouting.ATTENDANCE.SAVE,
             data: {
@@ -45,7 +49,10 @@ class AttendanceBackendGateway extends BackendGatewayBase {
                 endTime: endTime,
                 workplace: workplace,
             }
-        }) 
+        })
+
+        console.log(`AttendanceBackendGateway.saveAttendance response:${JSON.stringify(response)}`)
+        return response
     }
 }
 

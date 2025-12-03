@@ -25,13 +25,12 @@ function registerThreadFeature({ app, slackApiAdaptor, backendHttpClient }) {
   // /makethread で呼ばれる
   app.command(
     SlackConst.APPCOMMANDS.MAKETHREAD,
-    async ({ command, ack, context, respond }) => {
+    async ({ command, ack, context, logger, respond }) => {
       await ack()
       logger.info(`app.command\ncontext:${JSON.stringify(context)}\ncommand:${JSON.stringify(command)}\n`)
       await makeThreadUseCase.execute({
         userId: command.user_id,
         channelId: command.channel_id,
-        text: command.text,
         respond,
       })
     }

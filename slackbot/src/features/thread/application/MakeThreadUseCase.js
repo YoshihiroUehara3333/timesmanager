@@ -13,10 +13,10 @@ class MakeThreadUseCase {
      * @param {Object} params
      * @param {string} params.userId
      * @param {string} params.channelId
-     * @param {string} params.text      - /makethread の後ろに書かれたオプションテキストなど
      * @param {Function} params.respond - コマンドへの返信
      */
-    async execute({ userId, channelId, text, respond }) {
+    async execute({ userId, channelId, respond }) {
+        console.log(`HomeOpenUseCase.excecute userId:${userId} channelId:${channelId}`)
         // スレッド存在確認
         let thread = await this.threadBackendGateway.getThread({ userId, date });
 

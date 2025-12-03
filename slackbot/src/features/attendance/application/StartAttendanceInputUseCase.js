@@ -14,6 +14,8 @@ class StartAttendanceInputUseCase {
    * - 当日分の勤怠があれば取得し、モーダルを初期表示
    */
   async execute({ userId, triggerId }) {
+    console.log(`HomeOpenUseCase.excecute userId:${userId} triggerId:${triggerId}`)
+
     const date = getDate('YYYY-MM-DD')
 
     // 勤怠を取得する
