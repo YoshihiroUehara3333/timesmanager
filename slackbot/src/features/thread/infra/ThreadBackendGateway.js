@@ -48,12 +48,12 @@ class ThreadBackendGateway extends BackendGatewayBase {
       }
     })
 
-    console.log(`response:${JSON.stringify(response)}`)
-    if (response[0]) {
+    console.log(`ThreadBackendGateway.getThread response:${JSON.stringify(response)}`)
+    if (response) {
       return {
-        channelId: response[0].channelId,
-        permalink: response[0].permalink,
-        threadTs: response[0].threadTs,
+        channelId: response.channelId,
+        permalink: response.permalink,
+        threadTs: response.threadTs,
       }
     } else {
       return undefined

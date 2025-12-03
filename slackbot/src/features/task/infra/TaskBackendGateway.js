@@ -3,12 +3,18 @@
 const { BackendRouting } = require('../../../shared/constants/BackendRouting')
 
 class TaskBackendGateway {
-  constructor(backendHttpClient) {
+  constructor (backendHttpClient) {
     this.backendHttpClient = backendHttpClient
   }
 
-  async getTasks({ userId }){
-    await this.backendHttpClient.request({
+  /**
+   *
+   * @param {*} param0
+   */
+  async getTasks ({ userId }) {
+    console.log(`TaskBackendGateway.getTasks userId:${userId}`)
+
+    const response = await this.backendHttpClient.request({
       routing: BackendRouting.TASK.GET,
       config: {
         params: {
@@ -16,19 +22,22 @@ class TaskBackendGateway {
         }
       }
     })
+
+    console.log(`TaskBackendGateway.getTasks response:${response}`)
+    return response
   }
-  
+
   /**
-   * 
-   * @param {userId}ユーザID
-   * @param {taskName}
-   * @param {targetTime}
-   * @param {memo}
-   * @param {serial}
-   * @returns 
+   *
+   * @param {string} userId - ユーザID
+   * @param {string} taskName
+   * @param {string} targetTime
+   * @param {string} memo
+   * @param {string} serial
+   * @returns
    */
-  async saveTask({ userId, taskName, targetTime, memo, serial }) {
-    await this.backendHttpClient.request({
+  async saveTask ({ userId, taskName, targetTime, memo, serial }) {
+    const response = await this.backendHttpClient.request({
       routing: BackendRouting.TASK.SAVE,
       data: {
         userId: userId,
@@ -38,6 +47,9 @@ class TaskBackendGateway {
         serial: serial,
       }
     })
+
+    console.log(`TaskBackendGateway.saveTask response:${response}`)
+    return response
   }
 
   /**
@@ -46,9 +58,11 @@ class TaskBackendGateway {
    * @param {date}日付
    * @returns latestSerial: 最新の識別番号
    */
-  async issueLatestSerial({ userId, date }) {
+  async issueLatestSerial ({ userId, date }) {
+    console.log(`TaskBackendGateway.getTasks userId:${userId} date:${date}`)
+
     const data = await this.backendHttpClient.request({
-      routing: BackendRouting.TASK.SERIAL, 
+      routing: BackendRouting.TASK.SERIAL,
       config: {
         params: {
           userId: userId,
@@ -57,8 +71,8 @@ class TaskBackendGateway {
       }
     })
 
-    console.log(`issueLatestSerial response:${data[0]}`)
-    return data[0].serial
+    console.log(`TaskBackendGateway.issueLatestSerial response:${data}`)
+    return data.serial
   }
 }
 
