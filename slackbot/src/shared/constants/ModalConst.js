@@ -13,8 +13,6 @@ exports.ModalConst = {
     TASK: {
       CREATE: 'task_create',
       UPDATE: 'task_update',
-      PROGRESS: 'task_progress',
-      FINISH: 'task_finish',
     }
   }
 }
