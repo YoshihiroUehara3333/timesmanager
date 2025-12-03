@@ -20,7 +20,14 @@ public class ThreadService {
 		this.threadDynamoRepository = threadDynamoRepository;
 	}
 
+	/**
+	 * 
+	 * @param request
+	 * @return
+	 */
 	public boolean save(ThreadRequest request){
+		log.info("ThreadService.save: request = {}", request);
+		
 		try {
 			List<ThreadResponse> getRes = threadDynamoRepository.findByUserIdAndDate(request.getUserId(), request.getDate());
 			
@@ -41,6 +48,8 @@ public class ThreadService {
      * チャンネルIDに紐づくスレッド情報を全件取得
      */
 	public List<ThreadResponse> getAllByUserId(String userId) {
+		log.info("ThreadService.getAllByUserId: userId={}", userId);
+		
 		validateUserId(userId);
 		
 		try {
@@ -59,6 +68,8 @@ public class ThreadService {
 	 * @return
 	 */
 	public List<ThreadResponse> getByUserIdAndDate(String userId, String date) {
+		log.info("ThreadService.getByUserIdAndDate: userId={}, date={}", userId, date);
+		
         validateUserId(userId);
         validateDate(date);
         
