@@ -18,6 +18,8 @@ class ThreadBackendGateway extends BackendGatewayBase {
         userId: userId,
       }
     })
+
+    console.log(JSON.stringify(response))
   }
 
   /**
@@ -36,11 +38,11 @@ class ThreadBackendGateway extends BackendGatewayBase {
       }
     })
 
-    if (response.data[0]) {
+    if (response[0]) {
       return {
-        channelId: response.data[0].channelId,
-        permalink: response.data[0].permalink,
-        threadTs: response.data[0].threadTs,
+        channelId: response[0].channelId,
+        permalink: response[0].permalink,
+        threadTs: response[0].threadTs,
       }
     } else {
       return null

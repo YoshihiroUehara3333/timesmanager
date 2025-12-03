@@ -21,6 +21,7 @@ class AttendanceBackendGateway extends BackendGatewayBase {
             }
         })
 
+        console.log(JSON.stringify(response))
         return response
     }
 
