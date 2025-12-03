@@ -3,10 +3,6 @@
 const { buildReplyText } = require('../blockkit/WarmUpMessageFactory')
 
 class WarmUpUseCase {
-    constructor({ slackGateway }) {
-        this.slackGateway = slackGateway
-    }
-
     /**
      * @param {Function} params.respond - コマンドへの返信
      */
