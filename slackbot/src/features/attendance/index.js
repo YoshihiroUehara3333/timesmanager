@@ -39,8 +39,9 @@ function registerAttendanceFeature({ app, slackApiAdaptor, backendHttpClient }) 
   // 勤怠入力モーダルの submit
   app.view(
     ModalConst.CALLBACK_ID.ATTENDANCE_INPUT,
-    async ({ body, ack }) => {
+    async ({ body, ack, view, logger }) => {
       await ack()
+      logger.info(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`)
       await submitUseCase.execute({ 
         view: body.view, 
         userId: body.user.id 

@@ -44,8 +44,9 @@ function registerTaskFeature({ app, slackApiAdaptor, backendHttpClient }) {
   // /newtask で呼ばれる
   app.command(
     SlackConst.APPCOMMANDS.NEWTASK,
-    async ({ command, ack, respond }) => {
+    async ({ command, ack, context, logger, respond }) => {
       await ack()
+      logger.info(`app.command\ncontext:${JSON.stringify(context)}\ncommand:${JSON.stringify(command)}\n`)
       await startInputUseCase.execute({
         userId: command.user_id,
         channelId: command.channel_id,
@@ -58,8 +59,9 @@ function registerTaskFeature({ app, slackApiAdaptor, backendHttpClient }) {
   // 勤怠入力モーダルの submit
   app.view(
     ModalConst.CALLBACK_ID.TASK_INPUT,
-    async ({ body, ack }) => {
+    async ({ body, ack, logger, view }) => {
       await ack()
+      logger.info(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`)
       await submitUseCase.execute({ 
         view: body.view, 
         userId: body.user.id 
