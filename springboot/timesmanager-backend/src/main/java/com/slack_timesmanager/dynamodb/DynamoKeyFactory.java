@@ -1,6 +1,6 @@
 package com.slack_timesmanager.dynamodb;
 
-import com.slack_timesmanager.enums.DynamoPK;
+import com.slack_timesmanager.common.enums.DynamoPK;
 
 /**
  * DynamoDB の PK/SK を一元的に生成する Factory
@@ -29,8 +29,7 @@ public final class DynamoKeyFactory {
         return new DynamoKey(pk, sk);
     }
 
-
-    // ===== Diary 用 =====
+    // ===== Dailyreport 用 =====
     // partition_key:userId + "/DIARY"
     // sort_key: YYYY-MM_DD
     /**
@@ -48,7 +47,6 @@ public final class DynamoKeyFactory {
         String sk = date;
         return new DynamoKey(pk, sk);
     }
-
 
     // ===== Attendance 用 =====
     // partition_key:userId + "/ATTENDANCE"
@@ -68,7 +66,6 @@ public final class DynamoKeyFactory {
         String sk = date;
         return new DynamoKey(pk, sk);
     }
-
 
     // ===== Thread 用 =====
     // partition_key:userId + "/ATTENDANCE"

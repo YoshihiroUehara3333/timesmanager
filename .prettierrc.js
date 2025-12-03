@@ -8,7 +8,7 @@ module.exports = {
   // シングルクォート
   singleQuote: true,
 
-  // セミコロンなし（standard と一致）
+  // セミコロン
   semi: false,
 
   // マルチラインの末尾にカンマ付与
