@@ -33,6 +33,7 @@ class HomeOpenUseCase {
       tasks: tasks,
       thread: thread.data,
     })
+    console.log(JSON.stringify(view))
 
     // ホーム画面を更新
     await this.slackGateway.updateHome({
