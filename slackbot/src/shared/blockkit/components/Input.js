@@ -57,7 +57,7 @@ function plainTextInput ({
   return {
     type: 'input',
     block_id: blockId,
-    optional,
+    optional: optional,
     label: plainTextObject(labelText),
     element: {
       type: 'plain_text_input',
