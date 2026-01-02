@@ -46,6 +46,7 @@ class MakeThreadUseCase {
         date: date,
       })
       if (!saveResult.ok) {
+        await respond('スレッド情報の保存に失敗しました。')
         return { ok: false }
       }
     }

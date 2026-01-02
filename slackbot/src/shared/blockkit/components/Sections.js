@@ -1,6 +1,6 @@
 // src/shared/blockkit/components/Sections.js
 
-const { plainTextObject, mrkdwnTextObject } = require('./Text')
+const { plainTextObject, mrkdwnTextObject } = require('./TextObjects')
 
 function mrkdwn (
   text = 'デフォルトテキスト',

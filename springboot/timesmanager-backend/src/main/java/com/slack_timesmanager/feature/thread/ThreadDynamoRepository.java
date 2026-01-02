@@ -150,7 +150,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
 	}
     
 	/**
-	 * DynamoDB 1アイテム → AttendanceResponse 変換
+	 * DynamoDB 1アイテム → ThreadDomain 変換
 	 */
 	private ThreadDomain mapToThreadDomain(Map<String, AttributeValue> item) {
 		return new ThreadDomain(

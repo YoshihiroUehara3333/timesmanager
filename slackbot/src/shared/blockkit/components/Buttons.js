@@ -1,6 +1,6 @@
 // src/shared/blockkit/components/Buttons.js
 
-const { plainTextObject } = require('./Text')
+const { plainTextObject } = require('./TextObjects')
 
 function modalButtons ({
   submitText = '送信',

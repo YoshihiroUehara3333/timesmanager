@@ -9,8 +9,6 @@ function mrkdwnTextObject ({ text }) {
 }
 
 module.exports = {
-  Text: {
-    plainTextObject,
-    mrkdwnTextObject,
-  }
+  plainTextObject,
+  mrkdwnTextObject,
 }

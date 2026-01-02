@@ -3,7 +3,7 @@
 const { ModalConst } = require('../../../shared/constants/ModalConst')
 const { WorkplaceConst } = require('../../../shared/constants/WorkplaceConst')
 
-const { plainTextObject } = require('../../../shared/blockkit/components/Text')
+const { plainTextObject } = require('../../../shared/blockkit/components/TextObjects')
 const { divider } = require('../../../shared/blockkit/components/Divider')
 
 const { Buttons } = require('../../../shared/blockkit/components/Buttons')

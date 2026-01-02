@@ -1,6 +1,6 @@
 // src/shared/blockkit/components/Input.js
 
-const { plainTextObject } = require('./Text')
+const { plainTextObject } = require('./TextObjects')
 
 function timePicker ({
   blockId,
