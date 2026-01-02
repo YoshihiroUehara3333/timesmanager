@@ -11,6 +11,10 @@ class ThreadBackendGateway extends BackendGatewayBase {
    * @param {string} params.channelId
    * @param {string} params.permalink
    * @param {string} params.threadTs
+   * @returns {Object} return
+   * @returns {boolean} return.ok
+   * @returns {string} return.status
+   * @returns {object} return.data
    */
   async saveThread ({ channelId, threadTs, permalink, userId, date }) {
     console.log(`ThreadBackendGateway.saveThread\nchannelId:${channelId} threadTs:${threadTs} permalink:${permalink} userId:${userId} date:${date}`)
@@ -27,10 +31,17 @@ class ThreadBackendGateway extends BackendGatewayBase {
         }
       })
       console.log(`ThreadBackendGateway.saveThread response:${JSON.stringify(response)}`)
-      return { ok: true, data: response.data }
+      if (response.status === 201) {
+        return { ok: true, status: response.status, data: response.data }
+      }
     } catch (err) {
+      const status = err?.response?.status
+      if (status === 409) {
+        return { ok: false, errorType: 'CONFLICT', error: err }
+      }
+
       console.warn(`backendHttpClient.request failed msg=${err?.message}`)
-      return { ok: false, error: err }
+      return { ok: false, errorType: 'OTHER', error: err }
     }
   }
 
@@ -55,9 +66,9 @@ class ThreadBackendGateway extends BackendGatewayBase {
       })
       console.log(`ThreadBackendGateway.getThreadByDate response:${JSON.stringify(response)}`)
       if (response.status === 200) {
-        return { ok: true, data: response.data }
+        return { ok: true, status: response.status, data: response.data }
       } else {
-        return { ok: true, data: undefined }
+        return { ok: true, status: response.status, data: undefined }
       }
     } catch (err) {
       console.warn(`backendHttpClient.request failed msg=${err?.message}`)
