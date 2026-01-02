@@ -14,19 +14,19 @@ class StartAttendanceInputUseCase {
    * - 当日分の勤怠があれば取得し、モーダルを初期表示
    */
   async execute ({ userId, triggerId }) {
-    console.log(`HomeOpenUseCase.excecute userId:${userId} triggerId:${triggerId}`)
+    console.log(`StartAttendanceInputUseCase.excecute userId:${userId} triggerId:${triggerId}`)
 
     const date = getDate('YYYY-MM-DD')
 
     // 勤怠を取得する
-    const attendance = await this.attendanceBackendGateway.getAttendance({ userId, date })
+    let attendance = {}
+    const response = await this.attendanceBackendGateway.getAttendance({ userId, date })
+    if (response.ok) {
+      attendance = response.data
+    }
 
     // BlockKit作成
-    const modalView = AttendanceInputModal({
-      userId,
-      date,
-      attendance: attendance,
-    })
+    const modalView = AttendanceInputModal({ userId, date, attendance })
 
     // モーダルを開く
     await this.slackGateway.openModal({

@@ -1,12 +1,12 @@
 // src/features/task/infra/TaskSlackGateway.js
 
-const { SlackGatewayBase } = require("../../../core/slack/SlackGatewayBase")
+const { SlackGatewayBase } = require('../../../core/slack/SlackGatewayBase')
 
-class TaskSlackGateway extends SlackGatewayBase{
+class TaskSlackGateway extends SlackGatewayBase {
   /**
    * メッセージを送信する
    */
-  async postMessage({ channelId, text }) {
+  async postMessage ({ channelId, text }) {
     const message = await this.slackApiAdaptor.postMessage({
       channelId: channelId,
       text,
@@ -17,14 +17,14 @@ class TaskSlackGateway extends SlackGatewayBase{
 
   async openModal ({ triggerId, view }) {
     await this.slackApiAdaptor.viewsOpen({
-        triggerId: triggerId,
-        view,
+      triggerId: triggerId,
+      view,
     })
   }
 
-  async postTaskBlock ({channelId, text, threadTs, blocks}) {
+  async postTaskBlock ({ channelId, text, threadTs, blocks }) {
     const message = await this.slackApiAdaptor.postMessage({
-      channelId : channelId,
+      channelId: channelId,
       text: text,
       threadTs: threadTs,
       blocks: blocks,

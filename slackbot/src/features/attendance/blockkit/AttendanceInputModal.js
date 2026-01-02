@@ -1,74 +1,48 @@
 // src/features/attendance/blockkit/AttendanceInputModal.js
 
 const { ModalConst } = require('../../../shared/constants/ModalConst')
-const { modalButtons } = require('../../../shared/blockkit/components/Buttons')
+const { Buttons } = require('../../../shared/blockkit/components/Buttons')
+const { plainTextObject } = require('../../../shared/blockkit/components/Text')
 const { divider } = require('../../../shared/blockkit/components/Divider')
-const { mrkdwnSection } = require('../../../shared/blockkit/components/Sections')
-
-const workplaceOptions = {
-  LIST: [
-    {
-      value: 'onsite',
-      text: '出社',
-    },
-    {
-      value: 'remote',
-      text: 'リモート',
-    },
-    {
-      value: 'office',
-      text: '自社',
-    },
-    {
-      value: 'vacation',
-      text: '休暇',
-    },
-  ],
-  getTextByValue (value) {
-    const item = this.LIST.find(i => i.value === value)
-    return item ? item.text : 'その他'
-  },
-
-  getValueByText (text) {
-    const item = this.LIST.find(i => i.text === text)
-    return item ? item.value : 'other'
-  }
-}
+const { Sections } = require('../../../shared/blockkit/components/Sections')
+const { Input } = require('../../../shared/blockkit/components/Input')
+const { WorkplaceConst } = require('../../../shared/constants/WorkplaceConst')
 
 function workplaceSection (attendance = {}) {
-  const element = {
-    type: 'static_select',
-    placeholder: { type: 'plain_text', text: '選択してください', emoji: true },
-    action_id: 'select_workplace',
-  }
-
-  element.options = workplaceOptions.LIST.map(option => (
+  const options = WorkplaceConst.LIST.map(option => (
     {
-      text: { type: 'plain_text', text: option.text, emoji: true },
+      text: plainTextObject(option.text),
       value: option.value,
     }
   ))
+  const initial = options.find(o => o.value === attendance.workplace)
 
-  if (attendance.workplace) {
-    element.initial_option = {
-      text: {
-        type: 'plain_text',
-        text: workplaceOptions.getTextByValue(attendance.workplace),
-        emoji: true
-      },
-      value: attendance.workplace
-    }
-  }
+  return Input.staticSelect({
+    blockId: 'workplace',
+    options: options,
+    initialOption: initial,
+    labelText: '作業場所',
+    actionId: 'select_workplace',
+  })
+}
 
-  return {
-    type: 'input',
-    block_id: 'workplace',
-    label: {
-      type: 'plain_text',
-      text: '作業場所'
-    },
-    element: element,
-  }
+function workingTimeSection ({ attendance }) {
+  return [
+    Input.timePicker({
+      blockId: 'starttime',
+      labelText: '開始時間',
+      placeholderText: '開始時間を選択',
+      initialTime: attendance.startTime || '09:00',
+      actionId: 'start_time',
+    }),
+    Input.timePicker({
+      blockId: 'endtime',
+      labelText: '終了時間',
+      placeholderText: '終了時間を選択',
+      initialTime: attendance.endTime || '18:00',
+      actionId: 'end_time',
+    }),
+  ]
 }
 
 exports.AttendanceInputModal = ({ userId, date, attendance = {} }) => ({
@@ -79,69 +53,11 @@ exports.AttendanceInputModal = ({ userId, date, attendance = {} }) => ({
     date: date,
   }),
   title: { type: 'plain_text', text: '勤怠記録', emoji: true },
-  ...modalButtons(),
+  ...Buttons.modalButtons(),
   blocks: [
-    mrkdwnSection('*本日の勤怠状況を入力してください*'),
+    Sections.mrkdwn('*本日の勤怠状況を入力してください*'),
     divider(),
-    {
-      type: 'input',
-      block_id: 'starttime',
-      label: {
-        type: 'plain_text',
-        text: '開始時間'
-      },
-      element: {
-        type: 'timepicker',
-        initial_time: attendance.startTime || '09:00',
-        placeholder: {
-          type: 'plain_text',
-          text: '開始時間を選択'
-        },
-        action_id: 'start_time'
-      }
-    },
-    {
-      type: 'input',
-      block_id: 'endtime',
-      label: {
-        type: 'plain_text',
-        text: '終了時間'
-      },
-      element: {
-        type: 'timepicker',
-        initial_time: attendance.endTime || '18:00',
-        placeholder: {
-          type: 'plain_text',
-          text: '終了時間を選択'
-        },
-        action_id: 'end_time'
-      }
-    },
+    ...workingTimeSection({ attendance }),
     workplaceSection(attendance),
-    {
-      type: 'actions',
-      elements: [
-        {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: 'フィードバックを送信',
-            emoji: true
-          },
-          value: 'send_feedback',
-          action_id: 'send_feedback'
-        },
-        {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: 'よくある質問',
-            emoji: true
-          },
-          value: 'show_faq',
-          action_id: 'show_faq'
-        }
-      ]
-    }
   ]
 })

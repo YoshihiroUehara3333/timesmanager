@@ -1,32 +1,30 @@
 // src/shared/blockkit/components/Buttons.js
 
-// plain_text オブジェクトを作る小さいヘルパー
-const plainText = (text) => ({
-  type: 'plain_text',
-  text,
-});
+const { plainTextObject } = require('./Text')
 
-// モーダルの submit/close セットをまとめて作る
-function modalButtons({
+function modalButtons ({
   submitText = '送信',
   closeText = 'キャンセル',
 } = {}) {
   return {
-    submit: plainText(submitText),
-    close: plainText(closeText),
-  };
+    submit: plainTextObject(submitText),
+    close: plainTextObject(closeText),
+  }
 }
 
-function modalSubmit(text = '送信') {
-  return plainText(text);
-}
-
-function modalClose(text = 'キャンセル') {
-  return plainText(text);
+function plainTextPrimaryButton ({ text, value, actionId }) {
+  return {
+    type: 'button',
+    text: plainTextObject(text),
+    style: 'primary',
+    value: value,
+    action_id: actionId,
+  }
 }
 
 module.exports = {
-  modalButtons,
-  modalSubmit,
-  modalClose,
+  Buttons: {
+    modalButtons,
+    plainTextPrimaryButton,
+  }
 }

@@ -13,18 +13,22 @@ class AttendanceBackendGateway extends BackendGatewayBase {
   async getAttendance ({ userId, date }) {
     console.log(`AttendanceBackendGateway.getAttendance userId:${userId} date:${date}`)
 
-    const response = await this.backendHttpClient.request({
-      routing: BackendRouting.ATTENDANCE.GET,
-      config: {
-        params: {
-          userId: userId,
-          date: date,
-        },
-      }
-    })
-
-    console.log(`AttendanceBackendGateway.getAttendance response:${JSON.stringify(response)}`)
-    return response
+    try {
+      const response = await this.backendHttpClient.request({
+        routing: BackendRouting.ATTENDANCE.GET,
+        config: {
+          params: {
+            userId: userId,
+            date: date,
+          },
+        }
+      })
+      console.log(`AttendanceBackendGateway.getAttendance response:${JSON.stringify(response)}`)
+      return { ok: true, data: response }
+    } catch (err) {
+      console.warn(`backendHttpClient.request failed msg=${err?.message}`)
+      return { ok: false, error: err }
+    }
   }
 
   /**
@@ -40,19 +44,23 @@ class AttendanceBackendGateway extends BackendGatewayBase {
   async saveAttendance ({ userId, date, startTime, endTime, workplace }) {
     console.log(`AttendanceBackendGateway.saveAttendance userId:${userId} date:${date}`)
 
-    const response = await this.backendHttpClient.request({
-      routing: BackendRouting.ATTENDANCE.SAVE,
-      data: {
-        date: date,
-        userId: userId,
-        startTime: startTime,
-        endTime: endTime,
-        workplace: workplace,
-      }
-    })
-
-    console.log(`AttendanceBackendGateway.saveAttendance response:${JSON.stringify(response)}`)
-    return response
+    try {
+      const response = await this.backendHttpClient.request({
+        routing: BackendRouting.ATTENDANCE.SAVE,
+        data: {
+          date: date,
+          userId: userId,
+          startTime: startTime,
+          endTime: endTime,
+          workplace: workplace,
+        }
+      })
+      console.log(`AttendanceBackendGateway.saveAttendance response:${JSON.stringify(response)}`)
+      return { ok: true, data: response }
+    } catch (err) {
+      console.warn(`backendHttpClient.request failed msg=${err?.message}`)
+      return { ok: false, error: err }
+    }
   }
 }
 

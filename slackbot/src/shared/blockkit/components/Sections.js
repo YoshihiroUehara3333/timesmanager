@@ -1,6 +1,8 @@
 // src/shared/blockkit/components/Sections.js
 
-function mrkdwnSection (
+const { plainTextObject } = require('./Text')
+
+function mrkdwn (
   text = 'デフォルトテキスト',
 ) {
   return {
@@ -9,6 +11,13 @@ function mrkdwnSection (
   }
 }
 
+function plainText ({ text, emoji = true }) {
+  return { type: 'section', text: plainTextObject(text, emoji) }
+}
+
 module.exports = {
-  mrkdwnSection,
+  Sections: {
+    mrkdwn,
+    plainText,
+  }
 }

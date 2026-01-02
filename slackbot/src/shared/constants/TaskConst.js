@@ -1,6 +1,6 @@
 exports.TaskConst = {
   STATUS: {
-    ACTIVE: 'acrive',
+    ACTIVE: 'active',
     FINISHED: 'finished'
   },
 }

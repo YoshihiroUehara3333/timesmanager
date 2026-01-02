@@ -1,29 +1,21 @@
 // src/features/home/blockkit/HomeBlocks.js
 
-const { ModalConst } = require('../../../shared/constants/ModalConst')
+const { HomeButtonFactory } = require('./HomeButtonFactory')
+
 const { divider } = require('../../../shared/blockkit/components/Divider')
-const { mrkdwnSection } = require('../../../shared/blockkit/components/Sections')
+const { Sections } = require('../../../shared/blockkit/components/Sections')
+const { Buttons } = require('../../../shared/blockkit/components/Buttons')
+
+const MAX_TASKS_TO_SHOW = 30
 
 function dailyReportSection () {
   return [
-    mrkdwnSection('*勤怠/日報管理*'),
+    Sections.mrkdwn('*勤怠/日報管理*'),
     {
       type: 'actions',
       elements: [
-        {
-          type: 'button',
-          text: { type: 'plain_text', text: '日報編集' },
-          style: 'primary',
-          value: 'home_dailyreport',
-          action_id: ModalConst.ACTION_ID.HOME.DAILYREPORT,
-        },
-        {
-          type: 'button',
-          text: { type: 'plain_text', text: '勤怠入力' },
-          style: 'primary',
-          value: 'home_attendance',
-          action_id: ModalConst.ACTION_ID.HOME.ATTENDANCE,
-        }
+        Buttons.plainTextPrimaryButton(HomeButtonFactory.toDailyreport()),
+        Buttons.plainTextPrimaryButton(HomeButtonFactory.toAttendance()),
       ]
     }
   ]
@@ -31,25 +23,19 @@ function dailyReportSection () {
 
 function taskSection (thread) {
   const blocks = [
-    mrkdwnSection('*タスク管理*'),
+    Sections.mrkdwn('*タスク管理*'),
   ]
 
   if (thread) {
     blocks.push({
       type: 'actions',
       elements: [
-        {
-          type: 'button',
-          text: { type: 'plain_text', text: 'タスク新規作成' },
-          style: 'primary',
-          value: 'create_task',
-          action_id: ModalConst.ACTION_ID.HOME.TASK_INPUT,
-        }
+        Buttons.plainTextPrimaryButton(HomeButtonFactory.toCreateTask()),
       ]
     })
-    blocks.push(mrkdwnSection('*タスク一覧*'))
+    blocks.push(Sections.mrkdwn('*タスク一覧*'))
   } else {
-    blocks.push(mrkdwnSection('_本日のスレッドが未作成です_'))
+    blocks.push(Sections.mrkdwn('_本日のスレッドが未作成です_'))
   }
 
   return blocks
@@ -60,23 +46,14 @@ function taskList (
 ) {
   if (!tasks.length) {
     return [
-      mrkdwnSection('_現在表示できるタスクはありません_'),
+      Sections.mrkdwn('_現在表示できるタスクはありません_'),
     ]
   }
 
   return tasks.map((task) => (
     {
-      ...mrkdwnSection(task.name),
-      accessory: {
-        type: 'button',
-        action_id: ModalConst.ACTION_ID.TASK.UPDATE,
-        text: {
-          type: 'plain_text',
-          text: 'Edit',
-          emoji: true
-        },
-        value: task.name
-      }
+      ...Sections.mrkdwn(task.name),
+      accessory: Buttons.plainTextPrimaryButton(HomeButtonFactory.toTaskEdit(task.taskId)),
     }
   ))
 }
@@ -94,7 +71,12 @@ exports.HomeBlocks = ({ tasks = [], thread }) => {
   ]
 
   if (thread) {
-    blocks.push(...taskList({ tasks }))
+    const visible = tasks.slice(0, MAX_TASKS_TO_SHOW)
+    blocks.push(...taskList({ tasks: visible }))
+
+    if (tasks.length > MAX_TASKS_TO_SHOW) {
+      blocks.push(Sections.mrkdwn(`_他 ${tasks.length - MAX_TASKS_TO_SHOW} 件は省略されています_`))
+    }
   }
 
   return {

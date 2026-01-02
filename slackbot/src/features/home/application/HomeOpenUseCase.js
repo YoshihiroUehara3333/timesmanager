@@ -12,30 +12,30 @@ class HomeOpenUseCase {
   }
 
   async execute ({ userId }) {
-    console.log(`HomeOpenUseCase.excecute userId:${userId}`)
+    console.log(`HomeOpenUseCase.execute userId:${userId}`)
 
     const date = getDate('YYYY-MM-DD')
 
     // スレッド存在確認
     let tasks = []
     const thread = await this.threadBackendGateway.getThread({ userId, date })
-    if (thread) {
+    if (thread.ok && thread.data) {
       // タスクリスト取得
       tasks = await this.taskBackendGateway.getTasks({ userId })
-      if (tasks.length) {
+      if (tasks.ok && tasks.data) {
         // activeなもので絞り込む
-        tasks = tasks.filter((task) => task.status === TaskConst.STATUS.ACTIVE)
+        tasks = tasks.data.filter((task) => task.status === TaskConst.STATUS.ACTIVE)
       }
     }
 
     // BlockKit作成
     const view = HomeBlocks({
       tasks: tasks,
-      thread: thread,
+      thread: thread.data,
     })
 
     // ホーム画面を更新
-    this.slackGateway.updateHome({
+    await this.slackGateway.updateHome({
       userId: userId,
       view: view,
     })
