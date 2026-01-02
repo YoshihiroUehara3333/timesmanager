@@ -17,7 +17,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
 
     try {
       const response = await this.backendHttpClient.request({
-        routing: BackendRouting.THREAD.SAVE,
+        routing: BackendRouting.THREAD.CREATE,
         data: {
           channelId: channelId,
           threadTs: threadTs,

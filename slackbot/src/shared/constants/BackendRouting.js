@@ -4,7 +4,7 @@ const API_BASE = '/api'
 
 exports.BackendRouting = Object.freeze({
   THREAD: {
-    SAVE: { method: 'POST', path: `${API_BASE}/thread` },
+    CREATE: { method: 'PUT', path: `${API_BASE}/thread` },
     GET: { method: 'GET', path: `${API_BASE}/thread` },
   },
   TASK: {
