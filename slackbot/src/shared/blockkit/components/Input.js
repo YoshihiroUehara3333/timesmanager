@@ -7,11 +7,13 @@ function timePicker ({
   labelText,
   placeholderText,
   initialTime,
-  actionId
+  actionId,
+  optional = false,
 }) {
   return {
     type: 'input',
     block_id: blockId,
+    optional: optional,
     label: plainTextObject(labelText),
     element: {
       type: 'timepicker',
@@ -44,9 +46,32 @@ function staticSelect ({
   }
 }
 
+function plainTextInput ({
+  blockId,
+  labelText,
+  actionId,
+  multiline = false,
+  initialValue,
+  optional = false,
+}) {
+  return {
+    type: 'input',
+    block_id: blockId,
+    optional,
+    label: plainTextObject(labelText),
+    element: {
+      type: 'plain_text_input',
+      action_id: actionId,
+      multiline: multiline,
+      ...(initialValue !== undefined ? { initial_value: initialValue } : {}),
+    }
+  }
+}
+
 module.exports = {
   Input: {
     timePicker,
     staticSelect,
+    plainTextInput,
   }
 }

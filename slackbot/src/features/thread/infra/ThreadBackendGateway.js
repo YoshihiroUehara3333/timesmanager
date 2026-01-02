@@ -15,19 +15,23 @@ class ThreadBackendGateway extends BackendGatewayBase {
   async saveThread ({ channelId, threadTs, permalink, userId, date }) {
     console.log(`ThreadBackendGateway.saveThread\nchannelId:${channelId} threadTs:${threadTs} permalink:${permalink} userId:${userId} date:${date}`)
 
-    const response = await this.backendHttpClient.request({
-      routing: BackendRouting.THREAD.SAVE,
-      data: {
-        channelId: channelId,
-        threadTs: threadTs,
-        permalink: permalink,
-        userId: userId,
-        date: date,
-      }
-    })
-
-    console.log(`ThreadBackendGateway.saveThread response:${JSON.stringify(response)}`)
-    return response
+    try {
+      const response = await this.backendHttpClient.request({
+        routing: BackendRouting.THREAD.SAVE,
+        data: {
+          channelId: channelId,
+          threadTs: threadTs,
+          permalink: permalink,
+          userId: userId,
+          date: date,
+        }
+      })
+      console.log(`ThreadBackendGateway.saveThread response:${JSON.stringify(response)}`)
+      return { ok: true, data: response }
+    } catch (err) {
+      console.warn(`backendHttpClient.request failed msg=${err?.message}`)
+      return { ok: false, error: err }
+    }
   }
 
   /**
@@ -38,21 +42,25 @@ class ThreadBackendGateway extends BackendGatewayBase {
   async getThread ({ userId, date }) {
     console.log(`ThreadBackendGateway.getThread userId:${userId} date:${date}`)
 
-    const response = await this.backendHttpClient.request({
-      routing: BackendRouting.THREAD.GET,
-      config: {
-        params: {
-          userId: userId,
-          date: date,
+    try {
+      const response = await this.backendHttpClient.request({
+        routing: BackendRouting.THREAD.GET,
+        config: {
+          params: {
+            userId: userId,
+            date: date,
+          }
         }
+      })
+      console.log(`ThreadBackendGateway.getThread response:${JSON.stringify(response)}`)
+      if (response[0]) {
+        return { ok: true, data: response[0] }
+      } else {
+        return { ok: true, data: undefined }
       }
-    })
-
-    console.log(`ThreadBackendGateway.getThread response:${JSON.stringify(response)}`)
-    if (response) {
-      return response[0]
-    } else {
-      return undefined
+    } catch (err) {
+      console.warn(`backendHttpClient.request failed msg=${err?.message}`)
+      return { ok: false, error: err }
     }
   }
 }

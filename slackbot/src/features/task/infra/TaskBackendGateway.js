@@ -10,7 +10,7 @@ class TaskBackendGateway {
   /**
    *
    * @param {string} userId - ユーザID
-   * @returns
+   * @returns {object}
    */
   async getTasks ({ userId }) {
     console.log(`TaskBackendGateway.getTasks userId:${userId}`)
@@ -81,7 +81,6 @@ class TaskBackendGateway {
           }
         }
       })
-
       console.log(`TaskBackendGateway.issueLatestSerial response:${JSON.stringify(data)}`)
       return { ok: true, data: data.serial }
     } catch (err) {

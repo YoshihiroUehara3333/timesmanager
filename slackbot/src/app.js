@@ -9,13 +9,13 @@ const { registerHomeFeature } = require('./features/home')
 const { registerAttendanceFeature } = require('./features/attendance')
 const { registerTaskFeature } = require('./features/task')
 const { registerWarmUpFeature } = require('./features/warmup')
-// const { registerDailyReportFeature } = require('./features/daily-report')
+const { registerDailyReportFeature } = require('./features/dailyreport')
 
 /**
  * Bolt App を組み立てて返すファクトリ関数
  * - ローカル起動でも Lambda でも共通で使えるようにしておく
  */
-function createBoltApp({ receiver }) {
+function createBoltApp ({ receiver }) {
   const app = new App({
     token: process.env.SLACK_BOT_USER_ACCESS_TOKEN,
     logLevel: LogLevel.INFO,
@@ -36,14 +36,14 @@ function createBoltApp({ receiver }) {
   registerAttendanceFeature({ app, slackApiAdaptor, backendHttpClient })
   registerTaskFeature({ app, slackApiAdaptor, backendHttpClient })
   registerWarmUpFeature({ app, slackApiAdaptor })
-  // registerDailyReportFeature({ app, slackApiAdaptor, backendHttpClient })
+  registerDailyReportFeature({ app, slackApiAdaptor, backendHttpClient })
 
   return app
 }
 
 // ローカル開発用: `node src/app.js` で動かせるようにしておく
 if (require.main === module) {
-  ;(async () => {
+  (async () => {
     const app = createBoltApp()
     const port = process.env.PORT || 3000
 

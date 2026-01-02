@@ -17,12 +17,17 @@ class MakeThreadUseCase {
      * @param {Function} params.respond - コマンドへの返信
      */
   async execute ({ userId, channelId, respond }) {
-    console.log(`MakeThreadUseCase.excecute userId:${userId} channelId:${channelId}`)
+    console.log(`MakeThreadUseCase.execute userId:${userId} channelId:${channelId}`)
 
     const date = getDate('YYYY-MM-DD')
 
     // スレッド存在確認
-    let thread = await this.threadBackendGateway.getThread({ userId, date })
+    const threadResult = await this.threadBackendGateway.getThread({ userId, date })
+    if (!threadResult.ok) {
+      await respond('スレッド情報の取得に失敗しました。時間をおいて再度お試しください。')
+      return { ok: false }
+    }
+    let thread = threadResult.data
     if (!thread) {
       // スレッド用メッセージ本文を作る
       const threadText = buildThreadInitialText({ userId, date })
@@ -33,18 +38,22 @@ class MakeThreadUseCase {
       })
 
       // バックエンドにスレッド情報を保存
-      await this.threadBackendGateway.saveThread({
+      const saveResult = await this.threadBackendGateway.saveThread({
         channelId: thread.channelId,
         threadTs: thread.threadTs,
         permalink: thread.permalink,
         userId: userId,
         date: date,
       })
+      if (!saveResult.ok) {
+        return { ok: false }
+      }
     }
 
     // /makethread のコマンドに返信
     const replyText = buildReplyText({ permalink: thread.permalink })
     await respond(replyText)
+    return { ok: true }
   }
 }
 

@@ -5,6 +5,10 @@ const { SlackGatewayBase } = require('../../../core/slack/SlackGatewayBase')
 class ThreadSlackGateway extends SlackGatewayBase {
   /**
    * スレッドの「親」メッセージを投稿し、permalinkまで取得して返す
+   * @param {Object} param0
+   * @param {string} param0.channelId
+   * @param {string} param0.text
+   * @returns
    */
   async postThread ({ channelId, text }) {
     console.log(`ThreadSlackGateway.postThread channelId:${channelId} text:${text}`)

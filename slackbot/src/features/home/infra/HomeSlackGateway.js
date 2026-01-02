@@ -1,4 +1,4 @@
-// src/features/home/infra/HomeOpenSlackGateway.js
+// src/features/home/infra/HomeSlackGateway.js
 
 const { SlackGatewayBase } = require('../../../core/slack/SlackGatewayBase')
 

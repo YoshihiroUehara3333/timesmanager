@@ -1,8 +1,14 @@
 const { ModalConst } = require('../constants/ModalConst')
 
-exports.DailyReportInputModal = ({ userId }) => ({
+const { divider } = require('../../../shared/blockkit/components/Divider')
+
+const { Buttons } = require('../../../shared/blockkit/components/Buttons')
+const { Sections } = require('../../../shared/blockkit/components/Sections')
+const { Input } = require('../../../shared/blockkit/components/Input')
+
+exports.DailyReportInputModal = ({ userId, dailyreport}) => ({
   type: 'modal',
-  callback_id: ModalConst.CALLBACK_ID.DAILYREPORT,
+  callback_id: ModalConst.CALLBACK_ID.DAILYREPORT_INPUT,
   private_metadata: JSON.stringify({
     user_id: userId,
   }),
@@ -11,50 +17,23 @@ exports.DailyReportInputModal = ({ userId }) => ({
     text: '日報入力',
     emoji: true
   },
-  submit: {
-    type: 'plain_text',
-    text: 'Submit',
-    emoji: true
-  },
-  close: {
-    type: 'plain_text',
-    text: 'Cancel',
-    emoji: true
-  },
+  ...Buttons.modalButtons(),
   blocks: [
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: '*本日の日報編集*'
-      }
-    },
-    { type: 'divider' },
-    {
-      type: 'input',
-      block_id: 'task',
-      label: {
-        type: 'plain_text',
-        text: '作業内容'
-      },
-      element: {
-        type: 'plain_text_input',
-        multiline: true,
-        action_id: 'input'
-      }
-    },
-    {
-      type: 'input',
-      block_id: 'taskname',
-      label: {
-        type: 'plain_text',
-        text: '所感'
-      },
-      element: {
-        type: 'plain_text_input',
-        multiline: true,
-        action_id: 'input'
-      }
-    }
+    Sections.mrkdwn('*本日の日報入力*'),
+    divider(),
+    Input.plainTextInput({
+      blockId: 'task',
+      labelText: '作業内容',
+      actionId: 'task',
+      multiline: true,
+      initialValue: dailyreport.task || undefined,
+    }),
+    Input.plainTextInput({
+      blockId: 'impressions',
+      labelText: '所感',
+      actionId: 'impressions',
+      multiline: true,
+      initialValue: dailyreport.impressions || undefined,
+    }),
   ]
 })

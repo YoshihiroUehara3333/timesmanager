@@ -1,4 +1,4 @@
-// src/features/attendance/StartAttendanceInputUseCase.js
+// src/features/attendance/application/StartAttendanceInputUseCase.js
 
 const { AttendanceInputModal } = require('../blockkit/AttendanceInputModal')
 const { getDate } = require('../../../shared/utils/DateUtils')
@@ -26,12 +26,12 @@ class StartAttendanceInputUseCase {
     }
 
     // BlockKit作成
-    const modalView = AttendanceInputModal({ userId, date, attendance })
+    const view = AttendanceInputModal({ userId, date, attendance })
 
     // モーダルを開く
     await this.slackGateway.openModal({
       triggerId,
-      view: modalView,
+      view,
     })
   }
 }

@@ -2,8 +2,8 @@
 
 require('date-utils')
 
-function getDate(format) {
-    return new Date().toFormat(format)
+function getDate (format) {
+  return new Date().toFormat(format)
 }
 
 module.exports = { getDate }

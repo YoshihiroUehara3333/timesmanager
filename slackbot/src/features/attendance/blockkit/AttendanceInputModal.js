@@ -1,12 +1,14 @@
 // src/features/attendance/blockkit/AttendanceInputModal.js
 
 const { ModalConst } = require('../../../shared/constants/ModalConst')
-const { Buttons } = require('../../../shared/blockkit/components/Buttons')
+const { WorkplaceConst } = require('../../../shared/constants/WorkplaceConst')
+
 const { plainTextObject } = require('../../../shared/blockkit/components/Text')
 const { divider } = require('../../../shared/blockkit/components/Divider')
+
+const { Buttons } = require('../../../shared/blockkit/components/Buttons')
 const { Sections } = require('../../../shared/blockkit/components/Sections')
 const { Input } = require('../../../shared/blockkit/components/Input')
-const { WorkplaceConst } = require('../../../shared/constants/WorkplaceConst')
 
 function workplaceSection (attendance = {}) {
   const options = WorkplaceConst.LIST.map(option => (

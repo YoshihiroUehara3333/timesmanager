@@ -39,6 +39,8 @@ class HomeOpenUseCase {
       userId: userId,
       view: view,
     })
+
+    return { ok: true }
   }
 }
 

@@ -21,28 +21,34 @@ class StartTaskInputUseCase {
 
     // スレッド存在チェック
     const thread = await this.threadBackendGateway.getThread({ userId, date })
-    if (!thread) {
+    if (!thread.ok || !thread.data) {
       return null
     }
 
     // 最新シリアル取得
-    const serial = await this.taskBackendGateway.issueLatestSerial({ userId: userId, date: date })
+    const response = await this.taskBackendGateway.issueLatestSerial({ userId: userId, date: date })
+    if (!response.ok || !response.data) {
+      return null
+    }
+    const serial = response.data
 
     // BlockKit作成
     const params = {
+      channelId: thread.data.channelId,
       userId: userId,
-      threadTs: thread.threadTs,
+      threadTs: thread.data.threadTs,
       date: date,
       serial: serial,
       status: TaskConst.STATUS.ACTIVE,
     }
-    const modalView = TaskInputModal(params)
+    const view = TaskInputModal(params)
 
     // モーダルを開く
     await this.slackGateway.openModal({
       triggerId,
-      view: modalView,
+      view,
     })
+    return { ok: true }
   }
 }
 
