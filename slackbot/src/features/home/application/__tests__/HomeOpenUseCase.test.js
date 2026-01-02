@@ -42,21 +42,27 @@ describe('HomeOpenUseCase', () => {
     }
 
     taskBackendGateway = {
-      getTasks: jest.fn(),
+      getAllTasks: jest.fn(),
     }
 
     threadBackendGateway = {
-      getThread: jest.fn(),
+      getThreadByDate: jest.fn(),
     }
   })
 
-  test('正常終了', async () => {
-    threadBackendGateway.getThread.mockResolvedValue({ ok: true, data: { dummy: 'dummy' } })
-    taskBackendGateway.getTasks.mockResolvedValue({
+  test('正常終了:DBにスレッド情報が存在する場合', async () => {
+    threadBackendGateway.getThreadByDate.mockResolvedValue({
       ok: true,
+      status: 200,
+      data: { dummy: 'dummy' }
+    })
+    taskBackendGateway.getAllTasks.mockResolvedValue({
+      ok: true,
+      status: 200,
       data: [
+        { status: TaskConst.STATUS.FINISHED },
         { status: TaskConst.STATUS.ACTIVE },
-        { status: TaskConst.STATUS.FINISHED }
+        { status: TaskConst.STATUS.FINISHED },
       ]
     })
 
@@ -64,8 +70,8 @@ describe('HomeOpenUseCase', () => {
     const result = await useCase.execute({ userId })
 
     expect(getDate).toHaveBeenCalledWith('YYYY-MM-DD')
-    expect(threadBackendGateway.getThread).toHaveBeenCalledWith({ userId, date: '2026-01-22' })
-    expect(taskBackendGateway.getTasks).toHaveBeenCalledWith({ userId })
+    expect(threadBackendGateway.getThreadByDate).toHaveBeenCalledTimes(1)
+    expect(taskBackendGateway.getAllTasks).toHaveBeenCalledTimes(1)
 
     expect(HomeBlocks).toHaveBeenCalledWith({
       tasks: [

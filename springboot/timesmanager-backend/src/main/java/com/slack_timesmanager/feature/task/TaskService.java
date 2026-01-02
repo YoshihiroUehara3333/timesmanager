@@ -58,9 +58,8 @@ public class TaskService {
 		Validator.validateUserId(userId);
         
 		try {
-			List<TaskDomain> tasks = taskDynamoRepository.findAllByUserId(userId);
-			return tasks.stream()
-					.map(TaskResponse::fromDomain)
+			return taskDynamoRepository.findAllByUserId(userId).stream()
+					.map((task) -> TaskResponse.fromDomain(task))
 					.toList();
 		}
 		catch(RuntimeException e) {

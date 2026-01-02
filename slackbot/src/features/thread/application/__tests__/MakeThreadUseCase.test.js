@@ -32,13 +32,13 @@ describe('MakeThreadUseCase', () => {
     }
 
     threadBackendGateway = {
-      getThread: jest.fn(),
+      getThreadByDate: jest.fn(),
       saveThread: jest.fn(),
     }
   })
 
   test('DBに当日のスレッド情報が未登録の場合', async () => {
-    threadBackendGateway.getThread.mockResolvedValue({ ok: true, data: undefined })
+    threadBackendGateway.getThreadByDate.mockResolvedValue({ ok: true, data: undefined })
     slackGateway.postThread.mockResolvedValue({
       channelId: 'postThreadChannelId',
       threadTs: 'postThreadThreadTs',
@@ -53,7 +53,7 @@ describe('MakeThreadUseCase', () => {
     const result = await useCase.execute({ userId, channelId, respond })
 
     expect(getDate).toHaveBeenCalledWith('YYYY-MM-DD')
-    expect(threadBackendGateway.getThread).toHaveBeenCalledTimes(1)
+    expect(threadBackendGateway.getThreadByDate).toHaveBeenCalledTimes(1)
     expect(buildThreadInitialText).toHaveBeenCalledTimes(1)
 
     expect(slackGateway.postThread).toHaveBeenCalledWith({

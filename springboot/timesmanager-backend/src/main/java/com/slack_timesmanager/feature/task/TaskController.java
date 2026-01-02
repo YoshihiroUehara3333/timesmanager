@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,23 +33,36 @@ public class TaskController {
 	}
 	
 	
+	/**
+	 * タスク新規入力
+	 * @param request
+	 * @return 正常終了: 200 OK
+	 */
 	@PostMapping
 	public ResponseEntity<TaskResponse> post(
 			@Valid @RequestBody TaskRequest request
 	){
-		log.info("📥 Received PUT /api/task: {}", request);
+		log.info("📥 Received POST /api/task: {}", request);
 		
 		taskService.save(request);
 		return ResponseEntity.ok().build();
 	}
 
+	/**
+	 * タスク全件取得
+	 * @param userId
+	 * @return データ1件以上: 200 OK データ0件: 204 No Content
+	 */
 	@GetMapping
 	public ResponseEntity<List<TaskResponse>> getAll(
-			@RequestParam(required = false) String userId
+			@RequestParam(required = true) String userId
     ){
 		log.info("📥 GET /api/task called. userId={}", userId);
 
 		List<TaskResponse> response = taskService.getAllByUserId(userId);
+		if (response.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		}
 		return ResponseEntity.ok(response);
 	}
 	

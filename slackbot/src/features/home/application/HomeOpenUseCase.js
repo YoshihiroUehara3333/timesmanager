@@ -19,20 +19,20 @@ class HomeOpenUseCase {
 
     // スレッド存在確認
     let tasks = []
-    const thread = await this.threadBackendGateway.getThreadByDate({ userId, date })
-    if (thread.ok && thread.data) {
+    const threadResult = await this.threadBackendGateway.getThreadByDate({ userId, date })
+    if (threadResult.status === 200) {
       // タスクリスト取得
-      tasks = await this.taskBackendGateway.getAllTasks({ userId })
-      if (tasks.ok && tasks.data) {
+      const taskResult = await this.taskBackendGateway.getAllTasks({ userId })
+      if (taskResult.status === 200) {
         // activeなもので絞り込む
-        tasks = tasks.data.filter((task) => task.status === TaskConst.STATUS.ACTIVE)
+        tasks = taskResult.data.filter((task) => task.status === TaskConst.STATUS.ACTIVE)
       }
     }
 
     // BlockKit作成
     const view = HomeBlocks({
       tasks: tasks,
-      thread: thread.data,
+      thread: threadResult.data,
     })
     console.log(JSON.stringify(view))
 
