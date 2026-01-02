@@ -6,11 +6,13 @@ const { Buttons } = require('../../../shared/blockkit/components/Buttons')
 const { Sections } = require('../../../shared/blockkit/components/Sections')
 
 exports.TaskBlock = ({ userId, taskName, targetTime, memo, serial }) => ([
-  Sections.mrkdwn(`<@${userId}>\n📝*タスク記録*`),
-  Sections.multiMrkdwn([
-    `*タスク名*\n${taskName}`,
-    `*完了目標*\n${targetTime}`
-  ]),
+  Sections.mrkdwn({ text: `<@${userId}>\n📝*タスク記録*` }),
+  Sections.multiMrkdwn({
+    texts: [
+      `*タスク名*\n${taskName}`,
+      `*完了目標*\n${targetTime}`
+    ]
+  }),
   Sections.mrkdwn(`*備考*\n${memo}`),
   {
     type: 'actions',

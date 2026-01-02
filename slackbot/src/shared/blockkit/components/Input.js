@@ -14,11 +14,11 @@ function timePicker ({
     type: 'input',
     block_id: blockId,
     optional: optional,
-    label: plainTextObject(labelText),
+    label: plainTextObject({ text: labelText }),
     element: {
       type: 'timepicker',
       initial_time: initialTime,
-      placeholder: plainTextObject(placeholderText),
+      placeholder: plainTextObject({ text: placeholderText }),
       action_id: actionId
     }
   }
@@ -35,10 +35,10 @@ function staticSelect ({
   return {
     type: 'input',
     block_id: blockId,
-    label: plainTextObject(labelText),
+    label: plainTextObject({ text: labelText }),
     element: {
       type: 'static_select',
-      placeholder: plainTextObject(placeholderText),
+      placeholder: plainTextObject({ text: placeholderText }),
       action_id: actionId,
       options: options,
       ...(initialOption ? { initial_option: initialOption } : {}),
@@ -58,7 +58,7 @@ function plainTextInput ({
     type: 'input',
     block_id: blockId,
     optional: optional,
-    label: plainTextObject(labelText),
+    label: plainTextObject({ text: labelText }),
     element: {
       type: 'plain_text_input',
       action_id: actionId,

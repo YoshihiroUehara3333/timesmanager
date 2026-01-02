@@ -7,8 +7,8 @@ function modalButtons ({
   closeText = 'キャンセル',
 } = {}) {
   return {
-    submit: plainTextObject(submitText),
-    close: plainTextObject(closeText),
+    submit: plainTextObject({ text: submitText }),
+    close: plainTextObject({ text: closeText }),
   }
 }
 

@@ -11,17 +11,17 @@ function mrkdwn ({
   }
 }
 
-function multiMrkdwn (texts = []) {
+function multiMrkdwn ({ texts = [] }) {
   return {
     type: 'section',
-    fields: texts.map((t) => mrkdwnTextObject(t))
+    fields: texts.map((text) => mrkdwnTextObject({ text }))
   }
 }
 
 function plainText ({ text, emoji = true }) {
   return {
     type: 'section',
-    text: plainTextObject(text, emoji)
+    text: plainTextObject({ text, emoji })
   }
 }
 
