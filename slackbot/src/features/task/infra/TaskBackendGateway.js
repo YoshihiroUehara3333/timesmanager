@@ -12,11 +12,11 @@ class TaskBackendGateway {
    * @param {string} userId - ユーザID
    * @returns {object}
    */
-  async getTasks ({ userId }) {
+  async getAllTasks ({ userId }) {
     console.log(`TaskBackendGateway.getTasks userId:${userId}`)
     try {
       const response = await this.backendHttpClient.request({
-        routing: BackendRouting.TASK.GET,
+        routing: BackendRouting.TASK.GETALL(),
         config: {
           params: {
             userId: userId
