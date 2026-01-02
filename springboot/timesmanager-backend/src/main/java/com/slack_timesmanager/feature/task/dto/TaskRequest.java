@@ -1,6 +1,7 @@
 package com.slack_timesmanager.feature.task.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 import com.slack_timesmanager.common.core.Request;
 
@@ -9,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskRequest implements Request{
+public class TaskRequest implements Request {
 	
 	@NotBlank(message = "userId は 必須です")
 	private String userId;
@@ -17,12 +18,21 @@ public class TaskRequest implements Request{
 	@NotBlank(message = "channelId は 必須です")
 	private String channelId;
 	
+	@NotBlank(message = "date は 必須です")
+    @Pattern(
+        regexp = "\\d{4}-\\d{2}-\\d{2}",
+        message = "date は yyyy-MM-dd 形式で入力してください（例: 2025-12-03）"
+    )
 	private String date;
+	
 	private String taskName;
 	private String targetTime;
 	private String memo;
 	private String status;
+	
+	@NotBlank(message = "serial は 必須です")
 	private String serial;
+	
 	private String threadTs;
 	
 	public TaskRequest() {

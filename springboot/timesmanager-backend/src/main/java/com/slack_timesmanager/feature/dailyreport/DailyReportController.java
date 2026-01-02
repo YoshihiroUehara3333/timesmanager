@@ -18,6 +18,7 @@ import com.slack_timesmanager.feature.dailyreport.dto.DailyReportResponse;
 @RestController
 @RequestMapping("/api/diary")
 public class DailyReportController {
+	
 	/** Logger */
 	private static final Logger log = LoggerFactory.getLogger(DailyReportController.class);
 	

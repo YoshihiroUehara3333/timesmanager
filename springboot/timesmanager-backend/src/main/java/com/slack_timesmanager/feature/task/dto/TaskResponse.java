@@ -6,7 +6,7 @@ import com.slack_timesmanager.feature.task.domain.TaskDomain;
 import lombok.Getter;
 
 @Getter
-public class TaskResponse implements Response{
+public class TaskResponse implements Response {
 	public TaskResponse() {
 	}
 	public TaskResponse(

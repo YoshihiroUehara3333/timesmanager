@@ -31,7 +31,7 @@ public final class DynamoKeyFactory {
 
     // ===== Dailyreport 用 =====
     // partition_key:userId + "/DAILYREPORT"
-    // sort_key: YYYY-MM_DD
+    // sort_key: YYYY-MM-DD
     /**
      * : ユーザの日報 PK
      */
@@ -50,7 +50,7 @@ public final class DynamoKeyFactory {
 
     // ===== Attendance 用 =====
     // partition_key:userId + "/ATTENDANCE"
-    // sort_key: YYYY-MM_DD
+    // sort_key: YYYY-MM-DD
     /**
      * Attendance: ユーザの勤怠 PK
      */
@@ -68,8 +68,8 @@ public final class DynamoKeyFactory {
     }
 
     // ===== Thread 用 =====
-    // partition_key:userId + "/ATTENDANCE"
-    // sort_key: YYYY-MM_DD
+    // partition_key:userId + "/THREAD"
+    // sort_key: YYYY-MM-DD
     /**
      * Thread: PK
      */

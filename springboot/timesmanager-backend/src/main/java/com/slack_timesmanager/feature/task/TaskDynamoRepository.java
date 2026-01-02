@@ -17,7 +17,6 @@ import com.slack_timesmanager.feature.task.domain.TaskDomain;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
-import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
@@ -40,38 +39,6 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	) {
 		super(dynamoDbClient,tableName);
 	}
-
-    /**
-     * タスクを1件保存
-     */
-    public void putItem(TaskDomain task) {
-    	DynamoKey itemKey = getItemKeyFromDomain(task);
-
-    	Map<String, AttributeValue> item = new HashMap<>();
-        item.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
-        item.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
-        item.put(ATTR_USER_ID,    AttributeValue.builder().s(task.userId()).build());
-        item.put(ATTR_CHANNEL_ID, AttributeValue.builder().s(task.channelId()).build());
-        item.put(ATTR_DATE,       AttributeValue.builder().s(task.date()).build());
-        item.put(ATTR_TASK_NAME,  AttributeValue.builder().s(task.taskName()).build());
-        item.put(ATTR_TARGET_TIME,  AttributeValue.builder().s(task.targetTime()).build());
-        item.put(ATTR_MEMO,     AttributeValue.builder().s(task.memo()).build());
-        item.put(ATTR_STATUS,     AttributeValue.builder().s(task.status()).build());
-        item.put(ATTR_SERIAL,     AttributeValue.builder().s(task.serial()).build());
-        item.put(ATTR_THREAD_TS,     AttributeValue.builder().s(task.threadTs()).build());
-        
-
-        PutItemRequest putRequest = PutItemRequest.builder()
-                .tableName(tableName)
-                .item(item)
-                .build();
-
-        try {
-            dynamoDbClient.putItem(putRequest);
-        } catch (DynamoDbException e) {
-            throw new RuntimeException("DynamoDB putItem failed", e);
-        }
-    }
     
     /**
      * 

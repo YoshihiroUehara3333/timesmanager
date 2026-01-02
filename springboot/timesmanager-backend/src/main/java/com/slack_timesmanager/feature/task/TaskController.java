@@ -2,6 +2,8 @@ package com.slack_timesmanager.feature.task;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +34,7 @@ public class TaskController {
 	
 	@PutMapping
 	public ResponseEntity<TaskResponse> put(
-			@RequestBody TaskRequest request
+			@Valid @RequestBody TaskRequest request
 	){
 		log.info("📥 Received PUT /api/task: {}", request);
 		

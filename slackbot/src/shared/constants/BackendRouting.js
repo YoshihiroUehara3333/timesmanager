@@ -10,8 +10,7 @@ exports.BackendRouting = Object.freeze({
   TASK: {
     GET: { method: 'GET', path: `${API_BASE}/task` },
     SERIAL: { method: 'GET', path: `${API_BASE}/task/serial` },
-    UPDATE: { method: 'POST', path: `${API_BASE}/task` },
-    CREATE: { method: 'PUT', path: `${API_BASE}/task` },
+    SAVE: { method: 'PUT', path: `${API_BASE}/task` },
   },
   DAILYREPORT: {
     GET: { method: 'GET', path: `${API_BASE}/dailyreport` },

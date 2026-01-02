@@ -50,10 +50,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
      * @param
      */
     public void putItem(ThreadDomain thread) {
-    	DynamoKey itemKey = DynamoKeyFactory.threadItemKey(
-                thread.userId(),
-                thread.date()
-        );
+    	DynamoKey itemKey = getItemKeyFromDomain(thread);
 
         Map<String, AttributeValue> item = new HashMap<>();
         item.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
@@ -162,5 +159,12 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
 				item.get(ATTR_PERMALINK).s(),
 				item.get(ATTR_THREADTS).s()
 				);
+	}
+	
+	private DynamoKey getItemKeyFromDomain(ThreadDomain domain) {
+		return DynamoKeyFactory.threadItemKey(
+				domain.userId(),
+				domain.date()
+	    );
 	}
 }
