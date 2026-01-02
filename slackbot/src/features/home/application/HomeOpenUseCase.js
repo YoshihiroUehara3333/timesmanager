@@ -1,7 +1,8 @@
 // src/features/home/application/HomeOpenUseCase.js
 
-const { HomeBlocks } = require('../blockkit/HomeBlocks')
 const { getDate } = require('../../../shared/utils/DateUtils')
+
+const { HomeBlocks } = require('../blockkit/HomeBlocks')
 const { TaskConst } = require('../../../shared/constants/TaskConst')
 
 class HomeOpenUseCase {
