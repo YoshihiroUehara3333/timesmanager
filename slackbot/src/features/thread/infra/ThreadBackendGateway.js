@@ -30,7 +30,8 @@ class ThreadBackendGateway extends BackendGatewayBase {
           date: date,
         }
       })
-      console.log(`ThreadBackendGateway.saveThread response:${JSON.stringify(response)}`)
+      console.log(`ThreadBackendGateway.saveThread status:${JSON.stringify(response.status)}`)
+
       if (response.status === 201) {
         return { ok: true, status: response.status, data: response.data }
       }
@@ -64,9 +65,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
           }
         }
       })
-      console.log(
-        `ThreadBackendGateway.getThreadByDate status${JSON.stringify(response.status)}`
-      )
+      console.log(`ThreadBackendGateway.getThreadByDate status:${JSON.stringify(response.status)}`)
 
       if (response.status === 200) {
         return { ok: true, status: response.status, data: response.data }
@@ -96,7 +95,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
           }
         }
       })
-      console.log(`ThreadBackendGateway.getAllThread response:${JSON.stringify(response)}`)
+      console.log(`ThreadBackendGateway.getAllThread status:${JSON.stringify(response.status)}`)
       if (response.status === 200) {
         return { ok: true, data: response.data }
       } else {
