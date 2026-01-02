@@ -53,7 +53,7 @@ public class ThreadController {
      *
      * @param userId ユーザID
      * @param date   日付
-     * @return データ有: 200 OK データ無: 204 No Content
+     * @return データ有: 200 OK データ0件: 204 No Content
      */
 	@GetMapping("/{date}")
 	public ResponseEntity<ThreadResponse> getByDate(

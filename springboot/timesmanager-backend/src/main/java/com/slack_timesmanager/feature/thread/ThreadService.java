@@ -59,8 +59,8 @@ public class ThreadService {
 		Validator.validateDate(date);
         
 		try {
-			Optional<ThreadDomain> thread = threadDynamoRepository.findByUserIdAndDate(userId, date);
-			return thread.map(ThreadResponse::fromDomain);
+			return threadDynamoRepository.findByUserIdAndDate(userId, date)
+					.map(ThreadResponse::fromDomain);
 		}
 		catch(RuntimeException e) {            
 			log.error("DynamoDB処理中にエラー: getByUserIdAndDate userId={}, date={}", userId, date, e);
@@ -90,6 +90,4 @@ public class ThreadService {
 	        throw new InfrastructureException("DynamoDB error", e);
 		}
 	};
-	
-
 }
