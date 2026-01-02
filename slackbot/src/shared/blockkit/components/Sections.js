@@ -2,12 +2,12 @@
 
 const { plainTextObject, mrkdwnTextObject } = require('./TextObjects')
 
-function mrkdwn (
+function mrkdwn ({
   text = 'デフォルトテキスト',
-) {
+}) {
   return {
     type: 'section',
-    text: mrkdwnTextObject(text)
+    text: mrkdwnTextObject({ text })
   }
 }
 
@@ -19,7 +19,10 @@ function multiMrkdwn (texts = []) {
 }
 
 function plainText ({ text, emoji = true }) {
-  return { type: 'section', text: plainTextObject(text, emoji) }
+  return {
+    type: 'section',
+    text: plainTextObject(text, emoji)
+  }
 }
 
 module.exports = {

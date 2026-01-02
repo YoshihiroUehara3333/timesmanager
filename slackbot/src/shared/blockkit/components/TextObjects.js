@@ -18,7 +18,7 @@ function mrkdwnTextObject ({ text }) {
   }
 
   return {
-    type: 'plain_text',
+    type: 'mrkdwn',
     text: text,
   }
 }

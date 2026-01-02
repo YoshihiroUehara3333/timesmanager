@@ -15,7 +15,7 @@ function modalButtons ({
 function plainTextPrimaryButton ({ text, value, actionId }) {
   return {
     type: 'button',
-    text: plainTextObject(text),
+    text: plainTextObject({ text }),
     style: 'primary',
     value: value,
     action_id: actionId,
@@ -25,7 +25,7 @@ function plainTextPrimaryButton ({ text, value, actionId }) {
 function plainTextDangerButton ({ text, value, actionId }) {
   return {
     type: 'button',
-    text: plainTextObject(text),
+    text: plainTextObject({ text }),
     style: 'danger',
     value: value,
     action_id: actionId,

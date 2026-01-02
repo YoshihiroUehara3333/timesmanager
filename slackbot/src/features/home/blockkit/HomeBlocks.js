@@ -10,7 +10,7 @@ const MAX_TASKS_TO_SHOW = 30
 
 function dailyReportSection () {
   return [
-    Sections.mrkdwn('*勤怠/日報管理*'),
+    Sections.mrkdwn({ text: '*勤怠/日報管理*' }),
     {
       type: 'actions',
       elements: [
@@ -23,7 +23,7 @@ function dailyReportSection () {
 
 function taskSection (thread) {
   const blocks = [
-    Sections.mrkdwn('*タスク管理*'),
+    Sections.mrkdwn({ text: '*タスク管理*' }),
   ]
 
   if (thread) {
@@ -33,9 +33,9 @@ function taskSection (thread) {
         Buttons.plainTextPrimaryButton(HomeButtonFactory.toCreateTask()),
       ]
     })
-    blocks.push(Sections.mrkdwn('*タスク一覧*'))
+    blocks.push(Sections.mrkdwn({ text: '*タスク一覧*' }))
   } else {
-    blocks.push(Sections.mrkdwn('_本日のスレッドが未作成です_'))
+    blocks.push(Sections.mrkdwn({ text: '_本日のスレッドが未作成です_' }))
   }
 
   return blocks
@@ -46,13 +46,13 @@ function taskList (
 ) {
   if (!tasks.length) {
     return [
-      Sections.mrkdwn('_現在表示できるタスクはありません_'),
+      Sections.mrkdwn({ text: '_現在表示できるタスクはありません_' }),
     ]
   }
 
   return tasks.map((task) => (
     {
-      ...Sections.mrkdwn(task.name),
+      ...Sections.mrkdwn({ text: task.name }),
       accessory: Buttons.plainTextPrimaryButton(HomeButtonFactory.toTaskEdit(task.taskId)),
     }
   ))
