@@ -1,6 +1,6 @@
 // src/features/dailyreport/blockkit/DailyReportInputModal.js
 
-const { ModalConst } = require('../constants/ModalConst')
+const { ModalConst } = require('../../../shared/constants/ModalConst')
 
 const { divider } = require('../../../shared/blockkit/components/Divider')
 
