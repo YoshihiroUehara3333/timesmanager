@@ -1,3 +1,5 @@
+// src/features/dailyreport/blockkit/DailyReportInputModal.js
+
 const { ModalConst } = require('../constants/ModalConst')
 
 const { divider } = require('../../../shared/blockkit/components/Divider')
@@ -6,7 +8,7 @@ const { Buttons } = require('../../../shared/blockkit/components/Buttons')
 const { Sections } = require('../../../shared/blockkit/components/Sections')
 const { Input } = require('../../../shared/blockkit/components/Input')
 
-exports.DailyReportInputModal = ({ userId, dailyreport}) => ({
+exports.DailyReportInputModal = ({ userId, dailyreport = {} }) => ({
   type: 'modal',
   callback_id: ModalConst.CALLBACK_ID.DAILYREPORT_INPUT,
   private_metadata: JSON.stringify({
@@ -27,6 +29,7 @@ exports.DailyReportInputModal = ({ userId, dailyreport}) => ({
       actionId: 'task',
       multiline: true,
       initialValue: dailyreport.task || undefined,
+      optional: true,
     }),
     Input.plainTextInput({
       blockId: 'impressions',
@@ -34,6 +37,7 @@ exports.DailyReportInputModal = ({ userId, dailyreport}) => ({
       actionId: 'impressions',
       multiline: true,
       initialValue: dailyreport.impressions || undefined,
+      optional: true,
     }),
   ]
 })

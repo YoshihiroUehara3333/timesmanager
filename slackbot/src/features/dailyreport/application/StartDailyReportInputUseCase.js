@@ -19,7 +19,7 @@ class StartDailyReportInputUseCase {
     const date = getDate('YYYY-MM-DD')
 
     let dailyreport = {}
-    const response = await this.attendanceBackendGateway.getDailyReport({ userId, date })
+    const response = await this.dailyreportBackendGateway.getDailyReport({ userId, date })
     if (response.ok) {
       dailyreport = response.data
     }
@@ -32,6 +32,8 @@ class StartDailyReportInputUseCase {
       triggerId,
       view,
     })
+
+    return { ok: true }
   }
 }
 

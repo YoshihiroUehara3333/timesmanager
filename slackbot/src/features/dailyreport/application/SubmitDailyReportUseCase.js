@@ -1,12 +1,12 @@
 // src/features/attendance/application/SubmitDailyReportUseCase.js
 
 class SubmitDailyReportUseCase {
-  constructor ({ slackGateway, attendanceBackendGateway }) {
+  constructor ({ slackGateway, dailyreportBackendGateway }) {
     this.slackGateway = slackGateway
-    this.attendanceBackendGateway = attendanceBackendGateway
+    this.attendanceBackendGateway = dailyreportBackendGateway
   }
 
-    /**
+  /**
      * 日報入力モーダルの内容を保存するユースケース
      *
      * @param {Object} params
