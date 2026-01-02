@@ -26,7 +26,7 @@ class SubmitDailyReportUseCase {
     }
 
     // バックエンドにリクエスト送信
-    await this.attendanceBackendGateway.saveAttendance(attendance)
+    await this.dailyreportBackendGateway.saveDailyReport(attendance)
 
     // Slackメッセージを送信
   }

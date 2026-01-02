@@ -8,6 +8,9 @@ public class DynamoRepositoryBase {
     // ===== 属性名の定数 =====
     protected static final String ATTR_PK         = "partition_key";
     protected static final String ATTR_SK         = "sort_key";
+    protected static final String ATTR_USER_ID    = "user_id";
+    protected static final String ATTR_CHANNEL_ID = "channel_id";
+    protected static final String ATTR_DATE       = "date";
     
     protected final String tableName;
 	protected final DynamoDbClient dynamoDbClient;

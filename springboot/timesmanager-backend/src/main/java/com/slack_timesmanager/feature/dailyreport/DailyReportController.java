@@ -1,4 +1,4 @@
-package com.slack_timesmanager.feature.diary;
+package com.slack_timesmanager.feature.dailyreport;
 
 import java.util.List;
 
@@ -12,23 +12,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.slack_timesmanager.feature.diary.dto.DiaryRequest;
-import com.slack_timesmanager.feature.diary.dto.DiaryResponse;
+import com.slack_timesmanager.feature.dailyreport.dto.DailyReportRequest;
+import com.slack_timesmanager.feature.dailyreport.dto.DailyReportResponse;
 
 @RestController
 @RequestMapping("/api/diary")
-public class DiaryController {
+public class DailyReportController {
 	/** Logger */
-	private static final Logger log = LoggerFactory.getLogger(DiaryController.class);
+	private static final Logger log = LoggerFactory.getLogger(DailyReportController.class);
 	
-	private final DiaryService diaryService;
+	private final DailyReportService diaryService;
 	
-	public DiaryController(DiaryService diaryService) {
+	public DailyReportController(DailyReportService diaryService) {
 	    this.diaryService = diaryService;
 	}
 	
 	@PostMapping
-	public ResponseEntity<Void> post(@RequestBody DiaryRequest request){
+	public ResponseEntity<Void> post(@RequestBody DailyReportRequest request){
 		log.info("📥 Received POST /api/diary: {}", request);
 		
 		diaryService.save(request);
@@ -36,13 +36,13 @@ public class DiaryController {
 	}
 	
 	@GetMapping("/{userId}/{date}")
-	public ResponseEntity<List<DiaryResponse>> get(
+	public ResponseEntity<List<DailyReportResponse>> get(
 			@PathVariable String userId,
 			@PathVariable String date)
 	{
 		log.info("📥 Received GET /api/diary: {}", userId, date);
 		
-		List<DiaryResponse> responseBody = null;
+		List<DailyReportResponse> responseBody = null;
 		
 		responseBody = diaryService.getDiary(userId, date);
 		return ResponseEntity.ok(responseBody);

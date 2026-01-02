@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,20 +30,27 @@ public class AttendanceController {
 		this.attendanceService = attendanceService;
 	}
 	
+	/**
+	 * 
+	 * @param request
+	 * @return
+	 */
 	@PostMapping
-	public ResponseEntity<Void> post(
+	public ResponseEntity<AttendanceResponse> post(
 			@RequestBody @Valid AttendanceRequest request
 	){
 		log.info("📥 Received POST /api/attendance: {}", request);
 		
-		boolean created = attendanceService.save(request);
-		if(created) {
-			return ResponseEntity.status(HttpStatus.CREATED).build();
-		} else {
-			return ResponseEntity.status(HttpStatus.OK).build();
-		}
+		AttendanceResponse response = attendanceService.save(request);
+		return ResponseEntity.ok(response);
 	}
 
+	/**
+	 * 
+	 * @param userId
+	 * @param date
+	 * @return
+	 */
 	@GetMapping
 	public ResponseEntity<List<AttendanceResponse>> get(
 			@RequestParam(required = false) String userId,
@@ -52,14 +58,14 @@ public class AttendanceController {
     ){
 		log.info("📥 GET /api/attendance userId={}, date={}", userId, date);
 		
-		List<AttendanceResponse> responseBody = null;
+		List<AttendanceResponse> response = null;
 		
 		if (date == null) {
-			responseBody = attendanceService.getAllByUserId(userId);
+			response = attendanceService.getAllByUserId(userId);
 		} else {
-			responseBody = attendanceService.getByUserIdAndDate(userId, date);
+			response = attendanceService.getByUserIdAndDate(userId, date);
         }
 		
-		return ResponseEntity.ok(responseBody);
+		return ResponseEntity.ok(response);
 	}
 }

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.slack_timesmanager.common.exception.InfrastructureException;
 import com.slack_timesmanager.common.utils.Validator;
+import com.slack_timesmanager.feature.task.domain.TaskDomain;
+import com.slack_timesmanager.feature.task.domain.TaskDomainFactory;
 import com.slack_timesmanager.feature.task.dto.TaskRequest;
 import com.slack_timesmanager.feature.task.dto.TaskResponse;
 import com.slack_timesmanager.feature.task.dto.TaskSerialResponse;
@@ -24,6 +26,27 @@ public class TaskService {
 		this.taskDynamoRepository = taskDynamoRepository;
 	}
 
+	
+    /**
+     * タスク入力
+     * @param request
+	 * @return
+     */
+	public TaskResponse save(TaskRequest request) {
+		log.info("TaskService.save: request = {}", request);
+		
+		TaskDomain task = TaskDomainFactory.fromTaskRequest(request);
+		
+		try {
+		    taskDynamoRepository.updateItem(task);
+		    return TaskResponse.fromDomain(task);
+		}
+		catch(RuntimeException e) {
+	        log.error("DynamoDB処理中にエラー: save request={}", request, e);
+	        throw new InfrastructureException("タスクのDB登録に失敗しました", e);
+		}
+	}
+	
     /**
      * ユーザIDに紐づくタスクを全件取得
      * @param userId
@@ -35,7 +58,10 @@ public class TaskService {
 		Validator.validateUserId(userId);
         
 		try {
-			return taskDynamoRepository.findAllByUserId(userId);
+			List<TaskDomain> tasks = taskDynamoRepository.findAllByUserId(userId);
+			return tasks.stream()
+					.map(TaskResponse::fromDomain)
+					.toList();
 		}
 		catch(RuntimeException e) {
 	        log.error("DynamoDB処理中にエラー: getAllByUserId userId={}", userId, e);
@@ -56,7 +82,10 @@ public class TaskService {
 		Validator.validateDate(date);
         
 		try {
-			return taskDynamoRepository.findByUserIdAndDate(userId, date);
+			List<TaskDomain> tasks = taskDynamoRepository.findByUserIdAndDate(userId, date);
+			return tasks.stream()
+					.map(TaskResponse::fromDomain)
+					.toList();
 		}
 		catch(RuntimeException e) {
             log.error("DynamoDB処理中にエラー: getByUserIdAndDate userId={}, date={}", userId, date, e);
@@ -64,22 +93,6 @@ public class TaskService {
 		}
 	};
 	
-    /**
-     * タスク登録
-     * @param request
-	 * @return
-     */
-	public void save(TaskRequest request) {
-		log.info("TaskService.save: request = {}", request);
-		
-		try {
-		    taskDynamoRepository.putItem(request);
-		}
-		catch(RuntimeException e) {
-	        log.error("DynamoDB処理中にエラー: save request={}", request, e);
-	        throw new InfrastructureException("タスクのDB登録に失敗しました", e);
-		}
-	};
 	
 	/**
 	 * シリアル発行

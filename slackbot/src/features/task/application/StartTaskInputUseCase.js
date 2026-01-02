@@ -22,13 +22,13 @@ class StartTaskInputUseCase {
     // スレッド存在チェック
     const thread = await this.threadBackendGateway.getThread({ userId, date })
     if (!thread.ok || !thread.data) {
-      return null
+      return { ok: false }
     }
 
     // 最新シリアル取得
     const response = await this.taskBackendGateway.issueLatestSerial({ userId: userId, date: date })
     if (!response.ok || !response.data) {
-      return null
+      return { ok: false }
     }
     const serial = response.data
 

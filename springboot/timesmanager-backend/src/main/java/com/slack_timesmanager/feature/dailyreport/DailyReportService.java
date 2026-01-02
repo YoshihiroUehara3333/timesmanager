@@ -1,4 +1,4 @@
-package com.slack_timesmanager.feature.diary;
+package com.slack_timesmanager.feature.dailyreport;
 
 import java.util.List;
 
@@ -7,26 +7,26 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.slack_timesmanager.common.exception.InfrastructureException;
-import com.slack_timesmanager.feature.diary.dto.DiaryRequest;
-import com.slack_timesmanager.feature.diary.dto.DiaryResponse;
+import com.slack_timesmanager.feature.dailyreport.dto.DailyReportRequest;
+import com.slack_timesmanager.feature.dailyreport.dto.DailyReportResponse;
 
 @Service
-public class DiaryService {
+public class DailyReportService {
 	
-	private static final Logger log = LoggerFactory.getLogger(DiaryService.class);
+	private static final Logger log = LoggerFactory.getLogger(DailyReportService.class);
 	
-	private final DiaryDynamoRepository diaryDynamoRepository;
+	private final DailyReportDynamoRepository diaryDynamoRepository;
 
-	public DiaryService(DiaryDynamoRepository diaryDynamoDbRepository) {
+	public DailyReportService(DailyReportDynamoRepository diaryDynamoDbRepository) {
 		this.diaryDynamoRepository = diaryDynamoDbRepository;
 	}
 
     /**
      * 日報の新規登録 or 更新（同一 userId + date があれば更新、それ以外は登録）
      */
-	public void save(DiaryRequest request){
+	public void save(DailyReportRequest request){
 		try {
-			List<DiaryResponse> getRes = diaryDynamoRepository.getDiary(request.getUserId(), request.getDate());
+			List<DailyReportResponse> getRes = diaryDynamoRepository.getDiary(request.getUserId(), request.getDate());
 			
 			if(getRes.isEmpty()) {
 				diaryDynamoRepository.putItem(request);
@@ -43,7 +43,7 @@ public class DiaryService {
     /**
      * 日報取得（userId + date）
      */
-	public List<DiaryResponse> getDiary(String userId, String date) {
+	public List<DailyReportResponse> getDiary(String userId, String date) {
 		try {
 			return diaryDynamoRepository.getDiary(userId, date);
 		}

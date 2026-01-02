@@ -9,7 +9,7 @@ class SubmitTaskUseCase {
   }
 
   /**
-     * タスク入力モーダルの内容を保存するユースケース
+     * タスク新規入力モーダルの内容を保存するユースケース
      *
      * @param {Object} params
      * @param {Object} params.view  - Slack view payload

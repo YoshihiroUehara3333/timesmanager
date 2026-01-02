@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,11 +30,11 @@ public class TaskController {
 	}
 	
 	
-	@PostMapping
-	public ResponseEntity<Void> post(
+	@PutMapping
+	public ResponseEntity<TaskResponse> put(
 			@RequestBody TaskRequest request
 	){
-		log.info("📥 Received POST /api/task: {}", request);
+		log.info("📥 Received PUT /api/task: {}", request);
 		
 		taskService.save(request);
 		return ResponseEntity.ok().build();
@@ -57,6 +57,7 @@ public class TaskController {
 		return ResponseEntity.ok(responseBody);
 	}
 	
+	
 	@GetMapping("/serial")
     public ResponseEntity<TaskSerialResponse> getSerial(
             @RequestParam String userId,
@@ -64,7 +65,7 @@ public class TaskController {
     ) {
         log.info("📥 GET /api/task/serial: userId={}, date={}", userId, date);
 
-        TaskSerialResponse responseBody = taskService.issueSerial(userId, date);
-        return ResponseEntity.ok(responseBody);
+        TaskSerialResponse response = taskService.issueSerial(userId, date);
+        return ResponseEntity.ok(response);
     }
 }

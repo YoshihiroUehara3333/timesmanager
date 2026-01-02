@@ -6,14 +6,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.slack_timesmanager.common.exception.ConflictException;
 import com.slack_timesmanager.common.exception.InfrastructureException;
 import com.slack_timesmanager.common.utils.Validator;
+import com.slack_timesmanager.feature.attendance.domain.AttendanceDomain;
+import com.slack_timesmanager.feature.attendance.domain.AttendanceDomainFactory;
 import com.slack_timesmanager.feature.attendance.dto.AttendanceRequest;
 import com.slack_timesmanager.feature.attendance.dto.AttendanceResponse;
 
 @Service
 public class AttendanceService {
 
+	/* Logger */
 	private static final Logger log = LoggerFactory.getLogger(AttendanceService.class);
 	
 	private final AttendanceDynamoRepository attendanceDynamoRepository;
@@ -26,21 +30,20 @@ public class AttendanceService {
     /**
      * 勤怠の新規登録 or 更新（同一 userId + date があれば更新、それ以外は登録）
      */
-	public boolean save(AttendanceRequest request){
+	public AttendanceResponse save(AttendanceRequest request){
+		AttendanceDomain attendance = AttendanceDomainFactory.fromAttendanceRequest(request);
 		try {
-			List<AttendanceResponse> getRes = attendanceDynamoRepository.findByUserIdAndDate(request.getUserId(), request.getDate());
-			
-			if(getRes.isEmpty()) {
-				attendanceDynamoRepository.putItem(request);
-			} else {
-				attendanceDynamoRepository.updateItem(request);
-			}
-			return true;
+			attendanceDynamoRepository.putItem(attendance);
 		}
-		catch(Exception e) {
+		catch(ConflictException e) {
+			attendanceDynamoRepository.updateItem(attendance);
+		}
+		catch(RuntimeException e) {
 	        log.error("DynamoDB処理中にエラー: save request={}", request, e);
-	        throw new InfrastructureException("DynamoDB error");
+	        throw new InfrastructureException("DynamoDB error", e);
 		}
+		
+		return AttendanceResponse.fromDomain(attendance);
 	}
 	
     /**
@@ -50,11 +53,14 @@ public class AttendanceService {
 		Validator.validateUserId(userId);
 		
 		try {
-			return attendanceDynamoRepository.findAllByUserId(userId);
+			List<AttendanceDomain> attendances = attendanceDynamoRepository.findAllByUserId(userId);
+			return attendances.stream()
+					.map(AttendanceResponse::fromDomain)
+					.toList();
 		}
-		catch(Exception e) {            
+		catch(RuntimeException e) {            
 			log.error("DynamoDB処理中にエラー: getAttendanceResponse userId={}", userId,  e);
-			throw new InfrastructureException("DynamoDB error");
+			throw new InfrastructureException("DynamoDB error", e);
 		}
 	}
 	
@@ -66,11 +72,14 @@ public class AttendanceService {
 		Validator.validateDate(date);
 		
 		try {
-			return attendanceDynamoRepository.findByUserIdAndDate(userId, date);
+			List<AttendanceDomain> attendances = attendanceDynamoRepository.findByUserIdAndDate(userId, date);
+			return attendances.stream()
+					.map(AttendanceResponse::fromDomain)
+					.toList();
 		}
-		catch(Exception e) {            
+		catch(RuntimeException e) {            
 			log.error("DynamoDB処理中にエラー: getAttendanceResponse userId={}, date={}", userId, date, e);
-			throw new InfrastructureException("DynamoDB error");
+			throw new InfrastructureException("DynamoDB error", e);
 		}
 	}
 }

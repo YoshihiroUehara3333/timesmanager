@@ -30,20 +30,20 @@ public final class DynamoKeyFactory {
     }
 
     // ===== Dailyreport 用 =====
-    // partition_key:userId + "/DIARY"
+    // partition_key:userId + "/DAILYREPORT"
     // sort_key: YYYY-MM_DD
     /**
-     * Diary: ユーザの日報 PK
+     * : ユーザの日報 PK
      */
-    public static String diaryPartitionKey(String userId) {
-        return DynamoPK.DIARY.getPartitionKey(userId);
+    public static String dailyreportPartitionKey(String userId) {
+        return DynamoPK.DAILYREPORT.getPartitionKey(userId);
     }
 
     /**
-     * Diary: 1日分の日報 PK/SK
+     * : 1日分の日報 PK/SK
      */
-    public static DynamoKey diaryItemKey(String userId, String date) {
-        String pk = diaryPartitionKey(userId);
+    public static DynamoKey dailyreportItemKey(String userId, String date) {
+        String pk = dailyreportPartitionKey(userId);
         String sk = date;
         return new DynamoKey(pk, sk);
     }

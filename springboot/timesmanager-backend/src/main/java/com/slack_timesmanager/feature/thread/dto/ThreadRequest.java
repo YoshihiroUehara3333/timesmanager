@@ -22,7 +22,12 @@ public class ThreadRequest implements Request{
     )
 	private String date;
 	
+	@NotBlank(message = "threadTs は 必須です")
+	private String threadTs;
+	
+	@NotBlank(message = "userId は 必須です")
 	private String userId;
-    private String threadTs;
+	
+	@NotBlank(message = "permalink は 必須です")
     private String permalink;
 }

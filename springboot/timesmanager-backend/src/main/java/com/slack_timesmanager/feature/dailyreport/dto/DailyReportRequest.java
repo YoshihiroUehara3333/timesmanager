@@ -1,4 +1,6 @@
-package com.slack_timesmanager.feature.diary.dto;
+package com.slack_timesmanager.feature.dailyreport.dto;
+
+import jakarta.validation.constraints.NotBlank;
 
 import com.slack_timesmanager.common.core.Request;
 
@@ -7,12 +9,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DiaryRequest implements Request{
+public class DailyReportRequest implements Request{
+	@NotBlank
 	private String userId;
-	private String channelId;
+	
+	@NotBlank
 	private String date;
+	
+	private String channelId;
 	private String startTime;
 	private String endTime;
 	private String workplace;
- 
 }

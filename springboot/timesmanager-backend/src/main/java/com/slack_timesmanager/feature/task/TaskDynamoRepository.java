@@ -12,8 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.slack_timesmanager.common.base.DynamoRepositoryBase;
 import com.slack_timesmanager.dynamodb.DynamoKey;
 import com.slack_timesmanager.dynamodb.DynamoKeyFactory;
-import com.slack_timesmanager.feature.task.dto.TaskRequest;
-import com.slack_timesmanager.feature.task.dto.TaskResponse;
+import com.slack_timesmanager.feature.task.domain.TaskDomain;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -21,17 +20,18 @@ import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
+import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
 @Repository
 public class TaskDynamoRepository extends DynamoRepositoryBase{
 	
     // ===== 属性名の定数 =====
-    private static final String ATTR_USER_ID    = "user_id";
-    private static final String ATTR_DATE       = "date";
     private static final String ATTR_TASK_NAME  = "task_name";
-    private static final String ATTR_CHANNEL_ID = "channel_id";
+    private static final String ATTR_TARGET_TIME = "target_time";
+    private static final String ATTR_MEMO = "memo";
     private static final String ATTR_STATUS     = "status";
     private static final String ATTR_SERIAL     = "serial";
+    private static final String ATTR_THREAD_TS = "thread_ts";
     
 	
 	public TaskDynamoRepository(
@@ -44,22 +44,22 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
     /**
      * タスクを1件保存
      */
-    public boolean putItem(TaskRequest request) {
-    	DynamoKey itemKey = DynamoKeyFactory.taskItemKey(
-                request.getUserId(),
-                request.getDate(),
-                request.getSerial()
-        );
+    public void putItem(TaskDomain task) {
+    	DynamoKey itemKey = getItemKeyFromDomain(task);
 
     	Map<String, AttributeValue> item = new HashMap<>();
         item.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
         item.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
-        item.put(ATTR_USER_ID,    AttributeValue.builder().s(request.getUserId()).build());
-        item.put(ATTR_DATE,       AttributeValue.builder().s(request.getDate()).build());
-        item.put(ATTR_TASK_NAME,  AttributeValue.builder().s(request.getTaskName()).build());
-        item.put(ATTR_CHANNEL_ID, AttributeValue.builder().s(request.getChannelId()).build());
-        item.put(ATTR_STATUS,     AttributeValue.builder().s(request.getStatus()).build());
-        item.put(ATTR_SERIAL,     AttributeValue.builder().s(request.getSerial()).build());
+        item.put(ATTR_USER_ID,    AttributeValue.builder().s(task.userId()).build());
+        item.put(ATTR_CHANNEL_ID, AttributeValue.builder().s(task.channelId()).build());
+        item.put(ATTR_DATE,       AttributeValue.builder().s(task.date()).build());
+        item.put(ATTR_TASK_NAME,  AttributeValue.builder().s(task.taskName()).build());
+        item.put(ATTR_TARGET_TIME,  AttributeValue.builder().s(task.targetTime()).build());
+        item.put(ATTR_MEMO,     AttributeValue.builder().s(task.memo()).build());
+        item.put(ATTR_STATUS,     AttributeValue.builder().s(task.status()).build());
+        item.put(ATTR_SERIAL,     AttributeValue.builder().s(task.serial()).build());
+        item.put(ATTR_THREAD_TS,     AttributeValue.builder().s(task.threadTs()).build());
+        
 
         PutItemRequest putRequest = PutItemRequest.builder()
                 .tableName(tableName)
@@ -68,16 +68,74 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 
         try {
             dynamoDbClient.putItem(putRequest);
-            return true;
         } catch (DynamoDbException e) {
             throw new RuntimeException("DynamoDB putItem failed", e);
         }
     }
+    
+    /**
+     * 
+     * 
+     * @param task
+     */
+	public void updateItem(TaskDomain task){
+		DynamoKey itemKey = getItemKeyFromDomain(task);
+	    
+        Map<String, AttributeValue> key = new HashMap<>();
+        key.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
+        key.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
+
+	    Map<String, String> expressionAttributeNames = new HashMap<>();
+	    expressionAttributeNames.put("#userId", ATTR_USER_ID);
+	    expressionAttributeNames.put("#channelId", ATTR_CHANNEL_ID);
+	    expressionAttributeNames.put("#date", ATTR_DATE);
+	    expressionAttributeNames.put("#taskName", ATTR_TASK_NAME);
+	    expressionAttributeNames.put("#targetTime", ATTR_TARGET_TIME);
+	    expressionAttributeNames.put("#memo", ATTR_MEMO);
+	    expressionAttributeNames.put("#status", ATTR_STATUS);
+	    expressionAttributeNames.put("#serial", ATTR_SERIAL);
+	    expressionAttributeNames.put("#threadTs", ATTR_THREAD_TS);
+
+	    Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
+	    expressionAttributeValues.put(":userId", AttributeValue.builder().s(task.userId()).build());
+	    expressionAttributeValues.put(":channelId", AttributeValue.builder().s(task.channelId()).build());
+	    expressionAttributeValues.put(":date", AttributeValue.builder().s(task.date()).build());
+	    expressionAttributeValues.put(":taskName", AttributeValue.builder().s(task.taskName()).build());
+	    expressionAttributeValues.put(":targetTime", AttributeValue.builder().s(task.targetTime()).build());
+	    expressionAttributeValues.put(":memo", AttributeValue.builder().s(task.memo()).build());
+	    expressionAttributeValues.put(":status", AttributeValue.builder().s(task.status()).build());
+	    expressionAttributeValues.put(":serial", AttributeValue.builder().s(task.serial()).build());
+	    expressionAttributeValues.put(":threadTs", AttributeValue.builder().s(task.threadTs()).build());
+
+	    UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+	        .tableName(tableName)
+	        .key(key)
+	        .updateExpression(
+	        		"SET #userId = :userId,"
+	        		+ " #channelId = :channelId,"
+	        		+ " #date = :date,"
+	        		+ " #taskName = :taskName,"
+	        		+ " #targetTime = :targetTime,"
+	        		+ " #memo = :memo,"
+	        		+ " #status = :status,"
+	        		+ " #serial = :serial,"
+	        		+ " #threadTs = :threadTs"
+	        		)
+	        .expressionAttributeNames(expressionAttributeNames)
+	        .expressionAttributeValues(expressionAttributeValues)
+	        .build();
+
+	    try {
+	        dynamoDbClient.updateItem(updateRequest);
+	    } catch (DynamoDbException e) {
+            throw new RuntimeException("DynamoDB updateItem failed", e);
+	    }
+	}
 
     /**
      * ユーザIDに紐づくタスクを全件取得する
      */
-	public List<TaskResponse> findAllByUserId(String userId) {
+	public List<TaskDomain> findAllByUserId(String userId) {
 	    String partitionKey = DynamoKeyFactory.taskPartitionKey(userId);
 
 	    // :pk プレースホルダーにパーティションキーをバインド
@@ -100,7 +158,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	        }
 
 	        return response.items().stream()
-	                .map(this::mapToTaskResponse)
+	                .map(this::mapToTaskDomain)
 	                .collect(Collectors.toList());
 	    }
 	    catch (DynamoDbException e) {
@@ -112,7 +170,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
     /**
      * ユーザIDと日付からタスク情報を取得する
      */
-	public List<TaskResponse> findByUserIdAndDate(String userId, String date) {
+	public List<TaskDomain> findByUserIdAndDate(String userId, String date) {
 		String partitionKey = DynamoKeyFactory.taskPartitionKey(userId);
 
 	    // プレースホルダーにバインド
@@ -136,7 +194,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	        }
 
 	        return response.items().stream()
-	                .map(this::mapToTaskResponse)
+	                .map(this::mapToTaskDomain)
 	                .collect(Collectors.toList());
 	    }
 	    catch (DynamoDbException e) {
@@ -198,18 +256,27 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	
 
 	/**
-	 * DynamoDB 1アイテム → TaskResponse 変換
+	 * DynamoDB 1アイテム → TaskDomain 変換
 	 */
-	private TaskResponse mapToTaskResponse(Map<String, AttributeValue> item) {
-		TaskResponse response = new TaskResponse();
-		
-		response.setUserId(item.get(ATTR_USER_ID).s());
-		response.setDate(item.get(ATTR_DATE).s());
-		response.setTaskName(item.get(ATTR_TASK_NAME).s());
-		response.setChannelId(item.get(ATTR_CHANNEL_ID).s());
-		response.setStatus(item.get(ATTR_STATUS).s());
-		response.setSerial(item.get(ATTR_SERIAL).s());
-		
-	    return response;
+	private TaskDomain mapToTaskDomain(Map<String, AttributeValue> item) {
+	    return new TaskDomain(
+	    		item.get(ATTR_USER_ID).s(),
+	    		item.get(ATTR_CHANNEL_ID).s(),
+				item.get(ATTR_DATE).s(),
+				item.get(ATTR_TASK_NAME).s(),
+				item.get(ATTR_TARGET_TIME).s(),
+				item.get(ATTR_MEMO).s(),
+				item.get(ATTR_STATUS).s(),
+				item.get(ATTR_SERIAL).s(),
+				item.get(ATTR_THREAD_TS).s()
+	    		);
+	}
+	
+	private DynamoKey getItemKeyFromDomain(TaskDomain task) {
+		return DynamoKeyFactory.taskItemKey(
+	            task.userId(),
+	            task.date(),
+	            task.serial()
+	    );
 	}
 }

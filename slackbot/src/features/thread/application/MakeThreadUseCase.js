@@ -37,7 +37,7 @@ class MakeThreadUseCase {
         text: threadText,
       })
 
-      // バックエンドにスレッド情報を保存
+      // バックエンドにスレッド情報を送信
       const saveResult = await this.threadBackendGateway.saveThread({
         channelId: thread.channelId,
         threadTs: thread.threadTs,

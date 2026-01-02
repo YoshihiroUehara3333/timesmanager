@@ -1,4 +1,4 @@
-// src/features/attendance/SubmitAttendanceUseCase.js
+// src/features/attendance/application/SubmitAttendanceUseCase.js
 
 class SubmitAttendanceUseCase {
   constructor ({ slackGateway, attendanceBackendGateway }) {

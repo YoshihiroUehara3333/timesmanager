@@ -6,17 +6,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.slack_timesmanager.common.base.DynamoRepositoryBase;
+import com.slack_timesmanager.common.exception.ConflictException;
 import com.slack_timesmanager.dynamodb.DynamoKey;
 import com.slack_timesmanager.dynamodb.DynamoKeyFactory;
-import com.slack_timesmanager.feature.attendance.dto.AttendanceRequest;
-import com.slack_timesmanager.feature.attendance.dto.AttendanceResponse;
+import com.slack_timesmanager.feature.attendance.domain.AttendanceDomain;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
@@ -34,6 +37,8 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
     private static final String ATTR_END_TIME    = "end_time";
     private static final String ATTR_WORKPLACE  = "workplace";
     
+    /* Logger */
+    private static final Logger log = LoggerFactory.getLogger(AttendanceDynamoRepository.class);
 	
 	public AttendanceDynamoRepository(
 			DynamoDbClient dynamoDbClient,
@@ -46,41 +51,45 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
     /**
      * 勤怠情報を保存
      */
-    public boolean putItem(AttendanceRequest request){
+    public void putItem(AttendanceDomain domain){
     	DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
-                request.getUserId(),
-                request.getDate()
+                domain.userId(),
+                domain.date()
         );
 
         Map<String, AttributeValue> item = new HashMap<>();
         item.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
         item.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
-        item.put(ATTR_USER_ID, AttributeValue.builder().s(request.getUserId()).build());
-        item.put(ATTR_DATE, AttributeValue.builder().s(request.getDate()).build());
-        item.put(ATTR_START_TIME, AttributeValue.builder().s(request.getStartTime()).build());
-        item.put(ATTR_END_TIME, AttributeValue.builder().s(request.getEndTime()).build());
-        item.put(ATTR_WORKPLACE, AttributeValue.builder().s(request.getWorkplace()).build());
+        item.put(ATTR_USER_ID, AttributeValue.builder().s(domain.userId()).build());
+        item.put(ATTR_DATE, AttributeValue.builder().s(domain.date()).build());
+        item.put(ATTR_START_TIME, AttributeValue.builder().s(domain.startTime()).build());
+        item.put(ATTR_END_TIME, AttributeValue.builder().s(domain.endTime()).build());
+        item.put(ATTR_WORKPLACE, AttributeValue.builder().s(domain.workplace()).build());
 
         PutItemRequest putItemRequest = PutItemRequest.builder()
             .tableName(tableName)
             .item(item)
+            .conditionExpression("attribute_not_exists(" + ATTR_PK + ")")
             .build();
 
         try {
             dynamoDbClient.putItem(putItemRequest);
-            return true;
-        } catch (Exception e) {
-            throw new RuntimeException("DynamoDB putItem failed", e);
         }
+        catch (ConditionalCheckFailedException e) {
+        	throw new ConflictException("PartitionKeyが重複しています。", e);
+        }
+        catch (DynamoDbException e) {
+        	throw new RuntimeException("DynamoDB putItem failed", e);
+        } 
     }
     
     /**
      * 勤怠情報をアップデート
      */
-	public void updateItem(AttendanceRequest request) throws Exception {
-    	DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
-                request.getUserId(),
-                request.getDate()
+	public void updateItem(AttendanceDomain domain) {
+		DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
+                domain.userId(),
+                domain.date()
         );
 	    
         Map<String, AttributeValue> key = new HashMap<>();
@@ -93,9 +102,9 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	    expressionAttributeNames.put("#wp", ATTR_WORKPLACE);
 
 	    Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
-	    expressionAttributeValues.put(":startTime", AttributeValue.builder().s(request.getStartTime()).build());
-	    expressionAttributeValues.put(":endTime", AttributeValue.builder().s(request.getEndTime()).build());
-	    expressionAttributeValues.put(":workplace", AttributeValue.builder().s(request.getWorkplace()).build());
+	    expressionAttributeValues.put(":startTime", AttributeValue.builder().s(domain.startTime()).build());
+	    expressionAttributeValues.put(":endTime", AttributeValue.builder().s(domain.endTime()).build());
+	    expressionAttributeValues.put(":workplace", AttributeValue.builder().s(domain.workplace()).build());
 
 	    UpdateItemRequest updateRequest = UpdateItemRequest.builder()
 	        .tableName(tableName)
@@ -107,16 +116,17 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 
 	    try {
 	        dynamoDbClient.updateItem(updateRequest);
-	    } catch (Exception e) {
-	        throw new Exception("DynamoDB updateItem failed", e);
 	    }
+	    catch (DynamoDbException e) {
+        	throw new RuntimeException("DynamoDB putItem failed", e);
+        } 
 	}
     
     /**
      * 勤怠情報を1件取得（PK+SKでユニーク）
      * 返り値は既存互換のため List<AttendanceResponse> としている
      */
-    public List<AttendanceResponse> findByUserIdAndDate(String userId, String date) throws DynamoDbException{
+    public List<AttendanceDomain> findByUserIdAndDate(String userId, String date) throws DynamoDbException{
     	DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
                 userId,
                 date
@@ -138,7 +148,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	            return Collections.emptyList();
             }
 
-            return List.of(mapToAttendanceResponse(item));
+            return List.of(mapToAttendanceDomain(item));
 
         } catch (DynamoDbException e) {
             throw new RuntimeException("DynamoDB getDiary failed", e);
@@ -148,7 +158,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
     /**
      * ユーザIDに紐づく勤怠情報を全件取得する
      */
-	public List<AttendanceResponse> findAllByUserId(String userId) {
+	public List<AttendanceDomain> findAllByUserId(String userId) {
 		String partitionKey = DynamoKeyFactory.attendancePartitionKey(userId);
 
 	    Map<String, AttributeValue> eav = Map.of(
@@ -170,7 +180,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	        }
 
 	        return response.items().stream()
-	                .map(this::mapToAttendanceResponse)
+	                .map(this::mapToAttendanceDomain)
 	                .collect(Collectors.toList());
 	    }
 	    catch (DynamoDbException e) {
@@ -179,17 +189,15 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	}
     
 	/**
-	 * DynamoDB 1アイテム → AttendanceResponse 変換
+	 * DynamoDB 1アイテム → AttendanceDomain 変換
 	 */
-	private AttendanceResponse mapToAttendanceResponse(Map<String, AttributeValue> item) {
-		AttendanceResponse response = new AttendanceResponse();
-		
-		response.setUserId(item.get(ATTR_USER_ID).s());
-		response.setDate(item.get(ATTR_SK).s());
-		response.setStartTime(item.get(ATTR_START_TIME).s());
-		response.setEndTime(item.get(ATTR_END_TIME).s());
-		response.setWorkplace(item.get(ATTR_WORKPLACE).s());
-		
-	    return response;
+	private AttendanceDomain mapToAttendanceDomain(Map<String, AttributeValue> item) {
+	    return new AttendanceDomain(
+	    		item.get(ATTR_USER_ID).s(),
+	    		item.get(ATTR_DATE).s(),
+	    		item.get(ATTR_START_TIME).s(),
+	    		item.get(ATTR_END_TIME).s(),
+	    		item.get(ATTR_WORKPLACE).s()
+	    		);
 	}
 }

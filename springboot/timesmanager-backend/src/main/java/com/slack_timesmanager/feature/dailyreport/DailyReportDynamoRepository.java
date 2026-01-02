@@ -1,4 +1,4 @@
-package com.slack_timesmanager.feature.diary;
+package com.slack_timesmanager.feature.dailyreport;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
 import com.slack_timesmanager.common.base.DynamoRepositoryBase;
 import com.slack_timesmanager.dynamodb.DynamoKey;
 import com.slack_timesmanager.dynamodb.DynamoKeyFactory;
-import com.slack_timesmanager.feature.diary.dto.DiaryRequest;
-import com.slack_timesmanager.feature.diary.dto.DiaryResponse;
+import com.slack_timesmanager.feature.dailyreport.dto.DailyReportRequest;
+import com.slack_timesmanager.feature.dailyreport.dto.DailyReportResponse;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -22,13 +22,13 @@ import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
 @Repository
-public class DiaryDynamoRepository extends DynamoRepositoryBase{
+public class DailyReportDynamoRepository extends DynamoRepositoryBase{
 	
     // ===== 属性名の定数 =====
     private static final String ATTR_USER_ID    = "user_id";
     private static final String ATTR_CHANNEL_ID = "channel_id";
 	
-	public DiaryDynamoRepository(
+	public DailyReportDynamoRepository(
 			DynamoDbClient dynamoDbClient,
 			@Value("${aws.dynamodb.tableName}") String tableName
 	) {
@@ -38,8 +38,8 @@ public class DiaryDynamoRepository extends DynamoRepositoryBase{
     /**
      * 日報を1件保存
      */
-    public void putItem(DiaryRequest request) {
-    	DynamoKey itemKey = DynamoKeyFactory.diaryItemKey(
+    public void putItem(DailyReportRequest request) {
+    	DynamoKey itemKey = DynamoKeyFactory.dailyreportItemKey(
                 request.getUserId(),
                 request.getDate()
         );
@@ -66,8 +66,8 @@ public class DiaryDynamoRepository extends DynamoRepositoryBase{
      * 日報を1件取得（PK+SKでユニーク）
      * 返り値は既存互換のため List<DiaryResponse> としている
      */
-    public List<DiaryResponse> getDiary(String userId, String date){
-    	DynamoKey itemKey = DynamoKeyFactory.diaryItemKey(
+    public List<DailyReportResponse> getDiary(String userId, String date){
+    	DynamoKey itemKey = DynamoKeyFactory.dailyreportItemKey(
                 userId,
                 date
         );
@@ -96,8 +96,8 @@ public class DiaryDynamoRepository extends DynamoRepositoryBase{
     }
     
     
-	public void updateItem(DiaryRequest request){
-    	DynamoKey itemKey = DynamoKeyFactory.diaryItemKey(
+	public void updateItem(DailyReportRequest request){
+    	DynamoKey itemKey = DynamoKeyFactory.dailyreportItemKey(
                 request.getUserId(),
                 request.getDate()
         );
@@ -134,8 +134,8 @@ public class DiaryDynamoRepository extends DynamoRepositoryBase{
 	/**
 	 * DynamoDB 1アイテム → TaskResponse 変換
 	 */
-	private DiaryResponse mapToDiaryResponse(Map<String, AttributeValue> item) {
-		DiaryResponse response = new DiaryResponse();
+	private DailyReportResponse mapToDiaryResponse(Map<String, AttributeValue> item) {
+		DailyReportResponse response = new DailyReportResponse();
 		
 		response.setUserId(item.get(ATTR_USER_ID).s());
 		response.setDate(item.get(ATTR_SK).s());
