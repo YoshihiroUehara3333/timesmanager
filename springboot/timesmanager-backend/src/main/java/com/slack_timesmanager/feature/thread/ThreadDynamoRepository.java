@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -83,7 +84,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
      * @param
      * @return
      */
-    public List<ThreadDomain> findByUserIdAndDate(String userId, String date){
+    public Optional<ThreadDomain> findByUserIdAndDate(String userId, String date){
     	log.info("ThreadDynamoRepository.getByUserIdAndDate: userId={}, date={}", userId, date);
     	
     	DynamoKey itemKey = DynamoKeyFactory.threadItemKey(
@@ -102,13 +103,11 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
 
         try {
             Map<String, AttributeValue> item = dynamoDbClient.getItem(request).item();
-            log.debug("raw response item = {}", item); // 0件のとき {} か null か確認
+            log.debug("raw response item = {}", item);
             if (item == null || item.isEmpty()) {
-	            // 「レコード0件」の時は null ではなく空Listを返す
-	            return Collections.emptyList();
+	            return Optional.empty();
             }
-
-            return List.of(mapToThreadDomain(item));
+            return Optional.of(mapToThreadDomain(item));
 
         }
         catch (DynamoDbException e) {

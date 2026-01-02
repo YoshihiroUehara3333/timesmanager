@@ -22,7 +22,7 @@ class MakeThreadUseCase {
     const date = getDate('YYYY-MM-DD')
 
     // スレッド存在確認
-    const threadResult = await this.threadBackendGateway.getThread({ userId, date })
+    const threadResult = await this.threadBackendGateway.getThreadByDate({ userId, date })
     if (!threadResult.ok) {
       await respond('スレッド情報の取得に失敗しました。時間をおいて再度お試しください。')
       return { ok: false }

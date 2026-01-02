@@ -59,8 +59,7 @@ class BackendHttpClient {
    */
   async get ({ path, config = {} }) {
     try {
-      const res = await this.axios.get(path, config)
-      return res.data
+      return await this.axios.get(path, config)
     } catch (error) {
       this._logError('GET', path, error)
       throw this._wrapError(error)
@@ -76,18 +75,23 @@ class BackendHttpClient {
    */
   async post ({ path, data, config = {} }) {
     try {
-      const res = await this.axios.post(path, data, config)
-      return res.data
+      return await this.axios.post(path, data, config)
     } catch (error) {
       this._logError('POST', path, error, data)
       throw this._wrapError(error)
     }
   }
 
+  /**
+   * PUT リクエスト
+   * @param {string} path
+   * @param {any} data         - JSON ボディ
+   * @param {Object} [config]
+   * @returns {Promise<any>}   - response.data を返す
+   */
   async put ({ path, data, config = {} }) {
     try {
-      const res = await this.axios.put(path, data, config)
-      return res.data
+      return await this.axios.put(path, data, config)
     } catch (error) {
       this._logError('PUT', path, error, data)
       throw this._wrapError(error)
@@ -96,8 +100,7 @@ class BackendHttpClient {
 
   async delete ({ path, config = {} }) {
     try {
-      const res = await this.axios.delete(path, config)
-      return res.data
+      return await this.axios.delete(path, config)
     } catch (error) {
       this._logError('DELETE', path, error)
       throw this._wrapError(error)
