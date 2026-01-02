@@ -56,10 +56,11 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
         item.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
         item.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
         item.put(ATTR_CHANNEL_ID, AttributeValue.builder().s(thread.channelId()).build());
+        item.put(ATTR_DATE, AttributeValue.builder().s(thread.date()).build());
         item.put(ATTR_USER_ID, AttributeValue.builder().s(thread.userId()).build());
-        item.put(ATTR_PERMALINK, AttributeValue.builder().s(thread.permalink()).build());
         item.put(ATTR_THREADTS, AttributeValue.builder().s(thread.threadTs()).build());
-
+        item.put(ATTR_PERMALINK, AttributeValue.builder().s(thread.permalink()).build());
+        
         PutItemRequest putItemRequest = PutItemRequest.builder()
             .tableName(tableName)
             .item(item)
@@ -156,8 +157,8 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase{
 				item.get(ATTR_CHANNEL_ID).s(),
 				item.get(ATTR_DATE).s(),
 				item.get(ATTR_USER_ID).s(),
-				item.get(ATTR_PERMALINK).s(),
-				item.get(ATTR_THREADTS).s()
+				item.get(ATTR_THREADTS).s(),
+				item.get(ATTR_PERMALINK).s()
 				);
 	}
 	
