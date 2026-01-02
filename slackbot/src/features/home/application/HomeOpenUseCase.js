@@ -20,10 +20,10 @@ class HomeOpenUseCase {
     // スレッド存在確認
     let tasks = []
     const threadResult = await this.threadBackendGateway.getThreadByDate({ userId, date })
-    if (threadResult.status === 200) {
+    if (threadResult.data) {
       // タスクリスト取得
       const taskResult = await this.taskBackendGateway.getAllTasks({ userId })
-      if (taskResult.status === 200) {
+      if (taskResult.data) {
         // activeなもので絞り込む
         tasks = taskResult.data.filter((task) => task.status === TaskConst.STATUS.ACTIVE)
       }

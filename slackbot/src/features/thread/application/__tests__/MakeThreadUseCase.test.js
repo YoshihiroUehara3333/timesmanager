@@ -38,7 +38,11 @@ describe('MakeThreadUseCase', () => {
   })
 
   test('DBに当日のスレッド情報が未登録の場合', async () => {
-    threadBackendGateway.getThreadByDate.mockResolvedValue({ ok: true, data: undefined })
+    threadBackendGateway.getThreadByDate.mockResolvedValue({
+      ok: true,
+      status: 204,
+      data: undefined
+    })
     slackGateway.postThread.mockResolvedValue({
       channelId: 'postThreadChannelId',
       threadTs: 'postThreadThreadTs',
@@ -54,8 +58,11 @@ describe('MakeThreadUseCase', () => {
 
     expect(getDate).toHaveBeenCalledWith('YYYY-MM-DD')
     expect(threadBackendGateway.getThreadByDate).toHaveBeenCalledTimes(1)
-    expect(buildThreadInitialText).toHaveBeenCalledTimes(1)
 
+    expect(buildReplyText).toHaveBeenCalledTimes(0)
+    expect(respond).toHaveBeenCalledTimes(0)
+
+    expect(buildThreadInitialText).toHaveBeenCalledTimes(1)
     expect(slackGateway.postThread).toHaveBeenCalledWith({
       channelId: 'C0800TFFFF9',
       text: 'ThreadInitialText',
@@ -69,12 +76,31 @@ describe('MakeThreadUseCase', () => {
       date: '2026-01-22',
     })
 
-    expect(buildReplyText).toHaveBeenCalledWith({
-      permalink: 'postThreadPermalink',
+    expect(result.ok).toEqual(true)
+  })
+
+  test('DBに当日のスレッド情報が存在していた場合', async () => {
+    threadBackendGateway.getThreadByDate.mockResolvedValue({
+      ok: true,
+      status: 200,
+      data: {
+        permalink: 'getThreadByDatePermalink',
+      }
     })
 
+    const useCase = new MakeThreadUseCase({ slackGateway, threadBackendGateway })
+    const result = await useCase.execute({ userId, channelId, respond })
+
+    expect(threadBackendGateway.getThreadByDate).toHaveBeenCalledTimes(1)
+    expect(buildReplyText).toHaveBeenCalledWith({
+      permalink: 'getThreadByDatePermalink',
+    })
     expect(respond).toHaveBeenCalledWith('ReplyText')
     expect(result.ok).toEqual(true)
+
+    expect(buildThreadInitialText).toHaveBeenCalledTimes(0)
+    expect(slackGateway.postThread).toHaveBeenCalledTimes(0)
+    expect(threadBackendGateway.saveThread).toHaveBeenCalledTimes(0)
 
     expect(respond).toHaveBeenCalledTimes(1)
   })

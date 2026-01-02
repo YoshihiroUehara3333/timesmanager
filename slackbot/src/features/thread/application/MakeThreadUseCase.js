@@ -27,34 +27,34 @@ class MakeThreadUseCase {
       await respond('スレッド情報の取得に失敗しました。時間をおいて再度お試しください。')
       return { ok: false }
     }
-    let thread = threadResult.data
-    if (!thread) {
-      // スレッド用メッセージ本文を作る
-      const threadText = buildThreadInitialText({ userId, date })
-      // Slackにスレッドを投稿
-      thread = await this.slackGateway.postThread({
-        channelId: channelId,
-        text: threadText,
-      })
 
-      // バックエンドにスレッド情報を送信
-      const saveResult = await this.threadBackendGateway.saveThread({
-        channelId: thread.channelId,
-        threadTs: thread.threadTs,
-        permalink: thread.permalink,
-        userId: userId,
-        date: date,
-      })
-      if (!saveResult.ok) {
-        await respond('スレッド情報の保存に失敗しました。')
-        return { ok: false }
-      }
+    if (threadResult.data) {
+      // /makethread のコマンドに返信
+      const replyText = buildReplyText({ permalink: threadResult.data.permalink })
+      await respond(replyText)
+      return { ok: true }
     }
 
-    // /makethread のコマンドに返信
-    const replyText = buildReplyText({ permalink: thread.permalink })
-    await respond(replyText)
-    return { ok: true }
+    // スレッド用メッセージ本文を作る
+    const threadText = buildThreadInitialText({ userId, date })
+    // Slackにスレッドを投稿
+    const thread = await this.slackGateway.postThread({
+      channelId: channelId,
+      text: threadText,
+    })
+
+    // バックエンドにスレッド情報を送信
+    const saveResult = await this.threadBackendGateway.saveThread({
+      channelId: thread.channelId,
+      threadTs: thread.threadTs,
+      permalink: thread.permalink,
+      userId: userId,
+      date: date,
+    })
+    if (!saveResult.ok) {
+      await respond('スレッド情報の保存に失敗しました。')
+    }
+    return { ok: saveResult.ok }
   }
 }
 
