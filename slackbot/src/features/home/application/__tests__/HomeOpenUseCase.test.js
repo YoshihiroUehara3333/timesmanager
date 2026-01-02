@@ -28,7 +28,7 @@ const { HomeBlocks } = require('../../blockkit/HomeBlocks')
 const { TaskConst } = require('../../../../shared/constants/TaskConst')
 
 describe('HomeOpenUseCase', () => {
-  const userId = 'U88888888'
+  const userId = 'U0888TRT122'
 
   let slackGateway
   let taskBackendGateway
