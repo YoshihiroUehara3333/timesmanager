@@ -20,8 +20,7 @@ jest.mock('../../../../shared/blockkit/components/Divider', () => ({
 
 jest.mock('../../../../shared/blockkit/components/Sections', () => ({
   Sections: {
-    // HomeBlocks 側が {text:"..."} でも "..." でも呼んでくる可能性があるので両対応
-    mrkdwn: jest.fn((text) => {
+    mrkdwn: jest.fn(({ text }) => {
       return {
         type: 'section',
         text: { type: 'mrkdwn', text },
@@ -61,16 +60,29 @@ describe('HomeBlocks', () => {
       })
     )
 
-    // 先頭: header -> divider
+    // header
     expect(res.blocks[0]).toEqual({
       type: 'header',
       text: { type: 'plain_text', text: 'timesmanager' },
     })
-    expect(res.blocks[1]).toEqual({ type: 'divider' })
 
     // dailyReportSection の actions: 2ボタン（日報・勤怠）
     const dailyActions = res.blocks.find((b) => b.type === 'actions' && Array.isArray(b.elements) && b.elements.length === 2)
     expect(dailyActions).toBeTruthy()
     expect(dailyActions.elements).toHaveLength(2)
+
+    // taskSection
+    // threadなし: toCreateTask は呼ばれない
+    expect(HomeButtonFactory.toCreateTask).not.toHaveBeenCalled()
+
+    // threadなし: 「本日のスレッドが未作成です」
+    expect(res.blocks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: 'section',
+          text: { type: 'mrkdwn', text: '_本日のスレッドが未作成です_' },
+        }),
+      ])
+    )
   })
 })
