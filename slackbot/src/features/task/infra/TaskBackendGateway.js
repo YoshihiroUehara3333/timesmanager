@@ -24,7 +24,12 @@ class TaskBackendGateway {
         }
       })
       console.log(`TaskBackendGateway.getAllTasks status:${response.status}`)
-      return { ok: true, data: response.data }
+      if (response.status === 200) {
+        return { ok: true, data: response.data }
+      }
+      if (response.status === 204) {
+        return { ok: true, data: undefined }
+      }
     } catch (err) {
       console.warn(`backendHttpClient.request failed msg=${err?.message}`)
       return { ok: false, error: err }
