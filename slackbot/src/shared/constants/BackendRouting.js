@@ -5,14 +5,14 @@ const API_BASE = '/api'
 exports.BackendRouting = Object.freeze({
   THREAD: {
     CREATE: () => ({ method: 'POST', path: `${API_BASE}/thread` }),
-    GETBYDATE: (date) => ({ method: 'GET', path: `${API_BASE}/thread/${date}` }),
     GETALL: () => ({ method: 'GET', path: `${API_BASE}/thread` }),
+    GETBYDATE: (date) => ({ method: 'GET', path: `${API_BASE}/thread/${date}` }),
   },
   TASK: {
-    CREATE: (date) => ({ method: 'POST', path: `${API_BASE}/task/${date}` }),
     GETALL: () => ({ method: 'GET', path: `${API_BASE}/task` }),
-    SERIAL: { method: 'GET', path: `${API_BASE}/task/serial` },
-    SAVE: { method: 'PUT', path: `${API_BASE}/task` },
+    CREATE: () => ({ method: 'POST', path: `${API_BASE}/task` }),
+    SAVE: () => ({ method: 'PUT', path: `${API_BASE}/task` }),
+    SERIAL: () => ({ method: 'GET', path: `${API_BASE}/task/serial` }),
   },
   DAILYREPORT: {
     GET: { method: 'GET', path: `${API_BASE}/dailyreport` },

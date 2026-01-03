@@ -60,5 +60,17 @@ describe('HomeBlocks', () => {
         blocks: expect.any(Array),
       })
     )
+
+    // 先頭: header -> divider
+    expect(res.blocks[0]).toEqual({
+      type: 'header',
+      text: { type: 'plain_text', text: 'timesmanager' },
+    })
+    expect(res.blocks[1]).toEqual({ type: 'divider' })
+
+    // dailyReportSection の actions: 2ボタン（日報・勤怠）
+    const dailyActions = res.blocks.find((b) => b.type === 'actions' && Array.isArray(b.elements) && b.elements.length === 2)
+    expect(dailyActions).toBeTruthy()
+    expect(dailyActions.elements).toHaveLength(2)
   })
 })

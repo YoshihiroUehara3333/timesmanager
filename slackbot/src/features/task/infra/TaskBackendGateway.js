@@ -23,8 +23,8 @@ class TaskBackendGateway {
           }
         }
       })
-      console.log(`TaskBackendGateway.getTasks response:${response}`)
-      return { ok: true, data: response }
+      console.log(`TaskBackendGateway.getAllTasks status:${response.status}`)
+      return { ok: true, data: response.data }
     } catch (err) {
       console.warn(`backendHttpClient.request failed msg=${err?.message}`)
       return { ok: false, error: err }
@@ -40,12 +40,12 @@ class TaskBackendGateway {
    * @param {string} serial
    * @returns
    */
-  async saveTask ({ userId, taskName, targetTime, memo, serial }) {
-    console.log(`TaskBackendGateway.saveTask userId:${userId}`)
+  async createTask ({ userId, taskName, targetTime, memo, serial }) {
+    console.log(`TaskBackendGateway.createTask userId:${userId}`)
 
     try {
       const response = await this.backendHttpClient.request({
-        routing: BackendRouting.TASK.SAVE,
+        routing: BackendRouting.TASK.CREATE(),
         data: {
           userId: userId,
           taskName: taskName,
@@ -54,7 +54,7 @@ class TaskBackendGateway {
           serial: serial,
         }
       })
-      console.log(`TaskBackendGateway.saveTask response:${response}`)
+      console.log(`TaskBackendGateway.saveTask status:${response.status}`)
       return { ok: true, data: response }
     } catch (err) {
       console.warn(`backendHttpClient.request failed msg=${err?.message}`)
@@ -72,7 +72,7 @@ class TaskBackendGateway {
     console.log(`TaskBackendGateway.getTasks userId:${userId} date:${date}`)
 
     try {
-      const data = await this.backendHttpClient.request({
+      const response = await this.backendHttpClient.request({
         routing: BackendRouting.TASK.SERIAL,
         config: {
           params: {
@@ -81,8 +81,8 @@ class TaskBackendGateway {
           }
         }
       })
-      console.log(`TaskBackendGateway.issueLatestSerial response:${JSON.stringify(data)}`)
-      return { ok: true, data: data.serial }
+      console.log(`TaskBackendGateway.issueLatestSerial status:${response.status}`)
+      return { ok: true, data: response.data }
     } catch (err) {
       console.warn(`backendHttpClient.request failed msg=${err?.message}`)
       return { ok: false, error: err }
