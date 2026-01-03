@@ -75,7 +75,9 @@ exports.HomeBlocks = ({ tasks = [], thread }) => {
     blocks.push(...taskList({ tasks: visible }))
 
     if (tasks.length > MAX_TASKS_TO_SHOW) {
-      blocks.push(Sections.mrkdwn(`_他 ${tasks.length - MAX_TASKS_TO_SHOW} 件は省略されています_`))
+      blocks.push(
+        Sections.mrkdwn({ text: `_他 ${tasks.length - MAX_TASKS_TO_SHOW} 件は省略されています_` })
+      )
     }
   }
 

@@ -1,3 +1,5 @@
+// src/feature/home/application/__tests__/HomeOpenUseCase.test.js
+
 /**
  * HomeOpenUseCase
  */

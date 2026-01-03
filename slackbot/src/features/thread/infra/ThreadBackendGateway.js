@@ -95,7 +95,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
           }
         }
       })
-      console.log(`ThreadBackendGateway.getAllThread status:${JSON.stringify(response.)}`)
+      console.log(`ThreadBackendGateway.getAllThread status:${JSON.stringify(response.status)}`)
       if (response.status === 200) {
         return { ok: true, data: response.data }
       } else {
