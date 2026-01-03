@@ -59,6 +59,7 @@ function taskList (
 }
 
 exports.HomeBlocks = ({ tasks = [], thread }) => {
+  console.log(`HomeBlocks tasks:${tasks} thread:${thread}`)
   const blocks = [
     {
       type: 'header',
