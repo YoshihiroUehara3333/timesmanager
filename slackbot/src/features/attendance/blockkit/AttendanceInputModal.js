@@ -11,6 +11,10 @@ const { Sections } = require('../../../shared/blockkit/components/Sections')
 const { Input } = require('../../../shared/blockkit/components/Input')
 
 function workplaceSection (attendance = {}) {
+  WorkplaceConst.LIST.forEach(option => {
+    console.log(`option.value:${option.value}`)
+    console.log(`option.text:${option.text}`)
+  })
   const options = WorkplaceConst.LIST.map(option => (
     {
       text: plainTextObject(option.text),
