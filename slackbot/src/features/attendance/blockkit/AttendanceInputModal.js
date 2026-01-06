@@ -13,7 +13,7 @@ const { Input } = require('../../../shared/blockkit/components/Input')
 function workplaceSection (attendance = {}) {
   const options = WorkplaceConst.LIST.map(option => (
     {
-      text: plainTextObject(String(option.text)),
+      text: plainTextObject({ text: String(option.text) }),
       value: option.value,
     }
   ))
