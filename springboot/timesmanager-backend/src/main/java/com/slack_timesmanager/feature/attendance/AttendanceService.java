@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.slack_timesmanager.common.exception.ConflictException;
 import com.slack_timesmanager.common.exception.InfrastructureException;
 import com.slack_timesmanager.common.utils.Validator;
 import com.slack_timesmanager.feature.attendance.domain.AttendanceDomain;
@@ -34,9 +33,6 @@ public class AttendanceService {
 	public AttendanceResponse save(AttendanceRequest request){
 		AttendanceDomain attendance = AttendanceDomainFactory.fromAttendanceRequest(request);
 		try {
-			attendanceDynamoRepository.putItem(attendance);
-		}
-		catch(ConflictException e) {
 			attendanceDynamoRepository.updateItem(attendance);
 		}
 		catch(RuntimeException e) {
