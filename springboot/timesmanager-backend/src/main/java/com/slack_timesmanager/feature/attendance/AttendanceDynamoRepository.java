@@ -76,7 +76,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	    UpdateItemRequest updateRequest = UpdateItemRequest.builder()
 	        .tableName(tableName)
 	        .key(key)
-	        .updateExpression("SET #userId = userId, #dt = date, #st = :startTime, #et = :endTime, #wp = :workplace")
+	        .updateExpression("SET #userId = :userId, #dt = :date, #st = :startTime, #et = :endTime, #wp = :workplace")
 	        .expressionAttributeNames(expressionAttributeNames)
 	        .expressionAttributeValues(expressionAttributeValues)
 	        .build();
