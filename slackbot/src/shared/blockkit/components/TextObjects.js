@@ -2,7 +2,7 @@
 
 function plainTextObject ({ text, emoji = true }) {
   if (typeof text !== 'string') {
-    throw new Error(`[plainTextObject] text must be string type: ${JSON.stringify(text.type)}`)
+    throw new Error(`[plainTextObject] text must be string type: ${JSON.stringify(typeof text)}`)
   }
   if (text.trim() === '') {
     throw new Error(`[plainTextObject] text is required. text: ${JSON.stringify(text)}`)
