@@ -54,7 +54,7 @@ class AttendanceBackendGateway extends BackendGatewayBase {
           workplace: workplace,
         }
       })
-      console.log(`AttendanceBackendGateway.saveAttendance response:${JSON.stringify(response)}`)
+      console.log(`AttendanceBackendGateway.saveAttendance status:${JSON.stringify(response.status)}`)
       return { ok: true, data: response }
     } catch (err) {
       console.warn(`backendHttpClient.request failed msg=${err?.message}`)
