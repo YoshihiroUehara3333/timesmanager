@@ -45,7 +45,7 @@ class AttendanceBackendGateway extends BackendGatewayBase {
 
     try {
       const response = await this.backendHttpClient.request({
-        routing: BackendRouting.ATTENDANCE.SAVE,
+        routing: BackendRouting.ATTENDANCE.SAVE(),
         data: {
           date: date,
           userId: userId,
