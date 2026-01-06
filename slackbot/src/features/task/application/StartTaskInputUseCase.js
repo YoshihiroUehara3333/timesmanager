@@ -20,23 +20,19 @@ class StartTaskInputUseCase {
     const date = getDate('YYYY-MM-DD')
 
     // スレッド存在チェック
-    const thread = await this.threadBackendGateway.getThread({ userId, date })
-    if (!thread.ok || !thread.data) {
-      return { ok: false }
-    }
+    const thread = await this.threadBackendGateway.getThreadByDate({ userId, date })
+    if (!thread.ok) return { ok: false }
 
     // 最新シリアル取得
     const response = await this.taskBackendGateway.issueLatestSerial({ userId: userId, date: date })
-    if (!response.ok || !response.data) {
-      return { ok: false }
-    }
+    if (!response.ok || !response.data) return { ok: false }
     const serial = response.data
 
     // BlockKit作成
     const params = {
       channelId: thread.data.channelId,
-      userId: userId,
       threadTs: thread.data.threadTs,
+      userId: userId,
       date: date,
       serial: serial,
       status: TaskConst.STATUS.ACTIVE,

@@ -78,7 +78,7 @@ class TaskBackendGateway {
 
     try {
       const response = await this.backendHttpClient.request({
-        routing: BackendRouting.TASK.SERIAL,
+        routing: BackendRouting.TASK.SERIAL(),
         config: {
           params: {
             userId: userId,

@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: timesmanager
+aws:
+  dynamodb:
+    region: ap-northeast-1
+    accessKey: ${AWS_ACCESS_KEY_ID}
+    secretKey: ${AWS_SECRET_ACCESS_KEY}
+    tableName: timesmanager_postdata_prod
+server:
+  port: 8080
+logging:
+  level:
+    root: INFO
+    org:
+      springframework:
+        web:
+          servlet:
+            mvc:
+              method:
+                annotation:
+                  RequestMappingHandlerMapping: DEBUG

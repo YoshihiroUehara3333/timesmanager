@@ -1,13 +1,13 @@
 package com.slack_timesmanager.feature.attendance;
 
-import java.util.List;
-
 import jakarta.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +32,7 @@ public class AttendanceController {
 	
 	/**
 	 * 
+	 * 
 	 * @param request
 	 * @return
 	 */
@@ -39,33 +40,28 @@ public class AttendanceController {
 	public ResponseEntity<AttendanceResponse> post(
 			@RequestBody @Valid AttendanceRequest request
 	){
-		log.info("📥 Received POST /api/attendance: {}", request);
+		log.info("Received POST /api/attendance: {}", request);
 		
 		AttendanceResponse response = attendanceService.save(request);
 		return ResponseEntity.ok(response);
 	}
 
 	/**
+	 * 勤怠情報1件取得
 	 * 
 	 * @param userId
 	 * @param date
-	 * @return
+	 * @return データ有: 200 OK データ0件: 204 No Content
 	 */
-	@GetMapping
-	public ResponseEntity<List<AttendanceResponse>> get(
-			@RequestParam(required = false) String userId,
-	        @RequestParam(required = false) String date
+	@GetMapping("/{date}")
+	public ResponseEntity<AttendanceResponse> getByDate(
+			@PathVariable String date,
+			@RequestParam(required = true) String userId
     ){
-		log.info("📥 GET /api/attendance userId={}, date={}", userId, date);
+		log.info("Received GET /api/attendance/" + date + " userId={}", userId, date);
 		
-		List<AttendanceResponse> response = null;
-		
-		if (date == null) {
-			response = attendanceService.getAllByUserId(userId);
-		} else {
-			response = attendanceService.getByUserIdAndDate(userId, date);
-        }
-		
-		return ResponseEntity.ok(response);
+		return attendanceService.getByUserIdAndDate(userId, date)
+				.map((response) -> ResponseEntity.ok(response))
+				.orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
 	}
 }

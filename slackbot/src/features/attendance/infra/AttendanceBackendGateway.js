@@ -10,21 +10,20 @@ class AttendanceBackendGateway extends BackendGatewayBase {
      * @param {string} date
      * @returns
      */
-  async getAttendance ({ userId, date }) {
+  async getAttendanceByDate ({ userId, date }) {
     console.log(`AttendanceBackendGateway.getAttendance userId:${userId} date:${date}`)
 
     try {
       const response = await this.backendHttpClient.request({
-        routing: BackendRouting.ATTENDANCE.GET,
+        routing: BackendRouting.ATTENDANCE.GETBYDATE(date),
         config: {
           params: {
             userId: userId,
-            date: date,
           },
         }
       })
-      console.log(`AttendanceBackendGateway.getAttendance response:${JSON.stringify(response)}`)
-      return { ok: true, data: response }
+      console.log(`AttendanceBackendGateway.getAttendance status:${JSON.stringify(response.status)}`)
+      return { ok: true, data: response.data }
     } catch (err) {
       console.warn(`backendHttpClient.request failed msg=${err?.message}`)
       return { ok: false, error: err }

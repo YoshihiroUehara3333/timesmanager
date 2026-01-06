@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -126,7 +127,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
      * 勤怠情報を1件取得（PK+SKでユニーク）
      * 返り値は既存互換のため List<AttendanceResponse> としている
      */
-    public List<AttendanceDomain> findByUserIdAndDate(String userId, String date) throws DynamoDbException{
+    public Optional<AttendanceDomain> findByUserIdAndDate(String userId, String date) throws DynamoDbException{
     	DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
                 userId,
                 date
@@ -144,11 +145,9 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
         try {
             Map<String, AttributeValue> item = dynamoDbClient.getItem(request).item();
             if (item == null || item.isEmpty()) {
-	            // 「レコード0件」の時は null ではなく空Listを返す
-	            return Collections.emptyList();
+            	return Optional.empty();
             }
-
-            return List.of(mapToAttendanceDomain(item));
+            return Optional.of(mapToAttendanceDomain(item));
 
         } catch (DynamoDbException e) {
             throw new RuntimeException("DynamoDB getDiary failed", e);

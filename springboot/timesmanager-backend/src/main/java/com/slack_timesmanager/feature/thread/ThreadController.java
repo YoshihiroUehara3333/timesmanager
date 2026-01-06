@@ -42,7 +42,7 @@ public class ThreadController {
 	public ResponseEntity<ThreadResponse> post(
 			@Valid @RequestBody ThreadRequest request		
 	){
-		log.info("📥 Received POST /api/thread: userId = {}, date = {}", request.getUserId(), request.getDate());
+		log.info("Received POST /api/thread: userId = {}, date = {}", request.getUserId(), request.getDate());
 		
 		ThreadResponse res = threadService.create(request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(res);
@@ -60,7 +60,7 @@ public class ThreadController {
 			@PathVariable String date,
 			@RequestParam String userId
 	){	
-		log.info("📥 Received GET /api/thread/" + date + ": userId={}", userId);
+		log.info("Received GET /api/thread/" + date + ": userId={}", userId);
 		
 		return threadService.getByUserIdAndDate(userId, date)
 				.map((response) -> ResponseEntity.ok(response))

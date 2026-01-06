@@ -20,7 +20,7 @@ class StartAttendanceInputUseCase {
 
     // 勤怠を取得する
     let attendance = {}
-    const response = await this.attendanceBackendGateway.getAttendance({ userId, date })
+    const response = await this.attendanceBackendGateway.getAttendanceByDate({ userId, date })
     if (response.ok) {
       attendance = response.data
     }

@@ -33,7 +33,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
       console.log(`ThreadBackendGateway.saveThread status:${JSON.stringify(response.status)}`)
 
       if (response.status === 201) {
-        return { ok: true, status: response.status, data: response.data }
+        return { ok: true, data: response.data }
       }
     } catch (err) {
       const status = err?.response?.status

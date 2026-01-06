@@ -1,6 +1,7 @@
 package com.slack_timesmanager.feature.attendance;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,18 +68,18 @@ public class AttendanceService {
     /**
      * 勤怠情報取得（userId + date）
      */
-	public List<AttendanceResponse> getByUserIdAndDate(String userId, String date) {
+	public Optional<AttendanceResponse> getByUserIdAndDate(String userId, String date) {
+		log.info("AttendanceService.getByUserIdAndDate: userId={}, date={}", userId, date);
+		
 		Validator.validateUserId(userId);
 		Validator.validateDate(date);
 		
 		try {
-			List<AttendanceDomain> attendances = attendanceDynamoRepository.findByUserIdAndDate(userId, date);
-			return attendances.stream()
-					.map(AttendanceResponse::fromDomain)
-					.toList();
+			return attendanceDynamoRepository.findByUserIdAndDate(userId, date)
+					.map(AttendanceResponse::fromDomain);
 		}
 		catch(RuntimeException e) {            
-			log.error("DynamoDB処理中にエラー: getAttendanceResponse userId={}, date={}", userId, date, e);
+			log.error("DynamoDB処理中にエラー: getByUserIdAndDate userId={}, date={}", userId, date, e);
 			throw new InfrastructureException("DynamoDB error", e);
 		}
 	}
