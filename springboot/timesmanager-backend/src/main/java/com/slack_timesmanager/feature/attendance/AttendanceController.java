@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,16 +31,16 @@ public class AttendanceController {
 	}
 	
 	/**
-	 * 
+	 * 勤怠入力情報保存
 	 * 
 	 * @param request
-	 * @return
+	 * @return 成功:200
 	 */
-	@PostMapping
-	public ResponseEntity<AttendanceResponse> post(
+	@PutMapping
+	public ResponseEntity<AttendanceResponse> put(
 			@RequestBody @Valid AttendanceRequest request
 	){
-		log.info("Received POST /api/attendance: {}", request);
+		log.info("Received PUT /api/attendance: {}", request);
 		
 		AttendanceResponse response = attendanceService.save(request);
 		return ResponseEntity.ok(response);

@@ -2,7 +2,7 @@
 
 function plainTextObject ({ text, emoji = true }) {
   if (typeof text !== 'string') {
-    throw new Error(`[plainTextObject] text must be string type: ${JSON.stringify(typeof text)}`)
+    throw new Error(`[plainTextObject] text must be string. type: ${JSON.stringify(typeof text)}`)
   }
   if (text.trim() === '') {
     throw new Error(`[plainTextObject] text is required. text: ${JSON.stringify(text)}`)
@@ -16,7 +16,10 @@ function plainTextObject ({ text, emoji = true }) {
 }
 
 function mrkdwnTextObject ({ text }) {
-  if (typeof text !== 'string' || text.trim() === '') {
+  if (typeof text !== 'string') {
+    throw new Error(`[mrkdwnTextObject] text must be string. type: ${JSON.stringify(text)}`)
+  }
+  if (text.trim() === '') {
     throw new Error(`[mrkdwnTextObject] text is required. text: ${JSON.stringify(text)}`)
   }
 
