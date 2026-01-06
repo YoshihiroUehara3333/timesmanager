@@ -1,7 +1,10 @@
 // src/shared/blockkit/components/Text.js
 
 function plainTextObject ({ text, emoji = true }) {
-  if (typeof text !== 'string' || text.trim() === '') {
+  if (typeof text !== 'string') {
+    throw new Error(`[plainTextObject] text must be string type: ${JSON.stringify(text.type)}`)
+  }
+  if (text.trim() === '') {
     throw new Error(`[plainTextObject] text is required. text: ${JSON.stringify(text)}`)
   }
 
