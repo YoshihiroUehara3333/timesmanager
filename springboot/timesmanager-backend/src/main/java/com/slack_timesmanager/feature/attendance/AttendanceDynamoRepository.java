@@ -13,17 +13,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.slack_timesmanager.common.base.DynamoRepositoryBase;
-import com.slack_timesmanager.common.exception.ConflictException;
 import com.slack_timesmanager.dynamodb.DynamoKey;
 import com.slack_timesmanager.dynamodb.DynamoKeyFactory;
 import com.slack_timesmanager.feature.attendance.domain.AttendanceDomain;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
-import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
-import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
@@ -48,44 +45,9 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 		super(dynamoDbClient,tableName);
 	}
 
-	
-    /**
-     * 勤怠情報を保存
-     */
-    public void putItem(AttendanceDomain domain){
-    	DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
-                domain.userId(),
-                domain.date()
-        );
-
-        Map<String, AttributeValue> item = new HashMap<>();
-        item.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
-        item.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
-        item.put(ATTR_USER_ID, AttributeValue.builder().s(domain.userId()).build());
-        item.put(ATTR_DATE, AttributeValue.builder().s(domain.date()).build());
-        item.put(ATTR_START_TIME, AttributeValue.builder().s(domain.startTime()).build());
-        item.put(ATTR_END_TIME, AttributeValue.builder().s(domain.endTime()).build());
-        item.put(ATTR_WORKPLACE, AttributeValue.builder().s(domain.workplace()).build());
-
-        PutItemRequest putItemRequest = PutItemRequest.builder()
-            .tableName(tableName)
-            .item(item)
-            .conditionExpression("attribute_not_exists(" + ATTR_PK + ")")
-            .build();
-
-        try {
-            dynamoDbClient.putItem(putItemRequest);
-        }
-        catch (ConditionalCheckFailedException e) {
-        	throw new ConflictException("PartitionKeyが重複しています。", e);
-        }
-        catch (DynamoDbException e) {
-        	throw new RuntimeException("DynamoDB putItem failed", e);
-        } 
-    }
     
     /**
-     * 勤怠情報をアップデート
+     * 勤怠情報を保存
      */
 	public void updateItem(AttendanceDomain domain) {
 		DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
@@ -98,11 +60,15 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
         key.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
 
 	    Map<String, String> expressionAttributeNames = new HashMap<>();
+	    expressionAttributeNames.put("#userId", ATTR_USER_ID);
+	    expressionAttributeNames.put("#dt", ATTR_DATE);
 	    expressionAttributeNames.put("#st", ATTR_START_TIME);
 	    expressionAttributeNames.put("#et", ATTR_END_TIME);
 	    expressionAttributeNames.put("#wp", ATTR_WORKPLACE);
 
 	    Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
+	    expressionAttributeValues.put(":date", AttributeValue.builder().s(domain.date()).build());
+	    expressionAttributeValues.put(":userId", AttributeValue.builder().s(domain.userId()).build());
 	    expressionAttributeValues.put(":startTime", AttributeValue.builder().s(domain.startTime()).build());
 	    expressionAttributeValues.put(":endTime", AttributeValue.builder().s(domain.endTime()).build());
 	    expressionAttributeValues.put(":workplace", AttributeValue.builder().s(domain.workplace()).build());
@@ -110,7 +76,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	    UpdateItemRequest updateRequest = UpdateItemRequest.builder()
 	        .tableName(tableName)
 	        .key(key)
-	        .updateExpression("SET #st = :startTime, #et = :endTime, #wp = :workplace")
+	        .updateExpression("SET #st = :startTime, #et = :endTime, #wp = :workplace, #userId = userId, #dt = date")
 	        .expressionAttributeNames(expressionAttributeNames)
 	        .expressionAttributeValues(expressionAttributeValues)
 	        .build();
