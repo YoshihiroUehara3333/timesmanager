@@ -13,9 +13,9 @@ const { Input } = require('../../../shared/blockkit/components/Input')
 function dateSelect ({ date }) {
   return Input.datePicker({
     blockId: 'attendanceDate',
-    labelText: '日付',
+    labelText: '勤務日',
     optional: false,
-    placeholderText: '',
+    placeholderText: '日付を選択してください。',
     date: date,
     actionId: 'select_attendanceDate',
   })

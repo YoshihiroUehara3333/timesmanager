@@ -10,7 +10,7 @@ function datePicker ({
   return {
     type: 'datepicker',
     initial_date: date,
-    placeholder: plainTextObject({ placeholderText }),
+    placeholder: plainTextObject({ text: String(placeholderText) }),
     action_id: actionId,
   }
 }
@@ -23,7 +23,7 @@ function timePicker ({
   return {
     type: 'timepicker',
     initial_time: initialTime,
-    placeholder: plainTextObject({ text: placeholderText }),
+    placeholder: plainTextObject({ text: String(placeholderText) }),
     action_id: actionId,
   }
 }
@@ -36,7 +36,7 @@ function staticSelect ({
 }) {
   return {
     type: 'static_select',
-    placeholder: plainTextObject({ text: placeholderText }),
+    placeholder: plainTextObject({ text: String(placeholderText) }),
     action_id: actionId,
     options: options,
     ...(initialOption ? { initial_option: initialOption } : {}),

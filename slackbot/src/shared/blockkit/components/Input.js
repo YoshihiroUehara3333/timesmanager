@@ -15,7 +15,7 @@ function datePicker ({
     type: 'input',
     block_id: blockId,
     optional: optional,
-    label: plainTextObject({ text: labelText }),
+    label: plainTextObject({ text: String(labelText) }),
     element: Element.datePicker({
       placeholderText,
       date,
@@ -36,7 +36,7 @@ function timePicker ({
     type: 'input',
     block_id: blockId,
     optional: optional,
-    label: plainTextObject({ text: labelText }),
+    label: plainTextObject({ text: String(labelText) }),
     element: Element.timePicker({
       placeholderText,
       initialTime,
@@ -57,7 +57,7 @@ function staticSelect ({
   return {
     type: 'input',
     block_id: blockId,
-    label: plainTextObject({ text: labelText }),
+    label: plainTextObject({ text: String(labelText) }),
     optional: optional,
     element: Element.staticSelect({
       options,
@@ -79,7 +79,7 @@ function plainTextInput ({
   return {
     type: 'input',
     block_id: blockId,
-    label: plainTextObject({ text: labelText }),
+    label: plainTextObject({ text: String(labelText) }),
     optional: optional,
     element: {
       type: 'plain_text_input',
