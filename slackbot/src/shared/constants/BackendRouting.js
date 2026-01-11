@@ -12,14 +12,13 @@ exports.BackendRouting = Object.freeze({
     GETALL: () => ({ method: 'GET', path: `${API_BASE}/task` }),
     CREATE: () => ({ method: 'POST', path: `${API_BASE}/task` }),
     SAVE: () => ({ method: 'PUT', path: `${API_BASE}/task` }),
-    SERIAL: () => ({ method: 'GET', path: `${API_BASE}/task/serial` }),
   },
   DAILYREPORT: {
     GETBYDATE: (date) => ({ method: 'GET', path: `${API_BASE}/dailyreport/${date}` }),
     SAVE: () => ({ method: 'PUT', path: `${API_BASE}/dailyreport` }),
   },
   ATTENDANCE: {
-    SAVE: () => ({ method: 'PUT', path: `${API_BASE}/attendance/` }),
+    SAVE: () => ({ method: 'PUT', path: `${API_BASE}/attendance` }),
     GETBYDATE: (date) => ({ method: 'GET', path: `${API_BASE}/attendance/${date}` }),
   }
 })

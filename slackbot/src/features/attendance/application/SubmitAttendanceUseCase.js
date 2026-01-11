@@ -26,7 +26,7 @@ class SubmitAttendanceUseCase {
     }
 
     // バックエンドにリクエスト送信
-    await this.attendanceBackendGateway.saveAttendance(attendance)
+    const saveResult = await this.attendanceBackendGateway.saveAttendance(attendance)
 
     // Slackメッセージを送信
   }
