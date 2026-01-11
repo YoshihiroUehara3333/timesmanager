@@ -1,7 +1,6 @@
 // src/features/task/application/StartTaskInputUseCase.js
 
 const { TaskInputModal } = require('../blockkit/TaskInputModal')
-const { TaskConst } = require('../../../shared/constants/TaskConst')
 const { getDate } = require('../../../shared/utils/DateUtils')
 
 class StartTaskInputUseCase {
@@ -28,8 +27,7 @@ class StartTaskInputUseCase {
       channelId: thread.channelId,
       threadTs: thread.threadTs,
       userId: userId,
-      date: date,
-      status: TaskConst.STATUS.ACTIVE,
+      date: date
     }
     const view = TaskInputModal(params)
 

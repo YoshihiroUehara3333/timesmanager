@@ -9,9 +9,7 @@ public class TaskDomainFactory {
 				request.getSerial(),
 				request.getDate(),
 				request.getTaskName(),
-				request.getTargetTime(),
-				request.getMemo(),
-				request.getStatus()
+				request.getMemo()
 			);
 	}
 }

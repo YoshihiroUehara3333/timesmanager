@@ -10,21 +10,18 @@ public class TaskResponse implements Response {
 	public TaskResponse() {
 	}
 	public TaskResponse(
-			String userId, 
-			String serial, 
-			String date, 
-			String taskName, 
-			String targetTime, 
-			String memo, 
-			String status
+			String userId,
+			String serial,
+			String date,
+			String taskName,
+			String memo
 	) {
 		this.userId = userId;
 		this.date = date;
-		this.taskName = taskName;
-		this.targetTime = targetTime;
-		this.memo = memo;
-		this.status = status;
 		this.serial = serial;
+		this.taskName = taskName;
+		this.memo = memo;
+		
 	}
 	
 	
@@ -34,9 +31,7 @@ public class TaskResponse implements Response {
 				domain.serial(),
 				domain.date(),
 				domain.taskName(),
-				domain.targetTime(),
-				domain.memo(),
-				domain.status()
+				domain.memo()
 				);
 	}
 	
@@ -44,7 +39,6 @@ public class TaskResponse implements Response {
 	private String serial;
 	private String date;
 	private String taskName;
-	private String targetTime;
 	private String memo;
 	private String status;
 }

@@ -7,7 +7,7 @@ const { divider } = require('../../../shared/blockkit/components/Divider')
 const { Buttons } = require('../../../shared/blockkit/components/Buttons')
 const { Input } = require('../../../shared/blockkit/components/Input')
 
-exports.TaskInputModal = ({ channelId, threadTs, date, serial, userId, status }) => ({
+exports.TaskInputModal = ({ channelId, threadTs, date, serial, userId }) => ({
   type: 'modal',
   title: {
     type: 'plain_text',
@@ -20,7 +20,6 @@ exports.TaskInputModal = ({ channelId, threadTs, date, serial, userId, status })
     userId: userId,
     date: date,
     serial: serial,
-    status: status,
   }),
   ...Buttons.modalButtons(),
   blocks: [
@@ -29,17 +28,10 @@ exports.TaskInputModal = ({ channelId, threadTs, date, serial, userId, status })
       labelText: 'タスク名',
       actionId: 'input',
     }),
-    Input.timePicker({
-      blockId: 'targetTime',
-      labelText: '完了目標',
-      placeholderText: '完了目標を選択',
-      initialTime: '10:00',
-      actionId: 'targetTime',
-    }),
     divider(),
     Input.plainTextInput({
       blockId: 'memo',
-      labelText: '所感など',
+      labelText: 'メモ',
       actionId: 'memo',
       multiline: true,
       optional: true,

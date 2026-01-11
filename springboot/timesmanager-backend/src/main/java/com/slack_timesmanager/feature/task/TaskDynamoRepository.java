@@ -26,9 +26,8 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	
     // ===== 属性名の定数 =====
     private static final String ATTR_TASK_NAME  = "task_name";
-    private static final String ATTR_TARGET_TIME = "target_time";
+    private static final String ATTR_PROGRESS = "task_progressions";
     private static final String ATTR_MEMO = "memo";
-    private static final String ATTR_STATUS     = "status";
     private static final String ATTR_SERIAL     = "serial";
     
 	
@@ -55,10 +54,9 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	    		"#userId"      ,ATTR_USER_ID
 	    		,"#serial"     ,ATTR_SERIAL
 	    		,"#date"       ,ATTR_DATE
-	    		,"#taskName"   ,ATTR_TASK_NAME
-	    		,"#targetTime" ,ATTR_TARGET_TIME
+	    		,"#taskName"     ,ATTR_TASK_NAME
+	    		,"#progressions" ,ATTR_PROGRESS
 	    		,"#memo"       ,ATTR_MEMO
-	    		,"#status"     ,ATTR_STATUS
 	    );
 	    
 
@@ -66,9 +64,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	    expressionAttributeValues.put(":userId", AttributeValue.builder().s(task.userId()).build());
 	    expressionAttributeValues.put(":date", AttributeValue.builder().s(task.date()).build());
 	    expressionAttributeValues.put(":taskName", AttributeValue.builder().s(task.taskName()).build());
-	    expressionAttributeValues.put(":targetTime", AttributeValue.builder().s(task.targetTime()).build());
 	    expressionAttributeValues.put(":memo", AttributeValue.builder().s(task.memo()).build());
-	    expressionAttributeValues.put(":status", AttributeValue.builder().s(task.status()).build());
 	    expressionAttributeValues.put(":serial", AttributeValue.builder().s(task.serial()).build());
 
 	    UpdateItemRequest updateRequest = UpdateItemRequest.builder()
@@ -79,11 +75,8 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	        		+ " #channelId = :channelId,"
 	        		+ " #date = :date,"
 	        		+ " #taskName = :taskName,"
-	        		+ " #targetTime = :targetTime,"
 	        		+ " #memo = :memo,"
-	        		+ " #status = :status,"
-	        		+ " #serial = :serial,"
-	        		+ " #threadTs = :threadTs"
+	        		+ " #serial = :serial"
 	        		)
 	        .expressionAttributeNames(expressionAttributeNames)
 	        .expressionAttributeValues(expressionAttributeValues)
@@ -222,9 +215,8 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	    		getString(item, ATTR_SERIAL),
 	    		getString(item, ATTR_DATE),
 	    		getString(item, ATTR_TASK_NAME),
-	    		getString(item, ATTR_TARGET_TIME),
-	    		getString(item, ATTR_MEMO),
-	    		getString(item, ATTR_STATUS)
+	    		getString(item, ATTR_PROGRESS),
+	    		getString(item, ATTR_MEMO)
 	    		);
 	}
 	

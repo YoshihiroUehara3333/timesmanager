@@ -45,7 +45,7 @@ class TaskBackendGateway {
    * @param {string} serial
    * @returns
    */
-  async createTask ({ userId, date, taskName, targetTime, memo, serial, status }) {
+  async createTask ({ userId, date, taskName, progressions, memo, serial }) {
     console.log(`TaskBackendGateway.createTask \nuserId:${userId} \ndate:${date}`)
 
     try {
@@ -56,9 +56,8 @@ class TaskBackendGateway {
           serial: serial,
           date: date,
           taskName: taskName,
-          targetTime: targetTime,
+          progressions: progressions,
           memo: memo,
-          status: status,
         }
       })
       console.log(`TaskBackendGateway.createTask status:${response.status}`)

@@ -7,9 +7,7 @@ public record TaskDomain(
 		String serial,
 		String date,
 		String taskName,
-		String targetTime,
-		String memo,
-		String status
+		String memo
 	) implements Domain {
 
 }
