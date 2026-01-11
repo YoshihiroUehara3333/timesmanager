@@ -46,7 +46,7 @@ class TaskBackendGateway {
    * @returns
    */
   async createTask ({ userId, date, taskName, targetTime, memo, serial, status }) {
-    console.log(`TaskBackendGateway.createTask userId:${userId}`)
+    console.log(`TaskBackendGateway.createTask \nuserId:${userId} \ndate:${date}`)
 
     try {
       const response = await this.backendHttpClient.request({
