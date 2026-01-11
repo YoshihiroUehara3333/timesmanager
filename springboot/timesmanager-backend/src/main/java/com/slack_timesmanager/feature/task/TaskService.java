@@ -12,7 +12,6 @@ import com.slack_timesmanager.feature.task.domain.TaskDomain;
 import com.slack_timesmanager.feature.task.domain.TaskDomainFactory;
 import com.slack_timesmanager.feature.task.dto.TaskRequest;
 import com.slack_timesmanager.feature.task.dto.TaskResponse;
-import com.slack_timesmanager.feature.task.dto.TaskSerialResponse;
 
 @Service
 public class TaskService {
@@ -95,27 +94,4 @@ public class TaskService {
             throw new InfrastructureException("タスク一覧の取得に失敗しました", e);
 		}
 	};
-	
-	
-	/**
-	 * シリアル発行
-	 * @param userId
-	 * @param date
-	 * @return
-	 */
-	public TaskSerialResponse issueSerial(String userId, String date){
-		log.info("TaskService.issueSerial: userId={}, date={}", userId, date);
-		
-		Validator.validateUserId(userId);
-		Validator.validateDate(date);
-        
-        try {
-            String serial = taskDynamoRepository.getNextSerial(userId, date);
-            return new TaskSerialResponse(serial);
-        } 
-        catch (RuntimeException e) {
-            log.error("DynamoDB処理中にエラー: issueSerial userId={}, date={}", userId, date, e);
-            throw new InfrastructureException("新規シリアルの発行に失敗しました", e);
-        }
-	}
 }

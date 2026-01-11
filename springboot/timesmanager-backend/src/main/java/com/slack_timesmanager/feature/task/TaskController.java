@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.slack_timesmanager.feature.task.dto.TaskRequest;
 import com.slack_timesmanager.feature.task.dto.TaskResponse;
-import com.slack_timesmanager.feature.task.dto.TaskSerialResponse;
 
 @RestController
 @RequestMapping("/api/task")
@@ -65,16 +64,4 @@ public class TaskController {
 		}
 		return ResponseEntity.ok(response);
 	}
-	
-	
-	@GetMapping("/serial")
-    public ResponseEntity<TaskSerialResponse> getSerial(
-            @RequestParam String userId,
-            @RequestParam String date
-    ) {
-        log.info("📥 GET /api/task/serial: userId={}, date={}", userId, date);
-
-        TaskSerialResponse response = taskService.issueSerial(userId, date);
-        return ResponseEntity.ok(response);
-    }
 }
