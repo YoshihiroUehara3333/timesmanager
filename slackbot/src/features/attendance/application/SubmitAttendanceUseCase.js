@@ -18,7 +18,7 @@ class SubmitAttendanceUseCase {
     const values = view.state.values
 
     const attendance = {
-      date: metadata.date,
+      date: values.attendanceDate.select_attendanceDate.selected_date,
       userId: metadata.user_id,
       startTime: values.starttime.start_time.selected_time,
       endTime: values.endtime.end_time.selected_time,

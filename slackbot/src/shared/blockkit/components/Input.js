@@ -1,34 +1,56 @@
 // src/shared/blockkit/components/Input.js
 
 const { plainTextObject } = require('./TextObjects')
+const { Element } = require('./Element')
 
-function timePicker ({
+function datePicker ({
   blockId,
   labelText,
-  placeholderText,
-  initialTime,
-  actionId,
   optional = false,
+  placeholderText,
+  date,
+  actionId,
 }) {
   return {
     type: 'input',
     block_id: blockId,
     optional: optional,
     label: plainTextObject({ text: labelText }),
-    element: {
-      type: 'timepicker',
-      initial_time: initialTime,
-      placeholder: plainTextObject({ text: placeholderText }),
-      action_id: actionId
-    }
+    element: Element.datePicker({
+      placeholderText,
+      date,
+      actionId,
+    })
+  }
+}
+
+function timePicker ({
+  blockId,
+  labelText,
+  optional = false,
+  placeholderText,
+  initialTime,
+  actionId,
+}) {
+  return {
+    type: 'input',
+    block_id: blockId,
+    optional: optional,
+    label: plainTextObject({ text: labelText }),
+    element: Element.timePicker({
+      placeholderText,
+      initialTime,
+      actionId,
+    })
   }
 }
 
 function staticSelect ({
   blockId,
+  labelText,
+  optional = false,
   options,
   initialOption,
-  labelText,
   placeholderText = '選択してください',
   actionId,
 }) {
@@ -36,29 +58,29 @@ function staticSelect ({
     type: 'input',
     block_id: blockId,
     label: plainTextObject({ text: labelText }),
-    element: {
-      type: 'static_select',
-      placeholder: plainTextObject({ text: placeholderText }),
-      action_id: actionId,
-      options: options,
-      ...(initialOption ? { initial_option: initialOption } : {}),
-    }
+    optional: optional,
+    element: Element.staticSelect({
+      options,
+      initialOption,
+      placeholderText,
+      actionId,
+    })
   }
 }
 
 function plainTextInput ({
   blockId,
   labelText,
+  optional = false,
   actionId,
   multiline = false,
   initialValue,
-  optional = false,
 }) {
   return {
     type: 'input',
     block_id: blockId,
-    optional: optional,
     label: plainTextObject({ text: labelText }),
+    optional: optional,
     element: {
       type: 'plain_text_input',
       action_id: actionId,
@@ -70,6 +92,7 @@ function plainTextInput ({
 
 module.exports = {
   Input: {
+    datePicker,
     timePicker,
     staticSelect,
     plainTextInput,

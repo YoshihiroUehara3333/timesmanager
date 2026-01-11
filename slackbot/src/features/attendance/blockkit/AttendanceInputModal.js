@@ -10,6 +10,17 @@ const { Buttons } = require('../../../shared/blockkit/components/Buttons')
 const { Sections } = require('../../../shared/blockkit/components/Sections')
 const { Input } = require('../../../shared/blockkit/components/Input')
 
+function dateSelect ({ date }) {
+  return Input.datePicker({
+    blockId: 'attendanceDate',
+    labelText: '日付',
+    optional: false,
+    placeholderText: '',
+    date: date,
+    actionId: 'select_attendanceDate',
+  })
+}
+
 function workplaceSection (attendance = {}) {
   const options = WorkplaceConst.LIST.map(option => (
     {
@@ -21,10 +32,10 @@ function workplaceSection (attendance = {}) {
 
   return Input.staticSelect({
     blockId: 'workplace',
-    options: options,
-    initialOption: initial,
     labelText: '作業場所',
     actionId: 'select_workplace',
+    options: options,
+    initialOption: initial,
   })
 }
 
@@ -33,6 +44,7 @@ function workingTimeSection ({ attendance }) {
     Input.timePicker({
       blockId: 'starttime',
       labelText: '開始時間',
+      optional: false,
       placeholderText: '開始時間を選択',
       initialTime: attendance.startTime || '09:00',
       actionId: 'start_time',
@@ -40,6 +52,7 @@ function workingTimeSection ({ attendance }) {
     Input.timePicker({
       blockId: 'endtime',
       labelText: '終了時間',
+      optional: false,
       placeholderText: '終了時間を選択',
       initialTime: attendance.endTime || '18:00',
       actionId: 'end_time',
@@ -57,8 +70,9 @@ exports.AttendanceInputModal = ({ userId, date, attendance = {} }) => ({
   title: { type: 'plain_text', text: '勤怠記録', emoji: true },
   ...Buttons.modalButtons(),
   blocks: [
-    Sections.mrkdwn({ text: '*本日の勤怠状況を入力してください*' }),
+    Sections.mrkdwn({ text: '*勤怠情報を入力してください*' }),
     divider(),
+    dateSelect({ date }),
     ...workingTimeSection({ attendance }),
     workplaceSection(attendance),
   ]
