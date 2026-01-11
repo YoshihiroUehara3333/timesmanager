@@ -20,6 +20,9 @@ class SubmitTaskUseCase {
     // 入力値を取得
     const task = this._getTaskDataFromView(view)
 
+    // バックエンドにリクエスト送信
+    await this.taskBackendGateway.createTask(task)
+
     // SlackにBlocksを送信
     const blocks = TaskBlock(task)
     await this.slackGateway.postTaskBlock({
@@ -28,9 +31,6 @@ class SubmitTaskUseCase {
       text: 'タスク送信',
       blocks: blocks,
     })
-
-    // バックエンドにリクエスト送信
-    await this.taskBackendGateway.createTask(task)
 
     return { ok: true }
   }
