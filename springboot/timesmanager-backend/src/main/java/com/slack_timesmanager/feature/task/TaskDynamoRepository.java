@@ -54,8 +54,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	    		"#userId"      ,ATTR_USER_ID
 	    		,"#serial"     ,ATTR_SERIAL
 	    		,"#date"       ,ATTR_DATE
-	    		,"#taskName"     ,ATTR_TASK_NAME
-	    		,"#progressions" ,ATTR_PROGRESS
+	    		,"#taskName"   ,ATTR_TASK_NAME
 	    		,"#memo"       ,ATTR_MEMO
 	    );
 	    
@@ -215,7 +214,6 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	    		getString(item, ATTR_SERIAL),
 	    		getString(item, ATTR_DATE),
 	    		getString(item, ATTR_TASK_NAME),
-	    		getString(item, ATTR_PROGRESS),
 	    		getString(item, ATTR_MEMO)
 	    		);
 	}

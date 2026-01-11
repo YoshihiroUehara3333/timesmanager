@@ -13,8 +13,8 @@ exports.ModalConst = {
       TASK_INPUT: 'home_task_input'
     },
     TASK: {
-      CREATE: 'task_create',
-      UPDATE: 'task_update',
+      ADDPROGRESS: 'task_addprogress',
+      UPDATEMEMO: 'task_updatememo',
     }
   }
 }

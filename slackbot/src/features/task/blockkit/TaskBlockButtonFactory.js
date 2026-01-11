@@ -1,15 +1,15 @@
-// src/features/task/blockkit/TaskBlockButtonFactory.js
+// src/feates/task/blockkit/TaskBlockButtonFactory.js
 
 const { ModalConst } = require('../../../shared/constants/ModalConst')
 
 exports.TaskBlockButtonFactory = Object.freeze({
-  toUpdateTask: (value) => ({
-    text: '更新',
+  toUpdateMemo: (value) => ({
+    text: 'メモ更新',
     value: value,
     actionId: ModalConst.ACTION_ID.TASK.UPDATE,
   }),
-  toFinishTask: (value) => ({
-    text: '完了',
+  toAddProgression: (value) => ({
+    text: '進捗記録',
     value: value,
     actionId: ModalConst.ACTION_ID.TASK.FINISH,
   }),
