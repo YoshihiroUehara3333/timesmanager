@@ -51,16 +51,16 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
         key.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
         key.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
 
-	    Map<String, String> expressionAttributeNames = new HashMap<>();
-	    Map.of(
-	    		"#userId"    ,ATTR_USER_ID       
-	    		,"#serial"   ,ATTR_SERIAL       
-	    		,"#date"     ,ATTR_DATE         
-	    		,"#taskName" ,ATTR_TASK_NAME    
-	    	,ATTR_TARGET_TIME  ,"#targetTime" 
-	    	,ATTR_MEMO         ,"#memo" 
-	    	,ATTR_STATUS       ,"#status" 
+	    Map<String, String> expressionAttributeNames = Map.of(
+	    		"#userId"      ,ATTR_USER_ID
+	    		,"#serial"     ,ATTR_SERIAL
+	    		,"#date"       ,ATTR_DATE
+	    		,"#taskName"   ,ATTR_TASK_NAME
+	    		,"#targetTime" ,ATTR_TARGET_TIME
+	    		,"#memo"       ,ATTR_MEMO
+	    		,"#status"     ,ATTR_STATUS
 	    );
+	    
 
 	    Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
 	    expressionAttributeValues.put(":userId", AttributeValue.builder().s(task.userId()).build());
@@ -139,8 +139,8 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 
 	    // プレースホルダーにバインド
 	    Map<String, AttributeValue> eav = Map.of(
-	            ":pk", AttributeValue.builder().s(partitionKey).build(),
-	            ":sk", AttributeValue.builder().s(date).build()
+	            ":pk", buildAttributeValue(partitionKey),
+	            ":sk", buildAttributeValue(date)
 	    );
 
 	    QueryRequest queryRequest = QueryRequest.builder()
@@ -218,13 +218,13 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	 */
 	private TaskDomain mapToTaskDomain(Map<String, AttributeValue> item) {
 	    return new TaskDomain(
-	    		item.get(ATTR_USER_ID).s(),
-	    		item.get(ATTR_SERIAL).s(),
-				item.get(ATTR_DATE).s(),
-				item.get(ATTR_TASK_NAME).s(),
-				item.get(ATTR_TARGET_TIME).s(),
-				item.get(ATTR_MEMO).s(),
-				item.get(ATTR_STATUS).s()
+	    		getString(item, ATTR_USER_ID),
+	    		getString(item, ATTR_SERIAL),
+	    		getString(item, ATTR_DATE),
+	    		getString(item, ATTR_TASK_NAME),
+	    		getString(item, ATTR_TARGET_TIME),
+	    		getString(item, ATTR_MEMO),
+	    		getString(item, ATTR_STATUS)
 	    		);
 	}
 	

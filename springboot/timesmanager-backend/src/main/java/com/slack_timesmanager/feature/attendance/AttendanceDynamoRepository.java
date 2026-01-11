@@ -1,7 +1,6 @@
 package com.slack_timesmanager.feature.attendance;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,7 +28,6 @@ import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 
     // ===== 属性名の定数 =====
-    private static final String ATTR_USER_ID    = "user_id";
     private static final String ATTR_DATE       = "date";
     private static final String ATTR_START_TIME  = "start_time";
     private static final String ATTR_END_TIME    = "end_time";
@@ -55,23 +53,26 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
                 domain.date()
         );
 	    
-        Map<String, AttributeValue> key = new HashMap<>();
-        key.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
-        key.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
+        Map<String, AttributeValue> key = Map.of(
+        		ATTR_PK, buildAttributeValue(itemKey.getPartitionKey())
+        		,ATTR_SK, buildAttributeValue(itemKey.getSortKey())
+        		);
 
-	    Map<String, String> expressionAttributeNames = new HashMap<>();
-	    expressionAttributeNames.put("#userId", ATTR_USER_ID);
-	    expressionAttributeNames.put("#dt", ATTR_DATE);
-	    expressionAttributeNames.put("#st", ATTR_START_TIME);
-	    expressionAttributeNames.put("#et", ATTR_END_TIME);
-	    expressionAttributeNames.put("#wp", ATTR_WORKPLACE);
+	    Map<String, String> expressionAttributeNames = Map.of(
+	    		"#userId", ATTR_USER_ID
+	    		,"#dt", ATTR_DATE
+	    		,"#st", ATTR_START_TIME
+	    		,"#et", ATTR_END_TIME
+	    		,"#wp", ATTR_WORKPLACE
+	    		);
 
-	    Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
-	    expressionAttributeValues.put(":date", AttributeValue.builder().s(domain.date()).build());
-	    expressionAttributeValues.put(":userId", AttributeValue.builder().s(domain.userId()).build());
-	    expressionAttributeValues.put(":startTime", AttributeValue.builder().s(domain.startTime()).build());
-	    expressionAttributeValues.put(":endTime", AttributeValue.builder().s(domain.endTime()).build());
-	    expressionAttributeValues.put(":workplace", AttributeValue.builder().s(domain.workplace()).build());
+	    Map<String, AttributeValue> expressionAttributeValues = Map.of(
+	    		":date", buildAttributeValue(domain.date())
+	    		,":userId", buildAttributeValue(domain.userId())
+	    		,":startTime", buildAttributeValue(domain.startTime())
+	    		,":endTime", buildAttributeValue(domain.endTime())
+	    		,":workplace", buildAttributeValue(domain.workplace())
+	    		);
 
 	    UpdateItemRequest updateRequest = UpdateItemRequest.builder()
 	        .tableName(tableName)
@@ -99,9 +100,10 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
                 date
         );
 
-        Map<String, AttributeValue> key = new HashMap<>();
-        key.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
-        key.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
+        Map<String, AttributeValue> key = Map.of(
+        		ATTR_PK, buildAttributeValue(itemKey.getPartitionKey())
+        		,ATTR_SK, buildAttributeValue(itemKey.getSortKey())
+        		);
 
         GetItemRequest request = GetItemRequest.builder()
             .tableName(tableName)
@@ -158,11 +160,13 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	 */
 	private AttendanceDomain mapToAttendanceDomain(Map<String, AttributeValue> item) {
 	    return new AttendanceDomain(
-	    		item.get(ATTR_USER_ID).s(),
-	    		item.get(ATTR_DATE).s(),
-	    		item.get(ATTR_START_TIME).s(),
-	    		item.get(ATTR_END_TIME).s(),
-	    		item.get(ATTR_WORKPLACE).s()
+	    	    getString(item, ATTR_USER_ID),
+	    	    getString(item, ATTR_DATE),
+	    	    getString(item, ATTR_START_TIME),
+	    	    getString(item, ATTR_END_TIME),
+	    	    getString(item, ATTR_WORKPLACE)
 	    		);
 	}
+	
+
 }

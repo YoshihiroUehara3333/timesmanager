@@ -21,10 +21,13 @@ public class AttendanceRequest implements Request{
     )
 	private String date;
 	
+	@NotBlank
 	private String startTime;
 	
+	@NotBlank
 	private String endTime;
 	
+	@NotBlank
 	private String workplace;
   
 }

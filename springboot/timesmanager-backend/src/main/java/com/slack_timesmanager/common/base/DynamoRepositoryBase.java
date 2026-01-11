@@ -1,8 +1,11 @@
 package com.slack_timesmanager.common.base;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 public class DynamoRepositoryBase {
     // ===== 属性名の定数 =====
@@ -21,5 +24,14 @@ public class DynamoRepositoryBase {
 	) {
 		this.dynamoDbClient = dynamoDbClient;
 		this.tableName = tableName;
+	}
+	
+	public static AttributeValue buildAttributeValue(String str) {
+		return AttributeValue.builder().s(str).build();
+	}
+	
+	public static String getString(Map<String, AttributeValue> item, String key) {
+	    AttributeValue v = item.get(key);
+	    return (v == null || v.s() == null) ? "" : v.s();
 	}
 }
