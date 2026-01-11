@@ -29,6 +29,7 @@ class TaskSlackGateway extends SlackGatewayBase {
       threadTs: threadTs,
       blocks: blocks,
     })
+
     return message
   }
 }

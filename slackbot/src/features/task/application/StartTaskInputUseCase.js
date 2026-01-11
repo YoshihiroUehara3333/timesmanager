@@ -30,8 +30,8 @@ class StartTaskInputUseCase {
 
     // BlockKit作成
     const params = {
-      channelId: thread.data.channelId,
-      threadTs: thread.data.threadTs,
+      channelId: thread.channelId,
+      threadTs: thread.threadTs,
       userId: userId,
       date: date,
       serial: serial,

@@ -42,10 +42,10 @@ public class TaskController {
 	public ResponseEntity<TaskResponse> post(
 			@Valid @RequestBody TaskRequest request
 	){
-		log.info("📥 Received POST /api/task: {}", request);
+		log.info("Received POST /api/task: {}", request);
 		
-		taskService.save(request);
-		return ResponseEntity.ok().build();
+		TaskResponse response = taskService.save(request);
+		return ResponseEntity.ok(response);
 	}
 
 	/**

@@ -15,9 +15,6 @@ public class TaskRequest implements Request {
 	@NotBlank(message = "userId は 必須です")
 	private String userId;
 	
-	@NotBlank(message = "channelId は 必須です")
-	private String channelId;
-	
 	@NotBlank(message = "date は 必須です")
     @Pattern(
         regexp = "\\d{4}-\\d{2}-\\d{2}",
@@ -25,15 +22,17 @@ public class TaskRequest implements Request {
     )
 	private String date;
 	
+	@NotBlank(message = "taskName は 必須です")
 	private String taskName;
+	
 	private String targetTime;
 	private String memo;
+	
+	@NotBlank(message = "status は 必須です")
 	private String status;
 	
 	@NotBlank(message = "serial は 必須です")
 	private String serial;
-	
-	private String threadTs;
 	
 	public TaskRequest() {
 	}

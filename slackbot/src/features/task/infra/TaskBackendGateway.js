@@ -45,7 +45,7 @@ class TaskBackendGateway {
    * @param {string} serial
    * @returns
    */
-  async createTask ({ userId, taskName, targetTime, memo, serial }) {
+  async createTask ({ userId, date, taskName, targetTime, memo, serial, status }) {
     console.log(`TaskBackendGateway.createTask userId:${userId}`)
 
     try {
@@ -53,13 +53,15 @@ class TaskBackendGateway {
         routing: BackendRouting.TASK.CREATE(),
         data: {
           userId: userId,
+          serial: serial,
+          date: date,
           taskName: taskName,
           targetTime: targetTime,
           memo: memo,
-          serial: serial,
+          status: status,
         }
       })
-      console.log(`TaskBackendGateway.saveTask status:${response.status}`)
+      console.log(`TaskBackendGateway.createTask status:${response.status}`)
       return { ok: true, data: response }
     } catch (err) {
       console.warn(`backendHttpClient.request failed msg=${err?.message}`)

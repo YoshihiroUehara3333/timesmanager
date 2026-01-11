@@ -23,17 +23,19 @@ class SubmitTaskUseCase {
     // SlackにBlocksを送信
     const blocks = TaskBlock(task)
     await this.slackGateway.postTaskBlock({
-      channelId: task.channelId,
+      channelId: view.metadata.channelId,
+      threadTs: view.metadata.threadTs,
       text: 'タスク送信',
-      threadTs: task.threadTs,
       blocks: blocks,
     })
 
     // バックエンドにリクエスト送信
-    await this.taskBackendGateway.saveTask(task)
+    await this.taskBackendGateway.createTask(task)
 
     return { ok: true }
   }
+
+  // Helpers=============================================
 
   _getTaskDataFromView (view) {
     // 入力値を取得
@@ -41,13 +43,13 @@ class SubmitTaskUseCase {
     const values = view.state.values
 
     return {
-      channeld: metadata.channelId,
-      threadTs: metadata.threadTs,
       userId: metadata.userId,
+      serial: metadata.serial,
+      date: metadata.date,
       taskName: values.taskName.input.value,
       targetTime: values.targetTime.input.value,
       memo: values.memo.input.value,
-      serial: metadata.serial,
+      status: metadata.status,
     }
   }
 }

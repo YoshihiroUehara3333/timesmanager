@@ -4,14 +4,12 @@ import com.slack_timesmanager.common.core.Domain;
 
 public record TaskDomain(
 		String userId,
-		String channelId,
+		String serial,
 		String date,
 		String taskName,
 		String targetTime,
 		String memo,
-		String status,
-		String serial,
-		String threadTs
+		String status
 	) implements Domain {
 
 }

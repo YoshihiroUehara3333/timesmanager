@@ -53,26 +53,24 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
         key.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
 
 	    Map<String, String> expressionAttributeNames = new HashMap<>();
-	    expressionAttributeNames.put("#userId", ATTR_USER_ID);
-	    expressionAttributeNames.put("#channelId", ATTR_CHANNEL_ID);
-	    expressionAttributeNames.put("#date", ATTR_DATE);
-	    expressionAttributeNames.put("#taskName", ATTR_TASK_NAME);
-	    expressionAttributeNames.put("#targetTime", ATTR_TARGET_TIME);
-	    expressionAttributeNames.put("#memo", ATTR_MEMO);
-	    expressionAttributeNames.put("#status", ATTR_STATUS);
-	    expressionAttributeNames.put("#serial", ATTR_SERIAL);
-	    expressionAttributeNames.put("#threadTs", ATTR_THREAD_TS);
+	    Map.of(
+	    	ATTR_USER_ID       ,"#userId"
+	    	,ATTR_SERIAL       ,"#serial"
+	    	,ATTR_DATE         ,"#date"
+	    	,ATTR_TASK_NAME    ,"#taskName" 
+	    	,ATTR_TARGET_TIME  ,"#targetTime" 
+	    	,ATTR_MEMO         ,"#memo" 
+	    	,ATTR_STATUS       ,"#status" 
+	    );
 
 	    Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
 	    expressionAttributeValues.put(":userId", AttributeValue.builder().s(task.userId()).build());
-	    expressionAttributeValues.put(":channelId", AttributeValue.builder().s(task.channelId()).build());
 	    expressionAttributeValues.put(":date", AttributeValue.builder().s(task.date()).build());
 	    expressionAttributeValues.put(":taskName", AttributeValue.builder().s(task.taskName()).build());
 	    expressionAttributeValues.put(":targetTime", AttributeValue.builder().s(task.targetTime()).build());
 	    expressionAttributeValues.put(":memo", AttributeValue.builder().s(task.memo()).build());
 	    expressionAttributeValues.put(":status", AttributeValue.builder().s(task.status()).build());
 	    expressionAttributeValues.put(":serial", AttributeValue.builder().s(task.serial()).build());
-	    expressionAttributeValues.put(":threadTs", AttributeValue.builder().s(task.threadTs()).build());
 
 	    UpdateItemRequest updateRequest = UpdateItemRequest.builder()
 	        .tableName(tableName)
@@ -228,14 +226,12 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	private TaskDomain mapToTaskDomain(Map<String, AttributeValue> item) {
 	    return new TaskDomain(
 	    		item.get(ATTR_USER_ID).s(),
-	    		item.get(ATTR_CHANNEL_ID).s(),
+	    		item.get(ATTR_SERIAL).s(),
 				item.get(ATTR_DATE).s(),
 				item.get(ATTR_TASK_NAME).s(),
 				item.get(ATTR_TARGET_TIME).s(),
 				item.get(ATTR_MEMO).s(),
-				item.get(ATTR_STATUS).s(),
-				item.get(ATTR_SERIAL).s(),
-				item.get(ATTR_THREAD_TS).s()
+				item.get(ATTR_STATUS).s()
 	    		);
 	}
 	

@@ -9,19 +9,19 @@ const { Input } = require('../../../shared/blockkit/components/Input')
 
 exports.TaskInputModal = ({ channelId, threadTs, date, serial, userId, status }) => ({
   type: 'modal',
-  callback_id: ModalConst.CALLBACK_ID.TASK_INPUT,
-  private_metadata: JSON.stringify({
-    channelId: channelId,
-    userId: userId,
-    threadTs: threadTs,
-    date: date,
-    serial: serial,
-    status: status,
-  }),
   title: {
     type: 'plain_text',
     text: 'タスク入力'
   },
+  callback_id: ModalConst.CALLBACK_ID.TASK_INPUT,
+  private_metadata: JSON.stringify({
+    channelId: channelId,
+    threadTs: threadTs,
+    userId: userId,
+    date: date,
+    serial: serial,
+    status: status,
+  }),
   ...Buttons.modalButtons(),
   blocks: [
     Input.plainTextInput({
@@ -39,7 +39,7 @@ exports.TaskInputModal = ({ channelId, threadTs, date, serial, userId, status })
     divider(),
     Input.plainTextInput({
       blockId: 'memo',
-      labelText: '備考',
+      labelText: '所感など',
       actionId: 'memo',
       multiline: true,
     }),

@@ -6,14 +6,12 @@ public class TaskDomainFactory {
 	public static TaskDomain fromTaskRequest (TaskRequest request) {
 		return new TaskDomain(
 				request.getUserId(),
-				request.getChannelId(),
+				request.getSerial(),
 				request.getDate(),
 				request.getTaskName(),
 				request.getTargetTime(),
 				request.getMemo(),
-				request.getStatus(),
-				request.getSerial(),
-				request.getThreadTs()
+				request.getStatus()
 			);
 	}
 }
