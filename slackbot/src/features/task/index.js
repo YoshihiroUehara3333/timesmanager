@@ -36,6 +36,8 @@ function registerTaskFeature ({ app, slackApiAdaptor, backendHttpClient }) {
       await ack()
       logger.info(`app.action\nbody:${body}`)
       await startTaskInputUseCase.execute({
+        userId: body.user.id,
+        triggerId: body.trigger_id,
       })
     },
   )
