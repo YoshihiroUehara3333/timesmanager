@@ -27,7 +27,6 @@ jest.mock('../../blockkit/HomeBlocks', () => ({
 const { HomeOpenUseCase } = require('../HomeOpenUseCase')
 const { getDate } = require('../../../../shared/utils/DateUtils')
 const { HomeBlocks } = require('../../blockkit/HomeBlocks')
-const { TaskConst } = require('../../../../shared/constants/TaskConst')
 
 describe('HomeOpenUseCase', () => {
   const userId = 'U0888TRT122'
@@ -62,9 +61,7 @@ describe('HomeOpenUseCase', () => {
       ok: true,
       status: 200,
       data: [
-        { status: TaskConst.STATUS.FINISHED },
-        { status: TaskConst.STATUS.ACTIVE },
-        { status: TaskConst.STATUS.FINISHED },
+        { status: 'ok' },
       ]
     })
 
@@ -77,7 +74,7 @@ describe('HomeOpenUseCase', () => {
 
     expect(HomeBlocks).toHaveBeenCalledWith({
       tasks: [
-        { status: TaskConst.STATUS.ACTIVE }
+        { status: 'ok' },
       ],
       thread: { dummy: 'dummy' }
     })

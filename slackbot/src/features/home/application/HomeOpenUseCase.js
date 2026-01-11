@@ -3,7 +3,6 @@
 const { getDate } = require('../../../shared/utils/DateUtils')
 
 const { HomeBlocks } = require('../blockkit/HomeBlocks')
-const { TaskConst } = require('../../../shared/constants/TaskConst')
 
 class HomeOpenUseCase {
   constructor ({ slackGateway, taskBackendGateway, threadBackendGateway }) {
@@ -24,8 +23,7 @@ class HomeOpenUseCase {
       // タスクリスト取得
       const taskResult = await this.taskBackendGateway.getAllTasks({ userId })
       if (taskResult.data) {
-        // activeなもので絞り込む
-        tasks = taskResult.data.filter((task) => task.status === TaskConst.STATUS.ACTIVE)
+        tasks = taskResult.data
       }
     }
 
