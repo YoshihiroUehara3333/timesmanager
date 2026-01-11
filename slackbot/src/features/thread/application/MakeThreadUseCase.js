@@ -35,12 +35,10 @@ class MakeThreadUseCase {
       return { ok: true }
     }
 
-    // スレッド用メッセージ本文を作る
-    const threadText = buildThreadInitialText({ userId, date })
     // Slackにスレッドを投稿
     const thread = await this.slackGateway.postThread({
       channelId: channelId,
-      text: threadText,
+      text: buildThreadInitialText({ userId, date }),
     })
 
     // バックエンドにスレッド情報を送信
