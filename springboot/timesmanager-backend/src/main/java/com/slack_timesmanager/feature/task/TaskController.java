@@ -44,7 +44,7 @@ public class TaskController {
 	){
 		log.info("Received POST /api/task: {}", request);
 		
-		TaskResponse response = taskService.save(request);
+		TaskResponse response = taskService.create(request);
 		return ResponseEntity.ok(response);
 	}
 

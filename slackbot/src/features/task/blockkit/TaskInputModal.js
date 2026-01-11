@@ -42,6 +42,7 @@ exports.TaskInputModal = ({ channelId, threadTs, date, serial, userId, status })
       labelText: '所感など',
       actionId: 'memo',
       multiline: true,
+      optional: true,
     }),
   ]
 })

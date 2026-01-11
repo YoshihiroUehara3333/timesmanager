@@ -30,7 +30,6 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
     private static final String ATTR_MEMO = "memo";
     private static final String ATTR_STATUS     = "status";
     private static final String ATTR_SERIAL     = "serial";
-    private static final String ATTR_THREAD_TS = "thread_ts";
     
 	
 	public TaskDynamoRepository(
@@ -54,10 +53,10 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 
 	    Map<String, String> expressionAttributeNames = new HashMap<>();
 	    Map.of(
-	    	ATTR_USER_ID       ,"#userId"
-	    	,ATTR_SERIAL       ,"#serial"
-	    	,ATTR_DATE         ,"#date"
-	    	,ATTR_TASK_NAME    ,"#taskName" 
+	    		"#userId"    ,ATTR_USER_ID       
+	    		,"#serial"   ,ATTR_SERIAL       
+	    		,"#date"     ,ATTR_DATE         
+	    		,"#taskName" ,ATTR_TASK_NAME    
 	    	,ATTR_TARGET_TIME  ,"#targetTime" 
 	    	,ATTR_MEMO         ,"#memo" 
 	    	,ATTR_STATUS       ,"#status" 
@@ -186,7 +185,6 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
                 .tableName(tableName)
                 .keyConditionExpression(ATTR_PK + " = :pk AND begins_with(" + ATTR_SK + ", :skPrefix)")
                 .expressionAttributeValues(eav)
-                // sort_key 降順（最新が先頭）
                 .scanIndexForward(false)
                 .limit(1)
                 .build();
@@ -202,12 +200,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
             String currentSerial = latestItem.get(ATTR_SERIAL).s();
 
             int current = 0;
-            try {
-                current = Integer.parseInt(currentSerial);
-            } catch (NumberFormatException e) {
-                // 想定外の値が入っていた場合は 0 とみなして 001 から再スタート
-                current = 0;
-            }
+            current = Integer.parseInt(currentSerial);
 
             int next = current + 1;
             // 3桁ゼロ埋め

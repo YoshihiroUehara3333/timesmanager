@@ -23,18 +23,12 @@ class StartTaskInputUseCase {
     const thread = await this.threadBackendGateway.getThreadByDate({ userId, date })
     if (!thread.ok) return { ok: false }
 
-    // 最新シリアル取得
-    const response = await this.taskBackendGateway.issueLatestSerial({ userId: userId, date: date })
-    if (!response.ok || !response.data) return { ok: false }
-    const serial = response.data
-
     // BlockKit作成
     const params = {
       channelId: thread.channelId,
       threadTs: thread.threadTs,
       userId: userId,
       date: date,
-      serial: serial,
       status: TaskConst.STATUS.ACTIVE,
     }
     const view = TaskInputModal(params)

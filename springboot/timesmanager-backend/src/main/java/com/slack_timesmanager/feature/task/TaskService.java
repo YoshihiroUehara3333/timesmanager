@@ -32,13 +32,17 @@ public class TaskService {
      * @param request
 	 * @return
      */
-	public TaskResponse save(TaskRequest request) {
+	public TaskResponse create(TaskRequest request) {
 		log.info("TaskService.save: request = {}", request);
 		
-		TaskDomain task = TaskDomainFactory.fromTaskRequest(request);
-		
 		try {
+			// シリアル発行
+			String serial = taskDynamoRepository.getNextSerial(request.getUserId(), request.getDate());
+			request.setSerial(serial);
+			
+			TaskDomain task = TaskDomainFactory.fromTaskRequest(request);
 		    taskDynamoRepository.updateItem(task);
+		    
 		    return TaskResponse.fromDomain(task);
 		}
 		catch(RuntimeException e) {
