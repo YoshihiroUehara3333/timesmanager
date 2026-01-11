@@ -47,7 +47,7 @@ class SubmitTaskUseCase {
       serial: metadata.serial,
       date: metadata.date,
       taskName: values.taskName.input.value,
-      memo: values.memo.input.value || '',
+      memo: values.memo.memo.input.value || '',
     }
   }
 }
