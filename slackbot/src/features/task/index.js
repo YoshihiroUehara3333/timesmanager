@@ -17,7 +17,7 @@ function registerTaskFeature ({ app, slackApiAdaptor, backendHttpClient }) {
   const threadBackendGateway = new ThreadBackendGateway(backendHttpClient)
 
   // UseCase
-  const startInputUseCase = new StartTaskInputUseCase({
+  const startTaskInputUseCase = new StartTaskInputUseCase({
     slackGateway,
     taskBackendGateway,
     threadBackendGateway,
@@ -34,9 +34,8 @@ function registerTaskFeature ({ app, slackApiAdaptor, backendHttpClient }) {
     ModalConst.ACTION_ID.HOME.TASK_INPUT,
     async ({ body, ack, logger }) => {
       await ack()
-      await startInputUseCase.execute({
-        userId: body.user.id,
-        triggerId: body.trigger_id,
+      logger.info(`app.action\nbody:${body}`)
+      await startTaskInputUseCase.execute({
       })
     },
   )
@@ -47,7 +46,7 @@ function registerTaskFeature ({ app, slackApiAdaptor, backendHttpClient }) {
     async ({ command, ack, context, logger, respond }) => {
       await ack()
       logger.info(`app.command\ncontext:${JSON.stringify(context)}\ncommand:${JSON.stringify(command)}\n`)
-      await startInputUseCase.execute({
+      await startTaskInputUseCase.execute({
         userId: command.user_id,
         channelId: command.channel_id,
         text: command.text,
