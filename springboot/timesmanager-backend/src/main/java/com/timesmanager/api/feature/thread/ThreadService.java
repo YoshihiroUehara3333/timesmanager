@@ -11,7 +11,8 @@ import com.timesmanager.api.common.exception.ConflictException;
 import com.timesmanager.api.common.exception.InfrastructureException;
 import com.timesmanager.api.feature.thread.domain.ThreadDomain;
 import com.timesmanager.api.feature.thread.domain.ThreadDomainFactory;
-import com.timesmanager.api.feature.thread.dto.ThreadRequest;
+import com.timesmanager.api.feature.thread.dto.ThreadCreateRequest;
+import com.timesmanager.api.feature.thread.dto.ThreadGetRequest;
 import com.timesmanager.api.feature.thread.dto.ThreadResponse;
 
 import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException;
@@ -34,13 +35,11 @@ public class ThreadService {
 	 * @param request
 	 * @return
 	 */
-	public ThreadResponse create(ThreadRequest request) {
+	public ThreadResponse create(ThreadCreateRequest request) {
 		log.info("ThreadService.create: userId={}, date={}, channelId={}",
 				request.getUserId(), request.getDate(), request.getChannelId());
 
-		validateForCreate(request);
-
-		ThreadDomain thread = ThreadDomainFactory.fromRequest(request);
+		ThreadDomain thread = ThreadDomainFactory.fromCreateRequest(request);
 
 		try {
 			threadDynamoRepository.putItem(thread);
@@ -55,14 +54,6 @@ public class ThreadService {
 			throw new InfrastructureException("DynamoDB putItem failed", e);
 		}
 	}
-	private void validateForCreate(ThreadRequest request) {
-		if (request.getThreadTs() == null || request.getThreadTs().isBlank()) {
-			throw new IllegalArgumentException("threadTs is required");
-		}
-		if (request.getPermalink() == null || request.getPermalink().isBlank()) {
-			throw new IllegalArgumentException("permalink is required");
-		}
-	}
 
 	
 	/**
@@ -71,7 +62,7 @@ public class ThreadService {
 	 * @param date
 	 * @return
 	 */
-	public Optional<ThreadResponse> getByUserIdAndDate(ThreadRequest request) {
+	public Optional<ThreadResponse> getByUserIdAndDate(ThreadGetRequest request) {
 		log.info("ThreadService.getByUserIdAndDate: userId={}, date={}", 
 				request.getUserId(), request.getDate());
 
@@ -94,7 +85,7 @@ public class ThreadService {
 	 * @param userId
 	 * @return
 	 */
-	public List<ThreadResponse> getAllByUserId(ThreadRequest request) {
+	public List<ThreadResponse> getAllByUserId(ThreadGetRequest request) {
 		log.info("ThreadService.getAllByUserId: userId={}", request.getUserId());
 
 		try {

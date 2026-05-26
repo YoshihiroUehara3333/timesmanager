@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ThreadRequest implements Request{
+public class ThreadCreateRequest implements Request{
 	
 	@NotBlank(message = "channelId は 必須です")
 	private String channelId;
@@ -25,7 +25,9 @@ public class ThreadRequest implements Request{
 	@NotBlank(message = "userId は 必須です")
 	private String userId;
 	
+	@NotBlank(message = "threadTs は 必須です")
 	private String threadTs;
 	
+	@NotBlank(message = "permalink は 必須です")
     private String permalink;
 }

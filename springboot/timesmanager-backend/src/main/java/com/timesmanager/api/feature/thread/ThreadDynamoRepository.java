@@ -105,7 +105,6 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase {
 	            return Optional.empty();
             }
             return Optional.of(mapToThreadDomain(item));
-
         }
         catch (DynamoDbException e) {
         	throw e;

@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.timesmanager.api.feature.thread.dto.ThreadRequest;
+import com.timesmanager.api.feature.thread.dto.ThreadCreateRequest;
+import com.timesmanager.api.feature.thread.dto.ThreadGetRequest;
 import com.timesmanager.api.feature.thread.dto.ThreadResponse;
 
 @RestController
@@ -39,7 +40,7 @@ public class ThreadController {
      */
 	@PostMapping
 	public ResponseEntity<ThreadResponse> post(
-			@Valid @RequestBody ThreadRequest request
+			@Valid @RequestBody ThreadCreateRequest request
 	){
 		log.info("Received POST /api/thread: userId = {}, date = {}", request.getUserId(), request.getDate());
 		
@@ -57,7 +58,7 @@ public class ThreadController {
      */
 	@GetMapping("/{date}")
 	public ResponseEntity<ThreadResponse> getByDate(
-			@Valid ThreadRequest request
+			@Valid ThreadGetRequest request
 	){	
 		log.info("Received GET /api/thread/" + request.getDate() + ": userId={}", request.getUserId());
 		
@@ -75,7 +76,7 @@ public class ThreadController {
      */
 	@GetMapping
 	public ResponseEntity<List<ThreadResponse>> getAllByUserId(
-			@Valid ThreadRequest request
+			@Valid ThreadGetRequest request
 	){	
 		log.info("📥 Received GET /api/thread: userId={}", request.getUserId());
 		
