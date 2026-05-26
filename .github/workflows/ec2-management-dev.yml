@@ -24,7 +24,7 @@ jobs:
             - name: Configure AWS Credentials
               uses: aws-actions/configure-aws-credentials@v4
               with:
-                role-to-assume: ${{ secrets.DEV_LAMBDA_AWS_ROLE_ARN }}
+                role-to-assume: ${{ secrets.DEV_EC2_AWS_ROLE_ARN }}
                 aws-region: ${{ secrets.AWS_REGION }}
             
             - name: Start EC2
