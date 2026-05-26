@@ -1,3 +1,3 @@
 pem/
 command.txt
-node_modules/*
+/slackbot/node_modules/*

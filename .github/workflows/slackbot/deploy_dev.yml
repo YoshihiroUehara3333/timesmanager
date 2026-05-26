@@ -3,7 +3,7 @@ name: Deploy Slackbot to AWS Lambda Develop
 on:
   push:
     branches:
-      - feature
+      - develop
     paths:
       - 'slackbot/**'
 
