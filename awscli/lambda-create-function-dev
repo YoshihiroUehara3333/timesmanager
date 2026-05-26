@@ -1,0 +1,8 @@
+# 
+aws lambda create-function \
+    --function-name timesmanager-slackbot-lambda-dev \
+    --runtime nodejs24.x \
+    --memory-size 256 \
+    --timeout 180 \
+    --handler lambda.handler \
+    --role arn:aws:iam::865983313407:role/service-role/timesmanager-slackbot-lambda-dev-role-i8mrmdp7
