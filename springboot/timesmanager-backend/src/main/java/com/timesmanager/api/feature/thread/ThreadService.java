@@ -7,21 +7,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.timesmanager.api.common.exception.ConflictException;
 import com.timesmanager.api.common.exception.InfrastructureException;
-import com.timesmanager.api.common.utils.Validator;
 import com.timesmanager.api.feature.thread.domain.ThreadDomain;
 import com.timesmanager.api.feature.thread.domain.ThreadDomainFactory;
 import com.timesmanager.api.feature.thread.dto.ThreadRequest;
 import com.timesmanager.api.feature.thread.dto.ThreadResponse;
 
+import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException;
+import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
+
 @Service
 public class ThreadService {
-	
+
 	/* Logger */
 	private static final Logger log = LoggerFactory.getLogger(ThreadService.class);
-	
+
 	private final ThreadDynamoRepository threadDynamoRepository;
-	
+
 	public ThreadService(ThreadDynamoRepository threadDynamoRepository) {
 		this.threadDynamoRepository = threadDynamoRepository;
 	}
@@ -31,25 +34,36 @@ public class ThreadService {
 	 * @param request
 	 * @return
 	 */
-	public ThreadResponse create(ThreadRequest request){
-		log.info("ThreadService.create: request = {}", request);
-		
-		if (!validateForCreate(request)) {
-		}
-		
+	public ThreadResponse create(ThreadRequest request) {
+		log.info("ThreadService.create: userId={}, date={}, channelId={}",
+				request.getUserId(), request.getDate(), request.getChannelId());
+
+		validateForCreate(request);
+
 		ThreadDomain thread = ThreadDomainFactory.fromRequest(request);
 
-		threadDynamoRepository.putItem(thread);
-		return ThreadResponse.fromDomain(thread);
+		try {
+			threadDynamoRepository.putItem(thread);
+			return ThreadResponse.fromDomain(thread);
+		}
+		catch (ConditionalCheckFailedException e) {
+			throw new ConflictException("PartitionKeyが重複しています。", e);
+		}
+		catch (DynamoDbException e) {
+			log.error("DynamoDB処理中にエラー: create userId={}, date={}",
+					request.getUserId(), request.getDate(), e);
+			throw new InfrastructureException("DynamoDB putItem failed", e);
+		}
 	}
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 */
-	private boolean validateForCreate (ThreadRequest request) {
-		return true;
+	private void validateForCreate(ThreadRequest request) {
+		if (request.getThreadTs() == null || request.getThreadTs().isBlank()) {
+			throw new IllegalArgumentException("threadTs is required");
+		}
+		if (request.getPermalink() == null || request.getPermalink().isBlank()) {
+			throw new IllegalArgumentException("permalink is required");
+		}
 	}
+
 	
 	/**
 	 * ユーザIDと日付でスレッド情報を取得
@@ -58,40 +72,42 @@ public class ThreadService {
 	 * @return
 	 */
 	public Optional<ThreadResponse> getByUserIdAndDate(ThreadRequest request) {
-		log.info("ThreadService.getByUserIdAndDate: userId={}, date={}", request.getUserId(), request.getDate());
-		
-		ThreadDomain thread = ThreadDomainFactory.fromRequest(request);
-        
+		log.info("ThreadService.getByUserIdAndDate: userId={}, date={}", 
+				request.getUserId(), request.getDate());
+
 		try {
-			return threadDynamoRepository.findByUserIdAndDate(thread)
+			return threadDynamoRepository.findByUserIdAndDate(
+						request.getUserId(),
+						request.getDate())
 					.map(ThreadResponse::fromDomain);
 		}
-		catch(RuntimeException e) {            
-			log.error("DynamoDB処理中にエラー: getByUserIdAndDate userId={}, date={}", request.getUserId(), request.getDate(), e);
-			throw new InfrastructureException("DynamoDB error", e);
+		catch (DynamoDbException e) {
+			log.error("DynamoDB処理中にエラー: getByUserIdAndDate userId={}, date={}", 
+					request.getUserId(), request.getDate(),
+					e);
+			throw new InfrastructureException("DynamoDB findByUserIdAndDate failed", e);
 		}
 	}
-	
-	
-    /**
-     * チャンネルIDに紐づくスレッド情報を全件取得
-     * @param userId
-     * @return
-     */
+
+	/**
+	 * チャンネルIDに紐づくスレッド情報を全件取得
+	 * @param userId
+	 * @return
+	 */
 	public List<ThreadResponse> getAllByUserId(ThreadRequest request) {
 		log.info("ThreadService.getAllByUserId: userId={}", request.getUserId());
-		
-		Validator.validateUserId(request.getUserId());
-		
+
 		try {
 			List<ThreadDomain> threads = threadDynamoRepository.findAllByUserId(request.getUserId());
 			return threads.stream()
 					.map(ThreadResponse::fromDomain)
 					.toList();
 		}
-		catch(RuntimeException e) {
-	        log.error("DynamoDB処理中にエラー: getAllByUserId userId={}", request.getUserId(), e);
-	        throw new InfrastructureException("DynamoDB error", e);
+		catch (DynamoDbException e) {
+			log.error("DynamoDB処理中にエラー: getAllByUserId userId={}",
+					request.getUserId(),
+					e);
+			throw new InfrastructureException("DynamoDB findAllByUserId failed", e);
 		}
-	};
+	}
 }

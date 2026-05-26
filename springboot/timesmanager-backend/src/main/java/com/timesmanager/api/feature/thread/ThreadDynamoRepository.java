@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.timesmanager.api.common.base.DynamoRepositoryBase;
-import com.timesmanager.api.common.exception.ConflictException;
-import com.timesmanager.api.common.exception.InfrastructureException;
 import com.timesmanager.api.dynamodb.DynamoDbItemBuilder;
 import com.timesmanager.api.dynamodb.DynamoKey;
 import com.timesmanager.api.dynamodb.DynamoKeyFactory;
@@ -71,9 +69,9 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase {
 		try {
 			dynamoDbClient.putItem(putItemRequest);
 		} catch (ConditionalCheckFailedException e) {
-			throw new ConflictException("PartitionKeyが重複しています。", e);
+			throw e;
 		} catch (DynamoDbException e) {
-			throw new InfrastructureException("DynamoDB putItem failed", e);
+			throw e;
 		}
 	}
 
@@ -82,12 +80,11 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase {
      * @param
      * @return
      */
-    public Optional<ThreadDomain> findByUserIdAndDate(ThreadDomain thread){
+    public Optional<ThreadDomain> findByUserIdAndDate(String userId, String date){
     	log.info("ThreadDynamoRepository.getByUserIdAndDate: userId={}, date={}",
-    			thread.getUserId(),
-    			thread.getDate());
+    			userId, date);
     	
-    	DynamoKey itemKey = getItemKeyFromDomain(thread);
+    	DynamoKey itemKey = DynamoKeyFactory.threadItemKey(userId, date);
 
     	Map<String, AttributeValue> key = new DynamoDbItemBuilder()
 				.putString(ATTR_PK, itemKey.getPartitionKey())
@@ -111,7 +108,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase {
 
         }
         catch (DynamoDbException e) {
-        	throw new InfrastructureException("DynamoDB findByUserIdAndDate failed", e);
+        	throw e;
         }
     }
 
@@ -142,7 +139,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase {
 					.map(this::mapToThreadDomain)
 					.collect(Collectors.toList());
 		} catch (DynamoDbException e) {
-			throw new InfrastructureException("DynamoDB findAllByUserId failed", e);
+			throw e;
 		}
 	}
 

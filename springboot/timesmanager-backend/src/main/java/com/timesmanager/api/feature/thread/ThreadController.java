@@ -34,7 +34,8 @@ public class ThreadController {
      * スレッド新規作成
      * 
      * @param request スレッド新規作成リクエスト
-     * @return 新規作成: 201 Created, 既存あり: 409 Conflict
+     * @return 新規作成: 201 Created
+     * @return 既存あり: 409 Conflict
      */
 	@PostMapping
 	public ResponseEntity<ThreadResponse> post(
