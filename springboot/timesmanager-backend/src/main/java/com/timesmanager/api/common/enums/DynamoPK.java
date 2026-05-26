@@ -1,0 +1,19 @@
+package com.timesmanager.api.common.enums;
+
+public enum DynamoPK {
+	DAILYREPORT("/DAILYREPORT"),
+	TASK("/TASK"),
+	ATTENDANCE("/ATTENDANCE"),
+	THREAD("/THREAD");
+	
+	private String suffix;
+	
+	// コンストラクタ
+    private DynamoPK(String suffix) {
+        this.suffix = suffix;
+    }
+    
+    public String getPartitionKey(String userId) {
+    	return userId + this.suffix;
+    }
+}
