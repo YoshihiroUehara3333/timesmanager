@@ -22,7 +22,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 20
+        node-version: 24
 
     - name: Zip Lambda function
       run: zip -r function.zip ./slackbot
@@ -31,8 +31,8 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v2
       with:
         role-to-assume: ${{ secrets.TEST_AWS_ROLE_ARN }}
-        aws-region: ${{ secrets.AWS_REGION }}  # 東京リージョンなど適宜
-
+        aws-region: ${{ secrets.AWS_REGION }}
+  
     - name: Deploy Lambda function
       run: |
         aws lambda update-function-code --function-name ${{ secrets.TEST_LAMBDA_FUNCTION_NAME }} --zip-file fileb://function.zip
