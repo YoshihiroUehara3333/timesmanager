@@ -1,0 +1,48 @@
+name: DEV-AWS EC2 Management
+
+on:
+  workflow_dispatch:
+    inputs:
+      parameter_name:
+        description: '操作を選択'
+        required: true
+        type: choice
+        options:
+          - start
+          - stop
+          - status
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+    ec2:
+        runs-on: ubuntu-latest
+        
+        steps:
+            - name: Configure AWS Credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                role-to-assume: ${{ secrets.DEV_LAMBDA_AWS_ROLE_ARN }}
+                aws-region: ${{ secrets.AWS_REGION }}
+            
+            - name: Start EC2
+              if: github.event.inputs.parameter_name == 'start'
+              run: |
+                aws ec2 start-instances \
+                  --instance-ids ${{ secrets.DEV_AWS_EC2_INSTANCE_ID }}
+            
+            - name: Stop EC2
+              if: github.event.inputs.parameter_name == 'stop'
+              run: |
+                aws ec2 stop-instances \
+                  --instance-ids ${{ secrets.DEV_AWS_EC2_INSTANCE_ID }}
+
+            - name: Status EC2
+              if: github.event.inputs.parameter_name == 'status'
+              run: |
+                aws ec2 describe-instances \
+                  --instance-ids ${{ secrets.DEV_AWS_EC2_INSTANCE_ID }} \
+                  --query "Reservations[].Instances[].State.Name" \
+                  --output text
