@@ -10,19 +10,6 @@ permissions:
 jobs:
     deploy:
         runs-on: ubuntu-latest
-        name: DEV-AWS EC2 Management
-        
-        on:
-          workflow_dispatch:
-            inputs:
-              parameter_name:
-                description: '操作を選択'
-                required: true
-                type: choice
-                options:
-                  - start
-                  - stop
-                  - status
 
         steps:
         - name: Checkout code
