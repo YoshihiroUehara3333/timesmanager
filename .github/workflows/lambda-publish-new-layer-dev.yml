@@ -1,4 +1,4 @@
-name: [DEV]Lambda Publish New Layer
+name: DEV-AWS Lambda Publish New Layer
 
 on:
     workflow_dispatch:
