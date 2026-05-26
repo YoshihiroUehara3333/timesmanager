@@ -11,7 +11,7 @@ class StartDailyReportInputUseCase {
 
   /**
    * ホームタブなどから「日報入力」を開始するユースケース
-   * - 入力済のデータがあれば取得し、モーダルを初期表示
+   * - 下書きデータがあれば取得し、モーダルを初期表示
    */
   async execute ({ userId, triggerId }) {
     console.log(`StartDailyReportInputUseCase.excecute userId:${userId} triggerId:${triggerId}`)

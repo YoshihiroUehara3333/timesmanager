@@ -1,0 +1,51 @@
+name: [DEV]Lambda Publish New Layer
+
+on:
+    workflow_dispatch:
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+        
+        - name: Set up Node.js
+          uses: actions/setup-node@v4
+          with:
+            node-version: 24
+        
+        - name: Clean layer Directory
+          run: rm -rf ./nodejs
+        
+        - name: Create layer Directory
+          run: mkdir -p nodejs
+        
+        - name: Install dependencies for layer
+          run: |
+            cp slackbot/package.json slackbot/package-lock.json nodejs/
+            cd nodejs
+            npm ci --omit=dev
+        
+        - name: Zip layer
+          run: zip -r layer.zip nodejs
+        
+        - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            role-to-assume: ${{ secrets.DEV_LAMBDA_AWS_ROLE_ARN }}
+            aws-region: ${{ secrets.AWS_REGION }}
+
+        - name: Update Lambda Function Layer
+          run: |
+            LAYER_ARN=$(aws lambda publish-layer-version \
+            --layer-name timesmanager-slackbot-node-modules-dev \
+            --zip-file fileb://layer.zip \
+            --compatible-runtimes nodejs24.x \
+            --query 'LayerVersionArn' \
+            --output text)
+
+            aws lambda update-function-configuration \
+            --function-name ${{ secrets.DEV_LAMBDA_FUNCTION_NAME }} \
+            --layers $LAYER_ARN

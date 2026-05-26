@@ -27,11 +27,9 @@ class MakeThreadUseCase {
       await respond('スレッド情報の取得に失敗しました。時間をおいて再度お試しください。')
       return { ok: false }
     }
-
     if (threadResult.data) {
       // /makethread のコマンドに返信
-      const replyText = buildReplyText({ permalink: threadResult.data.permalink })
-      await respond(replyText)
+      await respond(buildReplyText({ permalink: threadResult.data.permalink }))
       return { ok: true }
     }
 
