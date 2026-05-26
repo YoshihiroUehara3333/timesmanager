@@ -5,10 +5,9 @@ const { getDate } = require('../../../shared/utils/DateUtils')
 const { HomeBlocks } = require('../blockkit/HomeBlocks')
 
 class HomeOpenUseCase {
-  constructor ({ slackGateway, taskBackendGateway, threadBackendGateway }) {
+  constructor ({ slackGateway, homeBackendGateway }) {
     this.slackGateway = slackGateway
-    this.taskBackendGateway = taskBackendGateway
-    this.threadBackendGateway = threadBackendGateway
+    this.homeBackendGateway = homeBackendGateway
   }
 
   async execute ({ userId }) {
@@ -17,20 +16,12 @@ class HomeOpenUseCase {
     const date = getDate('YYYY-MM-DD')
 
     // スレッド存在確認
-    let tasks = []
-    const threadResult = await this.threadBackendGateway.getThreadByDate({ userId, date })
-    if (threadResult.data) {
-      // タスクリスト取得
-      const taskResult = await this.taskBackendGateway.getAllTasks({ userId })
-      if (taskResult.data) {
-        tasks = taskResult.data
-      }
-    }
+    const result = await this.homeBackendGateway.getForHome({ userId, date })
 
     // BlockKit作成
     const view = HomeBlocks({
-      tasks: tasks,
-      thread: threadResult.data,
+      tasks: result.tasks,
+      thread: result.thread,
     })
 
     // ホーム画面を更新
