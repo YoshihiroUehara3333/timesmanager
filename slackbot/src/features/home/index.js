@@ -20,7 +20,7 @@ function registerHomeFeature ({ app, slackApiAdaptor, backendHttpClient }) {
   })
 
   // Bolt登録
-  // ホーム画面オープン時
+  // ホーム画面オープン時のイベント
   app.event(
     'app_home_opened',
     async ({ body, event, logger }) => {
