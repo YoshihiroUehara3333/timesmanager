@@ -3,6 +3,10 @@ name: DEV-AWS Lambda Publish New Layer
 on:
     workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
     deploy:
         runs-on: ubuntu-latest
