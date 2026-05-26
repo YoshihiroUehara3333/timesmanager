@@ -11,9 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import com.slack_timesmanager.common.base.DynamoRepositoryBase;
-import com.slack_timesmanager.dynamodb.DynamoKey;
-import com.slack_timesmanager.dynamodb.DynamoKeyFactory;
+import com.timesmanager.api.common.base.DynamoRepositoryBase;
+import com.timesmanager.api.dynamodb.DynamoDbAttributeValueMapBuilder;
+import com.timesmanager.api.dynamodb.DynamoKey;
+import com.timesmanager.api.dynamodb.DynamoKeyFactory;
 import com.timesmanager.api.feature.attendance.domain.AttendanceDomain;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
@@ -49,8 +50,8 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
      */
 	public void updateItem(AttendanceDomain domain) {
 		DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
-                domain.userId(),
-                domain.date()
+                domain.getUserId(),
+                domain.getDate()
         );
 	    
         Map<String, AttributeValue> key = Map.of(
@@ -66,13 +67,14 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	    		,"#wp", ATTR_WORKPLACE
 	    		);
 
-	    Map<String, AttributeValue> expressionAttributeValues = Map.of(
-	    		":date", buildAttributeValue(domain.date())
-	    		,":userId", buildAttributeValue(domain.userId())
-	    		,":startTime", buildAttributeValue(domain.startTime())
-	    		,":endTime", buildAttributeValue(domain.endTime())
-	    		,":workplace", buildAttributeValue(domain.workplace())
-	    		);
+	    Map<String, AttributeValue> expressionAttributeValues 
+	    	= new DynamoDbAttributeValueMapBuilder()
+	                    .putString(":date", domain.getDate())
+	                    .putString(":userId", domain.getUserId())
+	                    .putString(":startTime", domain.getStartTime())
+	                    .putString(":endTime", domain.getEndTime())
+	                    .putString(":workplace", domain.getWorkplace())
+	                    .build();
 
 	    UpdateItemRequest updateRequest = UpdateItemRequest.builder()
 	        .tableName(tableName)
@@ -86,7 +88,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	        dynamoDbClient.updateItem(updateRequest);
 	    }
 	    catch (DynamoDbException e) {
-        	throw new RuntimeException("DynamoDB putItem failed", e);
+        	throw e;
         } 
 	}
     
@@ -118,7 +120,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
             return Optional.of(mapToAttendanceDomain(item));
 
         } catch (DynamoDbException e) {
-            throw new RuntimeException("DynamoDB getDiary failed", e);
+            throw e;
         }
     }
     
@@ -151,7 +153,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	                .collect(Collectors.toList());
 	    }
 	    catch (DynamoDbException e) {
-	        throw new RuntimeException("DynamoDB queryTaskList failed", e);
+	        throw e;
 	    }
 	}
     

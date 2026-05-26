@@ -6,12 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.slack_timesmanager.common.exception.InfrastructureException;
-import com.slack_timesmanager.common.utils.Validator;
+import com.timesmanager.api.common.exception.InfrastructureException;
 import com.timesmanager.api.feature.task.domain.TaskDomain;
 import com.timesmanager.api.feature.task.domain.TaskDomainFactory;
 import com.timesmanager.api.feature.task.dto.TaskRequest;
 import com.timesmanager.api.feature.task.dto.TaskResponse;
+
+import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 
 @Service
 public class TaskService {
@@ -44,9 +45,9 @@ public class TaskService {
 		    
 		    return TaskResponse.fromDomain(task);
 		}
-		catch(RuntimeException e) {
+		catch(DynamoDbException e) {
 	        log.error("DynamoDB処理中にエラー: save request={}", request, e);
-	        throw new InfrastructureException("タスクのDB登録に失敗しました", e);
+	        throw new InfrastructureException("DynamoDB updateItem failed", e);
 		}
 	}
 	
@@ -57,15 +58,13 @@ public class TaskService {
      */
 	public List<TaskResponse> getAllByUserId(String userId) {
 		log.info("TaskService.getAllByUserId: userId={}", userId);
-		
-		Validator.validateUserId(userId);
         
 		try {
 			return taskDynamoRepository.findAllByUserId(userId).stream()
 					.map((task) -> TaskResponse.fromDomain(task))
 					.toList();
 		}
-		catch(RuntimeException e) {
+		catch(DynamoDbException e) {
 	        log.error("DynamoDB処理中にエラー: getAllByUserId userId={}", userId, e);
 	        throw new InfrastructureException("タスク一覧の取得に失敗しました", e);
 		}
@@ -79,9 +78,6 @@ public class TaskService {
      */
 	public List<TaskResponse> getByUserIdAndDate(String userId, String date) {
 		log.info("TaskService.getByUserIdAndDate: userId={}, date={}", userId, date);
-		
-		Validator.validateUserId(userId);
-		Validator.validateDate(date);
         
 		try {
 			List<TaskDomain> tasks = taskDynamoRepository.findByUserIdAndDate(userId, date);
@@ -89,7 +85,7 @@ public class TaskService {
 					.map(TaskResponse::fromDomain)
 					.toList();
 		}
-		catch(RuntimeException e) {
+		catch(DynamoDbException e) {
             log.error("DynamoDB処理中にエラー: getByUserIdAndDate userId={}, date={}", userId, date, e);
             throw new InfrastructureException("タスク一覧の取得に失敗しました", e);
 		}

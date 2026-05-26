@@ -3,12 +3,15 @@ package com.timesmanager.api.feature.attendance.domain;
 import com.timesmanager.api.common.core.Domain;
 import com.timesmanager.api.feature.attendance.dto.AttendanceRequest;
 
+import lombok.Getter;
+
+@Getter
 public class AttendanceDomain implements Domain {
-	final String userId;
-	final String date;
-	final String startTime;
-	final String endTime;
-	final String workplace;
+	private String userId;
+	private String date;
+	private String startTime;
+	private String endTime;
+	private String workplace;
 	
 	public AttendanceDomain (
 		String userId,

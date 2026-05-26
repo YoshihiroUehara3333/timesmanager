@@ -1,15 +1,20 @@
 package com.timesmanager.api.feature.task.dto;
 
-import com.slack_timesmanager.common.core.Response;
+import com.timesmanager.api.common.core.Response;
 import com.timesmanager.api.feature.task.domain.TaskDomain;
 
 import lombok.Getter;
 
 @Getter
 public class TaskResponse implements Response {
-	public TaskResponse() {
-	}
-	public TaskResponse(
+	private String userId;
+	private String serial;
+	private String date;
+	private String taskName;
+	private String memo;
+	private String status;
+	
+	private TaskResponse(
 			String userId,
 			String serial,
 			String date,
@@ -27,18 +32,13 @@ public class TaskResponse implements Response {
 	
 	public static TaskResponse fromDomain(TaskDomain domain) {
 		return new TaskResponse(
-				domain.userId(),
-				domain.serial(),
-				domain.date(),
-				domain.taskName(),
-				domain.memo()
+				domain.getUserId(),
+				domain.getSerial(),
+				domain.getDate(),
+				domain.getTaskName(),
+				domain.getMemo()
 				);
 	}
 	
-	private String userId;
-	private String serial;
-	private String date;
-	private String taskName;
-	private String memo;
-	private String status;
+
 }

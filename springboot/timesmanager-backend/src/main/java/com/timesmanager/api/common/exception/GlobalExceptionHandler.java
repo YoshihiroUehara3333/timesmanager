@@ -33,6 +33,7 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse("INTERNAL_SERVER_ERROR", ex.getMessage()));
     }
+    
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<Void> handleConflict() {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();

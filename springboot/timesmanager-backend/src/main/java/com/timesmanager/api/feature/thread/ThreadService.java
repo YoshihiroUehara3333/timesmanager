@@ -51,7 +51,7 @@ public class ThreadService {
 		catch (DynamoDbException e) {
 			log.error("DynamoDB処理中にエラー: create userId={}, date={}",
 					request.getUserId(), request.getDate(), e);
-			throw new InfrastructureException("DynamoDB putItem failed", e);
+			throw new InfrastructureException("putItem", e);
 		}
 	}
 
@@ -76,7 +76,7 @@ public class ThreadService {
 			log.error("DynamoDB処理中にエラー: getByUserIdAndDate userId={}, date={}", 
 					request.getUserId(), request.getDate(),
 					e);
-			throw new InfrastructureException("DynamoDB findByUserIdAndDate failed", e);
+			throw new InfrastructureException("findByUserIdAndDate", e);
 		}
 	}
 
@@ -98,7 +98,7 @@ public class ThreadService {
 			log.error("DynamoDB処理中にエラー: getAllByUserId userId={}",
 					request.getUserId(),
 					e);
-			throw new InfrastructureException("DynamoDB findAllByUserId failed", e);
+			throw new InfrastructureException("findAllByUserId", e);
 		}
 	}
 }

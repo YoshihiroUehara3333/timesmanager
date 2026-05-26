@@ -7,12 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.slack_timesmanager.common.exception.InfrastructureException;
-import com.slack_timesmanager.common.utils.Validator;
+import com.timesmanager.api.common.exception.InfrastructureException;
 import com.timesmanager.api.feature.attendance.domain.AttendanceDomain;
 import com.timesmanager.api.feature.attendance.domain.AttendanceDomainFactory;
 import com.timesmanager.api.feature.attendance.dto.AttendanceRequest;
 import com.timesmanager.api.feature.attendance.dto.AttendanceResponse;
+
+import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 
 @Service
 public class AttendanceService {
@@ -34,28 +35,25 @@ public class AttendanceService {
 		AttendanceDomain attendance = AttendanceDomainFactory.fromAttendanceRequest(request);
 		try {
 			attendanceDynamoRepository.updateItem(attendance);
+			return AttendanceResponse.fromDomain(attendance);
 		}
-		catch(RuntimeException e) {
+		catch(DynamoDbException e) {
 	        log.error("DynamoDB処理中にエラー: save request={}", request, e);
 	        throw new InfrastructureException("DynamoDB error", e);
 		}
-		
-		return AttendanceResponse.fromDomain(attendance);
 	}
 	
     /**
      * 勤怠情報取得（userId）
      */
-	public List<AttendanceResponse> getAllByUserId(String userId) {
-		Validator.validateUserId(userId);
-		
+	public List<AttendanceResponse> getAllByUserId(String userId) {		
 		try {
 			List<AttendanceDomain> attendances = attendanceDynamoRepository.findAllByUserId(userId);
 			return attendances.stream()
 					.map(AttendanceResponse::fromDomain)
 					.toList();
 		}
-		catch(RuntimeException e) {            
+		catch(DynamoDbException e) {            
 			log.error("DynamoDB処理中にエラー: getAttendanceResponse userId={}", userId,  e);
 			throw new InfrastructureException("DynamoDB error", e);
 		}
@@ -63,18 +61,16 @@ public class AttendanceService {
 	
     /**
      * 勤怠情報取得（userId + date）
+     * 
      */
 	public Optional<AttendanceResponse> getByUserIdAndDate(String userId, String date) {
 		log.info("AttendanceService.getByUserIdAndDate: userId={}, date={}", userId, date);
-		
-		Validator.validateUserId(userId);
-		Validator.validateDate(date);
 		
 		try {
 			return attendanceDynamoRepository.findByUserIdAndDate(userId, date)
 					.map(AttendanceResponse::fromDomain);
 		}
-		catch(RuntimeException e) {            
+		catch(DynamoDbException e) {            
 			log.error("DynamoDB処理中にエラー: getByUserIdAndDate userId={}, date={}", userId, date, e);
 			throw new InfrastructureException("DynamoDB error", e);
 		}

@@ -5,21 +5,21 @@ import java.util.Map;
 
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
-public class DynamoDbItemBuilder {
+public class DynamoDbAttributeValueMapBuilder {
 
     private final Map<String, AttributeValue> map = new HashMap<>();
 
-    public DynamoDbItemBuilder putString(String key, String value) {
+    public DynamoDbAttributeValueMapBuilder putString(String key, String value) {
         map.put(key, AttributeValue.builder().s(value).build());
         return this;
     }
 
-    public DynamoDbItemBuilder putNumber(String key, Number value) {
+    public DynamoDbAttributeValueMapBuilder putNumber(String key, Number value) {
         map.put(key, AttributeValue.builder().n(String.valueOf(value)).build());
         return this;
     }
 
-    public DynamoDbItemBuilder putBoolean(String key, boolean value) {
+    public DynamoDbAttributeValueMapBuilder putBoolean(String key, boolean value) {
         map.put(key, AttributeValue.builder().bool(value).build());
         return this;
     }

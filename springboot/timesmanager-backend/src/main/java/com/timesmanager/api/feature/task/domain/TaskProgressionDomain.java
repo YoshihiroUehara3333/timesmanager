@@ -1,6 +1,6 @@
 package com.timesmanager.api.feature.task.domain;
 
-import com.slack_timesmanager.common.core.Domain;
+import com.timesmanager.api.common.core.Domain;
 
 public record TaskProgressionDomain(
 		String userId,

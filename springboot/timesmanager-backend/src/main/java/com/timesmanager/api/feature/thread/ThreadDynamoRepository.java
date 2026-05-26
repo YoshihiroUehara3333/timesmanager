@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.timesmanager.api.common.base.DynamoRepositoryBase;
-import com.timesmanager.api.dynamodb.DynamoDbItemBuilder;
+import com.timesmanager.api.dynamodb.DynamoDbAttributeValueMapBuilder;
 import com.timesmanager.api.dynamodb.DynamoKey;
 import com.timesmanager.api.dynamodb.DynamoKeyFactory;
 import com.timesmanager.api.feature.thread.domain.ThreadDomain;
@@ -50,7 +50,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase {
 	public void putItem(ThreadDomain thread) {
 		DynamoKey itemKey = getItemKeyFromDomain(thread);
 
-		Map<String, AttributeValue> item = new DynamoDbItemBuilder()
+		Map<String, AttributeValue> item = new DynamoDbAttributeValueMapBuilder()
 				.putString(ATTR_PK, itemKey.getPartitionKey())
 				.putString(ATTR_SK, itemKey.getSortKey())
 				.putString(ATTR_CHANNEL_ID, thread.getChannelId())
@@ -86,7 +86,7 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase {
     	
     	DynamoKey itemKey = DynamoKeyFactory.threadItemKey(userId, date);
 
-    	Map<String, AttributeValue> key = new DynamoDbItemBuilder()
+    	Map<String, AttributeValue> key = new DynamoDbAttributeValueMapBuilder()
 				.putString(ATTR_PK, itemKey.getPartitionKey())
 				.putString(ATTR_SK, itemKey.getSortKey())
 				.build();

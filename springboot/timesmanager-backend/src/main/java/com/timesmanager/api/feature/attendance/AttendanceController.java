@@ -51,7 +51,8 @@ public class AttendanceController {
 	 * 
 	 * @param userId
 	 * @param date
-	 * @return データ有: 200 OK データ0件: 204 No Content
+	 * @return データ有: 200 OK
+	 * @return データ0件: 204 No Content
 	 */
 	@GetMapping("/{date}")
 	public ResponseEntity<AttendanceResponse> getByDate(
