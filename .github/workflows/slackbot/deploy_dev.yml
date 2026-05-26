@@ -1,0 +1,44 @@
+name: Deploy Slackbot to AWS Lambda Develop
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'slackbot/**'
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 24
+
+    - name: Zip Lambda function
+      run: zip -r function.zip ./slackbot
+
+    - uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+  
+    - name: Deploy Lambda function
+      run: |
+        aws lambda update-function-code --function-name ${{ secrets.TEST_LAMBDA_FUNCTION_NAME }} --zip-file fileb://function.zip
+        
+    - name: Notify to Slack
+      if: always()
+      run: |
+        curl -X POST -H 'Content-type: application/json' \
+        --data "{\"text\":\"✅ timesmanager デプロイ完了（branch: ${{ github.ref_name }}）\"}" \
+        ${{ secrets.SLACK_WEBHOOK }}

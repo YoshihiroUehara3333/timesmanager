@@ -1,0 +1,10 @@
+# 
+aws lambda create-function \
+    --function-name timesmanager-slackbot-lambda-prod \
+    --runtime nodejs24.x \
+    --memory-size 256 \
+    --timeout 180 \
+    --handler lambda.handler \
+    --region ap-northeast-1 \
+    --role
+    --zip-file fileb://function.zip

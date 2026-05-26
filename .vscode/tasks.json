@@ -1,0 +1,59 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      // ======================
+      // ESLint チェックタスク
+      // ======================
+      "label": "lint",
+      "type": "shell",
+      "command": "npm run lint",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$eslint-stylish"
+      ]
+    },
+
+    {
+      // ======================
+      // Prettier チェックタスク
+      // ======================
+      // コードが Prettier ルールに従っているか確認
+      "label": "prettier:check",
+      "type": "shell",
+      "command": "npx prettier . --check",
+      "group": "test",
+      "problemMatcher": []
+    },
+
+    {
+      // ======================
+      // Prettier 自動整形タスク
+      // ======================
+      "label": "prettier:fix",
+      "type": "shell",
+      "command": "npx prettier . --write",
+      "group": "build",
+      "problemMatcher": []
+    },
+
+    {
+      // ======================
+      // CI 総合チェック（推奨）
+      // ======================
+      // ESLint + Prettier check をまとめて実行するタスク
+      "label": "ci-check",
+      "dependsOn": [
+        "lint",
+        "prettier:check"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      }
+    }
+  ]
+}

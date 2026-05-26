@@ -1,0 +1,39 @@
+// src/features/attendance/application/SubmitAttendanceUseCase.js
+
+class SubmitAttendanceUseCase {
+  constructor ({ slackGateway, attendanceBackendGateway }) {
+    this.slackGateway = slackGateway
+    this.attendanceBackendGateway = attendanceBackendGateway
+  }
+
+  /**
+     * 勤怠入力モーダルの内容を保存するユースケース
+     *
+     * @param {Object} params
+     * @param {Object} params.view  - Slack view payload
+     */
+  async execute ({ view }) {
+    // 入力値を取得
+    const metadata = JSON.parse(view.private_metadata)
+    const values = view.state.values
+
+    const attendance = {
+      date: values.attendanceDate.select_attendanceDate.selected_date,
+      userId: metadata.user_id,
+      startTime: values.starttime.start_time.selected_time,
+      endTime: values.endtime.end_time.selected_time,
+      workplace: values.workplace.select_workplace.selected_option.value,
+    }
+
+    // バックエンドにリクエスト送信
+    const saveResult = await this.attendanceBackendGateway.saveAttendance(attendance)
+    if (!saveResult.ok) {
+      // 未実装
+      return false
+    }
+
+    // Slackメッセージを送信
+  }
+}
+
+module.exports = { SubmitAttendanceUseCase }

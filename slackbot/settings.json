@@ -1,0 +1,23 @@
+{
+  // デフォルトフォーマッターは Prettier
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // JS も Prettier に統一
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // 保存時 Prettier でフォーマット
+  "editor.formatOnSave": true,
+
+  // 保存時 ESLint フィックスも走らせる（重要）
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+
+  "editor.tabSize": 2,
+  "eslint.packageManager": "npm",
+
+  // ESLint の対象言語を JS に限定（settings.json に ESLint が噛みに行ってエラーになるのを防ぐ）
+  "eslint.validate": ["javascript"]
+}
