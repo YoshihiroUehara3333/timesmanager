@@ -20,5 +20,8 @@ exports.BackendRouting = Object.freeze({
   ATTENDANCE: {
     SAVE: () => ({ method: 'PUT', path: `${API_BASE}/attendance` }),
     GETBYDATE: (date) => ({ method: 'GET', path: `${API_BASE}/attendance/${date}` }),
+  },
+  HOME: {
+    GET: () => ({ method: 'GET', path: `${API_BASE}/dailycontext/home` }),
   }
 })

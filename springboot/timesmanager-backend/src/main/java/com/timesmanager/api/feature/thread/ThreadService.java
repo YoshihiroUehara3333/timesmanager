@@ -50,7 +50,8 @@ public class ThreadService {
 		}
 		catch (DynamoDbException e) {
 			log.error("DynamoDB処理中にエラー: create userId={}, date={}",
-					request.getUserId(), request.getDate(), e);
+					request.getUserId(), request.getDate(), 
+					e);
 			throw new InfrastructureException("putItem", e);
 		}
 	}
