@@ -117,8 +117,9 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase {
 	public List<ThreadDomain> findAllByUserId(String userId) {
 		String partitionKey = DynamoKeyFactory.threadPartitionKey(userId);
 
-		Map<String, AttributeValue> eav = Map.of(
-				":pk", AttributeValue.builder().s(partitionKey).build());
+		Map<String, AttributeValue> eav = new DynamoDbAttributeValueMapBuilder()
+				.putString(":pk", partitionKey)
+				.build();
 
 		QueryRequest queryRequest = QueryRequest.builder()
 				.tableName(tableName)
@@ -137,7 +138,8 @@ public class ThreadDynamoRepository extends DynamoRepositoryBase {
 			return response.items().stream()
 					.map(this::mapToThreadDomain)
 					.collect(Collectors.toList());
-		} catch (DynamoDbException e) {
+		}
+		catch (DynamoDbException e) {
 			throw e;
 		}
 	}
