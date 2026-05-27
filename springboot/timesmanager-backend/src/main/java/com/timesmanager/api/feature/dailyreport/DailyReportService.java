@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.slack_timesmanager.common.exception.InfrastructureException;
+import com.timesmanager.api.common.exception.InfrastructureException;
 import com.timesmanager.api.feature.dailyreport.dto.DailyReportRequest;
 import com.timesmanager.api.feature.dailyreport.dto.DailyReportResponse;
 

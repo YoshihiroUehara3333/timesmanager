@@ -1,6 +1,6 @@
 package com.timesmanager.api.feature.dailyreport.dto;
 
-import com.slack_timesmanager.common.core.Response;
+import com.timesmanager.api.common.core.Response;
 import com.timesmanager.api.feature.dailyreport.domain.DailyReportDomain;
 
 import lombok.Getter;
