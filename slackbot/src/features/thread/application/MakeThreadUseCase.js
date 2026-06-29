@@ -21,19 +21,23 @@ class MakeThreadUseCase {
 
     const date = getDate('YYYY-MM-DD')
 
+    let errMsg
+
     // スレッド存在確認
     let threadResult
     try {
       threadResult = await this.threadBackendGateway.getThreadByDate({ userId, date })
+      if (threadResult.data) {
+        errMsg = buildReplyText({ permalink: threadResult.data.permalink })
+      }
     } catch (error) {
-      await respond('スレッド情報の取得に失敗しました。時間をおいて再度お試しください。')
+      errMsg = 'スレッド情報の取得に失敗しました。時間をおいて再度お試しください。'
+    }
+    if (errMsg) {
+      respond(errMsg)
       return { ok: false }
     }
-    if (threadResult.data) {
-      // /makethread のコマンドに返信
-      await respond(buildReplyText({ permalink: threadResult.data.permalink }))
-      return { ok: true }
-    }
+
 
     // Slackにスレッドを投稿
     let thread
@@ -47,7 +51,6 @@ class MakeThreadUseCase {
       return { ok: false }
     }
 
-
     // バックエンドにスレッド情報を送信
     const saveResult = await this.threadBackendGateway.saveThread({
       channelId: thread.channelId,
@@ -58,8 +61,9 @@ class MakeThreadUseCase {
     })
     if (!saveResult.ok) {
       await respond('スレッド情報の保存に失敗しました。')
+      return { ok: false }
     }
-    return { ok: saveResult.ok }
+    return { ok: true }
   }
 }
 
