@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.timesmanager.api.common.exception.ConflictException;
 import com.timesmanager.api.common.exception.InfrastructureException;
-import com.timesmanager.api.feature.thread.domain.ThreadDomain;
-import com.timesmanager.api.feature.thread.domain.ThreadDomainFactory;
+import com.timesmanager.api.feature.thread.domain.Thread;
+import com.timesmanager.api.feature.thread.domain.ThreadFactory;
 import com.timesmanager.api.feature.thread.dto.ThreadCreateRequest;
 import com.timesmanager.api.feature.thread.dto.ThreadGetRequest;
 import com.timesmanager.api.feature.thread.dto.ThreadResponse;
@@ -39,11 +39,11 @@ public class ThreadService {
 		log.info("ThreadService.create: userId={}, date={}, channelId={}",
 				request.getUserId(), request.getDate(), request.getChannelId());
 
-		ThreadDomain thread = ThreadDomainFactory.fromCreateRequest(request);
+		Thread domain = ThreadFactory.from(request);
 
 		try {
-			threadDynamoRepository.putItem(thread);
-			return ThreadResponse.fromDomain(thread);
+			threadDynamoRepository.putItem(domain);
+			return ThreadResponse.from(domain);
 		}
 		catch (ConditionalCheckFailedException e) {
 			throw new ConflictException("PartitionKeyが重複しています。", e);
@@ -71,7 +71,7 @@ public class ThreadService {
 			return threadDynamoRepository.findByUserIdAndDate(
 						request.getUserId(),
 						request.getDate())
-					.map(ThreadResponse::fromDomain);
+					.map(ThreadResponse::from);
 		}
 		catch (DynamoDbException e) {
 			log.error("DynamoDB処理中にエラー: getByUserIdAndDate userId={}, date={}", 
@@ -90,9 +90,9 @@ public class ThreadService {
 		log.info("ThreadService.getAllByUserId: userId={}", request.getUserId());
 
 		try {
-			List<ThreadDomain> threads = threadDynamoRepository.findAllByUserId(request.getUserId());
+			List<Thread> threads = threadDynamoRepository.findAllByUserId(request.getUserId());
 			return threads.stream()
-					.map(ThreadResponse::fromDomain)
+					.map(ThreadResponse::from)
 					.toList();
 		}
 		catch (DynamoDbException e) {

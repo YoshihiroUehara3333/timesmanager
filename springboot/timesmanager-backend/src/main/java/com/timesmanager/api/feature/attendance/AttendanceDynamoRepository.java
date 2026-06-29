@@ -15,7 +15,7 @@ import com.timesmanager.api.common.base.DynamoRepositoryBase;
 import com.timesmanager.api.dynamodb.DynamoDbAttributeValueMapBuilder;
 import com.timesmanager.api.dynamodb.DynamoKey;
 import com.timesmanager.api.dynamodb.DynamoKeyFactory;
-import com.timesmanager.api.feature.attendance.domain.AttendanceDomain;
+import com.timesmanager.api.feature.attendance.domain.Attendance;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -48,7 +48,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
     /**
      * 勤怠情報を保存
      */
-	public void updateItem(AttendanceDomain domain) {
+	public void updateItem(Attendance domain) {
 		DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
                 domain.getUserId(),
                 domain.getDate()
@@ -96,7 +96,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
      * 勤怠情報を1件取得（PK+SKでユニーク）
      * 返り値は既存互換のため List<AttendanceResponse> としている
      */
-    public Optional<AttendanceDomain> findByUserIdAndDate(String userId, String date) throws DynamoDbException{
+    public Optional<Attendance> findByUserIdAndDate(String userId, String date) throws DynamoDbException{
     	DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
                 userId,
                 date
@@ -127,7 +127,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
     /**
      * ユーザIDに紐づく勤怠情報を全件取得する
      */
-	public List<AttendanceDomain> findAllByUserId(String userId) {
+	public List<Attendance> findAllByUserId(String userId) {
 		String partitionKey = DynamoKeyFactory.attendancePartitionKey(userId);
 
 	    Map<String, AttributeValue> eav = Map.of(
@@ -160,8 +160,8 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	/**
 	 * DynamoDB 1アイテム → AttendanceDomain 変換
 	 */
-	private AttendanceDomain mapToAttendanceDomain(Map<String, AttributeValue> item) {
-	    return new AttendanceDomain(
+	private Attendance mapToAttendanceDomain(Map<String, AttributeValue> item) {
+	    return new Attendance(
 	    	    getString(item, ATTR_USER_ID),
 	    	    getString(item, ATTR_DATE),
 	    	    getString(item, ATTR_START_TIME),

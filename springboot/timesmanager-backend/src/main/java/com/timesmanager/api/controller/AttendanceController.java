@@ -1,4 +1,4 @@
-package com.timesmanager.api.feature.attendance;
+package com.timesmanager.api.controller;
 
 import jakarta.validation.Valid;
 
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.timesmanager.api.feature.attendance.AttendanceService;
 import com.timesmanager.api.feature.attendance.dto.AttendanceRequest;
 import com.timesmanager.api.feature.attendance.dto.AttendanceResponse;
 

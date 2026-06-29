@@ -1,7 +1,7 @@
 package com.timesmanager.api.feature.attendance.dto;
 
 import com.timesmanager.api.common.core.Response;
-import com.timesmanager.api.feature.attendance.domain.AttendanceDomain;
+import com.timesmanager.api.feature.attendance.domain.Attendance;
 
 import lombok.Getter;
 
@@ -27,7 +27,7 @@ public class AttendanceResponse implements Response{
 		this.workplace = workplace;
 	}
 	
-	public static AttendanceResponse fromDomain(AttendanceDomain domain) {
+	public static AttendanceResponse fromDomain(Attendance domain) {
 		return new AttendanceResponse(
 				domain.getUserId(),
 				domain.getDate(),

@@ -1,4 +1,4 @@
-package com.timesmanager.api.feature.thread;
+package com.timesmanager.api.controller;
 
 import java.util.List;
 
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.timesmanager.api.feature.thread.ThreadService;
 import com.timesmanager.api.feature.thread.dto.ThreadCreateRequest;
 import com.timesmanager.api.feature.thread.dto.ThreadGetRequest;
 import com.timesmanager.api.feature.thread.dto.ThreadResponse;

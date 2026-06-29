@@ -2,11 +2,13 @@ package com.timesmanager.api.feature.thread.dto;
 
 
 import com.timesmanager.api.common.core.Response;
-import com.timesmanager.api.feature.thread.domain.ThreadDomain;
+import com.timesmanager.api.feature.thread.domain.Thread;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
-@Getter
+@Data
+@RequiredArgsConstructor
 public class ThreadResponse implements Response{
 	private final String channelId;
 	private final String date;
@@ -14,21 +16,7 @@ public class ThreadResponse implements Response{
     private final String threadTs;
     private final String permalink;
 	
-	private ThreadResponse(
-			String channelId,
-			String date,
-			String userId,
-			String threadTs,
-			String permalink
-	) {
-		this.channelId = channelId;
-		this.date = date;
-		this.userId = userId;
-		this.threadTs = threadTs;
-		this.permalink = permalink;
-	}
-	
-	public static ThreadResponse fromDomain(ThreadDomain domain) {
+	public static ThreadResponse from(Thread domain) {
 		return new ThreadResponse(
 				domain.getChannelId(),
 				domain.getDate(),

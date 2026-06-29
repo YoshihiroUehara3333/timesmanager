@@ -22,8 +22,10 @@ class MakeThreadUseCase {
     const date = getDate('YYYY-MM-DD')
 
     // スレッド存在確認
-    const threadResult = await this.threadBackendGateway.getThreadByDate({ userId, date })
-    if (!threadResult.ok) {
+    let threadResult
+    try {
+      threadResult = await this.threadBackendGateway.getThreadByDate({ userId, date })
+    } catch (error) {
       await respond('スレッド情報の取得に失敗しました。時間をおいて再度お試しください。')
       return { ok: false }
     }
@@ -34,10 +36,17 @@ class MakeThreadUseCase {
     }
 
     // Slackにスレッドを投稿
-    const thread = await this.slackGateway.postThread({
-      channelId: channelId,
-      text: buildThreadInitialText({ userId, date }),
-    })
+    let thread
+    try {
+      thread = await this.slackGateway.postThread({
+        channelId: channelId,
+        text: buildThreadInitialText({ userId, date }),
+      })
+    } catch (error) {
+      await respond('スレッドの投稿に失敗しました。時間をおいて再度お試しください。')
+      return { ok: false }
+    }
+
 
     // バックエンドにスレッド情報を送信
     const saveResult = await this.threadBackendGateway.saveThread({
