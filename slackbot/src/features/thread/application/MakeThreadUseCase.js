@@ -21,23 +21,18 @@ class MakeThreadUseCase {
 
     const date = getDate('YYYY-MM-DD')
 
-    let errMsg
-
     // スレッド存在確認
     let threadResult
     try {
       threadResult = await this.threadBackendGateway.getThreadByDate({ userId, date })
       if (threadResult.data) {
-        errMsg = buildReplyText({ permalink: threadResult.data.permalink })
+        await respond(buildReplyText({ permalink: threadResult.data.permalink }))
+        return { ok: true }
       }
     } catch (error) {
-      errMsg = 'スレッド情報の取得に失敗しました。時間をおいて再度お試しください。'
-    }
-    if (errMsg) {
-      respond(errMsg)
+      await respond(error?.message)
       return { ok: false }
     }
-
 
     // Slackにスレッドを投稿
     let thread
