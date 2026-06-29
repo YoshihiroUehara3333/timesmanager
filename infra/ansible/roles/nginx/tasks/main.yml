@@ -1,0 +1,21 @@
+- name: Install nginx
+  ansible.builtin.package:
+    name: nginx
+    state: present
+
+- name: Deploy nginx config
+  ansible.builtin.template:
+    src: timesmanager.conf.j2
+    dest: /etc/nginx/conf.d/timesmanager.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Test nginx config
+    - Reload nginx
+
+- name: Ensure nginx is enabled and running
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
