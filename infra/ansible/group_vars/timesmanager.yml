@@ -1,0 +1,2 @@
+server_name: dev.slack-times-manager.com
+app_port: 8080
