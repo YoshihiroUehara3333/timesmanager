@@ -13,7 +13,7 @@ import com.timesmanager.api.common.base.DynamoRepositoryBase;
 import com.timesmanager.api.dynamodb.DynamoDbAttributeValueMapBuilder;
 import com.timesmanager.api.dynamodb.DynamoKey;
 import com.timesmanager.api.dynamodb.DynamoKeyFactory;
-import com.timesmanager.api.feature.task.domain.TaskDomain;
+import com.timesmanager.api.feature.task.domain.Task;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -44,7 +44,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
      * 
      * @param task
      */
-	public void updateItem(TaskDomain task){
+	public void updateItem(Task task){
 		DynamoKey itemKey = getItemKeyFromDomain(task);
 	    
         Map<String, AttributeValue> key = new HashMap<>();
@@ -95,7 +95,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
     /**
      * ユーザIDに紐づくタスクを全件取得する
      */
-	public List<TaskDomain> findAllByUserId(String userId) {
+	public List<Task> findAllByUserId(String userId) {
 	    String partitionKey = DynamoKeyFactory.taskPartitionKey(userId);
 
 	    // :pk プレースホルダーにパーティションキーをバインド
@@ -130,7 +130,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
     /**
      * ユーザIDと日付からタスク情報を取得する
      */
-	public List<TaskDomain> findByUserIdAndDate(String userId, String date) {
+	public List<Task> findByUserIdAndDate(String userId, String date) {
 		String partitionKey = DynamoKeyFactory.taskPartitionKey(userId);
 
 	    // プレースホルダーにバインド
@@ -214,8 +214,8 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	/**
 	 * DynamoDB 1アイテム → TaskDomain 変換
 	 */
-	private TaskDomain mapToTaskDomain(Map<String, AttributeValue> item) {
-	    return TaskDomain.create(
+	private Task mapToTaskDomain(Map<String, AttributeValue> item) {
+	    return Task.create(
 	    		getString(item, ATTR_USER_ID),
 	    		getString(item, ATTR_SERIAL),
 	    		getString(item, ATTR_DATE),
@@ -224,7 +224,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	    		);
 	}
 	
-	private DynamoKey getItemKeyFromDomain(TaskDomain task) {
+	private DynamoKey getItemKeyFromDomain(Task task) {
 		return DynamoKeyFactory.taskItemKey(
 	            task.getUserId(),
 	            task.getDate(),

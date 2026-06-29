@@ -3,17 +3,19 @@ package com.timesmanager.api.feature.attendance.domain;
 import com.timesmanager.api.common.core.Domain;
 import com.timesmanager.api.feature.attendance.dto.AttendanceRequest;
 
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 
-@Getter
-public class AttendanceDomain implements Domain {
+@Data
+@Builder
+public class Attendance implements Domain {
 	private String userId;
 	private String date;
 	private String startTime;
 	private String endTime;
 	private String workplace;
 	
-	public AttendanceDomain (
+	public Attendance (
 		String userId,
 		String date,
 		String startTime,
@@ -27,7 +29,7 @@ public class AttendanceDomain implements Domain {
 		this.workplace = workplace;
 	}
 	
-	public AttendanceDomain (AttendanceRequest request) {
+	public Attendance (AttendanceRequest request) {
 		this.userId = request.getUserId();
 		this.date = request.getDate();
 		this.startTime = request.getStartTime();
@@ -35,11 +37,11 @@ public class AttendanceDomain implements Domain {
 		this.workplace = request.getWorkplace();
 	}
 	
-	public static AttendanceDomain createFromRequest (AttendanceRequest request) {
+	public static Attendance createFromRequest (AttendanceRequest request) {
 		if (request.getStartTime() != null && request.getEndTime() != null) {
 			throw new RuntimeException();
 		}
 		
-		return new AttendanceDomain (request);
+		return new Attendance (request);
 	}
 }

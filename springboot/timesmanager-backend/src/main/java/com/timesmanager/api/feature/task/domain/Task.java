@@ -5,7 +5,7 @@ import com.timesmanager.api.common.core.Domain;
 import lombok.Getter;
 
 @Getter
-public class TaskDomain implements Domain {
+public class Task implements Domain {
 
     private final String userId;
     private final String serial;
@@ -13,7 +13,7 @@ public class TaskDomain implements Domain {
     private final String taskName;
     private final String memo;
 
-    private TaskDomain(
+    private Task(
             String userId,
             String serial,
             String date,
@@ -27,14 +27,14 @@ public class TaskDomain implements Domain {
         this.memo = memo;
     }
 
-    public static TaskDomain create(
+    public static Task create(
             String userId,
             String serial,
             String date,
             String taskName,
             String memo
     ) {
-        return new TaskDomain(
+        return new Task(
                 userId,
                 serial,
                 date,

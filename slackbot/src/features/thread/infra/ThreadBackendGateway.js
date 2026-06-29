@@ -21,7 +21,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
 
     try {
       const response = await this.backendHttpClient.request({
-        routing: BackendRouting.THREAD.CREATE(),
+        routing: BackendRouting.THREAD.POST(),
         data: {
           channelId: channelId,
           threadTs: threadTs,
@@ -56,8 +56,9 @@ class ThreadBackendGateway extends BackendGatewayBase {
   async getThreadByDate ({ userId, date }) {
     console.log(`ThreadBackendGateway.getThreadByDate userId:${userId} date:${date}`)
 
+    let response
     try {
-      const response = await this.backendHttpClient.request({
+      response = await this.backendHttpClient.request({
         routing: BackendRouting.THREAD.GETBYDATE(date),
         config: {
           params: {
@@ -66,15 +67,15 @@ class ThreadBackendGateway extends BackendGatewayBase {
         }
       })
       console.log(`ThreadBackendGateway.getThreadByDate status:${JSON.stringify(response.status)}`)
-
-      if (response.status === 200) {
-        return { ok: true, status: response.status, data: response.data }
-      } else {
-        return { ok: true, status: response.status, data: undefined }
-      }
     } catch (err) {
       console.warn(`backendHttpClient.request failed msg=${err?.message}`)
-      return { ok: false, error: err }
+      throw new Error('スレッド情報の取得に失敗しました。時間をおいて再度お試しください。')
+    }
+
+    if (response.status === 200) {
+      return { ok: true, status: response.status, data: response.data }
+    } else if (response.status === 204) {
+      return { ok: true, status: response.status, data: undefined }
     }
   }
 

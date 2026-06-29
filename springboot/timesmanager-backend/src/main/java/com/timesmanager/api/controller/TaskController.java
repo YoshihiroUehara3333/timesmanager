@@ -1,4 +1,4 @@
-package com.timesmanager.api.feature.task;
+package com.timesmanager.api.controller;
 
 import java.util.List;
 
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.timesmanager.api.feature.task.TaskService;
 import com.timesmanager.api.feature.task.dto.TaskRequest;
 import com.timesmanager.api.feature.task.dto.TaskResponse;
 
