@@ -10,4 +10,8 @@ const awsLambdaReceiver = new AwsLambdaReceiver({
 
 createBoltApp({ receiver: awsLambdaReceiver })
 
-exports.handler = awsLambdaReceiver.toHandler()
+const boltHandler = awsLambdaReceiver.toHandler()
+
+exports.handler = async (event, context) => {
+  return await boltHandler(event, context)
+}
