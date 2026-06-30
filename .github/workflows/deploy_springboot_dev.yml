@@ -45,12 +45,6 @@ jobs:
       run: gradle clean build -x test
       working-directory: ./springboot/timesmanager-backend
 
-    - name: Rename jar
-      run: |
-        ll build/libs/
-        cp build/libs/*.jar build/libs/timesmanager.jar
-      working-directory: ./springboot/timesmanager-backend
-
     - name: Open SSH security group
       run: |
         # SSHのセキュリティグループを開放する
