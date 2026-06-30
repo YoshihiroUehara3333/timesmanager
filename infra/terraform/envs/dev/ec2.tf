@@ -49,3 +49,7 @@ resource "aws_iam_instance_profile" "timesmanager_ec2_dev_instance_profile" {
   path = "/"
   role = aws_iam_role.timesmanager_ec2_dev_instance_role.name
 }
+resource "aws_iam_role_policy_attachment" "cloudwatch" {
+  role       = aws_iam_role.timesmanager_ec2_dev_instance_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
