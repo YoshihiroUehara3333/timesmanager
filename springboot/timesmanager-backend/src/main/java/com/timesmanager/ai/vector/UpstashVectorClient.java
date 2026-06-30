@@ -1,13 +1,13 @@
-package com.ai.vector;
+package com.timesmanager.ai.vector;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import com.ai.vector.dto.SearchRequest;
-import com.ai.vector.dto.SearchResponse;
-import com.ai.vector.dto.UpsertRequest;
+import com.timesmanager.ai.vector.dto.SearchRequest;
+import com.timesmanager.ai.vector.dto.SearchResponse;
+import com.timesmanager.ai.vector.dto.UpsertRequest;
 
 @Component
 public class UpstashVectorClient {
