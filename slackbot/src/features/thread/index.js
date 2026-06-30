@@ -42,7 +42,7 @@ function registerThreadFeature({ app, slackApiAdaptor, backendHttpClient }) {
     logger.info(`app.event\nevent:${JSON.stringify(event)}`)
     if (!event.thread_ts) return
     if (event.parent_user_id !== event.user) return
-    if (event.ts === event.thread_ts) return
+    if (event.event_ts === event.thread_ts) return
     if (event.subtype) return
 
     // backendに保存
