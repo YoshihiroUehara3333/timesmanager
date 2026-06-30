@@ -1,4 +1,4 @@
-package com.timesmanager.api.feature.thread;
+package com.timesmanager.api.feature.thread.repository;
 
 import java.util.Collections;
 import java.util.List;
@@ -10,11 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.timesmanager.api.common.core.repository.AbstractDynamoRepository;
-import com.timesmanager.api.common.core.repository.Repository;
+import com.timesmanager.api.common.dynamodb.AbstractDynamoRepository;
+import com.timesmanager.api.common.dynamodb.DynamoDbAttributeValueMapBuilder;
+import com.timesmanager.api.common.dynamodb.ThreadKeyFactory;
 import com.timesmanager.api.common.enums.DynamoAttrName;
-import com.timesmanager.api.dynamodb.DynamoDbAttributeValueMapBuilder;
-import com.timesmanager.api.dynamodb.key.ThreadKeyFactory;
 import com.timesmanager.api.feature.thread.domain.Thread;
 import com.timesmanager.api.feature.thread.domain.ThreadFactory;
 
@@ -30,7 +29,7 @@ import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
 @org.springframework.stereotype.Repository
 public class ThreadDynamoRepository 
         extends AbstractDynamoRepository
-        implements Repository<Thread>{
+        implements ThreadRepository {
 
 	/* Logger */
 	private static final Logger log = LoggerFactory.getLogger(ThreadDynamoRepository.class);
@@ -45,23 +44,25 @@ public class ThreadDynamoRepository
 	 * スレッド情報を1件保存する
 	 * @param
 	 */
-	public void putItem(Thread thread) {
+	@Override
+	public void save(Thread thread) {
 		Map<String, AttributeValue> item = 
-					new DynamoDbAttributeValueMapBuilder()
-						.putString(DynamoAttrName.PK.getValue(), ThreadKeyFactory.getPk(thread.getUserId()))
-						.putString(DynamoAttrName.SK.getValue(), ThreadKeyFactory.getSk(thread.getDate()))
-						.putString(DynamoAttrName.USER_ID.getValue(), thread.getUserId())
-						.putString(DynamoAttrName.CHANNEL_ID.getValue(), thread.getChannelId())
-						.putString(DynamoAttrName.DATE.getValue(), thread.getDate())
-						.putString(DynamoAttrName.THREAD_TS.getValue(), thread.getThreadTs())
-						.putString(DynamoAttrName.PERMALINK.getValue(), thread.getPermalink())
-						.build();
+				new DynamoDbAttributeValueMapBuilder()
+					.putString(DynamoAttrName.PK.getValue(), ThreadKeyFactory.getPk(thread.getUserId()))
+					.putString(DynamoAttrName.SK.getValue(), ThreadKeyFactory.getSk(thread.getDate()))
+					.putString(DynamoAttrName.USER_ID.getValue(), thread.getUserId())
+					.putString(DynamoAttrName.CHANNEL_ID.getValue(), thread.getChannelId())
+					.putString(DynamoAttrName.DATE.getValue(), thread.getDate())
+					.putString(DynamoAttrName.THREAD_TS.getValue(), thread.getThreadTs())
+					.putString(DynamoAttrName.PERMALINK.getValue(), thread.getPermalink())
+					.build();
 
-		PutItemRequest putItemRequest = PutItemRequest.builder()
-				.tableName(tableName)
-				.item(item)
-				.conditionExpression("attribute_not_exists(" + DynamoAttrName.PK.getValue() + ")")
-				.build();
+		PutItemRequest putItemRequest = 
+					PutItemRequest.builder()
+						.tableName(tableName)
+						.item(item)
+						.conditionExpression(DynamoAttrName.PK.notExist())
+						.build();
 
 		try {
 			dynamoDbClient.putItem(putItemRequest);
@@ -109,11 +110,10 @@ public class ThreadDynamoRepository
 	/**
 	 * チャンネルIDに紐づくスレッド情報を全件取得する
 	 */
+    @Override
 	public List<Thread> findAllByUserId(String userId) {
-		String partitionKey = ThreadKeyFactory.getPk(userId);
-
 		Map<String, AttributeValue> eav = new DynamoDbAttributeValueMapBuilder()
-				.putString(":pk", partitionKey)
+				.putString(":pk", ThreadKeyFactory.getPk(userId))
 				.build();
 
 		QueryRequest queryRequest = QueryRequest.builder()

@@ -1,4 +1,4 @@
-package com.timesmanager.api.dynamodb;
+package com.timesmanager.api.common.dynamodb;
 
 /**
  * DynamoDB の PK/SK を一つにまとめた値オブジェクト

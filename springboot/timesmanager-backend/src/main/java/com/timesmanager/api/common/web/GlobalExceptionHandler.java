@@ -1,4 +1,4 @@
-package com.timesmanager.api.controller;
+package com.timesmanager.api.common.web;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,12 +9,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.timesmanager.api.common.core.Domain;
 import com.timesmanager.api.common.exception.ConflictException;
-import com.timesmanager.api.common.exception.ErrorResponse;
 import com.timesmanager.api.common.exception.FieldErrorInfo;
 import com.timesmanager.api.common.exception.InfrastructureException;
 import com.timesmanager.api.common.exception.NotFoundException;
-import com.timesmanager.api.common.exception.ValidationErrorResponse;
+import com.timesmanager.api.common.exception.dto.ErrorResponse;
+import com.timesmanager.api.common.exception.dto.ValidationErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -42,8 +43,8 @@ public class GlobalExceptionHandler {
     }
     
     @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<Void> handleConflict() {
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    public ResponseEntity<Domain> handleConflict(ConflictException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getDomain());
     }
     
     @ExceptionHandler(MethodArgumentNotValidException.class)

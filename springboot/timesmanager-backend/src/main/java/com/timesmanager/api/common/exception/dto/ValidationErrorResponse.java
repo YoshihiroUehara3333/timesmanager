@@ -1,6 +1,8 @@
-package com.timesmanager.api.common.exception;
+package com.timesmanager.api.common.exception.dto;
 
 import java.util.List;
+
+import com.timesmanager.api.common.exception.FieldErrorInfo;
 
 import lombok.Getter;
 import lombok.Setter;

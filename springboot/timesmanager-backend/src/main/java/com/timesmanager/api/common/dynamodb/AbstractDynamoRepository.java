@@ -1,4 +1,4 @@
-package com.timesmanager.api.common.core.repository;
+package com.timesmanager.api.common.dynamodb;
 
 import java.util.Map;
 
@@ -20,7 +20,7 @@ public abstract class AbstractDynamoRepository {
 		this.tableName = tableName;
 	}
 	
-	public static AttributeValue buildAttributeValue(String str) {
+	public static AttributeValue buildAttrVal(String str) {
 		return AttributeValue.builder().s(str).build();
 	}
 	

@@ -7,7 +7,10 @@ const POST_FAILED = 'スレッドの投稿に失敗しました。時間をお�
 const SAVE_FAILED = 'スレッド情報の保存に失敗しました。'
 
 class MakeThreadUseCase {
-  constructor ({ slackGateway: slack, threadBackendGateway: threadBackend }) {
+  constructor ({
+    slackGateway: slack,
+    threadBackendGateway: threadBackend
+  }) {
     this.slack = slack
     this.threadBackend = threadBackend
   }
@@ -25,7 +28,7 @@ class MakeThreadUseCase {
     const date = getDate('YYYY-MM-DD')
 
     // スレッド存在確認
-    let threadResult
+    let threadResult = {}
     try {
       threadResult = await this.threadBackend.getThreadByDate({ userId, date })
       if (threadResult.data) {
@@ -36,7 +39,7 @@ class MakeThreadUseCase {
     }
 
     // Slackにスレッドを投稿
-    let thread
+    let thread = {}
     try {
       thread = await this.slack.postThread({
         channelId: channelId,

@@ -14,6 +14,7 @@ import com.timesmanager.api.feature.thread.domain.ThreadFactory;
 import com.timesmanager.api.feature.thread.dto.ThreadCreateRequest;
 import com.timesmanager.api.feature.thread.dto.ThreadGetRequest;
 import com.timesmanager.api.feature.thread.dto.ThreadResponse;
+import com.timesmanager.api.feature.thread.repository.ThreadDynamoRepository;
 
 import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
@@ -42,7 +43,7 @@ public class ThreadService {
 		Thread domain = ThreadFactory.from(request);
 
 		try {
-			threadDynamoRepository.putItem(domain);
+			threadDynamoRepository.save(domain);
 			return ThreadResponse.from(domain);
 		}
 		catch (ConditionalCheckFailedException e) {

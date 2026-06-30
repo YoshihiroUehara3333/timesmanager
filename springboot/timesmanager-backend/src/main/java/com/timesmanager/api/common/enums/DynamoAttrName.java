@@ -23,4 +23,8 @@ public enum DynamoAttrName {
     PROGRESS("task_progressions");
 	
 	private final String value;
+	
+	public String notExist() {
+		return "attribute_not_exists(" + value + ")";
+	}
 }

@@ -7,12 +7,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import com.timesmanager.api.common.core.repository.AbstractDynamoRepository;
-import com.timesmanager.api.common.core.repository.Repository;
+import com.timesmanager.api.common.core.Repository;
+import com.timesmanager.api.common.dynamodb.AbstractDynamoRepository;
+import com.timesmanager.api.common.dynamodb.DynamoDbAttributeValueMapBuilder;
+import com.timesmanager.api.common.dynamodb.DynamoKey;
+import com.timesmanager.api.common.dynamodb.DynamoKeyFactory;
 import com.timesmanager.api.common.enums.DynamoAttrName;
-import com.timesmanager.api.dynamodb.DynamoDbAttributeValueMapBuilder;
-import com.timesmanager.api.dynamodb.DynamoKey;
-import com.timesmanager.api.dynamodb.DynamoKeyFactory;
 import com.timesmanager.api.feature.task.domain.Task;
 import com.timesmanager.api.feature.task.domain.TaskFactory;
 
@@ -135,8 +135,8 @@ public class TaskDynamoRepository
 
 	    // プレースホルダーにバインド
 	    Map<String, AttributeValue> eav = Map.of(
-	            ":pk", buildAttributeValue(partitionKey),
-	            ":sk", buildAttributeValue(date)
+	            ":pk", buildAttrVal(partitionKey),
+	            ":sk", buildAttrVal(date)
 	    );
 
 	    QueryRequest queryRequest = QueryRequest.builder()
