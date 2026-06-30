@@ -1,8 +1,9 @@
-- name: Test nginx config
-  ansible.builtin.command: nginx -t
-  changed_when: false
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
 
-- name: Reload nginx
-  ansible.builtin.service:
-    name: nginx
-    state: reloaded
+- name: Restart app
+  ansible.builtin.systemd:
+    name: timesmanager
+    state: restarted
+    enabled: true

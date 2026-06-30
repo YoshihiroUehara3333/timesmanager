@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
 
-import com.timesmanager.api.common.base.DynamoRepositoryBase;
+import com.timesmanager.api.common.core.repository.AbstractDynamoRepository;
+import com.timesmanager.api.common.core.repository.Repository;
+import com.timesmanager.api.common.enums.DynamoAttrName;
 import com.timesmanager.api.dynamodb.DynamoDbAttributeValueMapBuilder;
 import com.timesmanager.api.dynamodb.DynamoKey;
 import com.timesmanager.api.dynamodb.DynamoKeyFactory;
-import com.timesmanager.api.feature.dailyreport.dto.DailyReportRequest;
+import com.timesmanager.api.feature.dailyreport.domain.DailyReport;
 import com.timesmanager.api.feature.dailyreport.dto.DailyReportResponse;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
@@ -22,12 +23,10 @@ import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
-@Repository
-public class DailyReportDynamoRepository extends DynamoRepositoryBase {
-
-	// ===== 属性名の定数 =====
-	private static final String ATTR_USER_ID = "user_id";
-	private static final String ATTR_CHANNEL_ID = "channel_id";
+@org.springframework.stereotype.Repository
+public class DailyReportDynamoRepository 
+		extends AbstractDynamoRepository
+		implements Repository<DailyReport> {
 
 	public DailyReportDynamoRepository(
 			DynamoDbClient dynamoDbClient,
@@ -38,16 +37,18 @@ public class DailyReportDynamoRepository extends DynamoRepositoryBase {
 	/**
 	 * 日報を1件保存
 	 */
-	public void putItem(DailyReportRequest request) {
+	public void putItem(DailyReport domain) {
 		DynamoKey itemKey = DynamoKeyFactory.dailyreportItemKey(
-				request.getUserId(),
-				request.getDate());
+				domain.getUserId(),
+				domain.getDate());
 
-		Map<String, AttributeValue> item = new HashMap<>();
-		item.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
-		item.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
-		item.put(ATTR_USER_ID, AttributeValue.builder().s(request.getUserId()).build());
-		item.put(ATTR_CHANNEL_ID, AttributeValue.builder().s(request.getChannelId()).build());
+		Map<String, AttributeValue> item = 
+				new DynamoDbAttributeValueMapBuilder()
+				.putString(DynamoAttrName.PK.getValue(), itemKey.getPartitionKey())
+				.putString(DynamoAttrName.SK.getValue(), itemKey.getSortKey())
+				.putString(DynamoAttrName.USER_ID.getValue(), domain.getUserId())
+				.putString(DynamoAttrName.CHANNEL_ID.getValue(), domain.getChannelId())
+				.build();
 
 		PutItemRequest putItemRequest = PutItemRequest.builder()
 				.tableName(tableName)
@@ -71,8 +72,8 @@ public class DailyReportDynamoRepository extends DynamoRepositoryBase {
 				date);
 
 		Map<String, AttributeValue> key = new DynamoDbAttributeValueMapBuilder()
-				.putString(ATTR_PK, itemKey.getPartitionKey())
-				.putString(ATTR_SK, itemKey.getSortKey())
+				.putString(DynamoAttrName.PK.getValue(), itemKey.getPartitionKey())
+				.putString(DynamoAttrName.SK.getValue(), itemKey.getSortKey())
 				.build();
 
 		GetItemRequest request = GetItemRequest.builder()
@@ -94,31 +95,26 @@ public class DailyReportDynamoRepository extends DynamoRepositoryBase {
 		}
 	}
 
-	public void updateItem(DailyReportRequest request) {
+	public void updateItem(DailyReport domain) {
 		DynamoKey itemKey = DynamoKeyFactory.dailyreportItemKey(
-				request.getUserId(),
-				request.getDate());
+				domain.getUserId(),
+				domain.getDate());
 
 		Map<String, AttributeValue> key = new DynamoDbAttributeValueMapBuilder()
-					.putString(ATTR_PK, itemKey.getPartitionKey())
-					.putString(ATTR_SK, itemKey.getSortKey()).build();
+				.putString(DynamoAttrName.PK.getValue(), itemKey.getPartitionKey())
+				.putString(DynamoAttrName.SK.getValue(), itemKey.getSortKey())
+				.build();
 
 		Map<String, String> expressionAttributeNames = new HashMap<>();
 		expressionAttributeNames.put("#st", "startTime");
 		expressionAttributeNames.put("#et", "endTime");
 		expressionAttributeNames.put("#wp", "workplace");
 
-		Map<String, AttributeValue> expressionAttributeValues = new DynamoDbAttributeValueMapBuilder()
-					.putString(":startTime", request.getStartTime())
-					.putString(":endTime", request.getEndTime())
-					.putString(":workplace", request.getWorkplace()).build();
-
 		UpdateItemRequest updateRequest = UpdateItemRequest.builder()
 				.tableName(tableName)
 				.key(key)
 				.updateExpression("SET #st = :startTime, #et = :endTime, #wp = :workplace")
 				.expressionAttributeNames(expressionAttributeNames)
-				.expressionAttributeValues(expressionAttributeValues)
 				.build();
 
 		try {
@@ -134,8 +130,8 @@ public class DailyReportDynamoRepository extends DynamoRepositoryBase {
 	private DailyReportResponse mapToDiaryResponse(Map<String, AttributeValue> item) {
 		DailyReportResponse response = new DailyReportResponse();
 
-		response.setUserId(item.get(ATTR_USER_ID).s());
-		response.setDate(item.get(ATTR_SK).s());
+		response.setUserId(item.get(DynamoAttrName.PK.getValue()).s());
+		response.setDate(item.get(DynamoAttrName.SK.getValue()).s());
 
 		return response;
 	}

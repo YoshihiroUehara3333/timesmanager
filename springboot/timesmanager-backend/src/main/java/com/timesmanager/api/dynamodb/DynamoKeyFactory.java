@@ -1,14 +1,12 @@
 package com.timesmanager.api.dynamodb;
 
+import com.timesmanager.api.common.core.Domain;
 import com.timesmanager.api.common.enums.DynamoPK;
 
 /**
  * DynamoDB の PK/SK を一元的に生成する Factory
  */
-public final class DynamoKeyFactory {
-
-    private DynamoKeyFactory() {
-    }
+public interface DynamoKeyFactory<T extends Domain> {
 
     // ===== Task 用 =====
     // partition_key:userId + "/TASK"
@@ -63,25 +61,6 @@ public final class DynamoKeyFactory {
      */
     public static DynamoKey attendanceItemKey(String userId, String date) {
         String pk = attendancePartitionKey(userId);
-        String sk = date;
-        return new DynamoKey(pk, sk);
-    }
-
-    // ===== Thread 用 =====
-    // partition_key:userId + "/THREAD"
-    // sort_key: YYYY-MM-DD
-    /**
-     * Thread: PK
-     */
-    public static String threadPartitionKey(String userId) {
-        return DynamoPK.THREAD.getPartitionKey(userId);
-    }
-
-    /**
-     * Thread:  PK/SK
-     */
-    public static DynamoKey threadItemKey(String userId, String date) {
-        String pk = threadPartitionKey(userId);
         String sk = date;
         return new DynamoKey(pk, sk);
     }

@@ -3,7 +3,22 @@
     name: nginx
     state: present
 
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
 - name: Deploy nginx config
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Test nginx config
+    - Reload nginx
+
+- name: Deploy backend nginx config
   ansible.builtin.template:
     src: timesmanager.conf.j2
     dest: /etc/nginx/conf.d/timesmanager.conf

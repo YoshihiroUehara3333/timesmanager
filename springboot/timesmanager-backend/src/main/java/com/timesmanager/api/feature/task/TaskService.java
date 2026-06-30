@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.timesmanager.api.common.exception.InfrastructureException;
 import com.timesmanager.api.feature.task.domain.Task;
-import com.timesmanager.api.feature.task.domain.TaskDomainFactory;
+import com.timesmanager.api.feature.task.domain.TaskFactory;
 import com.timesmanager.api.feature.task.dto.TaskRequest;
 import com.timesmanager.api.feature.task.dto.TaskResponse;
 
@@ -40,7 +40,7 @@ public class TaskService {
 			String serial = taskDynamoRepository.getNextSerial(request.getUserId(), request.getDate());
 			request.setSerial(serial);
 			
-			Task task = TaskDomainFactory.fromTaskRequest(request);
+			Task task = TaskFactory.from(request);
 		    taskDynamoRepository.updateItem(task);
 		    
 		    return TaskResponse.fromDomain(task);

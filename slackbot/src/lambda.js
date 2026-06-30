@@ -10,21 +10,4 @@ const awsLambdaReceiver = new AwsLambdaReceiver({
 
 createBoltApp({ receiver: awsLambdaReceiver })
 
-const handler = awsLambdaReceiver.toHandler()
-
-exports.handler = async (event, context) => {
-  const body = JSON.parse(event.body || '{}')
-
-  // Slack URL verification
-  if (body.type === 'url_verification') {
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-      body: body.challenge,
-    }
-  }
-
-  return await handler(event, context)
-}
+exports.handler = awsLambdaReceiver.toHandler()

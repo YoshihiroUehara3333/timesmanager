@@ -1,6 +1,6 @@
 package com.timesmanager.api.feature.attendance.dto;
 
-import com.timesmanager.api.common.core.Response;
+import com.timesmanager.api.common.core.dto.Response;
 import com.timesmanager.api.feature.attendance.domain.Attendance;
 
 import lombok.Getter;
