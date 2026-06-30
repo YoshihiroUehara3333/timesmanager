@@ -1,5 +1,0 @@
-inventory.ini
-*/env.j2
-commands.txt
-ansible/**/hosts.ini
-**/group_vars/timesmanager.yml

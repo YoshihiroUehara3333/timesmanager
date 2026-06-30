@@ -3,28 +3,6 @@
     name: java-21-amazon-corretto
     state: present
 
-- name: Create CloudWatch Agent config directory
-  file:
-    path: /opt/aws/amazon-cloudwatch-agent/etc
-    state: directory
-    owner: root
-    group: root
-    mode: "0755"
-
-- name: Install Cloudwatch Agent
-  dnf:
-    name: amazon-cloudwatch-agent
-    state: present
-
-- name: Deploy CloudWatch Agent config
-  template:
-    src: amazon-cloudwatch-agent.json.j2
-    dest: /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
-    owner: root
-    group: root
-    mode: "0644"
-  notify: Restart cloudwatch agent
-
 - name: Create app directory
   file:
     path: /opt/timesmanager
@@ -48,3 +26,9 @@
     dest: /etc/systemd/system/timesmanager.service
   notify: Reload systemd
 
+- name: Enable and start app
+  systemd:
+    name: timesmanager
+    enabled: true
+    state: started
+    daemon_reload: true
