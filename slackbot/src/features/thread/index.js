@@ -40,10 +40,22 @@ function registerThreadFeature({ app, slackApiAdaptor, backendHttpClient }) {
   // スレッド内返信を受信して保存する
   app.event('message', async ({ event, logger }) => {
     logger.info(`app.event\nevent:${JSON.stringify(event)}`)
-    if (!event.thread_ts) return
-    if (event.parent_user_id !== event.user) return
-    if (event.event_ts === event.thread_ts) return
-    if (event.subtype) return
+    if (!event.thread_ts) {
+      console.log('!event.thread_ts')
+      return
+    }
+    if (event.parent_user_id !== event.user) {
+      console.log('event.parent_user_id !== event.user')
+      return
+    }
+    if (event.event_ts === event.thread_ts) {
+      console.log('event.event_ts === event.thread_ts')
+      return
+    }
+    if (event.subtype) {
+      console.log('event.subtype')
+      return
+    }
 
     // backendに保存
     await saveThreadReply.execute({
