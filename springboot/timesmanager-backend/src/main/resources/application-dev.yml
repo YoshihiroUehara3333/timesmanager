@@ -21,3 +21,8 @@ logging:
               method:
                 annotation:
                   RequestMappingHandlerMapping: DEBUG
+
+upstash:
+  vector:
+    url: ${UPSTASH_VECTOR_REST_URL}
+    token: ${UPSTASH_VECTOR_REST_TOKEN}
