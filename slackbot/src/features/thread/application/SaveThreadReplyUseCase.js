@@ -10,18 +10,24 @@ class SaveThreadReplyUseCase {
     this.threadBackend = threadBackend
   }
 
+  /**
+   * 
+   * @param {*} param0 
+   * @returns 
+   */
   async execute ({
     userId,
-    channeId,
+    channelId,
     parentTs,
     replyTs,
     text
   }) {
+    console.log(`SaveThreadReplyUseCase.execute userId:${userId} channelId:${channelId}`)
     const date = getDate('YYYY-MM-DD')
 
     await this.threadBackend.saveReply({
       userId: userId,
-      channeId: channeId,
+      channelId: channelId,
       parentTs: parentTs,
       replyTs: replyTs,
       date: date,
