@@ -1,3 +1,5 @@
 .ssh/*
 command.txt
 /slackbot/node_modules/*
+
+*/nodejs/*
