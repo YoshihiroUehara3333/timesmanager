@@ -11,11 +11,11 @@
     group: root
     mode: "0755"
 
-- name: Install Cloudwatch Agent 
-  dnf: 
-    name: amazon-cloudwatch-agent 
+- name: Install Cloudwatch Agent
+  dnf:
+    name: amazon-cloudwatch-agent
     state: present
-    
+
 - name: Deploy CloudWatch Agent config
   template:
     src: amazon-cloudwatch-agent.json.j2
@@ -24,14 +24,6 @@
     group: root
     mode: "0644"
   notify: Restart cloudwatch agent
-
-- name: Start CloudWatch Agent
-  command: >
-    /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl
-    -a fetch-config
-    -m ec2
-    -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
-    -s
 
 - name: Create app directory
   file:
