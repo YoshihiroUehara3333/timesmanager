@@ -62,7 +62,7 @@ public class ThreadDynamoRepository
 					PutItemRequest.builder()
 						.tableName(tableName)
 						.item(item)
-						.conditionExpression(DynamoAttrName.PK.notExist())
+						.conditionExpression(DynamoAttrName.PK.attrNotExist())
 						.build();
 
 		try {

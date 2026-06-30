@@ -16,6 +16,8 @@ public enum DynamoAttrName {
     DATE("date"),
     PERMALINK("permalink"),
     THREAD_TS("thread_ts"),
+    REPLY_TS("reply_ts"),
+    TEXT("text"),
     
     TASK_NAME("task_name"),
     SERIAL("serial"),
@@ -24,7 +26,7 @@ public enum DynamoAttrName {
 	
 	private final String value;
 	
-	public String notExist() {
+	public String attrNotExist() {
 		return "attribute_not_exists(" + value + ")";
 	}
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.timesmanager.api.common.dynamodb.AbstractDynamoRepository;
+import com.timesmanager.api.common.dynamodb.DynamoDbAttributeValueMapBuilder;
 import com.timesmanager.api.common.enums.DynamoAttrName;
 import com.timesmanager.api.feature.thread.domain.ThreadReply;
 
@@ -41,22 +42,20 @@ public class ThreadReplyDynamoRepository
                 domain.getDate(),
                 domain.getReplyTs());
 
-        Map<String, AttributeValue> key = Map.of(
-        		DynamoAttrName.PK.getValue(), AttributeValue.builder()
-                        .s(domain.getUserId() + "/THREAD")
-                        .build(),
-                DynamoAttrName.SK.getValue(), AttributeValue.builder()
-                        .s(domain.getDate())
-                        .build()
-        );
+        Map<String, AttributeValue> key =
+        		new DynamoDbAttributeValueMapBuilder()
+        		.putString(DynamoAttrName.PK.getValue(), domain.getUserId() + "/THREAD")
+        		.putString(DynamoAttrName.SK.getValue(), domain.getDate() + "/REPLY" + domain.getReplyTs())
+        		.build();
 
-        Map<String, AttributeValue> replyMap = Map.of(
-                "user_id", AttributeValue.builder().s(domain.getUserId()).build(),
-                "channel_id", AttributeValue.builder().s(domain.getChannelId()).build(),
-                "thread_ts", AttributeValue.builder().s(domain.getParentTs()).build(),
-                "reply_ts", AttributeValue.builder().s(domain.getReplyTs()).build(),
-                "text", AttributeValue.builder().s(domain.getText()).build()
-        );
+        Map<String, AttributeValue> replyMap =
+                new DynamoDbAttributeValueMapBuilder()
+                        .putString(DynamoAttrName.USER_ID.getValue(), domain.getUserId())
+                        .putString(DynamoAttrName.CHANNEL_ID.getValue(), domain.getChannelId())
+                        .putString(DynamoAttrName.THREAD_TS.getValue(), domain.getParentTs())
+                        .putString(DynamoAttrName.REPLY_TS.getValue(), domain.getReplyTs())
+                        .putString(DynamoAttrName.TEXT.getValue(), domain.getText())
+                        .build();
 
         UpdateItemRequest request = UpdateItemRequest.builder()
                 .tableName(tableName)
