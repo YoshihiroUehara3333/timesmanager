@@ -1,4 +1,4 @@
-package com.timesmanager.api.dynamodb;
+package com.timesmanager.api.common.dynamodb;
 
 import com.timesmanager.api.common.core.Domain;
 import com.timesmanager.api.common.enums.DynamoPK;

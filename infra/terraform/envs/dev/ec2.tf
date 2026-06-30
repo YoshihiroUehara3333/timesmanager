@@ -49,3 +49,32 @@ resource "aws_iam_instance_profile" "timesmanager_ec2_dev_instance_profile" {
   path = "/"
   role = aws_iam_role.timesmanager_ec2_dev_instance_role.name
 }
+resource "aws_iam_role_policy_attachment" "cloudwatch" {
+  role       = aws_iam_role.timesmanager_ec2_dev_instance_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+resource "aws_iam_role_policy" "timesmanager_dynamodb_dev" {
+  name = "timesmanager-dynamodb-dev-policy"
+  role = aws_iam_role.timesmanager_ec2_dev_instance_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Query",
+          "dynamodb:Scan"
+        ]
+        Resource = [
+          aws_dynamodb_table.timesmanager_dynamodb_dev.arn,
+          "${aws_dynamodb_table.timesmanager_dynamodb_dev.arn}/index/*"
+        ]
+      }
+    ]
+  })
+}

@@ -4,9 +4,12 @@ const { AttendanceInputModal } = require('../blockkit/AttendanceInputModal')
 const { getDate } = require('../../../shared/utils/DateUtils')
 
 class StartAttendanceInputUseCase {
-  constructor ({ slackGateway, attendanceBackendGateway }) {
-    this.slackGateway = slackGateway
-    this.attendanceBackendGateway = attendanceBackendGateway
+  constructor ({
+    slackGateway: slack,
+    attendanceBackendGateway: attendanceBackend
+  }) {
+    this.slack = slack
+    this.attendanceBackend = attendanceBackend
   }
 
   /**
@@ -20,7 +23,7 @@ class StartAttendanceInputUseCase {
 
     // 勤怠を取得する
     let attendance = {}
-    const response = await this.attendanceBackendGateway.getAttendanceByDate({ userId, date })
+    const response = await this.attendanceBackend.getAttendanceByDate({ userId, date })
     if (response.ok) {
       attendance = response.data
     }
@@ -29,7 +32,7 @@ class StartAttendanceInputUseCase {
     const view = AttendanceInputModal({ userId, date, attendance })
 
     // モーダルを開く
-    await this.slackGateway.openModal({
+    await this.slack.openModal({
       triggerId,
       view,
     })

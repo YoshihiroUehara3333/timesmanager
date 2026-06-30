@@ -1,4 +1,4 @@
-package com.timesmanager.api.dynamodb;
+package com.timesmanager.api.common.dynamodb;
 
 import java.util.HashMap;
 import java.util.Map;

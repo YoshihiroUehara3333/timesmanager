@@ -1,6 +1,6 @@
 package com.timesmanager.api.feature.dailyreport.dto;
 
-import com.timesmanager.api.common.core.dto.Response;
+import com.timesmanager.api.common.core.Response;
 import com.timesmanager.api.feature.dailyreport.domain.DailyReport;
 
 import lombok.Getter;

@@ -12,6 +12,7 @@ import com.timesmanager.api.feature.attendance.domain.Attendance;
 import com.timesmanager.api.feature.attendance.domain.AttendanceFactory;
 import com.timesmanager.api.feature.attendance.dto.AttendanceRequest;
 import com.timesmanager.api.feature.attendance.dto.AttendanceResponse;
+import com.timesmanager.api.feature.attendance.repository.AttendanceDynamoRepository;
 
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 
@@ -34,7 +35,7 @@ public class AttendanceService {
 	public AttendanceResponse save(AttendanceRequest request){
 		Attendance attendance = AttendanceFactory.from(request);
 		try {
-			attendanceDynamoRepository.updateItem(attendance);
+			attendanceDynamoRepository.save(attendance);
 			return AttendanceResponse.fromDomain(attendance);
 		}
 		catch(DynamoDbException e) {

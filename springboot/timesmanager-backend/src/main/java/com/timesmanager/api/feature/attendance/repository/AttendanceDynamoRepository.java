@@ -1,4 +1,4 @@
-package com.timesmanager.api.feature.attendance;
+package com.timesmanager.api.feature.attendance.repository;
 
 import java.util.Collections;
 import java.util.List;
@@ -10,14 +10,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.timesmanager.api.common.core.repository.AbstractDynamoRepository;
-import com.timesmanager.api.common.core.repository.Repository;
+import com.timesmanager.api.common.dynamodb.AbstractDynamoRepository;
+import com.timesmanager.api.common.dynamodb.DynamoDbAttributeValueMapBuilder;
+import com.timesmanager.api.common.dynamodb.DynamoKey;
+import com.timesmanager.api.common.dynamodb.DynamoKeyFactory;
 import com.timesmanager.api.common.enums.DynamoAttrName;
-import com.timesmanager.api.dynamodb.DynamoDbAttributeValueMapBuilder;
-import com.timesmanager.api.dynamodb.DynamoKey;
-import com.timesmanager.api.dynamodb.DynamoKeyFactory;
 import com.timesmanager.api.feature.attendance.domain.Attendance;
-import com.timesmanager.api.feature.dailyreport.domain.DailyReport;
+import com.timesmanager.api.feature.attendance.domain.AttendanceFactory;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -30,7 +29,7 @@ import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 @org.springframework.stereotype.Repository
 public class AttendanceDynamoRepository 
         extends AbstractDynamoRepository
-        implements Repository<DailyReport>{
+        implements AttendanceRepository{
 
     // ===== 属性名の定数 =====
     private static final String ATTR_DATE       = "date";
@@ -52,15 +51,15 @@ public class AttendanceDynamoRepository
     /**
      * 勤怠情報を保存
      */
-	public void updateItem(Attendance domain) {
+	public void save(Attendance domain) {
 		DynamoKey itemKey = DynamoKeyFactory.attendanceItemKey(
                 domain.getUserId(),
                 domain.getDate()
         );
 	    
         Map<String, AttributeValue> key = Map.of(
-        		DynamoAttrName.PK.getValue(), buildAttributeValue(itemKey.getPartitionKey())
-        		,DynamoAttrName.SK.getValue(), buildAttributeValue(itemKey.getSortKey())
+        		DynamoAttrName.PK.getValue(), buildAttrVal(itemKey.getPartitionKey())
+        		,DynamoAttrName.SK.getValue(), buildAttrVal(itemKey.getSortKey())
         		);
 
 	    Map<String, String> expressionAttributeNames = Map.of(
@@ -107,8 +106,8 @@ public class AttendanceDynamoRepository
         );
 
         Map<String, AttributeValue> key = Map.of(
-        		DynamoAttrName.PK.getValue(), buildAttributeValue(itemKey.getPartitionKey())
-        		,DynamoAttrName.SK.getValue(), buildAttributeValue(itemKey.getSortKey())
+        		DynamoAttrName.PK.getValue(), buildAttrVal(itemKey.getPartitionKey())
+        		,DynamoAttrName.SK.getValue(), buildAttrVal(itemKey.getSortKey())
         		);
 
         GetItemRequest request = GetItemRequest.builder()
@@ -121,7 +120,7 @@ public class AttendanceDynamoRepository
             if (item == null || item.isEmpty()) {
             	return Optional.empty();
             }
-            return Optional.of(mapToAttendanceDomain(item));
+            return Optional.of(AttendanceFactory.from(item));
 
         } catch (DynamoDbException e) {
             throw e;
@@ -153,26 +152,12 @@ public class AttendanceDynamoRepository
 	        }
 
 	        return response.items().stream()
-	                .map(this::mapToAttendanceDomain)
+	                .map(AttendanceFactory::from)
 	                .collect(Collectors.toList());
 	    }
 	    catch (DynamoDbException e) {
 	        throw e;
 	    }
-	}
-    
-	/**
-	 * DynamoDB 1アイテム → AttendanceDomain 変換
-	 */
-	private Attendance mapToAttendanceDomain(Map<String, AttributeValue> item) {
-	    return new Attendance(
-	    	    getString(item, DynamoAttrName.USER_ID.getValue()),
-	    	    getString(item, ATTR_DATE),
-	    	    getString(item, ATTR_START_TIME),
-	    	    getString(item, ATTR_END_TIME),
-	    	    getString(item, ATTR_WORKPLACE)
-	    		);
-	}
-	
+	}	
 
 }

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.timesmanager.api.feature.task.TaskDynamoRepository;
-import com.timesmanager.api.feature.thread.ThreadDynamoRepository;
+import com.timesmanager.api.feature.thread.repository.ThreadDynamoRepository;
 
 @Service
 public class DailyContextService {

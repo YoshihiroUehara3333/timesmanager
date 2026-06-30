@@ -1,4 +1,4 @@
-package com.timesmanager.api.common.exception;
+package com.timesmanager.api.common.exception.dto;
 
 public class ErrorResponse {
 

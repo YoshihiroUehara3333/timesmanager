@@ -25,3 +25,10 @@
     src: timesmanager.service.j2
     dest: /etc/systemd/system/timesmanager.service
   notify: Reload systemd
+
+- name: Enable and start app
+  systemd:
+    name: timesmanager
+    enabled: true
+    state: started
+    daemon_reload: true

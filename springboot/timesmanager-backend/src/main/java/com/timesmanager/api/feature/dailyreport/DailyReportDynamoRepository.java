@@ -7,12 +7,12 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import com.timesmanager.api.common.core.repository.AbstractDynamoRepository;
-import com.timesmanager.api.common.core.repository.Repository;
+import com.timesmanager.api.common.core.Repository;
+import com.timesmanager.api.common.dynamodb.AbstractDynamoRepository;
+import com.timesmanager.api.common.dynamodb.DynamoDbAttributeValueMapBuilder;
+import com.timesmanager.api.common.dynamodb.DynamoKey;
+import com.timesmanager.api.common.dynamodb.DynamoKeyFactory;
 import com.timesmanager.api.common.enums.DynamoAttrName;
-import com.timesmanager.api.dynamodb.DynamoDbAttributeValueMapBuilder;
-import com.timesmanager.api.dynamodb.DynamoKey;
-import com.timesmanager.api.dynamodb.DynamoKeyFactory;
 import com.timesmanager.api.feature.dailyreport.domain.DailyReport;
 import com.timesmanager.api.feature.dailyreport.dto.DailyReportResponse;
 

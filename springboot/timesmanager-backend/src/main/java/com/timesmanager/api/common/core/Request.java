@@ -1,4 +1,5 @@
 package com.timesmanager.api.common.core;
 
-public interface Domain {
+public interface Request {
+
 }
