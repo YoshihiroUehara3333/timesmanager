@@ -53,7 +53,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
    */
   async saveReply ({
     userId,
-    channeId,
+    channelId,
     parentTs,
     replyTs,
     date,
@@ -64,7 +64,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
         routing: BackendRouting.THREAD.REPLY.POST(),
         data: {
           userId: userId,
-          channeId: channeId,
+          channelId: channelId,
           parentTs: parentTs,
           replyTs: replyTs,
           date: date,
