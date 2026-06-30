@@ -1,4 +1,4 @@
-package com.slack_timesmanager;
+package com.timesmanager.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
