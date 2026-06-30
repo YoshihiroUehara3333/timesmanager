@@ -48,7 +48,7 @@ function registerThreadFeature({ app, slackApiAdaptor, backendHttpClient }) {
     // backendに保存
     await saveThreadReply.execute({
       userId: event.user_id,
-      channeId: event.channel,
+      channelId: event.channel,
       parentTs: event.thread_ts,
       replyTs: event.event_ts,
       text: event.text,
