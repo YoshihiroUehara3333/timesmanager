@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
 import com.timesmanager.api.common.dynamodb.AbstractDynamoRepository;
 import com.timesmanager.api.common.dynamodb.DynamoDbAttributeValueMapBuilder;
@@ -26,7 +27,7 @@ import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
 
-@org.springframework.stereotype.Repository
+@Repository
 public class ThreadDynamoRepository 
         extends AbstractDynamoRepository
         implements ThreadRepository {
