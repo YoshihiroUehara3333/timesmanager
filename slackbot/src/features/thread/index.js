@@ -44,8 +44,8 @@ function registerThreadFeature({ app, slackApiAdaptor, backendHttpClient }) {
       console.log('!event.thread_ts')
       return
     }
-    if (event.parent_user_id !== event.user) {
-      console.log('event.parent_user_id !== event.user')
+    if (event.parent_user_id === event.user) {
+      console.log('event.parent_user_id === event.user')
       return
     }
     if (event.event_ts === event.thread_ts) {
