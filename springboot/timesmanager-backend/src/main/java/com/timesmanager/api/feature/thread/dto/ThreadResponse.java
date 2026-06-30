@@ -1,7 +1,7 @@
 package com.timesmanager.api.feature.thread.dto;
 
 
-import com.timesmanager.api.common.core.Response;
+import com.timesmanager.api.common.core.dto.Response;
 import com.timesmanager.api.feature.thread.domain.Thread;
 
 import lombok.Data;

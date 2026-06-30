@@ -3,7 +3,6 @@ worker_processes auto;
 error_log /var/log/nginx/error.log notice;
 pid /run/nginx.pid;
 
-# Load dynamic modules. See /usr/share/doc/nginx/README.dynamic.
 include /usr/share/nginx/modules/*.conf;
 
 events {
@@ -27,21 +26,6 @@ http {
 
     include /etc/nginx/conf.d/*.conf;
 
-    server {
-        listen       80;
-        listen       [::]:80;
-        root         /usr/share/nginx/html;
-
-        include /etc/nginx/default.d/*.conf;
-
-        error_page 404 /404.html;
-        location = /404.html {
-        }
-
-        error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-        }
-    }
 
 # Settings for a TLS enabled server.
 #

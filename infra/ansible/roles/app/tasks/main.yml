@@ -1,0 +1,27 @@
+- name: Install Java Corretto 21
+  dnf:
+    name: java-21-amazon-corretto
+    state: present
+
+- name: Create app directory
+  file:
+    path: /opt/timesmanager
+    state: directory
+    owner: ec2-user
+    group: ec2-user
+    mode: "0755"
+
+- name: Deploy app env file
+  template:
+    src: env.j2
+    dest: "{{ app_dir }}/.env"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: "0600"
+  notify: Restart app
+
+- name: Copy systemd unit
+  template:
+    src: timesmanager.service.j2
+    dest: /etc/systemd/system/timesmanager.service
+  notify: Reload systemd

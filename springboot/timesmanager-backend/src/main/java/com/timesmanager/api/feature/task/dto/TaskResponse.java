@@ -1,6 +1,6 @@
 package com.timesmanager.api.feature.task.dto;
 
-import com.timesmanager.api.common.core.Response;
+import com.timesmanager.api.common.core.dto.Response;
 import com.timesmanager.api.feature.task.domain.Task;
 
 import lombok.Getter;

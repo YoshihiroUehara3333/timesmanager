@@ -58,7 +58,7 @@ jobs:
         source: springboot/timesmanager-backend/build/libs/*.jar
         target: /home/${{ secrets.EC2_USER_PROD }}/app/
         overwrite: true
-        strip_components: 4 
+        strip_components: 4
 
     - name: SSH and restart app
       uses: appleboy/ssh-action@v1.0.0

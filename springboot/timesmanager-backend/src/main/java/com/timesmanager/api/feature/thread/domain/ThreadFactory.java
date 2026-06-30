@@ -11,9 +11,9 @@ public class ThreadFactory {
 
 	public static Thread from (ThreadCreateRequest request) {
 		return Thread.builder()
+				.userId(request.getUserId())
 				.channelId(request.getChannelId())
 				.date(request.getDate())
-				.userId(request.getUserId())
 				.threadTs(request.getThreadTs())
 				.permalink(request.getPermalink())
 				.build();

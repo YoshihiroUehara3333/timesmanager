@@ -15,8 +15,12 @@ public enum DynamoAttrName {
 	
     DATE("date"),
     PERMALINK("permalink"),
-    THREAD_TS("thread_ts");
+    THREAD_TS("thread_ts"),
     
+    TASK_NAME("task_name"),
+    SERIAL("serial"),
+    MEMO("memo"),
+    PROGRESS("task_progressions");
 	
 	private final String value;
 }

@@ -3,7 +3,7 @@ package com.timesmanager.api.feature.task.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-import com.timesmanager.api.common.core.Request;
+import com.timesmanager.api.common.core.dto.Request;
 
 import lombok.Getter;
 import lombok.Setter;

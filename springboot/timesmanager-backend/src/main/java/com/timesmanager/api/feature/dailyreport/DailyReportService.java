@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.timesmanager.api.common.exception.InfrastructureException;
+import com.timesmanager.api.feature.dailyreport.domain.DailyReport;
+import com.timesmanager.api.feature.dailyreport.domain.DailyReportFactory;
 import com.timesmanager.api.feature.dailyreport.dto.DailyReportRequest;
 import com.timesmanager.api.feature.dailyreport.dto.DailyReportResponse;
 
@@ -27,11 +29,11 @@ public class DailyReportService {
 	public void save(DailyReportRequest request){
 		try {
 			List<DailyReportResponse> getRes = diaryDynamoRepository.getDiary(request.getUserId(), request.getDate());
-			
+			DailyReport domain = DailyReportFactory.from(request);
 			if(getRes.isEmpty()) {
-				diaryDynamoRepository.putItem(request);
+				diaryDynamoRepository.putItem(domain);
 			} else {
-				diaryDynamoRepository.updateItem(request);
+				diaryDynamoRepository.updateItem(domain);
 			}
 		}
 		catch(RuntimeException e) {

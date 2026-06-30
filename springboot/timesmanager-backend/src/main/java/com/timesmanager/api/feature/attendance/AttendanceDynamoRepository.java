@@ -9,13 +9,15 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
 
-import com.timesmanager.api.common.base.DynamoRepositoryBase;
+import com.timesmanager.api.common.core.repository.AbstractDynamoRepository;
+import com.timesmanager.api.common.core.repository.Repository;
+import com.timesmanager.api.common.enums.DynamoAttrName;
 import com.timesmanager.api.dynamodb.DynamoDbAttributeValueMapBuilder;
 import com.timesmanager.api.dynamodb.DynamoKey;
 import com.timesmanager.api.dynamodb.DynamoKeyFactory;
 import com.timesmanager.api.feature.attendance.domain.Attendance;
+import com.timesmanager.api.feature.dailyreport.domain.DailyReport;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -25,8 +27,10 @@ import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
-@Repository
-public class AttendanceDynamoRepository extends DynamoRepositoryBase{
+@org.springframework.stereotype.Repository
+public class AttendanceDynamoRepository 
+        extends AbstractDynamoRepository
+        implements Repository<DailyReport>{
 
     // ===== 属性名の定数 =====
     private static final String ATTR_DATE       = "date";
@@ -55,12 +59,12 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
         );
 	    
         Map<String, AttributeValue> key = Map.of(
-        		ATTR_PK, buildAttributeValue(itemKey.getPartitionKey())
-        		,ATTR_SK, buildAttributeValue(itemKey.getSortKey())
+        		DynamoAttrName.PK.getValue(), buildAttributeValue(itemKey.getPartitionKey())
+        		,DynamoAttrName.SK.getValue(), buildAttributeValue(itemKey.getSortKey())
         		);
 
 	    Map<String, String> expressionAttributeNames = Map.of(
-	    		"#userId", ATTR_USER_ID
+	    		"#userId", DynamoAttrName.USER_ID.getValue()
 	    		,"#dt", ATTR_DATE
 	    		,"#st", ATTR_START_TIME
 	    		,"#et", ATTR_END_TIME
@@ -103,8 +107,8 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
         );
 
         Map<String, AttributeValue> key = Map.of(
-        		ATTR_PK, buildAttributeValue(itemKey.getPartitionKey())
-        		,ATTR_SK, buildAttributeValue(itemKey.getSortKey())
+        		DynamoAttrName.PK.getValue(), buildAttributeValue(itemKey.getPartitionKey())
+        		,DynamoAttrName.SK.getValue(), buildAttributeValue(itemKey.getSortKey())
         		);
 
         GetItemRequest request = GetItemRequest.builder()
@@ -136,7 +140,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 
 	    QueryRequest queryRequest = QueryRequest.builder()
 	            .tableName(tableName)
-	            .keyConditionExpression(ATTR_PK + "= :pk")
+	            .keyConditionExpression(DynamoAttrName.PK.getValue() + "= :pk")
 	            .expressionAttributeValues(eav)
 	            .build();
 
@@ -162,7 +166,7 @@ public class AttendanceDynamoRepository extends DynamoRepositoryBase{
 	 */
 	private Attendance mapToAttendanceDomain(Map<String, AttributeValue> item) {
 	    return new Attendance(
-	    	    getString(item, ATTR_USER_ID),
+	    	    getString(item, DynamoAttrName.USER_ID.getValue()),
 	    	    getString(item, ATTR_DATE),
 	    	    getString(item, ATTR_START_TIME),
 	    	    getString(item, ATTR_END_TIME),

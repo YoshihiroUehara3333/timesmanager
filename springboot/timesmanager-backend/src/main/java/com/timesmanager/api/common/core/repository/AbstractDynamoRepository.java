@@ -1,4 +1,4 @@
-package com.timesmanager.api.common.base;
+package com.timesmanager.api.common.core.repository;
 
 import java.util.Map;
 
@@ -7,18 +7,12 @@ import org.springframework.beans.factory.annotation.Value;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
-public class DynamoRepositoryBase {
-    // ===== 属性名の定数 =====
-    protected static final String ATTR_PK         = "partition_key";
-    protected static final String ATTR_SK         = "sort_key";
-    protected static final String ATTR_USER_ID    = "user_id";
-    protected static final String ATTR_CHANNEL_ID = "channel_id";
-    protected static final String ATTR_DATE       = "date";
+public abstract class AbstractDynamoRepository {
     
     protected final String tableName;
 	protected final DynamoDbClient dynamoDbClient;
 	
-	public DynamoRepositoryBase(
+	public AbstractDynamoRepository(
 			DynamoDbClient dynamoDbClient,
 			@Value("${aws.dynamodb.tableName}") String tableName
 	) {
