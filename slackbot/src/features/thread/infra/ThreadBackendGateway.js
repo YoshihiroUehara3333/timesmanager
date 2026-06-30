@@ -16,7 +16,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
    * @returns {string} return.status
    * @returns {object} return.data
    */
-  async saveThread ({ channelId, threadTs, permalink, userId, date }) {
+  async saveThread({ channelId, threadTs, permalink, userId, date }) {
     console.log(`ThreadBackendGateway.saveThread\nchannelId:${channelId} threadTs:${threadTs} permalink:${permalink} userId:${userId} date:${date}`)
 
     try {
@@ -46,6 +46,42 @@ class ThreadBackendGateway extends BackendGatewayBase {
     }
   }
 
+
+  /**
+   *
+   * @param {*} param0
+   */
+  async saveReply ({
+    userId,
+    channeId,
+    parentTs,
+    replyTs,
+    date,
+    text
+  }) {
+    try {
+      const response = await this.backendHttpClient.request({
+        routing: BackendRouting.THREAD.REPLY.POST(),
+        data: {
+          userId: userId,
+          channeId: channeId,
+          parentTs: parentTs,
+          replyTs: replyTs,
+          date: date,
+          text: text,
+        }
+      })
+      console.log(`ThreadBackendGateway.saveReply status:${JSON.stringify(response.status)}`)
+
+      if (response.status === 201) {
+        return { ok: true, data: response.data }
+      }
+    } catch (err) {
+      console.warn(`backendHttpClient.request failed msg=${err?.message}`)
+      return { ok: false, errorType: 'OTHER', error: err }
+    }
+  }
+
   /**
    * 日付をパラメータとしてバックエンドにGET送信する
    * @param {Object} params
@@ -53,7 +89,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
    * @param {string} params.date
    * @returns
    */
-  async getThreadByDate ({ userId, date }) {
+  async getThreadByDate({ userId, date }) {
     console.log(`ThreadBackendGateway.getThreadByDate userId:${userId} date:${date}`)
 
     let response
@@ -84,7 +120,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
    * @param {*} param0
    * @returns
    */
-  async getAllThread ({ userId }) {
+  async getAllThread({ userId }) {
     console.log(`ThreadBackendGateway.getAllThread userId:${userId}`)
 
     try {
