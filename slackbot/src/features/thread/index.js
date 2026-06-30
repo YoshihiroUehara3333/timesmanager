@@ -40,6 +40,7 @@ function registerThreadFeature({ app, slackApiAdaptor, backendHttpClient }) {
   // スレッド内返信を受信して保存する
   app.event('message', async ({ event, logger }) => {
     if (!event.thread_ts) return
+    if (event.parent_user_id !== event.user) return
     if (event.ts === event.thread_ts) return
     if (event.subtype) return
 
@@ -48,6 +49,10 @@ function registerThreadFeature({ app, slackApiAdaptor, backendHttpClient }) {
     // backendに保存
     await saveThreadReply.execute({
       userId: event.user_id,
+      channeId: event.channel,
+      parentTs: event.thread_ts,
+      replyTs: event.event_ts,
+      text: event.text,
     })
   })
 }

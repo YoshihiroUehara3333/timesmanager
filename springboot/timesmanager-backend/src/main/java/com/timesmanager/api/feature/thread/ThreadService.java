@@ -14,7 +14,7 @@ import com.timesmanager.api.feature.thread.domain.ThreadFactory;
 import com.timesmanager.api.feature.thread.dto.ThreadCreateRequest;
 import com.timesmanager.api.feature.thread.dto.ThreadGetRequest;
 import com.timesmanager.api.feature.thread.dto.ThreadResponse;
-import com.timesmanager.api.feature.thread.repository.ThreadDynamoRepository;
+import com.timesmanager.api.feature.thread.repository.ThreadRepository;
 
 import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
@@ -25,10 +25,10 @@ public class ThreadService {
 	/* Logger */
 	private static final Logger log = LoggerFactory.getLogger(ThreadService.class);
 
-	private final ThreadDynamoRepository threadDynamoRepository;
+	private final ThreadRepository threadRepository;
 
-	public ThreadService(ThreadDynamoRepository threadDynamoRepository) {
-		this.threadDynamoRepository = threadDynamoRepository;
+	public ThreadService(ThreadRepository threadRepository) {
+		this.threadRepository = threadRepository;
 	}
 
 	/**
@@ -43,7 +43,7 @@ public class ThreadService {
 		Thread domain = ThreadFactory.from(request);
 
 		try {
-			threadDynamoRepository.save(domain);
+			threadRepository.save(domain);
 			return ThreadResponse.from(domain);
 		}
 		catch (ConditionalCheckFailedException e) {
@@ -69,7 +69,7 @@ public class ThreadService {
 				request.getUserId(), request.getDate());
 
 		try {
-			return threadDynamoRepository.findByUserIdAndDate(
+			return threadRepository.findByUserIdAndDate(
 						request.getUserId(),
 						request.getDate())
 					.map(ThreadResponse::from);
@@ -91,7 +91,7 @@ public class ThreadService {
 		log.info("ThreadService.getAllByUserId: userId={}", request.getUserId());
 
 		try {
-			List<Thread> threads = threadDynamoRepository.findAllByUserId(request.getUserId());
+			List<Thread> threads = threadRepository.findAllByUserId(request.getUserId());
 			return threads.stream()
 					.map(ThreadResponse::from)
 					.toList();

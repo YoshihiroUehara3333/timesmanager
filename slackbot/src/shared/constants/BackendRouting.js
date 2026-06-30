@@ -7,6 +7,9 @@ exports.BackendRouting = Object.freeze({
     POST: () => ({ method: 'POST', path: `${API_BASE}/thread` }),
     GETALL: () => ({ method: 'GET', path: `${API_BASE}/thread` }),
     GETBYDATE: (date) => ({ method: 'GET', path: `${API_BASE}/thread/${date}` }),
+    REPLY: {
+      POST: () => ({ method: 'POST', path: `${API_BASE}/thread/reply` })
+    }
   },
   TASK: {
     GETALL: () => ({ method: 'GET', path: `${API_BASE}/task` }),
