@@ -1,7 +1,7 @@
 package com.timesmanager.api.feature.task.dto;
 
 import com.timesmanager.api.common.core.Response;
-import com.timesmanager.api.feature.task.domain.TaskDomain;
+import com.timesmanager.api.feature.task.domain.Task;
 
 import lombok.Getter;
 
@@ -30,7 +30,7 @@ public class TaskResponse implements Response {
 	}
 	
 	
-	public static TaskResponse fromDomain(TaskDomain domain) {
+	public static TaskResponse fromDomain(Task domain) {
 		return new TaskResponse(
 				domain.getUserId(),
 				domain.getSerial(),

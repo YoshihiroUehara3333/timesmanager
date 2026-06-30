@@ -1,0 +1,18 @@
+[Unit]
+Description={{ app_name }} Spring Boot Application
+After=network.target
+
+[Service]
+User={{ app_user }}
+Group={{ app_group }}
+WorkingDirectory={{ app_dir }}
+
+ExecStart={{ java_path }} -jar {{ app_jar_path }}
+EnvironmentFile=/opt/timesmanager/.env
+
+SuccessExitStatus=143
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

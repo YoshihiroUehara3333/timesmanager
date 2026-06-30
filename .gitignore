@@ -1,3 +1,11 @@
-pem/
+.ssh/*
 command.txt
 /slackbot/node_modules/*
+
+*/nodejs/*
+
+inventory.ini
+*/env.j2
+commands.txt
+/ansible/**/hosts.ini
+/**/group_vars/timesmanager.yml

@@ -1,9 +1,12 @@
 // src/features/attendance/application/SubmitAttendanceUseCase.js
 
 class SubmitAttendanceUseCase {
-  constructor ({ slackGateway, attendanceBackendGateway }) {
-    this.slackGateway = slackGateway
-    this.attendanceBackendGateway = attendanceBackendGateway
+  constructor ({
+    slackGateway: slack,
+    attendanceBackendGateway: attendanceBackend
+  }) {
+    this.slack = slack
+    this.attendanceBackend = attendanceBackend
   }
 
   /**
@@ -26,7 +29,7 @@ class SubmitAttendanceUseCase {
     }
 
     // バックエンドにリクエスト送信
-    const saveResult = await this.attendanceBackendGateway.saveAttendance(attendance)
+    const saveResult = await this.attendanceBackend.saveAttendance(attendance)
     if (!saveResult.ok) {
       // 未実装
       return false

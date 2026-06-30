@@ -1,5 +1,4 @@
 package com.timesmanager.api.common.core;
 
-public class Repository {
-
+public interface Repository<T extends Domain> {
 }

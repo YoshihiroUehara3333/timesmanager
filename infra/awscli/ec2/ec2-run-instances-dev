@@ -1,0 +1,8 @@
+aws ec2 run-instances \
+  --image-id ami-xxxxxxxxxxxxxxxxx \
+  --instance-type t3.micro \
+  --key-name your-key-name \
+  --security-group-ids sg-xxxxxxxxxxxxxxxxx \
+  --subnet-id subnet-xxxxxxxxxxxxxxxxx \
+  --iam-instance-profile Name=your-instance-profile \
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=timesmanager-dev}]'

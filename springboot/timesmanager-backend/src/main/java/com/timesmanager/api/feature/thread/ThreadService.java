@@ -9,11 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.timesmanager.api.common.exception.ConflictException;
 import com.timesmanager.api.common.exception.InfrastructureException;
-import com.timesmanager.api.feature.thread.domain.ThreadDomain;
-import com.timesmanager.api.feature.thread.domain.ThreadDomainFactory;
+import com.timesmanager.api.feature.thread.domain.Thread;
+import com.timesmanager.api.feature.thread.domain.ThreadFactory;
 import com.timesmanager.api.feature.thread.dto.ThreadCreateRequest;
 import com.timesmanager.api.feature.thread.dto.ThreadGetRequest;
 import com.timesmanager.api.feature.thread.dto.ThreadResponse;
+import com.timesmanager.api.feature.thread.repository.ThreadRepository;
 
 import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
@@ -24,10 +25,10 @@ public class ThreadService {
 	/* Logger */
 	private static final Logger log = LoggerFactory.getLogger(ThreadService.class);
 
-	private final ThreadDynamoRepository threadDynamoRepository;
+	private final ThreadRepository threadRepository;
 
-	public ThreadService(ThreadDynamoRepository threadDynamoRepository) {
-		this.threadDynamoRepository = threadDynamoRepository;
+	public ThreadService(ThreadRepository threadRepository) {
+		this.threadRepository = threadRepository;
 	}
 
 	/**
@@ -39,18 +40,19 @@ public class ThreadService {
 		log.info("ThreadService.create: userId={}, date={}, channelId={}",
 				request.getUserId(), request.getDate(), request.getChannelId());
 
-		ThreadDomain thread = ThreadDomainFactory.fromCreateRequest(request);
+		Thread domain = ThreadFactory.from(request);
 
 		try {
-			threadDynamoRepository.putItem(thread);
-			return ThreadResponse.fromDomain(thread);
+			threadRepository.save(domain);
+			return ThreadResponse.from(domain);
 		}
 		catch (ConditionalCheckFailedException e) {
 			throw new ConflictException("PartitionKeyが重複しています。", e);
 		}
 		catch (DynamoDbException e) {
 			log.error("DynamoDB処理中にエラー: create userId={}, date={}",
-					request.getUserId(), request.getDate(), e);
+					request.getUserId(), request.getDate(), 
+					e);
 			throw new InfrastructureException("putItem", e);
 		}
 	}
@@ -67,10 +69,10 @@ public class ThreadService {
 				request.getUserId(), request.getDate());
 
 		try {
-			return threadDynamoRepository.findByUserIdAndDate(
+			return threadRepository.findByUserIdAndDate(
 						request.getUserId(),
 						request.getDate())
-					.map(ThreadResponse::fromDomain);
+					.map(ThreadResponse::from);
 		}
 		catch (DynamoDbException e) {
 			log.error("DynamoDB処理中にエラー: getByUserIdAndDate userId={}, date={}", 
@@ -89,9 +91,9 @@ public class ThreadService {
 		log.info("ThreadService.getAllByUserId: userId={}", request.getUserId());
 
 		try {
-			List<ThreadDomain> threads = threadDynamoRepository.findAllByUserId(request.getUserId());
+			List<Thread> threads = threadRepository.findAllByUserId(request.getUserId());
 			return threads.stream()
-					.map(ThreadResponse::fromDomain)
+					.map(ThreadResponse::from)
 					.toList();
 		}
 		catch (DynamoDbException e) {

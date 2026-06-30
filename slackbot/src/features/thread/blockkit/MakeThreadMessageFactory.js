@@ -1,7 +1,6 @@
 // src/features/thread/blockkit/MakeThreadMessageFactory.js
 
 function buildThreadInitialText ({ userId, date }) {
-  // ここに、「タスクスレッドのテンプレ」を集中させる
   const header = `<@${userId}> \n*【壁】${date}*`
   return header
 }

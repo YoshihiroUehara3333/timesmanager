@@ -8,10 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.timesmanager.api.common.exception.InfrastructureException;
-import com.timesmanager.api.feature.attendance.domain.AttendanceDomain;
-import com.timesmanager.api.feature.attendance.domain.AttendanceDomainFactory;
+import com.timesmanager.api.feature.attendance.domain.Attendance;
+import com.timesmanager.api.feature.attendance.domain.AttendanceFactory;
 import com.timesmanager.api.feature.attendance.dto.AttendanceRequest;
 import com.timesmanager.api.feature.attendance.dto.AttendanceResponse;
+import com.timesmanager.api.feature.attendance.repository.AttendanceDynamoRepository;
 
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 
@@ -32,9 +33,9 @@ public class AttendanceService {
      * 勤怠の新規登録 or 更新（同一 userId + date があれば更新、それ以外は登録）
      */
 	public AttendanceResponse save(AttendanceRequest request){
-		AttendanceDomain attendance = AttendanceDomainFactory.fromAttendanceRequest(request);
+		Attendance attendance = AttendanceFactory.from(request);
 		try {
-			attendanceDynamoRepository.updateItem(attendance);
+			attendanceDynamoRepository.save(attendance);
 			return AttendanceResponse.fromDomain(attendance);
 		}
 		catch(DynamoDbException e) {
@@ -48,7 +49,7 @@ public class AttendanceService {
      */
 	public List<AttendanceResponse> getAllByUserId(String userId) {		
 		try {
-			List<AttendanceDomain> attendances = attendanceDynamoRepository.findAllByUserId(userId);
+			List<Attendance> attendances = attendanceDynamoRepository.findAllByUserId(userId);
 			return attendances.stream()
 					.map(AttendanceResponse::fromDomain)
 					.toList();

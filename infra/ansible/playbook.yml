@@ -1,0 +1,8 @@
+- name: Configure timesmanager server
+  hosts: timesmanager
+  become: true
+
+  roles:
+    - nginx
+    - app
+    - cloudwatch

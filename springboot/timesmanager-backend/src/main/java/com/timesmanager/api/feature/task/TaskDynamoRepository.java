@@ -1,19 +1,20 @@
 package com.timesmanager.api.feature.task;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
 
-import com.timesmanager.api.common.base.DynamoRepositoryBase;
-import com.timesmanager.api.dynamodb.DynamoDbAttributeValueMapBuilder;
-import com.timesmanager.api.dynamodb.DynamoKey;
-import com.timesmanager.api.dynamodb.DynamoKeyFactory;
-import com.timesmanager.api.feature.task.domain.TaskDomain;
+import com.timesmanager.api.common.core.Repository;
+import com.timesmanager.api.common.dynamodb.AbstractDynamoRepository;
+import com.timesmanager.api.common.dynamodb.DynamoDbAttributeValueMapBuilder;
+import com.timesmanager.api.common.dynamodb.DynamoKey;
+import com.timesmanager.api.common.dynamodb.DynamoKeyFactory;
+import com.timesmanager.api.common.enums.DynamoAttrName;
+import com.timesmanager.api.feature.task.domain.Task;
+import com.timesmanager.api.feature.task.domain.TaskFactory;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
@@ -22,15 +23,10 @@ import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 
-@Repository
-public class TaskDynamoRepository extends DynamoRepositoryBase{
-	
-    // ===== 属性名の定数 =====
-    private static final String ATTR_TASK_NAME  = "task_name";
-    private static final String ATTR_PROGRESS = "task_progressions";
-    private static final String ATTR_MEMO = "memo";
-    private static final String ATTR_SERIAL     = "serial";
-    
+@org.springframework.stereotype.Repository
+public class TaskDynamoRepository
+        extends AbstractDynamoRepository
+        implements Repository<Task>{
 	
 	public TaskDynamoRepository(
 			DynamoDbClient dynamoDbClient,
@@ -44,43 +40,47 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
      * 
      * @param task
      */
-	public void updateItem(TaskDomain task){
+	public void updateItem(Task task){
 		DynamoKey itemKey = getItemKeyFromDomain(task);
 	    
-        Map<String, AttributeValue> key = new HashMap<>();
-        key.put(ATTR_PK, AttributeValue.builder().s(itemKey.getPartitionKey()).build());
-        key.put(ATTR_SK, AttributeValue.builder().s(itemKey.getSortKey()).build());
+        Map<String, AttributeValue> key = 
+						        		new DynamoDbAttributeValueMapBuilder()
+							                .putString(DynamoAttrName.PK.getValue(), itemKey.getPartitionKey())
+							        		.putString(DynamoAttrName.SK.getValue(), itemKey.getSortKey())
+							                .build();
 
 	    Map<String, String> expressionAttributeNames = Map.of(
-	    		"#userId"      ,ATTR_USER_ID
-	    		,"#serial"     ,ATTR_SERIAL
-	    		,"#date"       ,ATTR_DATE
-	    		,"#taskName"   ,ATTR_TASK_NAME
-	    		,"#memo"       ,ATTR_MEMO
+	    		"#userId"      ,DynamoAttrName.USER_ID.getValue()
+	    		,"#serial"     ,DynamoAttrName.SERIAL.getValue()
+	    		,"#date"       ,DynamoAttrName.DATE.getValue()
+	    		,"#taskName"   ,DynamoAttrName.TASK_NAME.getValue()
+	    		,"#memo"       ,DynamoAttrName.MEMO.getValue()
 	    );
 	    
 
 	    Map<String, AttributeValue> expressionAttributeValues =
-	            new DynamoDbAttributeValueMapBuilder()
-	                    .putString(":userId", task.getUserId())
-	                    .putString(":date", task.getDate())
-	                    .putString(":taskName", task.getTaskName())
-	                    .putString(":memo", task.getMemo())
-	                    .putString(":serial", task.getSerial())
-	                    .build();
+							            new DynamoDbAttributeValueMapBuilder()
+							                    .putString(":userId", task.getUserId())
+							                    .putString(":date", task.getDate())
+							                    .putString(":taskName", task.getTaskName())
+							                    .putString(":memo", task.getMemo())
+							                    .putString(":serial", task.getSerial())
+							                    .build();
+	    
+	    String updateExpression = 
+			    	new StringBuilder()
+		        		.append("SET #userId = :userId,")
+		        		.append(" #channelId = :channelId,")
+		        		.append(" #date = :date,")
+		        		.append(" #taskName = :taskName,")
+		        		.append(" #memo = :memo,")
+		        		.append(" #serial = :serial")
+		        		.toString();
 
 	    UpdateItemRequest updateRequest = UpdateItemRequest.builder()
 	        .tableName(tableName)
 	        .key(key)
-	        .updateExpression(
-	        		new StringBuilder()
-	        		.append("SET #userId = :userId,")
-	        		.append(" #channelId = :channelId,")
-	        		.append(" #date = :date,")
-	        		.append(" #taskName = :taskName,")
-	        		.append(" #memo = :memo,")
-	        		.append(" #serial = :serial")
-	        		.toString())
+	        .updateExpression(updateExpression)
 	        .expressionAttributeNames(expressionAttributeNames)
 	        .expressionAttributeValues(expressionAttributeValues)
 	        .build();
@@ -95,7 +95,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
     /**
      * ユーザIDに紐づくタスクを全件取得する
      */
-	public List<TaskDomain> findAllByUserId(String userId) {
+	public List<Task> findAllByUserId(String userId) {
 	    String partitionKey = DynamoKeyFactory.taskPartitionKey(userId);
 
 	    // :pk プレースホルダーにパーティションキーをバインド
@@ -105,7 +105,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 
 	    QueryRequest queryRequest = QueryRequest.builder()
 	            .tableName(tableName)
-	            .keyConditionExpression(new StringBuilder(ATTR_PK).append("= :pk").toString())
+	            .keyConditionExpression(new StringBuilder(DynamoAttrName.PK.getValue()).append("= :pk").toString())
 	            .expressionAttributeValues(eav)
 	            .build();
 
@@ -118,7 +118,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	        }
 
 	        return response.items().stream()
-	                .map(this::mapToTaskDomain)
+	        		.map(TaskFactory::from)
 	                .collect(Collectors.toList());
 	    }
 	    catch (DynamoDbException e) {
@@ -130,20 +130,20 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
     /**
      * ユーザIDと日付からタスク情報を取得する
      */
-	public List<TaskDomain> findByUserIdAndDate(String userId, String date) {
+	public List<Task> findByUserIdAndDate(String userId, String date) {
 		String partitionKey = DynamoKeyFactory.taskPartitionKey(userId);
 
 	    // プレースホルダーにバインド
 	    Map<String, AttributeValue> eav = Map.of(
-	            ":pk", buildAttributeValue(partitionKey),
-	            ":sk", buildAttributeValue(date)
+	            ":pk", buildAttrVal(partitionKey),
+	            ":sk", buildAttrVal(date)
 	    );
 
 	    QueryRequest queryRequest = QueryRequest.builder()
 	            .tableName(tableName)
 	            .keyConditionExpression(
-	            		new StringBuilder(ATTR_PK).append("= :pk")
-	            		.append(" AND begins_with ").append(ATTR_SK).append(", :sk)")
+	            		new StringBuilder(DynamoAttrName.PK.getValue()).append("= :pk")
+	            		.append(" AND begins_with ").append(DynamoAttrName.SK.getValue()).append(", :sk)")
 	            		.toString())
 	            .expressionAttributeValues(eav)
 	            .build();
@@ -157,7 +157,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 	        }
 
 	        return response.items().stream()
-	                .map(this::mapToTaskDomain)
+	                .map(TaskFactory::from)
 	                .collect(Collectors.toList());
 	    }
 	    catch (DynamoDbException e) {
@@ -181,7 +181,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
 
         QueryRequest queryRequest = QueryRequest.builder()
                 .tableName(tableName)
-                .keyConditionExpression(ATTR_PK + " = :pk AND begins_with(" + ATTR_SK + ", :skPrefix)")
+                .keyConditionExpression(DynamoAttrName.PK.getValue() + " = :pk AND begins_with(" + DynamoAttrName.SK.getValue() + ", :skPrefix)")
                 .expressionAttributeValues(eav)
                 .scanIndexForward(false)
                 .limit(1)
@@ -195,7 +195,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
             }
 
             Map<String, AttributeValue> latestItem = response.items().get(0);
-            String currentSerial = latestItem.get(ATTR_SERIAL).s();
+            String currentSerial = latestItem.get(DynamoAttrName.SERIAL.getValue()).s();
 
             int current = 0;
             current = Integer.parseInt(currentSerial);
@@ -210,21 +210,7 @@ public class TaskDynamoRepository extends DynamoRepositoryBase{
     }
 
 	
-
-	/**
-	 * DynamoDB 1アイテム → TaskDomain 変換
-	 */
-	private TaskDomain mapToTaskDomain(Map<String, AttributeValue> item) {
-	    return TaskDomain.create(
-	    		getString(item, ATTR_USER_ID),
-	    		getString(item, ATTR_SERIAL),
-	    		getString(item, ATTR_DATE),
-	    		getString(item, ATTR_TASK_NAME),
-	    		getString(item, ATTR_MEMO)
-	    		);
-	}
-	
-	private DynamoKey getItemKeyFromDomain(TaskDomain task) {
+	private DynamoKey getItemKeyFromDomain(Task task) {
 		return DynamoKeyFactory.taskItemKey(
 	            task.getUserId(),
 	            task.getDate(),

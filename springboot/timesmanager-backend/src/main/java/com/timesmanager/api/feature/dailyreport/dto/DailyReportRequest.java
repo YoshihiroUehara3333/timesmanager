@@ -2,7 +2,7 @@ package com.timesmanager.api.feature.dailyreport.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-import com.slack_timesmanager.common.core.Request;
+import com.timesmanager.api.common.core.Request;
 
 import lombok.Getter;
 import lombok.Setter;

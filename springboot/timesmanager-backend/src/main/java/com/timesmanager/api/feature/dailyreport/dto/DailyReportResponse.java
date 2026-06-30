@@ -1,7 +1,7 @@
 package com.timesmanager.api.feature.dailyreport.dto;
 
-import com.slack_timesmanager.common.core.Response;
-import com.timesmanager.api.feature.dailyreport.domain.DailyReportDomain;
+import com.timesmanager.api.common.core.Response;
+import com.timesmanager.api.feature.dailyreport.domain.DailyReport;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +30,7 @@ public class DailyReportResponse implements Response{
 	}
 	
 	
-	public static DailyReportResponse fromDomain(DailyReportDomain domain) {
+	public static DailyReportResponse fromDomain(DailyReport domain) {
 		return new DailyReportResponse(
 				
 				);
