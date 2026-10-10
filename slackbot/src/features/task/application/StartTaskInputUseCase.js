@@ -3,11 +3,15 @@
 const { TaskInputModal } = require('../blockkit/TaskInputModal')
 const { getDate } = require('../../../shared/utils/DateUtils')
 
+const { TaskSlackGateway } = require('../infra/TaskSlackGateway')
+const { TaskBackendGateway } = require('../infra/TaskBackendGateway')
+const { ThreadBackendGateway } = require('../../thread/infra/ThreadBackendGateway')
+
 class StartTaskInputUseCase {
-  constructor ({ slackGateway, taskBackendGateway, threadBackendGateway }) {
-    this.slackGateway = slackGateway
-    this.taskBackendGateway = taskBackendGateway
-    this.threadBackendGateway = threadBackendGateway
+  constructor ({ slackApiAdaptor, backendHttpClient }) {
+    this.slackGateway = new TaskSlackGateway(slackApiAdaptor)
+    this.taskBackendGateway = new TaskBackendGateway(backendHttpClient)
+    this.threadBackendGateway = new ThreadBackendGateway(backendHttpClient)
   }
 
   /**

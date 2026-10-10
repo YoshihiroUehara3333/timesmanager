@@ -1,19 +1,8 @@
 // src/features/task/index.js
+const { lazy } = require('../../core/func/lazy')
 
 const { ModalConst } = require('../../shared/constants/ModalConst')
 const { SlackConst } = require('../../shared/constants/SlackConst')
-
-/** UseCase依存作成 */
-const getUseCaseDependencies = ({ slackApiAdaptor, backendHttpClient }) => {
-  const { TaskSlackGateway } = require('./infra/TaskSlackGateway')
-  const { TaskBackendGateway } = require('./infra/TaskBackendGateway')
-  const { ThreadBackendGateway } = require('./infra/ThreadBackendGateway')
-  return {
-    slackGateway: new TaskSlackGateway(slackApiAdaptor),
-    taskBackendGateway: new TaskBackendGateway(backendHttpClient),
-    threadBackendGateway: new ThreadBackendGateway(backendHttpClient)
-  }
-}
 
 /** UseCase生成 */
 const getStartTaskInput = (dependencies) => {
@@ -26,10 +15,10 @@ const getSubmitTask = (dependencies) => {
 }
 
 function registerTaskFeature ({ app, slackApiAdaptor, backendHttpClient }) {
-  const usecaseDependencies = getUseCaseDependencies({
+  const usecaseDependencies = {
     slackApiAdaptor,
     backendHttpClient
-  })
+  }
 
   // UseCase
   const startTaskInput = lazy(
