@@ -4,20 +4,6 @@ const { lazy } = require('../../core/func/lazy')
 
 const { SlackConst } = require('../../shared/constants/SlackConst')
 
-/** UseCase依存作成 */
-const getUseCaseDependencies = ({
-  slackApiAdaptor,
-  backendHttpClient
-}) => {
-  const { ThreadSlackGateway } = require('./infra/ThreadSlackGateway')
-  const { ThreadBackendGateway } = require('./infra/ThreadBackendGateway')
-
-  return {
-    slackGateway: new ThreadSlackGateway(slackApiAdaptor),
-    threadBackendGateway: new ThreadBackendGateway(backendHttpClient)
-  }
-}
-
 /** UseCase生成 */
 const getMakeThread = (dependencies) => {
   const { MakeThreadUseCase } = require('./application/MakeThreadUseCase')
@@ -37,10 +23,10 @@ const isThreadReply = event => {
 }
 
 function registerThreadFeature ({ app, slackApiAdaptor, backendHttpClient }) {
-  const usecaseDependencies = getUseCaseDependencies({
+  const usecaseDependencies = {
     slackApiAdaptor,
     backendHttpClient
-  })
+  }
 
   const makeThread = lazy(
     () => getMakeThread(usecaseDependencies)

@@ -29,7 +29,7 @@ function registerHomeFeature ({ app, slackApiAdaptor, backendHttpClient }) {
       const result = await homeOpen().execute({
         userId: body.event.user,
       })
-      logger.info('HomeOpen Completed', {
+      logger.info('HomeOpen result', {
         result: result
       })
     }
