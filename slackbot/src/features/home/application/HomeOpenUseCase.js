@@ -4,6 +4,11 @@ const { getDate } = require('../../../shared/utils/DateUtils')
 
 const { HomeBlocks } = require('../blockkit/HomeBlocks')
 
+const toHomeView = data => HomeBlocks({
+  tasks: data?.tasks,
+  thread: data?.thread,
+})
+
 class HomeOpenUseCase {
   constructor ({ slackGateway, homeBackendGateway }) {
     this.slackGateway = slackGateway
@@ -15,22 +20,21 @@ class HomeOpenUseCase {
 
     const date = getDate('YYYY-MM-DD')
 
-    // スレッド存在確認
+    // 現在データ取得
     const result = await this.homeBackendGateway.getForHome({ userId, date })
-
-    // BlockKit作成
-    const view = HomeBlocks({
-      tasks: result.tasks,
-      thread: result.thread,
-    })
+    if (!result.ok) {
+      return {
+        ok: false,
+        text: result.error?.message
+      }
+    }
 
     // ホーム画面を更新
-    await this.slackGateway.updateHome({
+    const updated = await this.slackGateway.updateHome({
       userId: userId,
-      view: view,
+      view: toHomeView(result.data),
     })
-
-    return { ok: true }
+    return { ok: true, result: updated }
   }
 }
 

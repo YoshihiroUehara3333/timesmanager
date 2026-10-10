@@ -22,20 +22,24 @@ class MakeThreadUseCase {
      * @param {string} params.channelId
      * @param {Function} params.respond - コマンドへの返信
      */
-  async execute ({ userId, channelId, respond }) {
+  async execute ({ userId, channelId }) {
     console.log(`MakeThreadUseCase.execute userId:${userId} channelId:${channelId}`)
 
     const date = getDate('YYYY-MM-DD')
-
     // スレッド存在確認
-    let threadResult = {}
     try {
-      threadResult = await this.threadBackend.getThreadByDate({ userId, date })
+      const threadResult = await this.threadBackend.getThreadByDate({ userId, date })
       if (threadResult.data) {
-        return await replySuccess(respond, buildReplyText({ permalink: threadResult.data.permalink }))
+        return {
+          ok: true,
+          text: buildReplyText({ permalink: threadResult.data.permalink })
+        }
       }
     } catch (error) {
-      return await replyFailure(respond, error?.message)
+      return {
+        ok: false,
+        text: error?.message
+      }
     }
 
     // Slackにスレッドを投稿
@@ -46,7 +50,10 @@ class MakeThreadUseCase {
         text: buildThreadInitialText({ userId, date }),
       })
     } catch (error) {
-      return await replyFailure(respond, POST_FAILED)
+      return {
+        ok: false,
+        text: POST_FAILED
+      }
     }
 
     // バックエンドにスレッド情報を送信
@@ -58,20 +65,13 @@ class MakeThreadUseCase {
       date: date,
     })
     if (!saveResult.ok) {
-      return await replyFailure(respond, SAVE_FAILED)
+      return {
+        ok: false,
+        text: SAVE_FAILED
+      }
     }
     return { ok: true }
   }
-}
-
-async function replySuccess(respond, msg) {
-  await respond(msg)
-  return { ok: true }
-}
-
-async function replyFailure(respond, msg) {
-  await respond(msg)
-  return { ok: false }
 }
 
 module.exports = { MakeThreadUseCase }

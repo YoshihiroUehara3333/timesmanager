@@ -51,20 +51,22 @@ class ThreadBackendGateway extends BackendGatewayBase {
    *
    * @param {*} param0
    */
-  async saveReply ({
+  async saveReply({
     userId,
-    channeId,
+    channelId,
     parentTs,
     replyTs,
     date,
     text
   }) {
+    console.log(`ThreadBackendGateway.saveThread\nchannelId:${channelId} userId:${userId} date:${date}`)
+
     try {
       const response = await this.backendHttpClient.request({
         routing: BackendRouting.THREAD.REPLY.POST(),
         data: {
           userId: userId,
-          channeId: channeId,
+          channelId: channelId,
           parentTs: parentTs,
           replyTs: replyTs,
           date: date,

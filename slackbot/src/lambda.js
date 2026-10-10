@@ -1,14 +1,16 @@
 // src/lambda.js
 
 const { AwsLambdaReceiver } = require('@slack/bolt')
-const { createBoltApp } = require('./app')
+const { createBoltApp, setUpContainer, registerFeatures } = require('./app')
 
 const awsLambdaReceiver = new AwsLambdaReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   processBeforeResponse: true,
 })
 
-createBoltApp({ receiver: awsLambdaReceiver })
+const app = createBoltApp({ receiver: awsLambdaReceiver })
+const container = setUpContainer({ app })
+registerFeatures({ container })
 
 const boltHandler = awsLambdaReceiver.toHandler()
 

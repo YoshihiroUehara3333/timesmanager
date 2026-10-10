@@ -4,7 +4,7 @@ const { SlackGatewayBase } = require('../../../core/slack/SlackGatewayBase')
 
 class HomeSlackGateway extends SlackGatewayBase {
   async updateHome ({ userId, view }) {
-    await this.slackApiAdaptor.viewsPublish({
+    return await this.slackApiAdaptor.viewsPublish({
       userId: userId,
       view: view,
     })
