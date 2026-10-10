@@ -4,11 +4,11 @@ const { getRequestContext } = require('./RequestContext')
 
 const write = (level, message, fields = {}) => {
   const record = {
+    message,
+    timestamp: new Date().toISOString(),
     ...fields,
     ...getRequestContext(),
-    timestamp: new Date().toISOString(),
     level,
-    message,
   }
 
   console[level](JSON.stringify(record))

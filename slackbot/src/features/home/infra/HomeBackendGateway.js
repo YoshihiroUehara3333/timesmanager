@@ -14,7 +14,7 @@ class HomeBackendGateway {
    * @returns {object}
    */
   async getForHome ({ userId, date }) {
-    logger.info('HomeBackendGateway.getForHome', {
+    logger.info('HomeBackendGateway.getForHome start', {
       userId: userId,
       date: date
     })
@@ -43,7 +43,9 @@ class HomeBackendGateway {
           }
       }
     } catch (err) {
-      console.warn(`backendHttpClient.request failed msg=${err?.message}`)
+      logger.warn('HomeBackendGateway.getForHome failed', {
+        msg: err?.message
+      })
       return { ok: false, error: err }
     }
   }
