@@ -1,8 +1,12 @@
 // src/features/home/application/HomeOpenUseCase.js
+const { logger } = require('../../core/logging/Logger')
 
 const { getDate } = require('../../../shared/utils/DateUtils')
 
 const { HomeBlocks } = require('../blockkit/HomeBlocks')
+
+const { HomeBackendGateway } = require('../home/infra/HomeBackendGateway')
+const { HomeSlackGateway } = require('./infra/HomeSlackGateway')
 
 const toHomeView = data => HomeBlocks({
   tasks: data?.tasks,
@@ -10,16 +14,19 @@ const toHomeView = data => HomeBlocks({
 })
 
 class HomeOpenUseCase {
-  constructor ({ slackGateway, homeBackendGateway }) {
-    this.slackGateway = slackGateway
-    this.homeBackendGateway = homeBackendGateway
+  constructor ({
+    slackApiAdaptor,
+    backendHttpClient
+  }) {
+    this.slackGateway = new HomeSlackGateway(slackApiAdaptor)
+    this.homeBackendGateway = new HomeBackendGateway(backendHttpClient)
   }
 
   async execute ({ userId }) {
-    console.log(`HomeOpenUseCase.execute userId:${userId}`)
-
+    logger.info('HomeOpen execute', {
+      userId: userId,
+    })
     const date = getDate('YYYY-MM-DD')
-
     // 現在データ取得
     const result = await this.homeBackendGateway.getForHome({ userId, date })
     if (!result.ok) {

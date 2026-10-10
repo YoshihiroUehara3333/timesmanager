@@ -1,18 +1,6 @@
 // src/features/home/index.js
 const { lazy } = require('../../core/func/lazy')
-
-const getUseCaseDependencies = ({
-  slackApiAdaptor,
-  backendHttpClient
-}) => {
-  const { HomeBackendGateway } = require('../home/infra/HomeBackendGateway')
-  const { HomeSlackGateway } = require('./infra/HomeSlackGateway')
-
-  return {
-    homeBackendGateway: new HomeBackendGateway(backendHttpClient),
-    slackGateway: new HomeSlackGateway(slackApiAdaptor)
-  }
-}
+const { logger } = require('../../core/logging/Logger')
 
 const getHomeOpen = (dependencies) => {
   const { HomeOpenUseCase } = require('./application/HomeOpenUseCase')
@@ -20,10 +8,10 @@ const getHomeOpen = (dependencies) => {
 }
 
 function registerHomeFeature ({ app, slackApiAdaptor, backendHttpClient }) {
-  const usecaseDependencies = getUseCaseDependencies({
+  const usecaseDependencies = {
     slackApiAdaptor,
     backendHttpClient
-  })
+  }
 
   const homeOpen = lazy(
     () => getHomeOpen(usecaseDependencies)
@@ -33,12 +21,17 @@ function registerHomeFeature ({ app, slackApiAdaptor, backendHttpClient }) {
   // ホーム画面オープン時のイベント
   app.event(
     'app_home_opened',
-    async ({ body, event, logger }) => {
-      logger.info(`app.event\nevent:${JSON.stringify(event)}\nbody:${JSON.stringify(body)}\n`)
+    async ({ body, event }) => {
+      logger.info('app_home_opened', {
+        event: event,
+        body: body
+      })
       const result = await homeOpen().execute({
         userId: body.event.user,
       })
-      logger.info(`homeOpe Completed\nresult:${JSON.stringify(result)}`)
+      logger.info('HomeOpen Completed', {
+        result: result
+      })
     }
   )
 }
