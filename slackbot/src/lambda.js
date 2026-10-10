@@ -14,8 +14,27 @@ registerFeatures({ container })
 
 const boltHandler = awsLambdaReceiver.toHandler()
 
-async function handler (event, context) {
-  return await boltHandler(event, context)
-}
+const { withRequestContext } = require('./core/logging/RequestContext')
+const { logger } = require('./core/logging/Logger')
 
+async function handler (event, context) {
+  return withRequestContext(
+    { requestId: context.awsRequestId },
+    async () => {
+      const started = performance.now()
+      logger.info('request.started')
+
+      try {
+        return await boltHandler(event, context)
+      } catch (error) {
+        logger.error('request.failed', error)
+        throw error
+      } finally {
+        logger.info('request.finished', {
+          durationMs: Math.round(performance.now() - started),
+        })
+      }
+    }
+  )
+}
 module.exports.handler = handler

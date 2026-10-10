@@ -16,7 +16,7 @@ class ThreadBackendGateway extends BackendGatewayBase {
    * @returns {string} return.status
    * @returns {object} return.data
    */
-  async saveThread({ channelId, threadTs, permalink, userId, date }) {
+  async saveThread ({ channelId, threadTs, permalink, userId, date }) {
     console.log(`ThreadBackendGateway.saveThread\nchannelId:${channelId} threadTs:${threadTs} permalink:${permalink} userId:${userId} date:${date}`)
 
     try {
