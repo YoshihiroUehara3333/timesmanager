@@ -25,11 +25,16 @@ class HomeBackendGateway {
         }
       })
       console.log(`HomeBackendGateway.getForHome status:${response.status}`)
-      if (response.status === 200) {
-        return { ok: true, data: response.data }
-      }
-      if (response.status === 204) {
-        return { ok: true, data: undefined }
+      switch (response.status) {
+        case 200:
+          return { ok: true, data: response.data }
+        case 204:
+          return { ok: true, data: undefined }
+        default:
+          return {
+            ok: false,
+            error: new Error(`Unexpected HTTP status: ${response.status}`)
+          }
       }
     } catch (err) {
       console.warn(`backendHttpClient.request failed msg=${err?.message}`)

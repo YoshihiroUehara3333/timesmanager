@@ -11,9 +11,9 @@ class SaveThreadReplyUseCase {
   }
 
   /**
-   * 
-   * @param {*} param0 
-   * @returns 
+   *
+   * @param {*} param0
+   * @returns
    */
   async execute ({
     userId,

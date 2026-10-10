@@ -1,32 +1,43 @@
 // src/features/task/index.js
 
-const { StartTaskInputUseCase } = require('./application/StartTaskInputUseCase')
-const { SubmitTaskUseCase } = require('./application/SubmitTaskUseCase')
-
-const { TaskSlackGateway } = require('./infra/TaskSlackGateway')
-const { TaskBackendGateway } = require('./infra/TaskBackendGateway')
-const { ThreadBackendGateway } = require('../thread/infra/ThreadBackendGateway')
-
 const { ModalConst } = require('../../shared/constants/ModalConst')
 const { SlackConst } = require('../../shared/constants/SlackConst')
 
+/** UseCase依存作成 */
+const getUseCaseDependencies = ({ slackApiAdaptor, backendHttpClient }) => {
+  const { TaskSlackGateway } = require('./infra/TaskSlackGateway')
+  const { TaskBackendGateway } = require('./infra/TaskBackendGateway')
+  const { ThreadBackendGateway } = require('./infra/ThreadBackendGateway')
+  return {
+    slackGateway: new TaskSlackGateway(slackApiAdaptor),
+    taskBackendGateway: new TaskBackendGateway(backendHttpClient),
+    threadBackendGateway: new ThreadBackendGateway(backendHttpClient)
+  }
+}
+
+/** UseCase生成 */
+const getStartTaskInput = (dependencies) => {
+  const { StartTaskInputUseCase } = require('./application/StartTaskInputUseCase')
+  return new StartTaskInputUseCase(dependencies)
+}
+const getSubmitTask = (dependencies) => {
+  const { SubmitTaskUseCase } = require('./application/SubmitTaskUseCase')
+  return new SubmitTaskUseCase(dependencies)
+}
+
 function registerTaskFeature ({ app, slackApiAdaptor, backendHttpClient }) {
-  // Gateway
-  const slackGateway = new TaskSlackGateway(slackApiAdaptor)
-  const taskBackendGateway = new TaskBackendGateway(backendHttpClient)
-  const threadBackendGateway = new ThreadBackendGateway(backendHttpClient)
+  const usecaseDependencies = getUseCaseDependencies({
+    slackApiAdaptor,
+    backendHttpClient
+  })
 
   // UseCase
-  const startTaskInputUseCase = new StartTaskInputUseCase({
-    slackGateway,
-    taskBackendGateway,
-    threadBackendGateway,
-  })
-  const submitUseCase = new SubmitTaskUseCase({
-    slackGateway,
-    taskBackendGateway,
-    threadBackendGateway,
-  })
+  const startTaskInput = lazy(
+    () => getStartTaskInput(usecaseDependencies)
+  )
+  const submitTask = lazy(
+    () => getSubmitTask(usecaseDependencies)
+  )
 
   // Bolt登録
   // ホームタブの「タスク入力」ボタン押下
@@ -35,7 +46,7 @@ function registerTaskFeature ({ app, slackApiAdaptor, backendHttpClient }) {
     async ({ body, ack, logger }) => {
       await ack()
       logger.info(`app.action\nbody:${body}`)
-      await startTaskInputUseCase.execute({
+      await startTaskInput().execute({
         userId: body.user.id,
         triggerId: body.trigger_id,
       })
@@ -48,7 +59,7 @@ function registerTaskFeature ({ app, slackApiAdaptor, backendHttpClient }) {
     async ({ command, ack, context, logger, respond }) => {
       await ack()
       logger.info(`app.command\ncontext:${JSON.stringify(context)}\ncommand:${JSON.stringify(command)}\n`)
-      await startTaskInputUseCase.execute({
+      await startTaskInput().execute({
         userId: command.user_id,
         channelId: command.channel_id,
         text: command.text,
@@ -63,7 +74,7 @@ function registerTaskFeature ({ app, slackApiAdaptor, backendHttpClient }) {
     async ({ body, ack, logger, view }) => {
       await ack()
       logger.info(`app.view\nbody:${JSON.stringify(body)}\nview:${JSON.stringify(view)}`)
-      await submitUseCase.execute({
+      await submitTask().execute({
         view: body.view,
         userId: body.user.id
       })
