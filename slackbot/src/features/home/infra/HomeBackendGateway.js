@@ -1,4 +1,5 @@
 // src/features/home/infra/HomeBackendGateway.js
+const { logger } = require('../../../core/logging/Logger')
 
 const { BackendRouting } = require('../../../shared/constants/BackendRouting')
 
@@ -13,7 +14,10 @@ class HomeBackendGateway {
    * @returns {object}
    */
   async getForHome ({ userId, date }) {
-    console.log(`HomeBackendGateway.getForHome userId:${userId} date:${date}`)
+    logger.info('HomeBackendGateway.getForHome', {
+      userId: userId,
+      date: date
+    })
     try {
       const response = await this.backendHttpClient.request({
         routing: BackendRouting.HOME.GET(),
@@ -24,7 +28,9 @@ class HomeBackendGateway {
           }
         }
       })
-      console.log(`HomeBackendGateway.getForHome status:${response.status}`)
+      logger.info('HomeBackendGateway.getForHome', {
+        response: response
+      })
       switch (response.status) {
         case 200:
           return { ok: true, data: response.data }

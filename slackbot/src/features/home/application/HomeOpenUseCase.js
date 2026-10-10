@@ -5,8 +5,8 @@ const { getDate } = require('../../../shared/utils/DateUtils')
 
 const { HomeBlocks } = require('../blockkit/HomeBlocks')
 
-const { HomeBackendGateway } = require('../home/infra/HomeBackendGateway')
-const { HomeSlackGateway } = require('./infra/HomeSlackGateway')
+const { HomeBackendGateway } = require('../infra/HomeBackendGateway')
+const { HomeSlackGateway } = require('../infra/HomeSlackGateway')
 
 const toHomeView = data => HomeBlocks({
   tasks: data?.tasks,
