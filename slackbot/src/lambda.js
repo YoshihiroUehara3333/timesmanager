@@ -18,7 +18,6 @@ const { withRequestContext } = require('./core/logging/RequestContext')
 const { logger } = require('./core/logging/Logger')
 
 async function handler (event, context) {
-  context.logger = logger
   return withRequestContext(
     { requestId: context.awsRequestId },
     async () => {
